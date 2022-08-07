@@ -63,7 +63,8 @@ const App: React.FC = () => {
         // these are all optional
         activeNetworkId: ChainId.GOERLI,
         supportedNetworksIds: [ChainId.GOERLI, ChainId.MUMBAI],
-        backend_url: "http://localhost:3001/v1",
+        // backend_url: "http://localhost:3001/v1",
+        backend_url: "https://sdk-backend.staging.biconomy.io",
       });
 
       // Initalising

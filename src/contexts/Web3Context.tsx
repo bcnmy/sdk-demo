@@ -132,7 +132,6 @@ export const Web3Provider = ({ children }: any) => {
   }, [provider]);
 
   useEffect(() => {
-    console.log(chainId);
     if (window.ethereum) {
       window.ethereum.autoRefreshOnNetworkChange = true;
     }

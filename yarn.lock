@@ -1077,7 +1077,7 @@
   "version" "0.2.3"
 
 "@biconomy-sdk/core-types@/Users/aman/Desktop/work/bico/biconomy-client-sdk/packages/core-types":
-  "resolved" "file:../biconomy-client-sdk/packages/core-types"
+  "resolved" "file:../../biconomy-client-sdk/packages/core-types"
   "version" "1.0.0"
   dependencies:
     "@ethersproject/bignumber" "^5.6.0"
@@ -1086,7 +1086,7 @@
     "web3-core" "^1.7.1"
 
 "@biconomy-sdk/relayer@/Users/aman/Desktop/work/bico/biconomy-client-sdk/packages/relayer":
-  "resolved" "file:../biconomy-client-sdk/packages/relayer"
+  "resolved" "file:../../biconomy-client-sdk/packages/relayer"
   "version" "1.0.0"
   dependencies:
     "@biconomy-sdk/core-types" "*"
@@ -1094,7 +1094,7 @@
     "ethers" "^5.6.9"
 
 "@biconomy-sdk/smart-account@/Users/aman/Desktop/work/bico/biconomy-client-sdk/packages/smart-account":
-  "resolved" "file:../biconomy-client-sdk/packages/smart-account"
+  "resolved" "file:../../biconomy-client-sdk/packages/smart-account"
   "version" "1.0.0"
   dependencies:
     "@biconomy-sdk/core-types" "*"
