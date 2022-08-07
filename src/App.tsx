@@ -23,11 +23,9 @@ let walletProvider, walletSigner;
 const ChainId = {
   // Ethereum
   MAINNET: 1,
-  ROPSTEN: 3,
-  RINKEBY: 4,
   GOERLI: 5,
-  KOVAN: 42,
-  MUMBAI: 80001,
+  POLYGON_MUMBAI: 80001,
+  POLYGON_MAINNET: 137,
 };
 
 let smartAccount: SmartAccount | undefined;
@@ -62,9 +60,7 @@ const App: React.FC = () => {
       const wallet = new SmartAccount(walletProvider, {
         // these are all optional
         activeNetworkId: ChainId.GOERLI,
-        supportedNetworksIds: [ChainId.GOERLI, ChainId.MUMBAI],
-        // backend_url: "http://localhost:3001/v1",
-        backend_url: "https://sdk-backend.staging.biconomy.io",
+        supportedNetworksIds: [ChainId.GOERLI, ChainId.POLYGON_MUMBAI],
       });
 
       // Initalising
