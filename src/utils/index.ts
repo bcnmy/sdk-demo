@@ -15,7 +15,7 @@ export function ellipseAddress(address = "", width = 10): string {
 export const getEOAWallet = (privateKey: string, provider: any) => {
   // defaults
   if (!provider) {
-    provider = "https://rinkeby.infura.io/v3/d126f392798444609246423b06116c77";
+    provider = "https://goerli.infura.io/v3/d126f392798444609246423b06116c77";
   }
 
   const wallet = new EOAWallet(privateKey);
