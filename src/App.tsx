@@ -7,6 +7,16 @@ import { ToastContainer } from "react-toastify";
 import SmartAccount from "@biconomy-sdk/smart-account";
 import { LocalRelayer } from "@biconomy-sdk/relayer";
 
+import { Pool } from '@uniswap/v3-sdk'
+import { CurrencyAmount, Token, TradeType } from '@uniswap/sdk-core'
+import { AlphaRouter } from '@uniswap/smart-order-router'
+import JSBI from 'jsbi';
+import { Route } from '@uniswap/v3-sdk'
+import { Trade } from '@uniswap/v3-sdk'
+import { Percent } from "@uniswap/sdk-core";
+import { default as IUniswapV3PoolABI } from '@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json'
+import { default as QuoterABI } from '@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json'
+
 import Navbar from "./components/Navbar";
 import Button from "./components/Button";
 import { useWeb3Context } from "./contexts/Web3Context";
@@ -27,6 +37,51 @@ const ChainId = {
   POLYGON_MUMBAI: 80001,
   POLYGON_MAINNET: 137,
 };
+
+interface Immutables {
+  factory: string
+  token0: string
+  token1: string
+  fee: number
+  tickSpacing: number
+  maxLiquidityPerTick: ethers.BigNumber
+}
+
+interface State {
+  liquidity: ethers.BigNumber
+  sqrtPriceX96: ethers.BigNumber
+  tick: number
+  observationIndex: number
+  observationCardinality: number
+  observationCardinalityNext: number
+  feeProtocol: number
+  unlocked: boolean
+}
+
+const ethersProvider = new ethers.providers.JsonRpcProvider('https://goerli.infura.io/v3/d126f392798444609246423b06116c77')
+const poolAddress = '0x951b8635A3D7Aa2FD659aB93Cb81710536d90043' // USDC WETH
+const quoterAddress = '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6'
+const poolContract = new ethers.Contract(poolAddress, IUniswapV3PoolABI.abi, ethersProvider)
+const quoterContract = new ethers.Contract(quoterAddress, QuoterABI.abi, ethersProvider)
+
+const V3_SWAP_ROUTER_ADDRESS = '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45';
+const router = new AlphaRouter({ chainId: 5, provider: ethersProvider });
+
+const WETH = new Token(
+  5,
+  '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
+  18,
+  'WETH',
+  'Wrapped Ether'
+);
+
+const USDC = new Token(
+  5,
+  '0xD87Ba7A50B2E7E660f678A895E4B72E7CB4CCd9C',
+  6,
+  'USDC',
+  'USD//C'
+);
 
 let smartAccount: SmartAccount | undefined;
 
@@ -171,8 +226,20 @@ const App: React.FC = () => {
       walletProvider
     );
 
-    const approveTx = await daiContract.populateTransaction.approve(
-      config.contract.address,
+    const wethContract = new ethers.Contract(
+      config.dai.address,
+      config.dai.abi,
+      walletProvider
+    );
+
+    const usdcContract = new ethers.Contract(
+      config.dai.address,
+      config.dai.abi,
+      walletProvider
+    );
+
+    const approveTx = await wethContract.populateTransaction.approve(
+      V3_SWAP_ROUTER_ADDRESS,
       ethers.utils.parseEther("0.1")
     );
     const tx2 = {
@@ -181,6 +248,56 @@ const App: React.FC = () => {
     };
 
     txs.push(tx2);
+
+    const typedValueParsed = '100000000000000'
+    const wethAmount = CurrencyAmount.fromRawAmount(WETH, JSBI.BigInt(typedValueParsed));
+
+    const route = await router.route(
+      wethAmount,
+      USDC,
+      TradeType.EXACT_INPUT,
+      {
+        recipient: walletState.counterFactual,
+        slippageTolerance: new Percent(5, 100),
+        deadline: Math.floor(Date.now() / 1000 + 1800)
+      }
+    );
+
+    console.log(`Quote Exact In: ${route?.quote.toFixed(2)}`);
+    console.log(`Gas Adjusted Quote In: ${route?.quoteGasAdjusted.toFixed(2)}`);
+    console.log(`Gas Used USD: ${route?.estimatedGasUsedUSD.toFixed(6)}`);
+
+    debugger;
+
+    const uniswapTx = {
+      data: route?.methodParameters?.calldata,
+      to: V3_SWAP_ROUTER_ADDRESS,
+      value: ethers.BigNumber.from(route?.methodParameters?.value),
+      from: walletState.counterFactual,
+      gasPrice: ethers.BigNumber.from(route?.gasPriceWei),
+    };
+
+    console.log(uniswapTx);
+
+    const tx3 = {
+      to: uniswapTx.to,
+      data: uniswapTx.data
+    }
+
+    txs.push(tx3);
+
+    const receiver = '0xDD049E7e7695464113B43b35C3917836B13A8582' //later hyphen deposit?
+
+    const transferTx = await usdcContract.populateTransaction.transfer(
+      receiver,
+      ethers.BigNumber.from("100000000")
+    );
+    const tx4 = {
+      to: config.usdc.address,
+      data: transferTx.data,
+    };
+
+    txs.push(tx4);
 
     console.log(txs);
 
@@ -268,7 +385,7 @@ const App: React.FC = () => {
         <hr style={{ margin: "20px 0" }} />
 
         <h3 className={classes.subTitle}>
-          {"[ < Send Batch :: SetQuote and Approve DAI> ]"}
+          {"[ < Send Batch :: SetQuote + Approve WETH + => Swap to USDC + Deposit USDC> ]"}
         </h3>
         <Button title="do transaction" onClickFunc={makeTx} />
         {/* <button onClick={makeTx} className={classes.walletBtn}></button> */}
@@ -308,6 +425,46 @@ const useStyles = makeStyles(() => ({
     marginBottom: 10,
   },
 }));
+
+const getPoolImmutables = async () => {
+  const [factory, token0, token1, fee, tickSpacing, maxLiquidityPerTick] = await Promise.all([
+    poolContract.factory(),
+    poolContract.token0(),
+    poolContract.token1(),
+    poolContract.fee(),
+    poolContract.tickSpacing(),
+    poolContract.maxLiquidityPerTick(),
+  ])
+
+  const immutables: Immutables = {
+    factory,
+    token0,
+    token1,
+    fee,
+    tickSpacing,
+    maxLiquidityPerTick,
+  }
+  return immutables
+}
+
+const getPoolState = async () => {
+  // note that data here can be desynced if the call executes over the span of two or more blocks.
+  const [liquidity, slot] = await Promise.all([poolContract.liquidity(), poolContract.slot0()])
+
+  const PoolState: State = {
+    liquidity,
+    sqrtPriceX96: slot[0],
+    tick: slot[1],
+    observationIndex: slot[2],
+    observationCardinality: slot[3],
+    observationCardinalityNext: slot[4],
+    feeProtocol: slot[5],
+    unlocked: slot[6],
+  }
+
+  return PoolState
+}
+
 
 export default App;
 
