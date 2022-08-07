@@ -1,0 +1,58 @@
+{
+  "name": "demo",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@biconomy-sdk/core-types": "/Users/aman/Desktop/work/bico/biconomy-client-sdk/packages/core-types",
+    "@biconomy-sdk/relayer": "/Users/aman/Desktop/work/bico/biconomy-client-sdk/packages/relayer",
+    "@biconomy-sdk/smart-account": "/Users/aman/Desktop/work/bico/biconomy-client-sdk/packages/smart-account",
+    "@material-ui/core": "^4.11.3",
+    "@material-ui/icons": "^4.11.2",
+    "@types/node": "^16.7.13",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "@walletconnect/web3-provider": "^1.8.0",
+    "ethers": "^5.6.9",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
+    "react-toastify": "^9.0.8",
+    "typescript": "^4.4.2",
+    "walletlink": "^2.5.0",
+    "web-vitals": "^2.1.0",
+    "web3": "^1.7.5",
+    "web3modal": "^1.9.8"
+  },
+  "scripts": {
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
+    "eject": "react-app-rewired eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "assert": "^2.0.0",
+    "https-browserify": "^1.0.0",
+    "os-browserify": "^0.3.0",
+    "react-app-rewired": "^2.2.1",
+    "stream-http": "^3.2.0",
+    "url": "^0.11.0"
+  }
+}
