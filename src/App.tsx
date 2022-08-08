@@ -7,12 +7,9 @@ import { ToastContainer } from "react-toastify";
 import SmartAccount from "@biconomy-sdk/smart-account";
 import { LocalRelayer } from "@biconomy-sdk/relayer";
 
-import { Pool } from '@uniswap/v3-sdk'
 import { CurrencyAmount, Token, TradeType } from '@uniswap/sdk-core'
 import { AlphaRouter } from '@uniswap/smart-order-router'
 import JSBI from 'jsbi';
-import { Route } from '@uniswap/v3-sdk'
-import { Trade } from '@uniswap/v3-sdk'
 import { Percent } from "@uniswap/sdk-core";
 import { default as IUniswapV3PoolABI } from '@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json'
 import { default as QuoterABI } from '@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json'
@@ -77,7 +74,7 @@ const WETH = new Token(
 
 const USDC = new Token(
   5,
-  '0xD87Ba7A50B2E7E660f678A895E4B72E7CB4CCd9C',
+  '0xb5B640E6414b6DeF4FC9B3C1EeF373925effeCcF',
   6,
   'USDC',
   'USD//C'
@@ -141,14 +138,12 @@ const App: React.FC = () => {
         eoaAddress: state.address,
         tokenAddresses: [],
       };
-      debugger;
       const balFromSdk = await smartAccount.getAlltokenBalances(balanceParams);
       console.log(balFromSdk);
 
       const usdBalFromSdk = await smartAccount.getTotalBalanceInUsd(
         balanceParams
       );
-      debugger;
       console.log(usdBalFromSdk);
 
       setWalletState({
@@ -207,7 +202,7 @@ const App: React.FC = () => {
     smartAccount = smartAccount.setRelayer(relayer);
 
     // building external txn
-    const contract = new ethers.Contract(
+    /*const contract = new ethers.Contract(
       config.contract.address,
       config.contract.abi,
       walletProvider
@@ -217,17 +212,10 @@ const App: React.FC = () => {
     const tx1 = {
       to: config.contract.address,
       data: data,
-    };
+    };*/
 
     // currently step 1 building wallet transaction
     const txs = [];
-    txs.push(tx1);
-
-    const daiContract = new ethers.Contract(
-      config.dai.address,
-      config.dai.abi,
-      walletProvider
-    );
 
     const wethContract = new ethers.Contract(
       config.dai.address,
@@ -236,8 +224,14 @@ const App: React.FC = () => {
     );
 
     const usdcContract = new ethers.Contract(
-      config.dai.address,
-      config.dai.abi,
+      config.usdc.address,
+      config.usdc.abi,
+      walletProvider
+    );
+
+    const hyphenContract = new ethers.Contract(
+      config.hyphenLP.address,
+      config.hyphenLP.abi,
       walletProvider
     );
 
@@ -245,14 +239,14 @@ const App: React.FC = () => {
       V3_SWAP_ROUTER_ADDRESS,
       ethers.utils.parseEther("0.1")
     );
-    const tx2 = {
+    const tx1 = {
       to: config.dai.address,
       data: approveTx.data,
     };
 
-    txs.push(tx2);
+    txs.push(tx1);
 
-    const typedValueParsed = '100000000000000'
+    const typedValueParsed = '1000000000000000'
     const wethAmount = CurrencyAmount.fromRawAmount(WETH, JSBI.BigInt(typedValueParsed));
 
     const route = await router.route(
@@ -270,8 +264,6 @@ const App: React.FC = () => {
     console.log(`Gas Adjusted Quote In: ${route?.quoteGasAdjusted.toFixed(2)}`);
     console.log(`Gas Used USD: ${route?.estimatedGasUsedUSD.toFixed(6)}`);
 
-    debugger;
-
     const uniswapTx = {
       data: route?.methodParameters?.calldata,
       to: V3_SWAP_ROUTER_ADDRESS,
@@ -282,22 +274,32 @@ const App: React.FC = () => {
 
     console.log(uniswapTx);
 
-    const tx3 = {
+    const tx2 = {
       to: uniswapTx.to,
       data: uniswapTx.data
     }
 
-    txs.push(tx3);
+    txs.push(tx2);
 
-    const receiver = '0xDD049E7e7695464113B43b35C3917836B13A8582' //later hyphen deposit?
-
-    const transferTx = await usdcContract.populateTransaction.transfer(
-      receiver,
+    const transferTx = await usdcContract.populateTransaction.approve(
+      config.hyphenLP.address,
       ethers.BigNumber.from("100000000")
     );
-    const tx4 = {
+    const tx3 = {
       to: config.usdc.address,
       data: transferTx.data,
+    };
+
+    txs.push(tx3);
+
+    const hyphenLPTx = await hyphenContract.populateTransaction.addTokenLiquidity(
+      config.usdc.address,
+      ethers.BigNumber.from("100000000")
+    );
+
+    const tx4 = {
+      to: config.hyphenLP.address,
+      data: hyphenLPTx.data,
     };
 
     txs.push(tx4);
@@ -388,9 +390,9 @@ const App: React.FC = () => {
         <hr style={{ margin: "20px 0" }} />
 
         <h3 className={classes.subTitle}>
-          {"[ < Send Batch :: SetQuote + Approve WETH + => Swap to USDC + Deposit USDC> ]"}
+          {"[ < Send Batch :: Approve WETH +=> Swap to USDC +=>  Approve USDC +=> Provide USDC Liquidity on Hyphen> ]"}
         </h3>
-        <Button title="do transaction" onClickFunc={makeTx} />
+        <Button title="Do transaction (One Click LP)" onClickFunc={makeTx} />
         {/* <button onClick={makeTx} className={classes.walletBtn}></button> */}
 
         <ToastContainer />
