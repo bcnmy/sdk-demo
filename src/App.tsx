@@ -135,17 +135,20 @@ const App: React.FC = () => {
       const bal = await smartAccount.ethersAdapter().getBalance(state.address);
       showSuccessMessage("Fetched balance");
 
+      // you may use EOA address my goerli SCW 0x1927366dA53F312a66BD7D09a88500Ccd16f175e
       const balanceParams = {
-        chainId: 137,
+        chainId: 5,
         eoaAddress: state.address,
         tokenAddresses: [],
       };
+      debugger;
       const balFromSdk = await smartAccount.getAlltokenBalances(balanceParams);
       console.log(balFromSdk);
 
       const usdBalFromSdk = await smartAccount.getTotalBalanceInUsd(
         balanceParams
       );
+      debugger;
       console.log(usdBalFromSdk);
 
       setWalletState({
