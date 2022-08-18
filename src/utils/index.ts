@@ -62,3 +62,11 @@ export const showSuccessMessage = (message: string) => {
     progress: undefined,
   });
 };
+
+export const ChainId = {
+  // Ethereum
+  MAINNET: 1,
+  GOERLI: 5,
+  POLYGON_MUMBAI: 80001,
+  POLYGON_MAINNET: 137,
+};

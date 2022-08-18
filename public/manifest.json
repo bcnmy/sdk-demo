@@ -1,6 +1,6 @@
 {
-  "short_name": "Gasless Playground",
-  "name": "Gasless Playground Biconomy",
+  "short_name": "Biconomy SDK",
+  "name": "Biconomy SDK Demo",
   "icons": [
     {
       "src": "favicon.ico",

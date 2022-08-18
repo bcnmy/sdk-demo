@@ -4,6 +4,7 @@ import App from "./App";
 import "./index.css";
 import "react-toastify/dist/ReactToastify.css";
 import { Web3Provider } from "./contexts/Web3Context";
+import { SmartAccountProvider } from "./contexts/SmartAccountContext";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -11,6 +12,8 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <Web3Provider>
-    <App />
+    <SmartAccountProvider>
+      <App />
+    </SmartAccountProvider>
   </Web3Provider>
 );
