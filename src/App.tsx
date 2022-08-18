@@ -244,7 +244,7 @@ const App: React.FC = () => {
       data: approveTx.data,
     };
 
-    txs.push(tx1);
+    // txs.push(tx1);
 
     const typedValueParsed = '1000000000000000'
     const wethAmount = CurrencyAmount.fromRawAmount(WETH, JSBI.BigInt(typedValueParsed));
@@ -279,7 +279,7 @@ const App: React.FC = () => {
       data: uniswapTx.data
     }
 
-    txs.push(tx2);
+    // txs.push(tx2);
 
     const transferTx = await usdcContract.populateTransaction.approve(
       config.hyphenLP.address,
@@ -306,7 +306,7 @@ const App: React.FC = () => {
 
     console.log(txs);
 
-    const transaction = await smartAccount.createSmartAccountTransactionBatch(
+    const transaction = await smartAccount.createTransactionBatch(
       txs
     );
 
@@ -318,6 +318,92 @@ const App: React.FC = () => {
 
     // console.log("Owner of smart wallet is ", smartAccount.owner);
   };
+
+  const makeForwardTx = async () => {
+    if (!smartAccount) return;
+    walletProvider = new ethers.providers.Web3Provider(provider);
+    walletSigner = walletProvider.getSigner();
+    // Example of regular signer and LocalRelayer
+    // const relayer2 = new LocalRelayer(walletSigner);
+    const relayer = new LocalRelayer(
+      getEOAWallet(process.env.REACT_APP_PKEY || "", null)
+    );
+    // to do transaction on smart account we need to set relayer
+    smartAccount = smartAccount.setRelayer(relayer);
+
+    
+    // currently step 1 building wallet transaction
+    const txs = [];
+
+    // let walletContract = smartAccount.smartAccount().getContract();
+    // walletContract = walletContract.connect(walletState.counterFactual);
+
+    // building external txn
+    const contract = new ethers.Contract(
+      config.contract.address,
+      config.contract.abi,
+      walletProvider
+    );
+
+    let { data } = await contract.populateTransaction.setQuote("Hello there");
+    const tx1 = {
+      to: config.contract.address,
+      data: data,
+    };
+
+    txs.push(tx1);
+
+    const transaction = await smartAccount.createRefundTransaction(
+      tx1,
+      config.usdc.address,
+      17 // pass token gas price
+    );
+
+    debugger;
+
+    /*const walletContract = new ethers.Contract(
+      walletState.counterFactual,
+      config.wallet.abi,
+      walletSigner
+    );
+
+    const requiredTxGasData = walletContract.interface.encodeFunctionData(
+      "handlePaymentRevert",
+      [
+        transaction.targetTxGas,
+        transaction.targetTxGas,
+        transaction.gasPrice,
+        transaction.gasToken,
+        transaction.refundReceiver,
+      ]
+    );
+
+
+    const decoderContract = new ethers.Contract(
+      config.decoder.address,
+      config.decoder.abi,
+      walletSigner
+    );
+
+    const result = await decoderContract.callStatic.decode(
+      walletState.counterFactual,
+      requiredTxGasData
+    );
+    console.log(result);
+    const internalEstimate = ethers.BigNumber.from(
+      "0x" + result.slice(result.length - 32)
+    ).toNumber();
+    console.log("handle ERC20 payment gas estimation: ", internalEstimate);*/
+
+    // send transaction internally calls signTransaction and sends it to connected relayer
+    const sendTx = await smartAccount.sendTransaction(transaction);
+    console.log(sendTx);
+
+    console.log(await sendTx.wait(1));
+
+    // console.log("Owner of smart wallet is ", smartAccount.owner);
+  };
+
 
   return (
     <div className={classes.bgCover}>
@@ -390,9 +476,10 @@ const App: React.FC = () => {
         <hr style={{ margin: "20px 0" }} />
 
         <h3 className={classes.subTitle}>
-          {"[ < Send Batch :: Approve WETH +=> Swap to USDC +=>  Approve USDC +=> Provide USDC Liquidity on Hyphen> ]"}
+          {"[ < Send Batch :: Approve USDC +=> Provide USDC Liquidity on Hyphen> ]"}
         </h3>
         <Button title="Do transaction (One Click LP)" onClickFunc={makeTx} />
+        <Button title="Do Test Refund" onClickFunc={makeForwardTx} />
         {/* <button onClick={makeTx} className={classes.walletBtn}></button> */}
 
         <ToastContainer />
