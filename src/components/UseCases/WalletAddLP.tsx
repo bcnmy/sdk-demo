@@ -223,8 +223,10 @@ const WalletAddLP: React.FC = () => {
       <h3 className={classes.subTitle}>Deploy Wallet, Swap and Add Liquidity in Hyphen</h3>
 
       <p>
-        This magic bundle will deploy wallet, swap WETH to USDC, and then provide the USDC
-        liquidity to Hyphen Pool.
+        {/*This magic bundle will swap WETH to USDC first and then provide the USDC
+        liquidity to Hyphen Pool.*/}
+        This magic bundle will approve USDC then provide the USDC
+        liquidity to Hyphen Pool
       </p>
 
       <h3>Transaction Batched</h3>
