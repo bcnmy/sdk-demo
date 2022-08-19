@@ -122,7 +122,7 @@ const WalletAddLP: React.FC = () => {
       walletProvider
     );
 
-    const approveTx = await wethContract.populateTransaction.approve(
+    /*const approveTx = await wethContract.populateTransaction.approve(
       V3_SWAP_ROUTER_ADDRESS,
       ethers.utils.parseEther("0.1")
     );
@@ -164,15 +164,15 @@ const WalletAddLP: React.FC = () => {
       data: uniswapTx.data,
     };
 
-    txs.push(tx2);
+    txs.push(tx2);*/
 
-    const transferTx = await usdcContract.populateTransaction.approve(
+    const approveUSDCTx = await usdcContract.populateTransaction.approve(
       config.hyphenLP.address,
       ethers.BigNumber.from("100000000")
     );
     const tx3 = {
       to: config.usdc.address,
-      data: transferTx.data,
+      data: approveUSDCTx.data,
     };
 
     txs.push(tx3);
@@ -192,17 +192,15 @@ const WalletAddLP: React.FC = () => {
 
     console.log(txs);
 
-    // const transaction = await smartAccount.createSmartAccountTransactionBatch(
-    //   txs
-    // );
+    const transaction = await smartAccount.createTransactionBatch(
+       txs
+     );
 
     // // send transaction internally calls signTransaction and sends it to connected relayer
-    // const sendTx = await smartAccount.sendTransaction(transaction);
-    // console.log(sendTx);
+    const sendTx = await smartAccount.sendTransaction(transaction);
+    console.log(sendTx);
 
-    // console.log(await sendTx.wait(1));
-
-    // console.log("Owner of smart wallet is ", smartAccount.owner);
+    console.log(await sendTx.wait(1));
   };
 
   return (
@@ -222,8 +220,8 @@ const WalletAddLP: React.FC = () => {
       <h3>Transaction Batched</h3>
       <ul>
         <li>Deploy Wallet</li>
-        <li>Approve WETH</li>
-        <li>Swap to USDC</li>
+        {/*<li>Approve WETH</li>
+        <li>Swap to USDC</li>*/}
         <li>Approve USDC</li>
         <li>Provide USDC Liquidity on Hyphen</li>
       </ul>

@@ -27,8 +27,8 @@ const UseCases: React.FC = () => {
             Batch User Pays:
             <ul>
               <li>Deploy Wallet</li>
-              <li>Approve WETH</li>
-              <li>Swap to USDC</li>
+              {/*<li>Approve WETH</li>
+              <li>Swap to USDC</li>*/}
               <li>Approve USDC</li>
               <li>Provide USDC Liquidity on Hyphen</li>
             </ul>
@@ -39,8 +39,8 @@ const UseCases: React.FC = () => {
           <p className={classes.text}>
             Batch User Pays:
             <ul>
-              <li>Approve WETH</li>
-              <li>Swap to USDC</li>
+              {/*<li>Approve WETH</li>
+              <li>Swap to USDC</li>*/}
               <li>Approve USDC</li>
               <li>Provide USDC Liquidity on Hyphen</li>
             </ul>

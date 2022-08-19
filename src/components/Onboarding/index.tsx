@@ -69,6 +69,8 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
       const relayer = new LocalRelayer(walletSigner);
       const state = await smartAccount.getSmartAccountState();
       const context = smartAccount.getSmartAccountContext();
+      // Here I need to create transaction batch with deployment and send refund to the relayer
+      // createTransaction which pays relayer and relayer auto deploys wallet
       const deployment = await relayer.deployWallet(state, context); // index 0
       const res = await deployment.wait(1);
       console.log(res);
