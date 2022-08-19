@@ -168,7 +168,7 @@ const AddLP: React.FC = () => {
 
     const approveUSDCTx = await usdcContract.populateTransaction.approve(
       config.hyphenLP.address,
-      ethers.BigNumber.from("100000000")
+      ethers.BigNumber.from("10000000")
     );
     const tx3 = {
       to: config.usdc.address,
@@ -180,7 +180,7 @@ const AddLP: React.FC = () => {
     const hyphenLPTx =
       await hyphenContract.populateTransaction.addTokenLiquidity(
         config.usdc.address,
-        ethers.BigNumber.from("100000000")
+        ethers.BigNumber.from("10000000")
       );
 
     const tx4 = {
@@ -192,9 +192,17 @@ const AddLP: React.FC = () => {
 
     console.log(txs);
 
-    const transaction = await smartAccount.createTransactionBatch(
-       txs
+    // prepare refund txn batch before
+    // so that we have accurate token gas price
+
+    const transaction = await smartAccount.createRefundTransactionBatch(
+       txs,
+       config.usdc.address,
+       5
      );
+    
+    console.log('transaction');
+    console.log(transaction);
 
     // // send transaction internally calls signTransaction and sends it to connected relayer
     const sendTx = await smartAccount.sendTransaction(transaction);
