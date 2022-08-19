@@ -168,7 +168,7 @@ const AddLP: React.FC = () => {
 
     const approveUSDCTx = await usdcContract.populateTransaction.approve(
       config.hyphenLP.address,
-      ethers.BigNumber.from("10000000")
+      ethers.BigNumber.from("1000000")
     );
     const tx3 = {
       to: config.usdc.address,
@@ -180,7 +180,7 @@ const AddLP: React.FC = () => {
     const hyphenLPTx =
       await hyphenContract.populateTransaction.addTokenLiquidity(
         config.usdc.address,
-        ethers.BigNumber.from("10000000")
+        ethers.BigNumber.from("1000000")
       );
 
     const tx4 = {

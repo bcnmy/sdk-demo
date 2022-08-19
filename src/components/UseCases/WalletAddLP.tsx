@@ -168,7 +168,7 @@ const WalletAddLP: React.FC = () => {
 
     const approveUSDCTx = await usdcContract.populateTransaction.approve(
       config.hyphenLP.address,
-      ethers.BigNumber.from("10000000")
+      ethers.BigNumber.from("1000000")
     );
     const tx3 = {
       to: config.usdc.address,
@@ -180,7 +180,7 @@ const WalletAddLP: React.FC = () => {
     const hyphenLPTx =
       await hyphenContract.populateTransaction.addTokenLiquidity(
         config.usdc.address,
-        ethers.BigNumber.from("10000000")
+        ethers.BigNumber.from("1000000")
       );
 
     const tx4 = {
@@ -192,9 +192,15 @@ const WalletAddLP: React.FC = () => {
 
     console.log(txs);
 
-    const transaction = await smartAccount.createTransactionBatch(
+    /*const transaction = await smartAccount.createTransactionBatch(
        txs
-     );
+     );*/
+
+    const transaction = await smartAccount.createRefundTransactionBatch(
+      txs,
+      config.usdc.address,
+      6
+    );
 
     console.log('transaction');
     console.log(transaction);

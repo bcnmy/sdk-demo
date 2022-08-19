@@ -65,15 +65,62 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
       // you can create instance of local relayer with current signer or any other private key signer
       const walletProvider = new ethers.providers.Web3Provider(provider);
       const walletSigner = walletProvider.getSigner();
+      const biconomyFeeCollector = "0x7306aC7A32eb690232De81a9FFB44Bb346026faB"; // should be tx.origin or relayer
       // Example of regular signer and LocalRelayer
-      const relayer = new LocalRelayer(walletSigner);
+      const relayer = new LocalRelayer(
+        getEOAWallet(process.env.REACT_APP_PKEY || "", null)
+      );
+      smartAccount.setRelayer(relayer);
+      // const relayer = new LocalRelayer(walletSigner);
+
+      const usdcContract = new ethers.Contract(
+        config.usdc.address,
+        config.usdc.abi,
+        walletProvider
+      );
+
+      // get Fee Options
+      const tokenGasPrice = 6;
+      
+      // estimate using gas estimator
+      // estimate wallet deployment and send first transaction : 339253
+      const feesToPay = tokenGasPrice * (261884 + 77369)
+
+      const deploymentFeeTx = await usdcContract.populateTransaction.transfer(
+        biconomyFeeCollector,
+        ethers.BigNumber.from(feesToPay)
+      );
+
+      const tx = {
+        to: config.usdc.address,
+        data: deploymentFeeTx.data,
+      };
+
       const state = await smartAccount.getSmartAccountState();
       const context = smartAccount.getSmartAccountContext();
       // Here I need to create transaction batch with deployment and send refund to the relayer
       // createTransaction which pays relayer and relayer auto deploys wallet
-      const deployment = await relayer.deployWallet(state, context); // index 0
-      const res = await deployment.wait(1);
-      console.log(res);
+      //const deployment = await relayer.deployWallet(state, context); // index 0
+      //const res = await deployment.wait(1);
+      //console.log(res);
+      
+      // createRefundTransaction approach once estimation is fixed...
+
+      const transaction = await smartAccount.createTransaction(
+        tx
+      );
+  
+      console.log('transaction');
+      console.log(transaction);
+      debugger;
+  
+      // // send transaction internally calls signTransaction and sends it to connected relayer
+      const sendTx = await smartAccount.sendTransaction(transaction);
+      console.log(sendTx);
+  
+      console.log(await sendTx.wait(1));
+
+
       getSmartAccount();
       showSuccessMessage("Smart Account deployed");
       setDeployLoading2(false);
