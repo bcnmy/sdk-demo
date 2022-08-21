@@ -6,12 +6,14 @@ type ButtonProp = {
   title: string;
   isLoading?: boolean;
   onClickFunc: any;
+  children?: any;
 };
 
 const Button: React.FC<ButtonProp> = ({
   title,
   onClickFunc,
   isLoading = false,
+  children,
 }) => {
   const classes = useStyles();
 
@@ -28,6 +30,7 @@ const Button: React.FC<ButtonProp> = ({
       ) : (
         title
       )}
+      {children}
     </button>
   );
 };
@@ -39,14 +42,17 @@ const useStyles = makeStyles((theme: any) => ({
     position: "relative",
     cursor: "pointer",
     border: 0,
+    borderRadius: 5,
     outline: "none",
     boxShadow: "5px 5px 0px #100F0F",
     height: 40,
     lineHeight: "36px",
-    padding: "0px 8px",
+    padding: "0px 12px",
     display: "flex",
     alignItems: "center",
     color: "black",
+    transition: "0.3s",
+    fontWeight: "bold",
 
     "@media (max-width:599px)": {
       padding: 0,
@@ -54,6 +60,8 @@ const useStyles = makeStyles((theme: any) => ({
 
     "&:hover": {
       backgroundColor: "#FFC4C4",
+      boxShadow: "2px 2px 0px #100F0F",
+      // transform: "translate(5px, 5px)",
     },
 
     "& div": {
