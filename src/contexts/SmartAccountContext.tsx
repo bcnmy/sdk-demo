@@ -60,6 +60,7 @@ export const SmartAccountProvider = ({ children }: any) => {
         // these are all optional
         activeNetworkId: ChainId.GOERLI,
         supportedNetworksIds: [ChainId.GOERLI, ChainId.POLYGON_MUMBAI],
+        // backend_url: 'http://localhost:3000/v1'
       });
 
       // Initalising
