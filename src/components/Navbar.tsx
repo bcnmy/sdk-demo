@@ -1,19 +1,25 @@
+import { useState } from "react";
 import { AppBar } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { ellipseAddress, showErrorMessage, showSuccessMessage } from "../utils";
 import { useWeb3Context } from "../contexts/Web3Context";
 import { useSmartAccountContext } from "../contexts/SmartAccountContext";
 import Button from "./Button";
+import {
+  copyToClipBoard,
+  ellipseAddress,
+  showErrorMessage,
+  showSuccessMessage,
+} from "../utils";
 
 const Navbar = () => {
   const classes = useStyles();
   const { disconnect } = useWeb3Context();
   const { getSmartAccount, state, loading } = useSmartAccountContext();
-  // const [showLogout, setShowLogout] = useState(false);
+  const [showLogout, setShowLogout] = useState(false);
 
-  // const toggleLogoutButton = () => {
-  //   showLogout ? setShowLogout(false) : setShowLogout(true);
-  // };
+  const toggleLogoutButton = () => {
+    showLogout ? setShowLogout(false) : setShowLogout(true);
+  };
 
   const getSmartAccountFunc = async () => {
     const error = await getSmartAccount();
@@ -23,34 +29,40 @@ const Navbar = () => {
 
   const disconnectWallet = () => {
     disconnect();
-    // setShowLogout(false);
+    setShowLogout(false);
   };
 
   return (
     <AppBar position="static" classes={{ root: classes.nav }}>
       <div className={classes.flexContainer}>
         <img src="img/logo.svg" alt="logo" className={classes.logo} />
-        <div style={{ display: "flex", gap: 10 }}>
-          {/* <button
-            className={classes.walletBtn}
-            onClick={address ? toggleLogoutButton : connectWeb3}
-          >
-            <div>{address ? ellipseAddress(address, 6) : "Connect Wallet"}</div>
-            {showLogout && (
-              <div onClick={disconnectWallet} className={classes.logout}>
-                Logout
-              </div>
-            )}
-          </button> */}
+        <div className={classes.walletBtnContainer}>
           <Button
             title={
               state ? ellipseAddress(state.address, 8) : "init SmartAccount"
             }
-            onClickFunc={getSmartAccountFunc}
+            onClickFunc={toggleLogoutButton}
             isLoading={loading}
-          />
+          >
+            {showLogout && (
+              <div className={classes.modal}>
+                <div
+                  onClick={() => copyToClipBoard(state?.address || "")}
+                  className={classes.element}
+                >
+                  📁 Copy Address
+                </div>
+                <div onClick={getSmartAccountFunc} className={classes.element}>
+                  &#8633; Init Smart wallet
+                </div>
+                {/* <div onClick={toggleLogoutButton} className={classes.element}>
+                  &uarr; Close Modal
+                </div> */}
+              </div>
+            )}
+          </Button>
 
-          <Button title="🖋️ Logout" onClickFunc={disconnectWallet} />
+          <Button title="Logout" onClickFunc={disconnectWallet} />
         </div>
       </div>
     </AppBar>
@@ -81,65 +93,42 @@ const useStyles = makeStyles((theme: any) => ({
     height: "25px",
     marginTop: 2,
   },
-  // walletBtnContainer: {
-  //   display: "flex",
-  //   position: "relative",
-  //   marginLeft: 20,
-  //   alignItems: "center",
-  // },
-  // walletBtn: {
-  //   background: "#FFB4B4",
-  //   position: "relative",
-  //   cursor: "pointer",
-  //   border: 0,
-  //   outline: "none",
-  //   boxShadow: "5px 5px 0px #100F0F",
-  //   height: 40,
-  //   lineHeight: "36px",
-  //   padding: "18px 8px",
-  //   display: "flex",
-  //   alignItems: "center",
-  //   color: "black",
+  walletBtnContainer: {
+    display: "flex",
+    marginLeft: 20,
+    alignItems: "center",
+    gap: 10,
+  },
+  modal: {
+    position: "absolute",
+    top: "12px",
+    right: 0,
+    backgroundColor: "#FFB4B4",
+    color: "black",
+    width: "100%",
+    // height: "36px",
+    lineHeight: "36px",
+    padding: "10px",
+    borderRadius: 10,
+    cursor: "pointer",
+    textAlign: "center",
+    fontWeight: 600,
+    transform: "translate(10%, 35%)",
 
-  //   "@media (max-width:599px)": {
-  //     padding: 0,
-  //   },
+    [theme.breakpoints.down("xs")]: {
+      width: "auto",
+    },
+  },
+  element: {
+    width: "100%",
+    // padding: "0 18px",
+    borderRadius: 10,
 
-  //   "&:hover": {
-  //     backgroundColor: "#FFC4C4",
-  //   },
-
-  //   "& div": {
-  //     "@media (max-width:599px)": {
-  //       margin: 0,
-  //       display: "none",
-  //     },
-  //   },
-  // },
-  // logout: {
-  //   position: "absolute",
-  //   backgroundColor: "#e3e3e3",
-  //   color: "black",
-  //   width: "100%",
-  //   height: "36px",
-  //   lineHeight: "36px",
-  //   padding: "0 18px",
-  //   borderRadius: "18px",
-  //   top: "40px",
-  //   right: "0",
-  //   cursor: "pointer",
-  //   textAlign: "center",
-  //   fontWeight: 600,
-
-  //   "&:hover": {
-  //     color: "white",
-  //     backgroundColor: "#000",
-  //   },
-
-  //   [theme.breakpoints.down("xs")]: {
-  //     width: "auto",
-  //   },
-  // },
+    "&:hover": {
+      color: "white",
+      backgroundColor: "#000",
+    },
+  },
 }));
 
 export default Navbar;

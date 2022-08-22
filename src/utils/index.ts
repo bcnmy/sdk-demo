@@ -1,9 +1,17 @@
-import { Wallet as EOAWallet } from "ethers";
+import { BigNumber, ethers, Wallet as EOAWallet } from "ethers";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import configEIP2771 from "./configs/EIP2771.json";
 import { toast } from "react-toastify";
 
 export { configEIP2771 };
+
+export const ChainId = {
+  // Ethereum
+  MAINNET: 1,
+  GOERLI: 5,
+  POLYGON_MUMBAI: 80001,
+  POLYGON_MAINNET: 137,
+};
 
 export function ellipseAddress(address = "", width = 10): string {
   if (!address) {
@@ -63,10 +71,22 @@ export const showSuccessMessage = (message: string) => {
   });
 };
 
-export const ChainId = {
-  // Ethereum
-  MAINNET: 1,
-  GOERLI: 5,
-  POLYGON_MUMBAI: 80001,
-  POLYGON_MAINNET: 137,
+export const copyToClipBoard = (copyMe: string) => {
+  // if (!copyMe) showErrorMessage("Nothing to copy");
+  if (!copyMe) return;
+  try {
+    navigator.clipboard.writeText(copyMe).then(() => {
+      showSuccessMessage("Copied!");
+    });
+  } catch (err) {
+    showErrorMessage("Failed to copy!");
+  }
+};
+
+export const formatBalance = (value: string) => {
+  const balance = BigNumber.from(value);
+  let res = ethers.utils.formatEther(balance);
+  res = (+res).toFixed(4);
+  console.log(res);
+  return res;
 };

@@ -11,7 +11,7 @@ const App: React.FC = () => {
   const classes = useStyles();
   const { connectWeb3, address } = useWeb3Context();
   const { loading } = useSmartAccountContext();
-  console.log(address);
+
   if (!address) {
     return (
       <div
@@ -20,7 +20,7 @@ const App: React.FC = () => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          marginTop: "30vh"
+          marginTop: "30vh",
         }}
       >
         <h1>Biconomy SDK Demo</h1>

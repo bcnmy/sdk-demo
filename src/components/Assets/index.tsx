@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
-import { showErrorMessage } from "../../utils";
+import { formatBalance, showErrorMessage } from "../../utils";
 
 const Assets: React.FC = () => {
   const classes = useStyles();
@@ -42,7 +42,7 @@ const Assets: React.FC = () => {
                 <img className={classes.img} alt="logo" src={token.logo_url} />
                 <p>{token.contract_ticker_symbol}</p>
               </div>
-              <p>{token.balance}</p>
+              <p>{formatBalance(token.balance)}</p>
             </div>
           ))}
         </div>
