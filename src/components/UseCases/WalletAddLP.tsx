@@ -196,10 +196,12 @@ const WalletAddLP: React.FC = () => {
        txs
      );*/
 
+    const feeQuotes = await smartAccount.prepareRefundTransactionBatch(txs);
+    console.log(feeQuotes);
+
     const transaction = await smartAccount.createRefundTransactionBatch(
       txs,
-      config.usdc.address,
-      6
+      feeQuotes[0]
     );
 
     console.log('transaction');

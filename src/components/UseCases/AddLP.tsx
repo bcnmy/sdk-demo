@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { ethers } from "ethers";
 
 import { LocalRelayer } from "@biconomy-sdk/relayer";
+import { RestRelayer } from "@biconomy-sdk/relayer";
 
 import { CurrencyAmount, Token, TradeType } from "@uniswap/sdk-core";
 import { AlphaRouter } from "@uniswap/smart-order-router";
@@ -81,9 +82,17 @@ const AddLP: React.FC = () => {
     walletSigner = walletProvider.getSigner();
     // Example of regular signer and LocalRelayer
     // const relayer2 = new LocalRelayer(walletSigner);
+
     const relayer = new LocalRelayer(
       getEOAWallet(process.env.REACT_APP_PKEY || "", null)
     );
+
+    /*const relayer = new RestRelayer(
+      {
+        url: 'http://localhost:4000/api/v1/relay'
+      }
+    );*/
+
     // to do transaction on smart account we need to set relayer
     let smartAccount = wallet;
     smartAccount = smartAccount.setRelayer(relayer);
@@ -195,10 +204,13 @@ const AddLP: React.FC = () => {
     // prepare refund txn batch before
     // so that we have accurate token gas price
 
+    const feeQuotes = await smartAccount.prepareRefundTransactionBatch(txs);
+    debugger;
+    console.log(feeQuotes[0].offset);
+
     const transaction = await smartAccount.createRefundTransactionBatch(
        txs,
-       config.usdc.address,
-       5
+       feeQuotes[0]
      );
     
     console.log('transaction');
