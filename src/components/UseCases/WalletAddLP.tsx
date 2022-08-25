@@ -209,10 +209,11 @@ const WalletAddLP: React.FC = () => {
     debugger;
 
     // // send transaction internally calls signTransaction and sends it to connected relayer
-    const sendTx = await smartAccount.sendTransaction(transaction);
-    console.log(sendTx);
+    const txHash = await smartAccount.sendTransaction(transaction);
+    console.log(txHash);
+    // showSuccessMessage(`Transaction sent: ${txHash}`);
 
-    console.log(await sendTx.wait(1));
+    //console.log(await sendTx.wait(1));
   };
 
   return (

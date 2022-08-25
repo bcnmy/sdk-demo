@@ -83,15 +83,15 @@ const AddLP: React.FC = () => {
     // Example of regular signer and LocalRelayer
     // const relayer2 = new LocalRelayer(walletSigner);
 
-    const relayer = new LocalRelayer(
+    /*const relayer = new LocalRelayer(
       getEOAWallet(process.env.REACT_APP_PKEY || "", null)
-    );
+    );*/
 
-    /*const relayer = new RestRelayer(
+    const relayer = new RestRelayer(
       {
         url: 'https://sdk-relayer.staging.biconomy.io/api/v1/relay'
       }
-    );*/
+    );
 
     // to do transaction on smart account we need to set relayer
     let smartAccount = wallet;
@@ -206,20 +206,18 @@ const AddLP: React.FC = () => {
 
     const feeQuotes = await smartAccount.prepareRefundTransactionBatch(txs);
     debugger;
-    console.log(feeQuotes[0].offset);
+    console.log(feeQuotes[1].offset);
 
     const transaction = await smartAccount.createRefundTransactionBatch(
        txs,
-       feeQuotes[0]
+       feeQuotes[1]
      );
     
     console.log('transaction');
     console.log(transaction);
 
     // // send transaction internally calls signTransaction and sends it to connected relayer
-    const sendTx = await smartAccount.sendTransaction(transaction);
-    console.log(sendTx);
-    const txHash = sendTx.hash;
+    const txHash = await smartAccount.sendTransaction(transaction);
     console.log(txHash);
     showSuccessMessage(`Transaction sent: ${txHash}`);
 

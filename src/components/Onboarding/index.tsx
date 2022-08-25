@@ -101,13 +101,13 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
       // createRefundTransaction approach once estimation is fixed...
 
       const transaction = await smartAccount.createTransaction(tx);
-      console.log("tx hash", transaction);
+      //console.log("tx hash", transaction);
 
       // send transaction internally calls signTransaction and sends it to connected relayer
-      const sendTx = await smartAccount.sendTransaction(transaction);
-      showSuccessMessage(`Tx hash ${transaction}`);
-      console.log(sendTx);
-      console.log(await sendTx.wait(1));
+      const txHash = await smartAccount.sendTransaction(transaction);
+      showSuccessMessage(`Tx hash ${txHash}`);
+      //console.log(sendTx);
+      //console.log(await sendTx.wait(1));
 
       getSmartAccount();
       showSuccessMessage("Smart Account deployed");
