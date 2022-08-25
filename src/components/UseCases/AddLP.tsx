@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { ethers } from "ethers";
 
@@ -84,9 +84,75 @@ const AddLP: React.FC = () => {
   const [payment, setPayment] = useState<
     {
       symbol: string;
-      value: number;
+      value: string;
     }[]
   >([]);
+
+  useEffect(() => {
+    const fetchFeeOption = async () => {
+      if (!wallet || !walletState) return;
+      walletProvider = new ethers.providers.Web3Provider(provider);
+      walletSigner = walletProvider.getSigner();
+      const relayer = new RestRelayer({
+        url: "https://sdk-relayer.staging.biconomy.io/api/v1/relay",
+      });
+      let smartAccount = wallet;
+      smartAccount = smartAccount.setRelayer(relayer);
+      const txs = [];
+      const usdcContract = new ethers.Contract(
+        config.usdc.address,
+        config.usdc.abi,
+        walletProvider
+      );
+      const hyphenContract = new ethers.Contract(
+        config.hyphenLP.address,
+        config.hyphenLP.abi,
+        walletProvider
+      );
+      const approveUSDCTx = await usdcContract.populateTransaction.approve(
+        config.hyphenLP.address,
+        ethers.BigNumber.from("1000000")
+      );
+      const tx3 = {
+        to: config.usdc.address,
+        data: approveUSDCTx.data,
+      };
+      txs.push(tx3);
+
+      const hyphenLPTx =
+        await hyphenContract.populateTransaction.addTokenLiquidity(
+          config.usdc.address,
+          ethers.BigNumber.from("1000000")
+        );
+
+      const tx4 = {
+        to: config.hyphenLP.address,
+        data: hyphenLPTx.data,
+      };
+      txs.push(tx4);
+      console.log(txs);
+      const feeQuotes = await smartAccount.prepareRefundTransactionBatch(txs);
+      // debugger;
+      console.log(feeQuotes);
+      const pmtArr: {
+        symbol: string;
+        value: string;
+      }[] = [];
+      for (let i = 0; i < feeQuotes.length; ++i) {
+        const pmnt = parseFloat(
+          (feeQuotes[i].payment / Math.pow(10, feeQuotes[i].decimal)).toString()
+        ).toFixed(5);
+        pmtArr.push({
+          symbol: feeQuotes[i].symbol,
+          value: pmnt,
+        });
+      }
+      setPayment(pmtArr);
+      console.log(pmtArr);
+    };
+    fetchFeeOption();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [provider]);
 
   const makeTx = async () => {
     if (!wallet || !walletState) return;
@@ -211,12 +277,12 @@ const AddLP: React.FC = () => {
     console.log(feeQuotes);
     const pmtArr: {
       symbol: string;
-      value: number;
+      value: string;
     }[] = [];
     for (let i = 0; i < feeQuotes.length; ++i) {
       const pmnt = parseFloat(
         (feeQuotes[i].payment / Math.pow(10, feeQuotes[i].decimal)).toString()
-      );
+      ).toFixed(5);
       pmtArr.push({
         symbol: feeQuotes[i].symbol,
         value: pmnt,
@@ -266,9 +332,10 @@ const AddLP: React.FC = () => {
         <li>Provide USDC Liquidity on Hyphen</li>
       </ul>
 
+      <h3>Available Fee options</h3>
       <ul>
         {payment.map((token) => (
-          <li>
+          <li className={classes.listHover}>
             {token.value} {token.symbol}
           </li>
         ))}
@@ -299,6 +366,11 @@ const useStyles = makeStyles(() => ({
     padding: "5px 15px",
     backgroundColor: "#FCF8E8",
     marginBottom: 10,
+  },
+  listHover: {
+    "&:hover": {
+      color: "#FF9551",
+    },
   },
 }));
 
