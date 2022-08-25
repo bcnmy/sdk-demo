@@ -81,7 +81,12 @@ const AddLP: React.FC = () => {
   const classes = useStyles();
   const { provider } = useWeb3Context();
   const { state: walletState, wallet } = useSmartAccountContext();
-  const [payment, setPayment] = useState(0);
+  const [payment, setPayment] = useState<
+    {
+      symbol: string;
+      value: number;
+    }[]
+  >([]);
 
   const makeTx = async () => {
     if (!wallet || !walletState) return;
@@ -94,15 +99,14 @@ const AddLP: React.FC = () => {
       getEOAWallet(process.env.REACT_APP_PKEY || "", null)
     );*/
 
-    const relayer = new RestRelayer(
-      {
-        url: 'https://sdk-relayer.staging.biconomy.io/api/v1/relay'
-      }
-    );
+    const relayer = new RestRelayer({
+      url: "https://sdk-relayer.staging.biconomy.io/api/v1/relay",
+    });
 
     // to do transaction on smart account we need to set relayer
     let smartAccount = wallet;
     smartAccount = smartAccount.setRelayer(relayer);
+    showInfoMessage("Setting Relayer");
 
     // building external txn
     /*const contract = new ethers.Contract(
@@ -203,18 +207,34 @@ const AddLP: React.FC = () => {
     // so that we have accurate token gas price
 
     const feeQuotes = await smartAccount.prepareRefundTransactionBatch(txs);
-    debugger;
-    console.log(feeQuotes[1].offset);
+    // debugger;
+    console.log(feeQuotes);
+    const pmtArr: {
+      symbol: string;
+      value: number;
+    }[] = [];
+    for (let i = 0; i < feeQuotes.length; ++i) {
+      const pmnt = parseFloat(
+        (feeQuotes[i].payment / Math.pow(10, feeQuotes[i].decimal)).toString()
+      );
+      pmtArr.push({
+        symbol: feeQuotes[i].symbol,
+        value: pmnt,
+      });
+    }
+    setPayment(pmtArr);
+    console.log(pmtArr);
+    showInfoMessage("Batching transactions");
 
     const transaction = await smartAccount.createRefundTransactionBatch(
-       txs,
-       feeQuotes[1]
-     );
-    
-    console.log('transaction');
+      txs,
+      feeQuotes[1]
+    );
+
+    console.log("transaction");
     console.log(transaction);
 
-    // // send transaction internally calls signTransaction and sends it to connected relayer
+    // send transaction internally calls signTransaction and sends it to connected relayer
     const txHash = await smartAccount.sendTransaction(transaction);
     console.log(txHash);
     showSuccessMessage(`Transaction sent: ${txHash}`);
@@ -246,7 +266,13 @@ const AddLP: React.FC = () => {
         <li>Provide USDC Liquidity on Hyphen</li>
       </ul>
 
-      {payment !== 0 && <div>feeAmount: {payment}</div>}
+      <ul>
+        {payment.map((token) => (
+          <li>
+            {token.value} {token.symbol}
+          </li>
+        ))}
+      </ul>
       <Button title="Do transaction (One Click LP)" onClickFunc={makeTx} />
       {/* <button onClick={makeTx} className={classes.walletBtn}></button> */}
     </main>
