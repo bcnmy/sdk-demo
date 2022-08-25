@@ -15,7 +15,13 @@ import { default as IUniswapV3PoolABI } from "@uniswap/v3-core/artifacts/contrac
 import Button from "../Button";
 import { useWeb3Context } from "../../contexts/Web3Context";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
-import { getEOAWallet, configEIP2771 as config, showSuccessMessage } from "../../utils";
+import {
+  getEOAWallet,
+  configEIP2771 as config,
+  showSuccessMessage,
+  showInfoMessage,
+  showErrorMessage,
+} from "../../utils";
 
 // let biconomy: any;
 let walletProvider, walletSigner;
@@ -75,6 +81,12 @@ const AddLP: React.FC = () => {
   const classes = useStyles();
   const { provider } = useWeb3Context();
   const { state: walletState, wallet } = useSmartAccountContext();
+  const [payment, setPayment] = useState<
+    {
+      symbol: string;
+      value: number;
+    }[]
+  >([]);
 
   const makeTx = async () => {
     if (!wallet || !walletState) return;
@@ -87,15 +99,14 @@ const AddLP: React.FC = () => {
       getEOAWallet(process.env.REACT_APP_PKEY || "", null)
     );*/
 
-    const relayer = new RestRelayer(
-      {
-        url: 'https://sdk-relayer.staging.biconomy.io/api/v1/relay'
-      }
-    );
+    const relayer = new RestRelayer({
+      url: "https://sdk-relayer.staging.biconomy.io/api/v1/relay",
+    });
 
     // to do transaction on smart account we need to set relayer
     let smartAccount = wallet;
     smartAccount = smartAccount.setRelayer(relayer);
+    showInfoMessage("Setting Relayer");
 
     // building external txn
     /*const contract = new ethers.Contract(
@@ -103,7 +114,6 @@ const AddLP: React.FC = () => {
       config.contract.abi,
       walletProvider
     );
-
     let { data } = await contract.populateTransaction.setQuote("Hello there");
     const tx1 = {
       to: config.contract.address,
@@ -139,25 +149,20 @@ const AddLP: React.FC = () => {
       to: config.dai.address,
       data: approveTx.data,
     };
-
     txs.push(tx1);
-
     const typedValueParsed = "1000000000000000";
     const wethAmount = CurrencyAmount.fromRawAmount(
       WETH,
       JSBI.BigInt(typedValueParsed)
     );
-
     const route = await router.route(wethAmount, USDC, TradeType.EXACT_INPUT, {
       recipient: walletState.address,
       slippageTolerance: new Percent(5, 100),
       deadline: Math.floor(Date.now() / 1000 + 1800),
     });
-
     console.log(`Quote Exact In: ${route?.quote.toFixed(2)}`);
     console.log(`Gas Adjusted Quote In: ${route?.quoteGasAdjusted.toFixed(2)}`);
     console.log(`Gas Used USD: ${route?.estimatedGasUsedUSD.toFixed(6)}`);
-
     const uniswapTx = {
       data: route?.methodParameters?.calldata,
       to: V3_SWAP_ROUTER_ADDRESS,
@@ -165,14 +170,11 @@ const AddLP: React.FC = () => {
       from: walletState.address,
       gasPrice: ethers.BigNumber.from(route?.gasPriceWei),
     };
-
     console.log(uniswapTx);
-
     const tx2 = {
       to: uniswapTx.to,
       data: uniswapTx.data,
     };
-
     txs.push(tx2);*/
 
     const approveUSDCTx = await usdcContract.populateTransaction.approve(
@@ -205,18 +207,34 @@ const AddLP: React.FC = () => {
     // so that we have accurate token gas price
 
     const feeQuotes = await smartAccount.prepareRefundTransactionBatch(txs);
-    debugger;
-    console.log(feeQuotes[1].offset);
+    // debugger;
+    console.log(feeQuotes);
+    const pmtArr: {
+      symbol: string;
+      value: number;
+    }[] = [];
+    for (let i = 0; i < feeQuotes.length; ++i) {
+      const pmnt = parseFloat(
+        (feeQuotes[i].payment / Math.pow(10, feeQuotes[i].decimal)).toString()
+      );
+      pmtArr.push({
+        symbol: feeQuotes[i].symbol,
+        value: pmnt,
+      });
+    }
+    setPayment(pmtArr);
+    console.log(pmtArr);
+    showInfoMessage("Batching transactions");
 
     const transaction = await smartAccount.createRefundTransactionBatch(
-       txs,
-       feeQuotes[1]
-     );
-    
-    console.log('transaction');
+      txs,
+      feeQuotes[1]
+    );
+
+    console.log("transaction");
     console.log(transaction);
 
-    // // send transaction internally calls signTransaction and sends it to connected relayer
+    // send transaction internally calls signTransaction and sends it to connected relayer
     const txHash = await smartAccount.sendTransaction(transaction);
     console.log(txHash);
     showSuccessMessage(`Transaction sent: ${txHash}`);
@@ -235,18 +253,26 @@ const AddLP: React.FC = () => {
       <p>
         {/*This magic bundle will swap WETH to USDC first and then provide the USDC
         liquidity to Hyphen Pool.*/}
-        This magic bundle will approve USDC then provide the USDC
-        liquidity to Hyphen Pool
+        This magic bundle will approve USDC then provide the USDC liquidity to
+        Hyphen Pool
       </p>
 
       <h3>Transaction Batched</h3>
       <ul>
+        <li>Deploy Wallet if not already deployed</li>
         {/*<li>Approve WETH</li>
         <li>Swap to USDC</li>*/}
         <li>Approve USDC</li>
         <li>Provide USDC Liquidity on Hyphen</li>
       </ul>
 
+      <ul>
+        {payment.map((token) => (
+          <li>
+            {token.value} {token.symbol}
+          </li>
+        ))}
+      </ul>
       <Button title="Do transaction (One Click LP)" onClickFunc={makeTx} />
       {/* <button onClick={makeTx} className={classes.walletBtn}></button> */}
     </main>

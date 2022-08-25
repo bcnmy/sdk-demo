@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import WalletAddLP from "./WalletAddLP";
 import AddLP from "./AddLP";
 
 const UseCases: React.FC = () => {
@@ -12,8 +11,6 @@ const UseCases: React.FC = () => {
   }, []);
 
   if (useCase === 1) {
-    return <WalletAddLP />;
-  } else if (useCase === 2) {
     return <AddLP />;
   }
 
@@ -26,31 +23,12 @@ const UseCases: React.FC = () => {
           <p className={classes.text}>
             Batch User Pays:
             <ul>
-              <li>Deploy Wallet</li>
+              <li>Deploy Wallet if not already deployed</li>
               {/*<li>Approve WETH</li>
               <li>Swap to USDC</li>*/}
               <li>Approve USDC</li>
               <li>Provide USDC Liquidity on Hyphen</li>
             </ul>
-          </p>
-        </div>
-
-        <div className={classes.element} onClick={() => setUseCase(2)}>
-          <p className={classes.text}>
-            Batch User Pays:
-            <ul>
-              {/*<li>Approve WETH</li>
-              <li>Swap to USDC</li>*/}
-              <li>Approve USDC</li>
-              <li>Provide USDC Liquidity on Hyphen</li>
-            </ul>
-          </p>
-        </div>
-
-        <div className={classes.element} onClick={() => setUseCase(3)}>
-          <p className={classes.text}>
-            Batch User Pays:
-            <ul></ul>
           </p>
         </div>
       </div>
