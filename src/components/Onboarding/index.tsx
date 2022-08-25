@@ -104,10 +104,10 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
       //console.log("tx hash", transaction);
 
       // send transaction internally calls signTransaction and sends it to connected relayer
-      const txHash = await smartAccount.sendTransaction(transaction);
-      showSuccessMessage(`Tx hash ${txHash}`);
+      const sendTx = await smartAccount.sendTransaction(transaction);
+      showSuccessMessage(`Tx hash ${sendTx.hash}`);
       //console.log(sendTx);
-      //console.log(await sendTx.wait(1));
+      console.log(await sendTx.wait(2));
 
       getSmartAccount();
       showSuccessMessage("Smart Account deployed");
