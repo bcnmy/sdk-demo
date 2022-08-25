@@ -84,157 +84,142 @@ const AddLP: React.FC = () => {
   const [payment, setPayment] = useState(0);
 
   const makeTx = async () => {
-    setPayment(0);
     if (!wallet || !walletState) return;
-    try {
-      walletProvider = new ethers.providers.Web3Provider(provider);
-      walletSigner = walletProvider.getSigner();
-      // Example of regular signer and LocalRelayer
-      // const relayer2 = new LocalRelayer(walletSigner);
+    walletProvider = new ethers.providers.Web3Provider(provider);
+    walletSigner = walletProvider.getSigner();
+    // Example of regular signer and LocalRelayer
+    // const relayer2 = new LocalRelayer(walletSigner);
 
-      const relayer = new LocalRelayer(
-        getEOAWallet(process.env.REACT_APP_PKEY || "", null)
-      );
-      showInfoMessage("Setting Relayer");
-      /*const relayer = new RestRelayer(
+    /*const relayer = new LocalRelayer(
+      getEOAWallet(process.env.REACT_APP_PKEY || "", null)
+    );*/
+
+    const relayer = new RestRelayer(
       {
         url: 'https://sdk-relayer.staging.biconomy.io/api/v1/relay'
       }
-      );*/
+    );
 
-      // to do transaction on smart account we need to set relayer
-      let smartAccount = wallet;
-      smartAccount = smartAccount.setRelayer(relayer);
+    // to do transaction on smart account we need to set relayer
+    let smartAccount = wallet;
+    smartAccount = smartAccount.setRelayer(relayer);
 
-      // building external txn
-      /*const contract = new ethers.Contract(
-        config.contract.address,
-        config.contract.abi,
-        walletProvider
-      );
+    // building external txn
+    /*const contract = new ethers.Contract(
+      config.contract.address,
+      config.contract.abi,
+      walletProvider
+    );
+    let { data } = await contract.populateTransaction.setQuote("Hello there");
+    const tx1 = {
+      to: config.contract.address,
+      data: data,
+    };*/
 
-      let { data } = await contract.populateTransaction.setQuote("Hello there");
-      const tx1 = {
-        to: config.contract.address,
-        data: data,
-      };*/
+    // currently step 1 building wallet transaction
+    const txs = [];
 
-      // currently step 1 building wallet transaction
-      const txs = [];
+    const wethContract = new ethers.Contract(
+      config.dai.address,
+      config.dai.abi,
+      walletProvider
+    );
 
-      const wethContract = new ethers.Contract(
-        config.dai.address,
-        config.dai.abi,
-        walletProvider
-      );
-      const usdcContract = new ethers.Contract(
+    const usdcContract = new ethers.Contract(
+      config.usdc.address,
+      config.usdc.abi,
+      walletProvider
+    );
+
+    const hyphenContract = new ethers.Contract(
+      config.hyphenLP.address,
+      config.hyphenLP.abi,
+      walletProvider
+    );
+
+    /*const approveTx = await wethContract.populateTransaction.approve(
+      V3_SWAP_ROUTER_ADDRESS,
+      ethers.utils.parseEther("0.1")
+    );
+    const tx1 = {
+      to: config.dai.address,
+      data: approveTx.data,
+    };
+    txs.push(tx1);
+    const typedValueParsed = "1000000000000000";
+    const wethAmount = CurrencyAmount.fromRawAmount(
+      WETH,
+      JSBI.BigInt(typedValueParsed)
+    );
+    const route = await router.route(wethAmount, USDC, TradeType.EXACT_INPUT, {
+      recipient: walletState.address,
+      slippageTolerance: new Percent(5, 100),
+      deadline: Math.floor(Date.now() / 1000 + 1800),
+    });
+    console.log(`Quote Exact In: ${route?.quote.toFixed(2)}`);
+    console.log(`Gas Adjusted Quote In: ${route?.quoteGasAdjusted.toFixed(2)}`);
+    console.log(`Gas Used USD: ${route?.estimatedGasUsedUSD.toFixed(6)}`);
+    const uniswapTx = {
+      data: route?.methodParameters?.calldata,
+      to: V3_SWAP_ROUTER_ADDRESS,
+      value: ethers.BigNumber.from(route?.methodParameters?.value),
+      from: walletState.address,
+      gasPrice: ethers.BigNumber.from(route?.gasPriceWei),
+    };
+    console.log(uniswapTx);
+    const tx2 = {
+      to: uniswapTx.to,
+      data: uniswapTx.data,
+    };
+    txs.push(tx2);*/
+
+    const approveUSDCTx = await usdcContract.populateTransaction.approve(
+      config.hyphenLP.address,
+      ethers.BigNumber.from("1000000")
+    );
+    const tx3 = {
+      to: config.usdc.address,
+      data: approveUSDCTx.data,
+    };
+
+    txs.push(tx3);
+
+    const hyphenLPTx =
+      await hyphenContract.populateTransaction.addTokenLiquidity(
         config.usdc.address,
-        config.usdc.abi,
-        walletProvider
-      );
-      const hyphenContract = new ethers.Contract(
-        config.hyphenLP.address,
-        config.hyphenLP.abi,
-        walletProvider
-      );
-
-      /*const approveTx = await wethContract.populateTransaction.approve(
-        V3_SWAP_ROUTER_ADDRESS,
-        ethers.utils.parseEther("0.1")
-      );
-      const tx1 = {
-        to: config.dai.address,
-        data: approveTx.data,
-      };
-
-      txs.push(tx1);
-
-      const typedValueParsed = "1000000000000000";
-      const wethAmount = CurrencyAmount.fromRawAmount(
-        WETH,
-        JSBI.BigInt(typedValueParsed)
-      );
-
-      const route = await router.route(wethAmount, USDC, TradeType.EXACT_INPUT, {
-        recipient: walletState.address,
-        slippageTolerance: new Percent(5, 100),
-        deadline: Math.floor(Date.now() / 1000 + 1800),
-      });
-
-      console.log(`Quote Exact In: ${route?.quote.toFixed(2)}`);
-      console.log(`Gas Adjusted Quote In: ${route?.quoteGasAdjusted.toFixed(2)}`);
-      console.log(`Gas Used USD: ${route?.estimatedGasUsedUSD.toFixed(6)}`);
-
-      const uniswapTx = {
-        data: route?.methodParameters?.calldata,
-        to: V3_SWAP_ROUTER_ADDRESS,
-        value: ethers.BigNumber.from(route?.methodParameters?.value),
-        from: walletState.address,
-        gasPrice: ethers.BigNumber.from(route?.gasPriceWei),
-      };
-
-      console.log(uniswapTx);
-
-      const tx2 = {
-        to: uniswapTx.to,
-        data: uniswapTx.data,
-      };
-
-      txs.push(tx2);*/
-
-      const approveUSDCTx = await usdcContract.populateTransaction.approve(
-        config.hyphenLP.address,
         ethers.BigNumber.from("1000000")
       );
-      const tx3 = {
-        to: config.usdc.address,
-        data: approveUSDCTx.data,
-      };
-      txs.push(tx3);
 
-      const hyphenLPTx =
-        await hyphenContract.populateTransaction.addTokenLiquidity(
-          config.usdc.address,
-          ethers.BigNumber.from("1000000")
-        );
+    const tx4 = {
+      to: config.hyphenLP.address,
+      data: hyphenLPTx.data,
+    };
 
-      const tx4 = {
-        to: config.hyphenLP.address,
-        data: hyphenLPTx.data,
-      };
-      txs.push(tx4);
+    txs.push(tx4);
 
-      console.log(txs);
+    console.log(txs);
 
-      // prepare refund txn batch before
-      // so that we have accurate token gas price
+    // prepare refund txn batch before
+    // so that we have accurate token gas price
 
-      const feeQuotes = await smartAccount.prepareRefundTransactionBatch(txs);
-      debugger;
-      console.log(feeQuotes);
-      const pmnt = feeQuotes[0].payment / Math.pow(10, feeQuotes[0].decimal);
-      setPayment(parseFloat(pmnt.toString()));
+    const feeQuotes = await smartAccount.prepareRefundTransactionBatch(txs);
+    debugger;
+    console.log(feeQuotes[1].offset);
 
-      const transaction = await smartAccount.createRefundTransactionBatch(
-        txs,
-        feeQuotes[0]
-      );
-      showInfoMessage("Batching transactions");
+    const transaction = await smartAccount.createRefundTransactionBatch(
+       txs,
+       feeQuotes[1]
+     );
+    
+    console.log('transaction');
+    console.log(transaction);
 
-      console.log("transaction", transaction);
+    // // send transaction internally calls signTransaction and sends it to connected relayer
+    const txHash = await smartAccount.sendTransaction(transaction);
+    console.log(txHash);
+    showSuccessMessage(`Transaction sent: ${txHash}`);
 
-      // send transaction internally calls signTransaction and sends it to connected relayer
-      const sendTx = await smartAccount.sendTransaction(transaction);
-      console.log(sendTx);
-      const txHash = sendTx.hash;
-      console.log(txHash);
-      showSuccessMessage(`Transaction sent: ${txHash}`);
-
-      // console.log(await sendTx.wait(1));
-    } catch (err: any) {
-      showErrorMessage(err.message);
-      console.error(err);
-    }
+    // console.log(await sendTx.wait(1));
   };
 
   return (
