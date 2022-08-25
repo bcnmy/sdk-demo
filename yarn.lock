@@ -1076,8 +1076,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@biconomy-sdk/core-types@*", "@biconomy-sdk/core-types@^1.0.0", "@biconomy-sdk/core-types@file:../biconomy-client-sdk/packages/core-types":
-  version "1.0.0"
+"@biconomy-sdk/core-types@*", "@biconomy-sdk/core-types@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@biconomy-sdk/core-types/-/core-types-1.0.2.tgz#7855d80783d5a6bcf257347c237b5f01a2c24a30"
+  integrity sha512-k+gcHHptS4oicOpyKRWUtWfpqH9EUPXzx1JS4AdYjrbk9mJ+P2/Xz5QVEIwOHup9/UDNzHQo+jcxpgTerUUOpg==
   dependencies:
     "@ethersproject/bignumber" "^5.6.0"
     "@ethersproject/contracts" "^5.6.0"
@@ -1085,33 +1087,37 @@
     web3-core "^1.7.1"
 
 "@biconomy-sdk/ethers-lib@*":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@biconomy-sdk/ethers-lib/-/ethers-lib-1.0.0.tgz#03ee05e239410f3df6fa22404dee0c3c3d3fa985"
-  integrity sha512-uJG3ceP4CqzH11MhAHvaP+TaGqbb4istsxWgv9W+7m9qwOKqRSnxN6JO+qYZY1rkD4CazaTDjfEJrmy14GvbRw==
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@biconomy-sdk/ethers-lib/-/ethers-lib-1.0.2.tgz#6b0477c3b9580a95d318e19e6c98e5ee2a4f2843"
+  integrity sha512-484tEZNp4bG37EHUcl5q4VJmHhQYtDvzB+xOPzoxr4/R0yYPJ4tWkMG/NkYW+o/zHuTTCEb9S1gU3shBUA/VnQ==
   dependencies:
-    "@biconomy-sdk/core-types" "^1.0.0"
+    "@biconomy-sdk/core-types" "*"
     "@gnosis.pm/safe-core-sdk-utils" "^1.1.0"
     "@openzeppelin/contracts" "^4.6.0"
 
 "@biconomy-sdk/node-client@*":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@biconomy-sdk/node-client/-/node-client-1.0.0.tgz#2f4b1d7489e74d5812e6524e35a88def8f884b6b"
-  integrity sha512-G4Jx6+dbePzlJqqey+t5V7Zw4W17Ud39dGkbyS+tLRpQjh64hSVAA7u3s3FyIIvENzXhiQXkninZkz7iOgZeBQ==
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@biconomy-sdk/node-client/-/node-client-1.0.2.tgz#f65439a387fe228d944b6037773ae45a95337d07"
+  integrity sha512-sc1PUdbb9rWFOUOLOMZLAX8rA3JfUo0tHgO8jWMComWi8y2HoAb0+dEXFXQnkayzzHzdaU59RJS0LPCExN+bSg==
   dependencies:
-    "@biconomy-sdk/core-types" "^1.0.0"
+    "@biconomy-sdk/core-types" "*"
     "@ethersproject/abstract-signer" "^5.6.0"
     "@gnosis.pm/safe-core-sdk" "^2.1.0"
     node-fetch "^2.6.6"
 
-"@biconomy-sdk/relayer@*", "@biconomy-sdk/relayer@file:../biconomy-client-sdk/packages/relayer":
-  version "1.0.0"
+"@biconomy-sdk/relayer@*", "@biconomy-sdk/relayer@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@biconomy-sdk/relayer/-/relayer-1.0.2.tgz#be1691b4cb723f63abbfbb86ae268ebcd508a49f"
+  integrity sha512-jRfVNz7Urj3qjoQVvz+7JG4THDbuUIYlLFaOzEptPQ+nASBFCpnm2ESB8AWrR3Gk1zE5NfrHnzSftMqMIKVeEw==
   dependencies:
     "@biconomy-sdk/core-types" "*"
     "@ethersproject/providers" "^5.6.8"
     ethers "^5.6.9"
 
-"@biconomy-sdk/smart-account@file:../biconomy-client-sdk/packages/smart-account":
-  version "1.0.0"
+"@biconomy-sdk/smart-account@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@biconomy-sdk/smart-account/-/smart-account-1.0.2.tgz#b541786f8c60a53d6b9bf14b49dafa25fefc866b"
+  integrity sha512-kc2kem40cZYI6ipnj/P3OtW5KJ1GW4kq1Kv9KM71fwdmXrka0DvdkwGeaKECh33Kh3K6icp4VzizzLZ2Uxsj9Q==
   dependencies:
     "@biconomy-sdk/core-types" "*"
     "@biconomy-sdk/ethers-lib" "*"
@@ -1127,9 +1133,9 @@
     web3-core "^1.7.1"
 
 "@biconomy-sdk/transactions@*":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@biconomy-sdk/transactions/-/transactions-1.0.0.tgz#7934f6c51ea34de35f1280d600f0041397f0cbc0"
-  integrity sha512-1WIOdqUiSyT4JY7tI7+2llBKuAQF2eSPNPqJMWgqdiedC8mTkNPpvVaVxBIMHcIdpmepOwexe89a9B9L8TY7VA==
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@biconomy-sdk/transactions/-/transactions-1.0.2.tgz#46854a69f19b3008cb3a8adbcde7fd9a5dc6bbc2"
+  integrity sha512-Hqk+kqwOApJBs+uEm+bVgZPlMpBU6XvHzCIICqZbIrze8h6SkcS8y2u9Nsm/S+0Q8VOyT42Wk5IAoVtFwFjFbw==
   dependencies:
     "@ethersproject/abstract-signer" "^5.6.2"
     "@ethersproject/constants" "^5.6.1"
