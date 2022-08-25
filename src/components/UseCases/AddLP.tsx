@@ -15,7 +15,7 @@ import { default as IUniswapV3PoolABI } from "@uniswap/v3-core/artifacts/contrac
 import Button from "../Button";
 import { useWeb3Context } from "../../contexts/Web3Context";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
-import { getEOAWallet, configEIP2771 as config } from "../../utils";
+import { getEOAWallet, configEIP2771 as config, showSuccessMessage } from "../../utils";
 
 // let biconomy: any;
 let walletProvider, walletSigner;
@@ -89,7 +89,7 @@ const AddLP: React.FC = () => {
 
     /*const relayer = new RestRelayer(
       {
-        url: 'http://localhost:4000/api/v1/relay'
+        url: 'https://sdk-relayer.staging.biconomy.io/api/v1/relay'
       }
     );*/
 
@@ -219,8 +219,11 @@ const AddLP: React.FC = () => {
     // // send transaction internally calls signTransaction and sends it to connected relayer
     const sendTx = await smartAccount.sendTransaction(transaction);
     console.log(sendTx);
+    const txHash = sendTx.hash;
+    console.log(txHash);
+    showSuccessMessage(`Transaction sent: ${txHash}`);
 
-    console.log(await sendTx.wait(1));
+    // console.log(await sendTx.wait(1));
   };
 
   return (
