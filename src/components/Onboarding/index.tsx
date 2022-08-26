@@ -104,10 +104,12 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
       //console.log("tx hash", transaction);
 
       // send transaction internally calls signTransaction and sends it to connected relayer
-      const sendTx = await smartAccount.sendTransaction(transaction);
-      showSuccessMessage(`Tx hash ${sendTx.hash}`);
+      const txHash = await smartAccount.sendTransaction(transaction);
+      showSuccessMessage(`Tx hash ${txHash}`);
       //console.log(sendTx);
-      console.log(await sendTx.wait(2));
+      console.log(txHash);
+
+      await sleep(5000);
 
       getSmartAccount();
       showSuccessMessage("Smart Account deployed");
@@ -118,6 +120,10 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
       console.error("deploySmartAccount", err);
     }
   };
+
+  function sleep(ms:any) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
 
   return (
     <main className={classes.main}>
