@@ -107,7 +107,9 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
       const txHash = await smartAccount.sendTransaction(transaction);
       showSuccessMessage(`Tx hash ${txHash}`);
       //console.log(sendTx);
-      //console.log(await sendTx.wait(1));
+      console.log(txHash);
+
+      await sleep(5000);
 
       getSmartAccount();
       showSuccessMessage("Smart Account deployed");
@@ -118,6 +120,10 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
       console.error("deploySmartAccount", err);
     }
   };
+
+  function sleep(ms:any) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
 
   return (
     <main className={classes.main}>
