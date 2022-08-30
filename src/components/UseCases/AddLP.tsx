@@ -131,7 +131,7 @@ const AddLP: React.FC = () => {
       };
       txs.push(tx4);
       console.log(txs);
-      const feeQuotes = await smartAccount.prepareRefundTransactionBatch(txs);
+      const feeQuotes = await smartAccount.prepareRefundTransactionBatch({transactions: txs});
       // debugger;
       console.log(feeQuotes);
       const pmtArr: {
@@ -272,7 +272,7 @@ const AddLP: React.FC = () => {
     // prepare refund txn batch before
     // so that we have accurate token gas price
 
-    const feeQuotes = await smartAccount.prepareRefundTransactionBatch(txs);
+    const feeQuotes = await smartAccount.prepareRefundTransactionBatch({transactions: txs});
     // debugger;
     console.log(feeQuotes);
     const pmtArr: {
@@ -293,15 +293,16 @@ const AddLP: React.FC = () => {
     showInfoMessage("Batching transactions");
 
     const transaction = await smartAccount.createRefundTransactionBatch(
-      txs,
-      feeQuotes[1]
+      {transactions: txs,
+      feeQuote: feeQuotes[1]
+    }
     );
 
     console.log("transaction");
     console.log(transaction);
 
     // send transaction internally calls signTransaction and sends it to connected relayer
-    const txHash = await smartAccount.sendTransaction(transaction);
+    const txHash = await smartAccount.sendTransaction({tx: transaction});
     console.log(txHash);
     showSuccessMessage(`Transaction sent: ${txHash}`);
 

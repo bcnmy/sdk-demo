@@ -41,7 +41,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
       );
       // console.log(relayer);
       const context = smartAccount.getSmartAccountContext();
-      const deployment = await relayer.deployWallet(state, context); // index 0
+      const deployment = await relayer.deployWallet({config:state, context, index:0}); // index 0
       const res = await deployment.wait(1);
       console.log(res);
       getSmartAccount();
@@ -100,11 +100,11 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
 
       // createRefundTransaction approach once estimation is fixed...
 
-      const transaction = await smartAccount.createTransaction(tx);
+      const transaction = await smartAccount.createTransaction({transaction: tx});
       //console.log("tx hash", transaction);
 
       // send transaction internally calls signTransaction and sends it to connected relayer
-      const txHash = await smartAccount.sendTransaction(transaction);
+      const txHash = await smartAccount.sendTransaction({tx: transaction});
       showSuccessMessage(`Tx hash ${txHash}`);
       //console.log(sendTx);
       console.log(txHash);

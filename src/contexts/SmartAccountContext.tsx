@@ -65,6 +65,9 @@ export const SmartAccountProvider = ({ children }: any) => {
 
       // Initalising
       const smartAccount = await wallet.init();
+
+      // smartAccount.setSmartAccountVersion('1.0.2')
+
       setWallet(wallet);
       console.log("smartAccount", smartAccount);
 
