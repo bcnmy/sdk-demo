@@ -291,7 +291,8 @@ const AddLP: React.FC = () => {
     setPayment(pmtArr);
     console.log(pmtArr);
     showInfoMessage("Batching transactions");
-
+    // making transaction with version 1.0.0
+    // feeQuotes[1].tokenGasPrice = 6
     const transaction = await smartAccount.createRefundTransactionBatch(
       {transactions: txs,
       feeQuote: feeQuotes[1]
