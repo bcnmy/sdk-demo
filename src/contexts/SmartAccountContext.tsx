@@ -127,7 +127,7 @@ export const SmartAccountProvider = ({ children }: any) => {
 
   useEffect(() => {
     getSmartAccount();
-  }, []);
+  }, [getSmartAccount]);
 
   return (
     <SmartAccountContext.Provider

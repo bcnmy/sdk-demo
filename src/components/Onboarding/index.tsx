@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
 import { ethers } from "ethers";
 import { makeStyles } from "@material-ui/core/styles";
-import { LocalRelayer } from "@biconomy-sdk/relayer";
+import { LocalRelayer, RestRelayer } from "@biconomy-sdk/relayer";
 import Button from "../Button";
 import { useWeb3Context } from "../../contexts/Web3Context";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
@@ -61,50 +61,17 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
         return;
       }
       setDeployLoading2(true);
-      const walletProvider = new ethers.providers.Web3Provider(provider);
-      const biconomyFeeCollector = "0x7306aC7A32eb690232De81a9FFB44Bb346026faB"; // should be tx.origin or relayer
-      const relayer = new LocalRelayer(
-        getEOAWallet(process.env.REACT_APP_PKEY || "", null)
-      );
+      const relayer = new RestRelayer({
+        url: "https://sdk-relayer.staging.biconomy.io/api/v1/relay",
+      });
       smartAccount.setRelayer(relayer);
 
-      const usdcContract = new ethers.Contract(
-        config.usdc.address,
-        config.usdc.abi,
-        walletProvider
-      );
+      const feeQuotes = await smartAccount.prepareDeployAndPayFees();
+      console.log('feeQuotes ', feeQuotes);
 
-      // get Fee Options
-      const tokenGasPrice = 6;
-      // estimate using gas estimator
-      // estimate wallet deployment and send first transaction : 339253
-      const feesToPay = tokenGasPrice * (261884 + 77369);
+      console.log('token address ', feeQuotes[1].address);
 
-      const deploymentFeeTx = await usdcContract.populateTransaction.transfer(
-        biconomyFeeCollector,
-        ethers.BigNumber.from(feesToPay)
-      );
-
-      const tx = {
-        to: config.usdc.address,
-        data: deploymentFeeTx.data,
-      };
-
-      const context = smartAccount.getSmartAccountContext();
-      console.log(state, context);
-      // Here I need to create transaction batch with deployment and send refund to the relayer
-      // createTransaction which pays relayer and relayer auto deploys wallet
-      //const deployment = await relayer.deployWallet(state, context); // index 0
-      //const res = await deployment.wait(1);
-      //console.log(res);
-
-      // createRefundTransaction approach once estimation is fixed...
-
-      const transaction = await smartAccount.createTransaction({transaction: tx});
-      //console.log("tx hash", transaction);
-
-      // send transaction internally calls signTransaction and sends it to connected relayer
-      const txHash = await smartAccount.sendTransaction({tx: transaction});
+      const txHash = await smartAccount.deployAndPayFees(5, feeQuotes[1]);
       showSuccessMessage(`Tx hash ${txHash}`);
       //console.log(sendTx);
       console.log(txHash);
