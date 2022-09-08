@@ -1,7 +1,17 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { ethers } from "ethers";
 import SmartAccount from "@biconomy-sdk/smart-account";
-import { SmartAccountState } from "@biconomy-sdk/core-types";
+import {
+  SmartAccountState,
+  SmartAccountVersion,
+} from "@biconomy-sdk/core-types";
 import { ChainId } from "../utils";
 import { useWeb3Context } from "./Web3Context";
 
@@ -16,6 +26,9 @@ interface smartAccountContextType {
   balance: Balance;
   loading: boolean;
   isFetchingBalance: boolean;
+  version: string;
+  versions: string[];
+  setVersion: Dispatch<SetStateAction<string>>;
   getSmartAccount: () => Promise<string>;
   getSmartAccountBalance: () => Promise<string>;
 }
@@ -30,6 +43,9 @@ export const SmartAccountContext = React.createContext<smartAccountContextType>(
     },
     loading: false,
     isFetchingBalance: false,
+    version: "",
+    versions: [],
+    setVersion: () => {},
     getSmartAccount: () => Promise.resolve(""),
     getSmartAccountBalance: () => Promise.resolve(""),
   }
@@ -41,6 +57,8 @@ export const SmartAccountProvider = ({ children }: any) => {
   const { provider, address } = useWeb3Context();
   const [wallet, setWallet] = useState<SmartAccount | null>(null);
   const [state, setState] = useState<SmartAccountState | null>(null);
+  const [version, setVersion] = useState("");
+  const [versions, setVersions] = useState<string[]>([]);
   const [balance, setBalance] = useState<Balance>({
     totalBalanceInUsd: 0,
     alltokenBalances: [],
@@ -60,16 +78,24 @@ export const SmartAccountProvider = ({ children }: any) => {
         // these are all optional
         activeNetworkId: ChainId.GOERLI,
         supportedNetworksIds: [ChainId.GOERLI, ChainId.POLYGON_MUMBAI],
-        backend_url: 'http://localhost:3000/v1'
+        // backend_url: 'http://localhost:3000/v1'
       });
 
       // Initalising
       const smartAccount = await wallet.init();
-
-      // await smartAccount.setSmartAccountVersion('1.0.0')
-
       setWallet(wallet);
       console.log("smartAccount", smartAccount);
+
+      // get all version available and update in state
+      const { data } = await smartAccount.getSmartAccountsByOwner({
+        chainId: 5,
+        owner: address,
+      });
+      const vers = [];
+      for (let i = 0; i < data.length; ++i) {
+        vers.push(data[i].version);
+      }
+      setVersions(vers);
 
       // can get counter factual wallet address
       // const address = await smartAccount.getAddress();
@@ -126,6 +152,12 @@ export const SmartAccountProvider = ({ children }: any) => {
   };
 
   useEffect(() => {
+    if (wallet) {
+      wallet.setSmartAccountVersion(version as SmartAccountVersion);
+    }
+  }, [version, wallet]);
+
+  useEffect(() => {
     getSmartAccount();
   }, [getSmartAccount]);
 
@@ -137,6 +169,9 @@ export const SmartAccountProvider = ({ children }: any) => {
         balance,
         loading,
         isFetchingBalance,
+        version,
+        versions,
+        setVersion,
         getSmartAccount,
         getSmartAccountBalance,
       }}

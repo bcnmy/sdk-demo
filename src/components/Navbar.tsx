@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { AppBar } from "@material-ui/core";
+import {
+  AppBar,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useWeb3Context } from "../contexts/Web3Context";
 import { useSmartAccountContext } from "../contexts/SmartAccountContext";
@@ -14,7 +20,8 @@ import {
 const Navbar = () => {
   const classes = useStyles();
   const { disconnect } = useWeb3Context();
-  const { getSmartAccount, state, loading } = useSmartAccountContext();
+  const { getSmartAccount, state, loading, version, versions, setVersion } =
+    useSmartAccountContext();
   const [showLogout, setShowLogout] = useState(false);
 
   const toggleLogoutButton = () => {
@@ -61,7 +68,23 @@ const Navbar = () => {
               </div>
             )}
           </Button>
+          <FormControl className={classes.formControl}>
+            <InputLabel id="demo-simple-select-label">Version</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={version}
+              onChange={(event) => setVersion(event.target.value as string)}
+            >
+              <MenuItem value="">
+                <em>None</em>
+              </MenuItem>
 
+              {versions.map((ver) => (
+                <MenuItem value={ver}>{ver}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           <Button title="Logout" onClickFunc={disconnectWallet} />
         </div>
       </div>
@@ -128,6 +151,10 @@ const useStyles = makeStyles((theme: any) => ({
       color: "white",
       backgroundColor: "#000",
     },
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    width: 72,
   },
 }));
 
