@@ -4,12 +4,16 @@ import { ToastContainer } from "react-toastify";
 import Navbar from "./components/Navbar";
 import TabsBody from "./components/TabsBody";
 import { useSmartAccountContext } from "./contexts/SmartAccountContext";
-import { useWeb3Context } from "./contexts/Web3Context";
+import { useWeb3AuthContext } from "./contexts/Web3AuthContext";
 import Button from "./components/Button";
 
 const App: React.FC = () => {
   const classes = useStyles();
-  const { connectWeb3, address } = useWeb3Context();
+  const {
+    connectWeb3,
+    address,
+    loading: eoaWalletLoading,
+  } = useWeb3AuthContext();
   const { loading } = useSmartAccountContext();
 
   if (!address) {
@@ -24,7 +28,11 @@ const App: React.FC = () => {
         }}
       >
         <h1>Biconomy SDK Demo</h1>
-        <Button title="Get Started" onClickFunc={connectWeb3} />
+        <Button
+          title="Get Started"
+          onClickFunc={connectWeb3}
+          isLoading={eoaWalletLoading}
+        />
         <ToastContainer />
       </div>
     );

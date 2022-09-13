@@ -13,7 +13,7 @@ import {
   SmartAccountVersion,
 } from "@biconomy-sdk/core-types";
 import { ChainId } from "../utils";
-import { useWeb3Context } from "./Web3Context";
+import { useWeb3AuthContext } from "./Web3AuthContext";
 
 type Balance = {
   totalBalanceInUsd: number;
@@ -54,7 +54,7 @@ export const SmartAccountContext = React.createContext<smartAccountContextType>(
 export const useSmartAccountContext = () => useContext(SmartAccountContext);
 
 export const SmartAccountProvider = ({ children }: any) => {
-  const { provider, address } = useWeb3Context();
+  const { provider, address } = useWeb3AuthContext();
   const [wallet, setWallet] = useState<SmartAccount | null>(null);
   const [state, setState] = useState<SmartAccountState | null>(null);
   const [version, setVersion] = useState("");
@@ -96,6 +96,11 @@ export const SmartAccountProvider = ({ children }: any) => {
         vers.push(data[i].version);
       }
       setVersions(vers);
+      // set default version
+      if (vers.length) {
+        wallet.setSmartAccountVersion(vers[0] as SmartAccountVersion);
+        setVersion(vers[0] as SmartAccountVersion);
+      }
 
       // can get counter factual wallet address
       // const address = await smartAccount.getAddress();

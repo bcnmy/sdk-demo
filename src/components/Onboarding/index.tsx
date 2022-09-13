@@ -1,13 +1,13 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
-import { ethers } from "ethers";
+// import { ethers } from "ethers";
 import { makeStyles } from "@material-ui/core/styles";
 import { LocalRelayer, RestRelayer } from "@biconomy-sdk/relayer";
 import Button from "../Button";
-import { useWeb3Context } from "../../contexts/Web3Context";
+// import { useWeb3Context } from "../../contexts/Web3Context";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import {
   getEOAWallet,
-  configEIP2771 as config,
+  // configEIP2771 as config,
   showErrorMessage,
   showSuccessMessage,
 } from "../../utils";
@@ -18,7 +18,7 @@ type OnboardingProps = {
 
 const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
   const classes = useStyles();
-  const { provider } = useWeb3Context();
+  // const { provider } = useWeb3Context();
   const {
     state,
     wallet: smartAccount,

@@ -13,7 +13,7 @@ import { default as IUniswapV3PoolABI } from "@uniswap/v3-core/artifacts/contrac
 // import { default as QuoterABI } from '@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json'
 
 import Button from "../Button";
-import { useWeb3Context } from "../../contexts/Web3Context";
+import { useWeb3AuthContext } from "../../contexts/Web3AuthContext";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import {
   getEOAWallet,
@@ -79,7 +79,7 @@ const USDC = new Token(
 
 const AddLP: React.FC = () => {
   const classes = useStyles();
-  const { provider } = useWeb3Context();
+  const { provider } = useWeb3AuthContext();
   const { state: walletState, wallet } = useSmartAccountContext();
   const [payment, setPayment] = useState<
     {

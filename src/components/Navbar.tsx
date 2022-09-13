@@ -7,7 +7,7 @@ import {
   Select,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { useWeb3Context } from "../contexts/Web3Context";
+import { useWeb3AuthContext } from "../contexts/Web3AuthContext";
 import { useSmartAccountContext } from "../contexts/SmartAccountContext";
 import Button from "./Button";
 import {
@@ -19,7 +19,7 @@ import {
 
 const Navbar = () => {
   const classes = useStyles();
-  const { disconnect } = useWeb3Context();
+  const { disconnect } = useWeb3AuthContext();
   const { getSmartAccount, state, loading, version, versions, setVersion } =
     useSmartAccountContext();
   const [showLogout, setShowLogout] = useState(false);
