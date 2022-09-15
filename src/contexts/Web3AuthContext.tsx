@@ -86,9 +86,9 @@ export const Web3AuthProvider = ({ children }: any) => {
       });
       setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.log({ web3AuthError: error });
     }
-    setLoading(false);
   }, []);
 
   const disconnect = useCallback(async () => {

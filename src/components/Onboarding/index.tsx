@@ -41,7 +41,11 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
       );
       // console.log(relayer);
       const context = smartAccount.getSmartAccountContext();
-      const deployment = await relayer.deployWallet({config:state, context, index:0}); // index 0
+      const deployment = await relayer.deployWallet({
+        config: state,
+        context,
+        index: 0,
+      }); // index 0
       const res = await deployment.wait(1);
       console.log(res);
       getSmartAccount();
@@ -67,9 +71,9 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
       smartAccount.setRelayer(relayer);
 
       const feeQuotes = await smartAccount.prepareDeployAndPayFees();
-      console.log('feeQuotes ', feeQuotes);
+      console.log("feeQuotes ", feeQuotes);
 
-      console.log('token address ', feeQuotes[1].address);
+      console.log("token address ", feeQuotes[1].address);
 
       const txHash = await smartAccount.deployAndPayFees(5, feeQuotes[1]);
       showSuccessMessage(`Tx hash ${txHash}`);
@@ -88,14 +92,18 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
     }
   };
 
-  function sleep(ms:any) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+  function sleep(ms: any) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   return (
     <main className={classes.main}>
-      <h3 className={classes.subTitle}>{"[ < Deploy Smart Account > ]"}</h3>
-
+      <h3 className={classes.subTitle}>{"Deploy Smart Account"}</h3>
+      <p>
+        Welcome onboard! This is the demo of the new Biconomy SDK. You need to
+        deploy your smart account wallet to get started.
+      </p>
+      <p style={{ marginBottom: 25 }}>Wallet Deployment  → </p>
       {state?.isDeployed ? (
         <div className={classes.container2}>
           <p className={classes.text} style={{ marginBottom: 30 }}>
@@ -110,7 +118,15 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
       ) : (
         <div className={classes.container}>
           <div className={classes.element}>
-            <p className={classes.text}>Dapp Pays for Wallet Deployment Cost</p>
+            <p className={classes.text}>
+              Demo dapp pays for wallet deployment cost.
+            </p>
+            <ul style={{ width: "100%" }}>
+              <li style={{ marginBottom: 10 }}>Single click deployment.</li>
+              <li style={{ marginBottom: 10 }}>
+                Relayers deploys / funds the wallet deployment for you.
+              </li>
+            </ul>
             <Button
               title="Deploy Smart Account"
               isLoading={deployLoading1}
@@ -118,24 +134,40 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
             />
           </div>
           <div className={classes.element}>
-            <p className={classes.text}>User Pays for Wallet Deployment Cost</p>
-
-            <p className={classes.subText}>
-              Please deposit usdc in your smart wallet address to pay for wallet deployment
-              cost.
+            <p className={classes.text}>
+              Deploy Account along with first transaction.
             </p>
-
+            <ul style={{ width: "100%" }}>
+              <li style={{ marginBottom: 10 }}>
+                User pay for deployment along with the first transaction.
+              </li>
+              <li style={{ marginBottom: 10 }}>
+                Select bundled transaction which deploys the wallet and add
+                liquidity to Hyphen bridge.
+              </li>
+            </ul>
+            <Button title="Go to Use Cases" onClickFunc={() => setValue(2)} />
+          </div>
+          <div className={classes.element}>
+            <p className={classes.text}>
+              User pays for wallet deployment cost.
+            </p>
+            <ul style={{ width: "100%" }}>
+              <li style={{ marginBottom: 10 }}>
+                You have to deposit funds in the counter factual address.
+              </li>
+              <li style={{ marginBottom: 10 }}>
+                Copy your counter factual address from navbar.
+              </li>
+              <li style={{ marginBottom: 10 }}>
+                Get USDC funds from our testnet faucet and deploy.
+              </li>
+            </ul>
             <Button
               title="Deploy Smart Account"
               isLoading={deployLoading2}
               onClickFunc={deploySmartAccount2}
             />
-          </div>
-          <div className={classes.element}>
-            <p className={classes.text}>
-              Deploy Account along with my First Transaction
-            </p>
-            <Button title="Go to Use Cases" onClickFunc={() => setValue(2)} />
           </div>
         </div>
       )}
@@ -147,30 +179,41 @@ const useStyles = makeStyles(() => ({
   main: {
     margin: "auto",
     padding: "10px 40px",
+    maxWidth: 1200,
   },
   subTitle: {
-    textAlign: "center",
-    marginBottom: 40,
+    fontFamily: "Rubik",
+    fontSize: 24,
   },
   container: {
     width: "100%",
     display: "flex",
     justifyContent: "space-between",
+    "@media (max-width: 699px)": {
+      width: "90%",
+      flexDirection: "column",
+    },
   },
   element: {
-    width: "28%",
-    border: "1px solid #D48158",
-    borderRadius: 20,
-    height: 200,
-    padding: 15,
+    width: "26%",
+    border: "2px solid #FFC4C4",
+    borderLeft: "solid 4px #FFC4C4",
+    boxShadow: "5px 5px 0px #FFC4C4",
+    borderRadius: 12,
+    height: "max-content",
+    padding: 25,
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
     alignItems: "center",
+    "@media (max-width: 699px)": {
+      width: "100%",
+      marginBottom: 20,
+    },
   },
   text: {
     fontSize: 20,
-    wordBreak: "break-all",
+    // wordBreak: "break-all",
   },
   subText: {
     fontSize: 14,

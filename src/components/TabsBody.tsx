@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
     // backgroundColor: theme.palette.background.paper,
     display: "flex",
     width: "100%",
-    maxWidth: 1200,
+    // maxWidth: 1200,
     margin: "auto",
     height: "max-content",
     minHeight: "92vh",
@@ -68,14 +68,21 @@ const useStyles = makeStyles((theme) => ({
   },
   tabpanel: {
     width: "85%",
+    "@media (max-width:699px)": {
+      width: "90%",
+      margin: "auto",
+      minHeight: "80vh",
+    },
   },
 }));
 
 function App() {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
+  const [useCase, setUseCase] = React.useState(0);
 
   const handleChange = (event: any, newValue: any) => {
+    setUseCase(0);
     setValue(newValue);
   };
 
@@ -103,7 +110,7 @@ function App() {
       </TabPanel>
 
       <TabPanel value={value} index={2}>
-        <UseCases />
+        <UseCases setUseCase={setUseCase} useCase={useCase} />
       </TabPanel>
     </div>
   );

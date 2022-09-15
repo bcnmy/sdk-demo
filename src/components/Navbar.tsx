@@ -44,12 +44,16 @@ const Navbar = () => {
       <div className={classes.flexContainer}>
         <img src="img/logo.svg" alt="logo" className={classes.logo} />
         <div className={classes.walletBtnContainer}>
+          {state?.address && (
+            <p className={classes.btnTitle}>Smart Account Address</p>
+          )}
           <Button
             title={
               state ? ellipseAddress(state.address, 8) : "init SmartAccount"
             }
             onClickFunc={toggleLogoutButton}
             isLoading={loading}
+            style={{ marginTop: 6 }}
           >
             {showLogout && (
               <div className={classes.modal}>
@@ -108,9 +112,9 @@ const useStyles = makeStyles((theme: any) => ({
     justifyContent: "space-between",
     alignItems: "center",
     margin: "auto",
-    padding: 0,
-    maxWidth: 1080,
-    width: "100%",
+    padding: "0 40px",
+    // maxWidth: 1080,
+    width: "90%",
   },
   logo: {
     height: "25px",
@@ -118,9 +122,15 @@ const useStyles = makeStyles((theme: any) => ({
   },
   walletBtnContainer: {
     display: "flex",
-    marginLeft: 20,
     alignItems: "center",
-    gap: 10,
+    gap: 20,
+  },
+  btnTitle: {
+    color: "#000",
+    opacity: 0.5,
+    fontSize: 12,
+    position: "absolute",
+    top: -7,
   },
   modal: {
     position: "absolute",

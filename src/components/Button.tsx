@@ -7,6 +7,7 @@ type ButtonProp = {
   isLoading?: boolean;
   onClickFunc: any;
   children?: any;
+  style?: any;
 };
 
 const Button: React.FC<ButtonProp> = ({
@@ -14,11 +15,17 @@ const Button: React.FC<ButtonProp> = ({
   onClickFunc,
   isLoading = false,
   children,
+  style,
 }) => {
   const classes = useStyles();
 
   return (
-    <button onClick={onClickFunc} className={classes.btn} disabled={isLoading}>
+    <button
+      onClick={onClickFunc}
+      className={classes.btn}
+      disabled={isLoading}
+      style={style}
+    >
       {isLoading ? (
         <>
           <CircularProgress
