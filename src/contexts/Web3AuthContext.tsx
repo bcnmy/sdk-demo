@@ -35,8 +35,8 @@ const web3auth = new Web3Auth({
   clientId: CLIENT_ID,
   chainConfig: {
     chainNamespace: CHAIN_NAMESPACES.EIP155,
-    chainId: "0x1",
-    rpcTarget: "https://rpc.ankr.com/eth", // TODO: our RPC
+    chainId: "0x5",
+    rpcTarget: "https://eth-goerli.alchemyapi.io/v2/lmW2og_aq-OXWKYRoRu-X6Yl6wDQYt_2", // TODO: our RPC
   },
 });
 const coinbaseAdapter = new CoinbaseAdapter({

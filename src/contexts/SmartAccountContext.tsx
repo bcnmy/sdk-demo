@@ -78,7 +78,7 @@ export const SmartAccountProvider = ({ children }: any) => {
         // these are all optional
         activeNetworkId: ChainId.GOERLI,
         supportedNetworksIds: [ChainId.GOERLI, ChainId.POLYGON_MUMBAI],
-        backend_url: 'http://localhost:3000/v1'
+        // backend_url: 'http://localhost:3000/v1'
       });
 
       // Initalising
@@ -91,6 +91,8 @@ export const SmartAccountProvider = ({ children }: any) => {
         chainId: 5,
         owner: address,
       });
+      console.log('getSmartAccountsByOwner')
+      console.log(data)
       const vers = [];
       for (let i = 0; i < data.length; ++i) {
         vers.push(data[i].version);
