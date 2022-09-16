@@ -5,14 +5,6 @@ import { toast } from "react-toastify";
 
 export { configEIP2771 };
 
-export const ChainId = {
-  // Ethereum
-  MAINNET: 1,
-  GOERLI: 5,
-  POLYGON_MUMBAI: 80001,
-  POLYGON_MAINNET: 137,
-};
-
 export function ellipseAddress(address = "", width = 10): string {
   if (!address) {
     return "";

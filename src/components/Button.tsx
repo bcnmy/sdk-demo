@@ -7,6 +7,7 @@ type ButtonProp = {
   isLoading?: boolean;
   onClickFunc: any;
   children?: any;
+  style?: any;
 };
 
 const Button: React.FC<ButtonProp> = ({
@@ -14,16 +15,21 @@ const Button: React.FC<ButtonProp> = ({
   onClickFunc,
   isLoading = false,
   children,
+  style,
 }) => {
   const classes = useStyles();
 
   return (
-    <button onClick={onClickFunc} className={classes.btn} disabled={isLoading}>
+    <button
+      onClick={onClickFunc}
+      className={classes.btn}
+      disabled={isLoading}
+      style={style}
+    >
       {isLoading ? (
         <>
           <CircularProgress
-            color="secondary"
-            style={{ width: 20, height: 20, marginRight: 5 }}
+            style={{ width: 25, height: 25, marginRight: 10, color: "#fff" }}
           />{" "}
           {" Loading"}
         </>
@@ -38,29 +44,32 @@ const Button: React.FC<ButtonProp> = ({
 const useStyles = makeStyles((theme: any) => ({
   btn: {
     width: "max-content",
-    background: "#FFB4B4",
+    background: "#21325E",
     position: "relative",
     cursor: "pointer",
-    border: 0,
     borderRadius: 5,
     outline: "none",
-    boxShadow: "5px 5px 0px #100F0F",
+    border: 0,
+    borderLeft: "2px solid #3E497A",
+    borderRight: "2px solid #3E497A",
+    boxShadow: "4px 5px #3E497A",
     height: 40,
     lineHeight: "36px",
     padding: "0px 12px",
     display: "flex",
     alignItems: "center",
-    color: "black",
+    color: "#CDF0EA",
     transition: "0.3s",
     fontWeight: "bold",
+    fontSize: 15,
 
     "@media (max-width:599px)": {
       padding: 0,
     },
 
     "&:hover": {
-      backgroundColor: "#FFC4C4",
-      boxShadow: "2px 2px 0px #100F0F",
+      // backgroundColor: "#FFC4C4",
+      boxShadow: "1px 1px 0px #3E497A",
       // transform: "translate(5px, 5px)",
     },
 

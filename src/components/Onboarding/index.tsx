@@ -1,13 +1,13 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
-import { ethers } from "ethers";
+// import { ethers } from "ethers";
 import { makeStyles } from "@material-ui/core/styles";
-import { LocalRelayer } from "@biconomy-sdk/relayer";
+import { LocalRelayer, RestRelayer } from "@biconomy-sdk/relayer";
 import Button from "../Button";
-import { useWeb3Context } from "../../contexts/Web3Context";
+// import { useWeb3Context } from "../../contexts/Web3Context";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import {
   getEOAWallet,
-  configEIP2771 as config,
+  // configEIP2771 as config,
   showErrorMessage,
   showSuccessMessage,
 } from "../../utils";
@@ -18,7 +18,7 @@ type OnboardingProps = {
 
 const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
   const classes = useStyles();
-  const { provider } = useWeb3Context();
+  // const { provider } = useWeb3Context();
   const {
     state,
     wallet: smartAccount,
@@ -41,7 +41,11 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
       );
       // console.log(relayer);
       const context = smartAccount.getSmartAccountContext();
-      const deployment = await relayer.deployWallet(state, context); // index 0
+      const deployment = await relayer.deployWallet({
+        config: state,
+        context,
+        index: 0,
+      }); // index 0
       const res = await deployment.wait(1);
       console.log(res);
       getSmartAccount();
@@ -61,53 +65,22 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
         return;
       }
       setDeployLoading2(true);
-      const walletProvider = new ethers.providers.Web3Provider(provider);
-      const biconomyFeeCollector = "0x7306aC7A32eb690232De81a9FFB44Bb346026faB"; // should be tx.origin or relayer
-      const relayer = new LocalRelayer(
-        getEOAWallet(process.env.REACT_APP_PKEY || "", null)
-      );
+      const relayer = new RestRelayer({
+        url: "https://sdk-relayer.staging.biconomy.io/api/v1/relay",
+      });
       smartAccount.setRelayer(relayer);
 
-      const usdcContract = new ethers.Contract(
-        config.usdc.address,
-        config.usdc.abi,
-        walletProvider
-      );
+      const feeQuotes = await smartAccount.prepareDeployAndPayFees();
+      console.log("feeQuotes ", feeQuotes);
 
-      // get Fee Options
-      const tokenGasPrice = 6;
-      // estimate using gas estimator
-      // estimate wallet deployment and send first transaction : 339253
-      const feesToPay = tokenGasPrice * (261884 + 77369);
+      console.log("token address ", feeQuotes[1].address);
 
-      const deploymentFeeTx = await usdcContract.populateTransaction.transfer(
-        biconomyFeeCollector,
-        ethers.BigNumber.from(feesToPay)
-      );
-
-      const tx = {
-        to: config.usdc.address,
-        data: deploymentFeeTx.data,
-      };
-
-      const context = smartAccount.getSmartAccountContext();
-      console.log(state, context);
-      // Here I need to create transaction batch with deployment and send refund to the relayer
-      // createTransaction which pays relayer and relayer auto deploys wallet
-      //const deployment = await relayer.deployWallet(state, context); // index 0
-      //const res = await deployment.wait(1);
-      //console.log(res);
-
-      // createRefundTransaction approach once estimation is fixed...
-
-      const transaction = await smartAccount.createTransaction(tx);
-      //console.log("tx hash", transaction);
-
-      // send transaction internally calls signTransaction and sends it to connected relayer
-      const txHash = await smartAccount.sendTransaction(transaction);
+      const txHash = await smartAccount.deployAndPayFees(5, feeQuotes[1]);
       showSuccessMessage(`Tx hash ${txHash}`);
       //console.log(sendTx);
-      //console.log(await sendTx.wait(1));
+      console.log(txHash);
+
+      await sleep(5000);
 
       getSmartAccount();
       showSuccessMessage("Smart Account deployed");
@@ -119,10 +92,18 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
     }
   };
 
+  function sleep(ms: any) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
   return (
     <main className={classes.main}>
-      <h3 className={classes.subTitle}>{"[ < Deploy Smart Account > ]"}</h3>
-
+      <h3 className={classes.subTitle}>{"Deploy Smart Account"}</h3>
+      <p>
+        Welcome onboard! This is the demo of the new Biconomy SDK. You need to
+        deploy your smart account wallet to get started.
+      </p>
+      <p style={{ marginBottom: 25 }}>Wallet Deployment → </p>
       {state?.isDeployed ? (
         <div className={classes.container2}>
           <p className={classes.text} style={{ marginBottom: 30 }}>
@@ -137,7 +118,15 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
       ) : (
         <div className={classes.container}>
           <div className={classes.element}>
-            <p className={classes.text}>Dapp Pays for Wallet Deployment Cost</p>
+            <p className={classes.text}>
+              Demo dapp pays for wallet deployment cost.
+            </p>
+            <ul style={{ width: "100%" }}>
+              <li style={{ marginBottom: 20 }}>Single click deployment.</li>
+              <li style={{ marginBottom: 20 }}>
+                Relayers deploys / funds the wallet deployment for you.
+              </li>
+            </ul>
             <Button
               title="Deploy Smart Account"
               isLoading={deployLoading1}
@@ -145,24 +134,40 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
             />
           </div>
           <div className={classes.element}>
-            <p className={classes.text}>User Pays for Wallet Deployment Cost</p>
-
-            <p className={classes.subText}>
-              Please deposit usdc in your smart wallet address to pay for wallet deployment
-              cost.
+            <p className={classes.text}>
+              Deploy Account along with first transaction.
             </p>
-
+            <ul style={{ width: "100%" }}>
+              <li style={{ marginBottom: 20 }}>
+                User pay for deployment along with the first transaction.
+              </li>
+              <li style={{ marginBottom: 10 }}>
+                Select bundled transaction which deploys the wallet and add
+                liquidity to Hyphen bridge.
+              </li>
+            </ul>
+            <Button title="Go to Use Cases" onClickFunc={() => setValue(2)} />
+          </div>
+          <div className={classes.element}>
+            <p className={classes.text}>
+              User pays for wallet deployment cost.
+            </p>
+            <ul style={{ width: "100%" }}>
+              <li style={{ marginBottom: 20 }}>
+                You have to deposit funds in the counter factual address.
+              </li>
+              <li style={{ marginBottom: 20 }}>
+                Copy your counter factual address from navbar.
+              </li>
+              <li style={{ marginBottom: 0 }}>
+                Get USDC funds from our testnet faucet and deploy.
+              </li>
+            </ul>
             <Button
               title="Deploy Smart Account"
               isLoading={deployLoading2}
               onClickFunc={deploySmartAccount2}
             />
-          </div>
-          <div className={classes.element}>
-            <p className={classes.text}>
-              Deploy Account along with my First Transaction
-            </p>
-            <Button title="Go to Use Cases" onClickFunc={() => setValue(2)} />
           </div>
         </div>
       )}
@@ -174,30 +179,47 @@ const useStyles = makeStyles(() => ({
   main: {
     margin: "auto",
     padding: "10px 40px",
+    maxWidth: 1200,
+    color: "#EEEEEE",
   },
   subTitle: {
-    textAlign: "center",
-    marginBottom: 40,
+    fontFamily: "Rubik",
+    color: "#BDC2FF",
+    fontSize: 28,
   },
   container: {
     width: "100%",
     display: "flex",
     justifyContent: "space-between",
+    "@media (max-width: 699px)": {
+      width: "90%",
+      flexDirection: "column",
+    },
   },
   element: {
-    width: "28%",
-    border: "1px solid #D48158",
-    borderRadius: 20,
-    height: 200,
-    padding: 15,
+    width: "27%",
+    backgroundColor: "#191F2A",
+    height: 300,
+    filter: "drop-shadow(0px 2px 24px rgba(0, 0, 0, 0.1))",
+    border: "2px solid #2C3333",
+    borderLeft: "solid 3px #2C3333",
+    boxShadow: "5px 5px 0px #2C3333",
+    borderRadius: 12,
+    // height: "max-content",
+    padding: 25,
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
     alignItems: "center",
+    "@media (max-width: 699px)": {
+      width: "100%",
+      marginBottom: 20,
+    },
   },
   text: {
     fontSize: 20,
-    wordBreak: "break-all",
+    color: "#BDC2FF",
+    // wordBreak: "break-all",
   },
   subText: {
     fontSize: 14,

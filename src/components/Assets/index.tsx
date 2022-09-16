@@ -66,7 +66,8 @@ const useStyles = makeStyles(() => ({
     padding: "10px 40px",
   },
   subTitle: {
-    textAlign: "center",
+    fontFamily: "Rubik",
+    fontSize: 28,
   },
   container: {
     display: "flex",
@@ -77,7 +78,9 @@ const useStyles = makeStyles(() => ({
     width: "45%",
     height: "70vh",
     overflowY: "auto",
-    border: "1px solid #D48158",
+    border: "2px solid #145374",
+    borderLeft: "solid 3px #145374",
+    boxShadow: "5px 5px 0px #145374",
     borderRadius: 10,
   },
   balance: {
@@ -85,7 +88,7 @@ const useStyles = makeStyles(() => ({
     justifyContent: "space-between",
     fontSize: 25,
     padding: "0 10px",
-    borderBottom: "1px solid black",
+    borderBottom: "1px solid #145374",
   },
   tokenTitle: {
     display: "flex",
@@ -95,7 +98,7 @@ const useStyles = makeStyles(() => ({
   img: {
     width: 35,
     height: 35,
-    border: "1px solid black",
+    border: "1px solid #145374",
     borderRadius: "50%",
     marginRight: 10,
   },

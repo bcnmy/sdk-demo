@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { AppBar } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { useWeb3Context } from "../contexts/Web3Context";
+import { useWeb3AuthContext } from "../contexts/Web3AuthContext";
 import { useSmartAccountContext } from "../contexts/SmartAccountContext";
 import Button from "./Button";
 import {
@@ -13,12 +13,18 @@ import {
 
 const Navbar = () => {
   const classes = useStyles();
-  const { disconnect } = useWeb3Context();
-  const { getSmartAccount, state, loading } = useSmartAccountContext();
-  const [showLogout, setShowLogout] = useState(false);
+  const { disconnect } = useWeb3AuthContext();
+  const {
+    getSmartAccount,
+    loading,
+    selectedAccount,
+    smartAccountsArray,
+    setSelectedAccount,
+  } = useSmartAccountContext();
 
+  const [showModal, setShowModal] = useState(false);
   const toggleLogoutButton = () => {
-    showLogout ? setShowLogout(false) : setShowLogout(true);
+    showModal ? setShowModal(false) : setShowModal(true);
   };
 
   const getSmartAccountFunc = async () => {
@@ -29,7 +35,7 @@ const Navbar = () => {
 
   const disconnectWallet = () => {
     disconnect();
-    setShowLogout(false);
+    setShowModal(false);
   };
 
   return (
@@ -37,31 +43,63 @@ const Navbar = () => {
       <div className={classes.flexContainer}>
         <img src="img/logo.svg" alt="logo" className={classes.logo} />
         <div className={classes.walletBtnContainer}>
+          {selectedAccount?.smartAccountAddress && (
+            <p className={classes.btnTitle}>Smart Account Address</p>
+          )}
           <Button
             title={
-              state ? ellipseAddress(state.address, 8) : "init SmartAccount"
+              selectedAccount
+                ? ellipseAddress(selectedAccount.smartAccountAddress, 8)
+                : "Connect Wallet"
             }
             onClickFunc={toggleLogoutButton}
             isLoading={loading}
+            // style={{ marginTop: 6 }}
           >
-            {showLogout && (
+            {showModal && (
               <div className={classes.modal}>
-                <div
-                  onClick={() => copyToClipBoard(state?.address || "")}
-                  className={classes.element}
-                >
-                  📁 Copy Address
-                </div>
-                <div onClick={getSmartAccountFunc} className={classes.element}>
-                  &#8633; Init Smart wallet
-                </div>
-                {/* <div onClick={toggleLogoutButton} className={classes.element}>
-                  &uarr; Close Modal
-                </div> */}
+                {smartAccountsArray.length &&
+                  smartAccountsArray.map((smartAcc, index) => (
+                    <div className={classes.element} key={index}>
+                      {/* <p className={classes.elementText}>v{smartAcc.version}</p> */}
+                      <p
+                        className={classes.elementText}
+                        onClick={() => setSelectedAccount(smartAcc)}
+                      >
+                        {ellipseAddress(smartAcc.smartAccountAddress, 6)}
+                      </p>
+                      <p
+                        onClick={() =>
+                          copyToClipBoard(
+                            selectedAccount?.smartAccountAddress || ""
+                          )
+                        }
+                        className={classes.copyText}
+                      >
+                        📁
+                      </p>
+                    </div>
+                  ))}
               </div>
             )}
           </Button>
+          {/* <FormControl className={classes.formControl}>
+            <InputLabel id="demo-simple-select-label">Version</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={version}
+              onChange={(event) => setVersion(event.target.value as string)}
+            >
+              <MenuItem value="">
+                <em>None</em>
+              </MenuItem>
 
+              {versions.map((ver) => (
+                <MenuItem value={ver}>{ver}</MenuItem>
+              ))}
+            </Select>
+          </FormControl> */}
           <Button title="Logout" onClickFunc={disconnectWallet} />
         </div>
       </div>
@@ -75,7 +113,7 @@ const useStyles = makeStyles((theme: any) => ({
     boxShadow: "none",
     background: "inherit",
     // marginBottom: "40px",
-    borderBottom: "2px solid black",
+    borderBottom: "2px solid #CDF0EA",
     "@media (max-width:1100px)": {
       padding: "0 20px",
     },
@@ -85,9 +123,10 @@ const useStyles = makeStyles((theme: any) => ({
     justifyContent: "space-between",
     alignItems: "center",
     margin: "auto",
-    padding: 0,
-    maxWidth: 1080,
-    width: "100%",
+    maxWidth: 1250,
+    padding: "0 10px",
+    // maxWidth: 1080,
+    width: "90%",
   },
   logo: {
     height: "25px",
@@ -95,20 +134,27 @@ const useStyles = makeStyles((theme: any) => ({
   },
   walletBtnContainer: {
     display: "flex",
-    marginLeft: 20,
     alignItems: "center",
-    gap: 10,
+    gap: 20,
+  },
+  btnTitle: {
+    opacity: 0.56,
+    fontSize: 12,
+    position: "absolute",
+    top: -10,
   },
   modal: {
     position: "absolute",
-    top: "12px",
-    right: 0,
-    backgroundColor: "#FFB4B4",
-    color: "black",
+    top: 24,
+    right: 9,
+    backgroundColor: "#21325E",
+    borderLeft: "2px solid #3E497A",
+    borderRight: "2px solid #3E497A",
+    boxShadow: "4px 5px #3E497A",
     width: "100%",
     // height: "36px",
     lineHeight: "36px",
-    padding: "10px",
+    padding: "2 8px",
     borderRadius: 10,
     cursor: "pointer",
     textAlign: "center",
@@ -120,14 +166,33 @@ const useStyles = makeStyles((theme: any) => ({
     },
   },
   element: {
-    width: "100%",
-    // padding: "0 18px",
+    width: "220",
+    padding: "0 5px",
+    display: "flex",
+    border: "1px solid #F5E8E4",
+    justifyContent: "space-between",
     borderRadius: 10,
 
     "&:hover": {
-      color: "white",
-      backgroundColor: "#000",
+      backgroundColor: "#191F2A",
     },
+  },
+  elementText: {
+    fontSize: 14,
+    marginLeft: 5,
+    marginRight: 5,
+  },
+  copyText: {
+    margin: "auto",
+    fontSize: 14,
+    padding: "0 5px",
+    "&:hover": {
+      backgroundColor: "#2C3333",
+    },
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    width: 72,
   },
 }));
 

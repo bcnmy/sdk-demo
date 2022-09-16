@@ -1,25 +1,39 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { ethers } from "ethers";
 import SmartAccount from "@biconomy-sdk/smart-account";
-import { SmartAccountState } from "@biconomy-sdk/core-types";
-import { ChainId } from "../utils";
-import { useWeb3Context } from "./Web3Context";
+import {
+  SmartAccountState,
+  SmartAccountVersion,
+} from "@biconomy-sdk/core-types";
+import { supportedChains, activeChainId } from "../utils/chainConfig";
+import { useWeb3AuthContext } from "./Web3AuthContext";
 
+// Types
 type Balance = {
   totalBalanceInUsd: number;
   alltokenBalances: any[];
 };
-
-interface smartAccountContextType {
+type ISmartAccount = {
+  version: string;
+  smartAccountAddress: string;
+  isDeployed: boolean;
+};
+type smartAccountContextType = {
   wallet: SmartAccount | null;
   state: SmartAccountState | null;
   balance: Balance;
   loading: boolean;
   isFetchingBalance: boolean;
+  selectedAccount: ISmartAccount | null;
+  smartAccountsArray: ISmartAccount[];
+  setSelectedAccount: React.Dispatch<
+    React.SetStateAction<ISmartAccount | null>
+  >;
   getSmartAccount: () => Promise<string>;
   getSmartAccountBalance: () => Promise<string>;
-}
+};
 
+// Context
 export const SmartAccountContext = React.createContext<smartAccountContextType>(
   {
     wallet: null,
@@ -30,17 +44,26 @@ export const SmartAccountContext = React.createContext<smartAccountContextType>(
     },
     loading: false,
     isFetchingBalance: false,
+    selectedAccount: null,
+    smartAccountsArray: [],
+    setSelectedAccount: () => {},
     getSmartAccount: () => Promise.resolve(""),
     getSmartAccountBalance: () => Promise.resolve(""),
   }
 );
-
 export const useSmartAccountContext = () => useContext(SmartAccountContext);
 
+// Provider
 export const SmartAccountProvider = ({ children }: any) => {
-  const { provider, address } = useWeb3Context();
+  const { provider, address } = useWeb3AuthContext();
   const [wallet, setWallet] = useState<SmartAccount | null>(null);
   const [state, setState] = useState<SmartAccountState | null>(null);
+  const [selectedAccount, setSelectedAccount] = useState<ISmartAccount | null>(
+    null
+  );
+  const [smartAccountsArray, setSmartAccountsArray] = useState<ISmartAccount[]>(
+    []
+  );
   const [balance, setBalance] = useState<Balance>({
     totalBalanceInUsd: 0,
     alltokenBalances: [],
@@ -55,36 +78,47 @@ export const SmartAccountProvider = ({ children }: any) => {
       setLoading(true);
       const walletProvider = new ethers.providers.Web3Provider(provider);
 
-      // New instance
+      // New instance, all config params are optional
       const wallet = new SmartAccount(walletProvider, {
-        // these are all optional
-        activeNetworkId: ChainId.GOERLI,
-        supportedNetworksIds: [ChainId.GOERLI, ChainId.POLYGON_MUMBAI],
+        activeNetworkId: activeChainId,
+        supportedNetworksIds: supportedChains,
         // backend_url: 'http://localhost:3000/v1'
       });
 
-      // Initalising
+      // Wallet initialization to fetch wallet info
       const smartAccount = await wallet.init();
       setWallet(wallet);
-      console.log("smartAccount", smartAccount);
+      console.info("smartAccount", smartAccount);
 
-      // can get counter factual wallet address
-      // const address = await smartAccount.getAddress();
-      // console.log("counter factual wallet address: ", address);
+      // get all smart account versions available and update in state
+      const { data } = await smartAccount.getSmartAccountsByOwner({
+        chainId: activeChainId,
+        owner: address,
+      });
+      console.info("getSmartAccountsByOwner", data);
+      const accountData = [];
+      for (let i = 0; i < data.length; ++i) {
+        accountData.push(data[i]);
+      }
+      setSmartAccountsArray(accountData);
+      // set the first wallet version as default
+      if (accountData.length) {
+        wallet.setSmartAccountVersion(
+          accountData[0].version as SmartAccountVersion
+        );
+        setSelectedAccount(accountData[0]);
+      }
 
       // get address, isDeployed and other data
       const state = await smartAccount.getSmartAccountState();
       setState(state);
-      console.log("getSmartAccountState", state);
+      console.info("getSmartAccountState", state);
 
-      // Check if the smart wallet is deployed or not
-      // const isDeployed = await smartAccount.isDeployed(); // can pass chainId here
-      // console.log(isDeployed);
       setLoading(false);
       return "";
     } catch (error: any) {
       setLoading(false);
-      console.log({ smartAccountError: error });
+      console.error({ getSmartAccount: error });
       return error.message;
     }
   }, [provider, address]);
@@ -100,15 +134,15 @@ export const SmartAccountProvider = ({ children }: any) => {
       // console.log(bal);
       // you may use EOA address my goerli SCW 0x1927366dA53F312a66BD7D09a88500Ccd16f175e
       const balanceParams = {
-        chainId: 5,
+        chainId: activeChainId,
         eoaAddress: state.address,
         tokenAddresses: [],
       };
       const balFromSdk = await wallet.getAlltokenBalances(balanceParams);
-      console.log(balFromSdk);
+      console.info("getAlltokenBalances", balFromSdk);
 
       const usdBalFromSdk = await wallet.getTotalBalanceInUsd(balanceParams);
-      console.log(usdBalFromSdk);
+      console.info("getTotalBalanceInUsd", usdBalFromSdk);
       setBalance({
         totalBalanceInUsd: usdBalFromSdk.data.totalBalance,
         alltokenBalances: balFromSdk.data,
@@ -117,10 +151,20 @@ export const SmartAccountProvider = ({ children }: any) => {
       return "";
     } catch (error: any) {
       setIsFetchingBalance(false);
-      console.log({ getSmartAccountBalance: error });
+      console.error({ getSmartAccountBalance: error });
       return error.message;
     }
   };
+
+  useEffect(() => {
+    if (wallet && selectedAccount) {
+      console.log("setSmartAccountVersion", selectedAccount);
+      wallet.setSmartAccountVersion(
+        selectedAccount.version as SmartAccountVersion
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedAccount]);
 
   useEffect(() => {
     getSmartAccount();
@@ -134,6 +178,9 @@ export const SmartAccountProvider = ({ children }: any) => {
         balance,
         loading,
         isFetchingBalance,
+        selectedAccount,
+        smartAccountsArray,
+        setSelectedAccount,
         getSmartAccount,
         getSmartAccountBalance,
       }}
