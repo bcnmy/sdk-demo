@@ -1,6 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import AddLP from "./AddLP";
+import Swap from "./Swap";
 
 interface Props {
   useCase: number;
@@ -12,6 +13,8 @@ const UseCases: React.FC<Props> = ({ useCase, setUseCase }) => {
 
   if (useCase === 1) {
     return <AddLP />;
+  } else if (useCase === 2) {
+    return <Swap />;
   }
 
   return (
@@ -25,7 +28,7 @@ const UseCases: React.FC<Props> = ({ useCase, setUseCase }) => {
         </li>
       </ul>
       <p style={{ marginBottom: 25 }}>
-        Here we have added some use cases FROM which users can test out the sdk.
+        Here we have added some use cases from which users can test out the sdk.
       </p>
       <div className={classes.container}>
         <div className={classes.element} onClick={() => setUseCase(1)}>
@@ -43,15 +46,13 @@ const UseCases: React.FC<Props> = ({ useCase, setUseCase }) => {
           </ul>
         </div>
 
-        <div className={classes.element} onClick={() => setUseCase(1)}>
+        <div className={classes.element} onClick={() => setUseCase(2)}>
           <p className={classes.text} style={{ textAlign: "left" }}>
             Batch User Pays:
           </p>
           <ul>
             <li style={{ marginBottom: 10 }}>Approve USDC.</li>
-            <li style={{ marginBottom: 10 }}>
-              Swap USDC to WETH
-            </li>
+            <li style={{ marginBottom: 10 }}>Swap USDC to WETH</li>
           </ul>
         </div>
       </div>
@@ -64,11 +65,12 @@ const useStyles = makeStyles(() => ({
     margin: "auto",
     padding: "10px 40px",
     maxWidth: 1200,
+    color: "#EEEEEE",
   },
   subTitle: {
     fontFamily: "Rubik",
-    fontSize: 24,
-    // textAlign: "center",
+    color: "#BDC2FF",
+    fontSize: 28,
   },
   container: {
     width: "100%",
@@ -82,28 +84,31 @@ const useStyles = makeStyles(() => ({
   },
   element: {
     cursor: "pointer",
-    width: "27%",
-    border: "2px solid #FFC4C4",
-    borderLeft: "solid 3px #FFC4C4",
-    boxShadow: "5px 5px 0px #FFC4C4",
+    width: "30%",
+    backgroundColor: "#191F2A",
+    height: 180,
+    filter: "drop-shadow(0px 2px 24px rgba(0, 0, 0, 0.1))",
+    border: "2px solid #2C3333",
+    borderLeft: "solid 3px #2C3333",
+    boxShadow: "5px 5px 0px #2C3333",
     borderRadius: 12,
-    height: "max-content",
+    // height: "max-content",
     padding: 25,
-    justifyContent: "space-between",
     alignItems: "center",
-    
+
     "@media (max-width: 699px)": {
       width: "100%",
       marginBottom: 20,
     },
 
     "&:hover": {
-      boxShadow: "2px 2px 0px #FFC4C4",
+      boxShadow: "2px 2px 0px #2C3333",
       // transform: "translate(5px, 5px)",
     },
   },
   text: {
-    fontSize: 18,
+    fontSize: 20,
+    color: "#BDC2FF",
     // wordBreak: "break-all",
   },
   subText: {

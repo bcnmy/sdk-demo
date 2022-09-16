@@ -103,7 +103,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
         Welcome onboard! This is the demo of the new Biconomy SDK. You need to
         deploy your smart account wallet to get started.
       </p>
-      <p style={{ marginBottom: 25 }}>Wallet Deployment  → </p>
+      <p style={{ marginBottom: 25 }}>Wallet Deployment → </p>
       {state?.isDeployed ? (
         <div className={classes.container2}>
           <p className={classes.text} style={{ marginBottom: 30 }}>
@@ -122,8 +122,8 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
               Demo dapp pays for wallet deployment cost.
             </p>
             <ul style={{ width: "100%" }}>
-              <li style={{ marginBottom: 10 }}>Single click deployment.</li>
-              <li style={{ marginBottom: 10 }}>
+              <li style={{ marginBottom: 20 }}>Single click deployment.</li>
+              <li style={{ marginBottom: 20 }}>
                 Relayers deploys / funds the wallet deployment for you.
               </li>
             </ul>
@@ -138,7 +138,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
               Deploy Account along with first transaction.
             </p>
             <ul style={{ width: "100%" }}>
-              <li style={{ marginBottom: 10 }}>
+              <li style={{ marginBottom: 20 }}>
                 User pay for deployment along with the first transaction.
               </li>
               <li style={{ marginBottom: 10 }}>
@@ -153,13 +153,13 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
               User pays for wallet deployment cost.
             </p>
             <ul style={{ width: "100%" }}>
-              <li style={{ marginBottom: 10 }}>
+              <li style={{ marginBottom: 20 }}>
                 You have to deposit funds in the counter factual address.
               </li>
-              <li style={{ marginBottom: 10 }}>
+              <li style={{ marginBottom: 20 }}>
                 Copy your counter factual address from navbar.
               </li>
-              <li style={{ marginBottom: 10 }}>
+              <li style={{ marginBottom: 0 }}>
                 Get USDC funds from our testnet faucet and deploy.
               </li>
             </ul>
@@ -180,10 +180,12 @@ const useStyles = makeStyles(() => ({
     margin: "auto",
     padding: "10px 40px",
     maxWidth: 1200,
+    color: "#EEEEEE",
   },
   subTitle: {
     fontFamily: "Rubik",
-    fontSize: 24,
+    color: "#BDC2FF",
+    fontSize: 28,
   },
   container: {
     width: "100%",
@@ -195,12 +197,15 @@ const useStyles = makeStyles(() => ({
     },
   },
   element: {
-    width: "26%",
-    border: "2px solid #FFC4C4",
-    borderLeft: "solid 4px #FFC4C4",
-    boxShadow: "5px 5px 0px #FFC4C4",
+    width: "27%",
+    backgroundColor: "#191F2A",
+    height: 300,
+    filter: "drop-shadow(0px 2px 24px rgba(0, 0, 0, 0.1))",
+    border: "2px solid #2C3333",
+    borderLeft: "solid 3px #2C3333",
+    boxShadow: "5px 5px 0px #2C3333",
     borderRadius: 12,
-    height: "max-content",
+    // height: "max-content",
     padding: 25,
     display: "flex",
     flexDirection: "column",
@@ -213,6 +218,7 @@ const useStyles = makeStyles(() => ({
   },
   text: {
     fontSize: 20,
+    color: "#BDC2FF",
     // wordBreak: "break-all",
   },
   subText: {

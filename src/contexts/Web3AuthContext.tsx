@@ -3,6 +3,7 @@ import { Web3Auth } from "@web3auth/web3auth";
 import { CHAIN_NAMESPACES } from "@web3auth/base";
 import { CoinbaseAdapter } from "@web3auth/coinbase-adapter";
 import { ethers } from "ethers";
+import { activeChainId } from "../utils/chainConfig";
 
 interface web3AuthContextType {
   connectWeb3: () => Promise<void>;
@@ -22,7 +23,7 @@ export const Web3AuthContext = React.createContext<web3AuthContextType>({
   provider: null,
   ethersProvider: null,
   web3Provider: null,
-  chainId: 0,
+  chainId: activeChainId,
   address: "",
 });
 
@@ -57,7 +58,7 @@ const initialState: StateType = {
   web3Provider: null,
   ethersProvider: null,
   address: "",
-  chainId: 1,
+  chainId: activeChainId,
 };
 
 export const Web3AuthProvider = ({ children }: any) => {
@@ -70,13 +71,13 @@ export const Web3AuthProvider = ({ children }: any) => {
     try {
       setLoading(true);
       const modalProvider = await web3auth.connect();
-      console.log(modalProvider);
+      console.info("web3AuthProvider", modalProvider);
       if (!modalProvider) return;
       const web3Provider = new ethers.providers.Web3Provider(modalProvider);
       const signer = web3Provider.getSigner();
       const gotAccount = await signer.getAddress();
       const network = await web3Provider.getNetwork();
-      console.log(gotAccount);
+      console.info("EOA Address", gotAccount);
       setWeb3State({
         provider: modalProvider,
         web3Provider: web3Provider,
@@ -87,7 +88,7 @@ export const Web3AuthProvider = ({ children }: any) => {
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      console.log({ web3AuthError: error });
+      console.error({ web3AuthError: error });
     }
   }, []);
 
@@ -100,7 +101,7 @@ export const Web3AuthProvider = ({ children }: any) => {
       web3Provider: null,
       ethersProvider: null,
       address: "",
-      chainId: 0,
+      chainId: activeChainId,
     });
   }, []);
 

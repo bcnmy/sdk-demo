@@ -24,14 +24,21 @@ const App: React.FC = () => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          marginTop: "30vh",
+          paddingTop: "30vh",
         }}
       >
-        <h1>Biconomy SDK Demo</h1>
+        <h1 className={classes.title}>Biconomy SDK Demo</h1>
         <Button
           title="Get Started"
           onClickFunc={connectWeb3}
           isLoading={eoaWalletLoading}
+          style={{
+            fontSize: 20,
+            padding: "30px 20px",
+            border: 0,
+            background:
+              "linear-gradient(90deg, #0063FF -2.21%, #9100FF 89.35%)",
+          }}
         />
         <ToastContainer />
       </div>
@@ -55,11 +62,12 @@ const App: React.FC = () => {
 
 const useStyles = makeStyles(() => ({
   bgCover: {
-    backgroundColor: "#fffef6",
-    // backgroundImage: `url(img/bg.png)`,
-    // backgroundSize: "cover",
+    backgroundColor: "#19282F",
+    backgroundImage: `url(/img/northern-lights-bg.png)`,
+    backgroundSize: "cover",
     width: "100%",
     minHeight: "100vh",
+    color: "#BDC2FF",
   },
   container: {
     display: "flex",
@@ -68,6 +76,13 @@ const useStyles = makeStyles(() => ({
     height: "80vh",
     justifyContent: "center",
     alignItems: "center",
+  },
+  title: {
+    marginBottom: 50,
+    fontSize: 60,
+    background: "linear-gradient(90deg, #12ECB8 -2.21%, #00B4ED 92.02%)",
+    "-webkit-background-clip": "text",
+    "-webkit-text-fill-color": "transparent",
   },
   animateBlink: {
     animation: "$bottom_up 2s linear infinite",
