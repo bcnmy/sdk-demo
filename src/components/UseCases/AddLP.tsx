@@ -164,7 +164,7 @@ const AddLP: React.FC = () => {
       for (let i = 0; i < feeQuotes.length; ++i) {
         const pmnt = parseFloat(
           (feeQuotes[i].payment / Math.pow(10, feeQuotes[i].decimal)).toString()
-        ).toFixed(5);
+        ).toFixed(8);
         pmtArr.push({
           symbol: feeQuotes[i].symbol,
           value: pmnt,
