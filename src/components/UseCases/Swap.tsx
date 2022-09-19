@@ -19,6 +19,7 @@ import {
   showInfoMessage,
   showErrorMessage,
 } from "../../utils";
+import { GasLimit } from "@biconomy-sdk/core-types";
 
 // let biconomy: any;
 let walletProvider;
@@ -182,8 +183,12 @@ const Swap: React.FC = () => {
       });
       console.log("transaction", transaction);
 
+      let gasLimit: GasLimit = {
+        hex: '0x1E8480',
+        type: 'hex'
+      }
       // send transaction internally calls signTransaction and sends it to connected relayer
-      const txHash = await wallet.sendTransaction({ tx: transaction });
+      const txHash = await wallet.sendTransaction({ tx: transaction, gasLimit });
       console.log(txHash);
       showSuccessMessage(`Transaction sent: ${txHash}`);
 

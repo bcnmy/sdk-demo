@@ -4,6 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { CircularProgress } from "@material-ui/core";
 
 import { RestRelayer } from "@biconomy-sdk/relayer";
+import { GasLimit } from "@biconomy-sdk/core-types";
 import Button from "../Button";
 import { useWeb3AuthContext } from "../../contexts/Web3AuthContext";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
@@ -86,7 +87,7 @@ const AddLP: React.FC = () => {
       for (let i = 0; i < feeQuotes.length; ++i) {
         const pmnt = parseFloat(
           (feeQuotes[i].payment / Math.pow(10, feeQuotes[i].decimal)).toString()
-        ).toFixed(5);
+        ).toFixed(8);
         pmtArr.push({
           symbol: feeQuotes[i].symbol,
           value: pmnt,
@@ -180,8 +181,13 @@ const AddLP: React.FC = () => {
       });
       console.log("transaction", transaction);
 
+      let gasLimit: GasLimit = {
+        hex: '0x1E8480',
+        type: 'hex'
+      }
+
       // send transaction internally calls signTransaction and sends it to connected relayer
-      const txHash = await smartAccount.sendTransaction({ tx: transaction });
+      const txHash = await smartAccount.sendTransaction({ tx: transaction, gasLimit });
       console.log(txHash);
       showSuccessMessage(`Transaction sent: ${txHash}`);
 
