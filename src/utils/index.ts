@@ -15,7 +15,10 @@ export function ellipseAddress(address = "", width = 10): string {
 export const getEOAWallet = (privateKey: string, provider: any) => {
   // defaults
   if (!provider) {
+    // TODO
+    // Fetch rpc url as per active chain id
     provider = "https://goerli.infura.io/v3/d126f392798444609246423b06116c77";
+    // provider = ""
   }
 
   const wallet = new EOAWallet(privateKey);
@@ -75,10 +78,10 @@ export const copyToClipBoard = (copyMe: string) => {
   }
 };
 
-export const formatBalance = (value: string) => {
-  const balance = BigNumber.from(value);
-  let res = ethers.utils.formatEther(balance);
-  res = (+res).toFixed(4);
-  console.log(res);
-  return res;
+export const formatBalance = (value: string, decimals: number) => {
+  const divideBy = BigNumber.from(10).pow(BigNumber.from(decimals));
+  const balance = (parseFloat(value) / parseFloat(divideBy.toString())).toFixed(4);
+  console.log(' formatBalance ', balance);
+  // let res = ethers.utils.formatEther(balance);
+  return balance.toString();
 };

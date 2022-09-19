@@ -42,7 +42,7 @@ const Assets: React.FC = () => {
                 <img className={classes.img} alt="logo" src={token.logo_url} />
                 <p>{token.contract_ticker_symbol}</p>
               </div>
-              <p>{formatBalance(token.balance)}</p>
+              <p>{formatBalance(token.balance, token.contract_decimals)}</p>
             </div>
           ))}
         </div>

@@ -6,6 +6,6 @@ export const ChainId = {
 };
 
 export let activeChainId = ChainId.GOERLI;
-export const supportedChains = [ChainId.GOERLI, ChainId.POLYGON_MUMBAI];
+export const supportedChains = [ChainId.GOERLI, ChainId.POLYGON_MAINNET, ChainId.POLYGON_MUMBAI];
 
 export const getSupportedChains = () => {};
