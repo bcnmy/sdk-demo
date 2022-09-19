@@ -1,9 +1,9 @@
 import { BigNumber, ethers, Wallet as EOAWallet } from "ethers";
 import { JsonRpcProvider } from "@ethersproject/providers";
-import configEIP2771 from "./configs/EIP2771.json";
+import configInfo from "./configs/contractsInfo.json";
 import { toast } from "react-toastify";
 
-export { configEIP2771 };
+export { configInfo };
 
 export function ellipseAddress(address = "", width = 10): string {
   if (!address) {

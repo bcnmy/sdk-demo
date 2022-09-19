@@ -36,8 +36,8 @@ const web3auth = new Web3Auth({
   clientId: CLIENT_ID,
   chainConfig: {
     chainNamespace: CHAIN_NAMESPACES.EIP155,
-    chainId: ethers.BigNumber.from(activeChainId).toHexString(),
-    rpcTarget: "https://eth-goerli.alchemyapi.io/v2/lmW2og_aq-OXWKYRoRu-X6Yl6wDQYt_2", // TODO: our RPC
+    chainId: '0x5', // TODO // ethers.BigNumber.from(activeChainId).toHexString(),
+    rpcTarget: "https://eth-goerli.alchemyapi.io/v2/lmW2og_aq-OXWKYRoRu-X6Yl6wDQYt_2", // TODO: our RPC corresponding to activeChainId
   },
 });
 const coinbaseAdapter = new CoinbaseAdapter({

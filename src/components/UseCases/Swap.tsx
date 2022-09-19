@@ -14,7 +14,7 @@ import Button from "../Button";
 import { useWeb3AuthContext } from "../../contexts/Web3AuthContext";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import {
-  configEIP2771 as config,
+  configInfo as config,
   showSuccessMessage,
   showInfoMessage,
   showErrorMessage,

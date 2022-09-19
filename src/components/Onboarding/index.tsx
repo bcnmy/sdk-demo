@@ -7,7 +7,6 @@ import Button from "../Button";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import {
   getEOAWallet,
-  // configEIP2771 as config,
   showErrorMessage,
   showSuccessMessage,
 } from "../../utils";
