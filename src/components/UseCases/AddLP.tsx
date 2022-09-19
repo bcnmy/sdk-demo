@@ -20,6 +20,7 @@ let walletProvider;
 const AddLP: React.FC = () => {
   const classes = useStyles();
   const { provider } = useWeb3AuthContext();
+  const ethersProvider = new ethers.providers.Web3Provider(provider);
   const { state: walletState, wallet } = useSmartAccountContext();
   const [payment, setPayment] = useState<
     {
@@ -185,13 +186,19 @@ const AddLP: React.FC = () => {
       showSuccessMessage(`Transaction sent: ${txHash}`);
 
       // check if tx is mined
-      let txn_mined = await provider.getTransaction(txHash);
+      /*let txn_mined = await provider.getTransaction(txHash);
       if (txn_mined) {
         if (txn_mined.blockNumber) {
           console.log("txn_mined: ", txn_mined);
           showSuccessMessage(`Transaction mined: ${txHash}`);
         }
-      }
+      }*/
+      ethersProvider.once(txHash, (transaction: any) => {
+        // Emitted when the transaction has been mined
+        console.log("txn_mined:");
+        console.log(transaction);
+        showSuccessMessage(`Transaction mined: ${txHash}`);
+      })
     } catch (err: any) {
       console.error(err);
       showErrorMessage(err.message || "Error in sending the transaction");
