@@ -15,13 +15,9 @@ import {
   showErrorMessage,
 } from "../../utils";
 
-// let biconomy: any;
-let walletProvider;
-
 const AddLP: React.FC = () => {
   const classes = useStyles();
-  const { provider } = useWeb3AuthContext();
-  const ethersProvider = new ethers.providers.Web3Provider(provider);
+  const { provider, web3Provider } = useWeb3AuthContext();
   const { state: walletState, wallet } = useSmartAccountContext();
   const [payment, setPayment] = useState<
     {
@@ -35,8 +31,7 @@ const AddLP: React.FC = () => {
   useEffect(() => {
     const fetchFeeOption = async () => {
       setIsLoading(true);
-      if (!wallet || !walletState) return;
-      walletProvider = new ethers.providers.Web3Provider(provider);
+      if (!wallet || !walletState || !web3Provider) return;
       const relayer = new RestRelayer({
         url: "https://sdk-relayer.staging.biconomy.io/api/v1/relay",
       });
@@ -46,12 +41,12 @@ const AddLP: React.FC = () => {
       const usdcContract = new ethers.Contract(
         config.usdc.address,
         config.usdc.abi,
-        walletProvider
+        web3Provider
       );
       const hyphenContract = new ethers.Contract(
         config.hyphenLP.address,
         config.hyphenLP.abi,
-        walletProvider
+        web3Provider
       );
       const approveUSDCTx = await usdcContract.populateTransaction.approve(
         config.hyphenLP.address,
@@ -102,10 +97,8 @@ const AddLP: React.FC = () => {
   }, [provider]);
 
   const makeTx = async () => {
-    if (!wallet || !walletState) return;
+    if (!wallet || !walletState || !web3Provider) return;
     try {
-      walletProvider = new ethers.providers.Web3Provider(provider);
-
       const relayer = new RestRelayer({
         url: "https://sdk-relayer.staging.biconomy.io/api/v1/relay",
       });
@@ -121,12 +114,12 @@ const AddLP: React.FC = () => {
       const usdcContract = new ethers.Contract(
         config.usdc.address,
         config.usdc.abi,
-        walletProvider
+        web3Provider
       );
       const hyphenContract = new ethers.Contract(
         config.hyphenLP.address,
         config.hyphenLP.abi,
-        walletProvider
+        web3Provider
       );
 
       const approveUSDCTx = await usdcContract.populateTransaction.approve(
@@ -182,29 +175,24 @@ const AddLP: React.FC = () => {
       console.log("transaction", transaction);
 
       let gasLimit: GasLimit = {
-        hex: '0x1E8480',
-        type: 'hex'
-      }
+        hex: "0x1E8480",
+        type: "hex",
+      };
 
       // send transaction internally calls signTransaction and sends it to connected relayer
-      const txHash = await smartAccount.sendTransaction({ tx: transaction, gasLimit });
+      const txHash = await smartAccount.sendTransaction({
+        tx: transaction,
+        gasLimit,
+      });
       console.log(txHash);
       showSuccessMessage(`Transaction sent: ${txHash}`);
 
       // check if tx is mined
-      /*let txn_mined = await provider.getTransaction(txHash);
-      if (txn_mined) {
-        if (txn_mined.blockNumber) {
-          console.log("txn_mined: ", txn_mined);
-          showSuccessMessage(`Transaction mined: ${txHash}`);
-        }
-      }*/
-      ethersProvider.once(txHash, (transaction: any) => {
+      web3Provider.once(txHash, (transaction: any) => {
         // Emitted when the transaction has been mined
-        console.log("txn_mined:");
-        console.log(transaction);
+        console.log("txn_mined:", transaction);
         showSuccessMessage(`Transaction mined: ${txHash}`);
-      })
+      });
     } catch (err: any) {
       console.error(err);
       showErrorMessage(err.message || "Error in sending the transaction");

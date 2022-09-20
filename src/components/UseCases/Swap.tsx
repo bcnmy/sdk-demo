@@ -21,9 +21,6 @@ import {
 } from "../../utils";
 import { GasLimit } from "@biconomy-sdk/core-types";
 
-// let biconomy: any;
-let walletProvider;
-
 const ethersProvider = new ethers.providers.JsonRpcProvider(
   "https://goerli.infura.io/v3/d126f392798444609246423b06116c77"
 );
@@ -57,8 +54,7 @@ const USDC = new Token(
 
 const Swap: React.FC = () => {
   const classes = useStyles();
-  const { provider } = useWeb3AuthContext();
-  const ethersProvider = new ethers.providers.Web3Provider(provider);
+  const { provider, web3Provider } = useWeb3AuthContext();
   const { state: walletState, wallet } = useSmartAccountContext();
   const [payment, setPayment] = useState<
     {
@@ -71,23 +67,21 @@ const Swap: React.FC = () => {
 
   useEffect(() => {
     const fetchFeeOption = async () => {
-      if (!wallet || !walletState) return;
+      if (!wallet || !walletState || !web3Provider) return;
       try {
         setIsLoading(true);
-        walletProvider = new ethers.providers.Web3Provider(provider);
 
+        // to do transaction on smart account we need to set relayer
         const relayer = new RestRelayer({
           url: "https://sdk-relayer.staging.biconomy.io/api/v1/relay",
         });
-
-        // to do transaction on smart account we need to set relayer
         wallet.setRelayer(relayer);
 
         const txs = [];
         const wethContract = new ethers.Contract(
           config.dai.address,
           config.dai.abi,
-          walletProvider
+          web3Provider
         );
         const approveTx = await wethContract.populateTransaction.approve(
           V3_SWAP_ROUTER_ADDRESS,
@@ -168,7 +162,7 @@ const Swap: React.FC = () => {
   }, [provider]);
 
   const makeTx = async () => {
-    if (!wallet || !walletState || !txnArray.length) return;
+    if (!wallet || !walletState || !txnArray.length || !web3Provider) return;
     try {
       showInfoMessage("Batching transactions");
 
@@ -184,28 +178,23 @@ const Swap: React.FC = () => {
       console.log("transaction", transaction);
 
       let gasLimit: GasLimit = {
-        hex: '0x1E8480',
-        type: 'hex'
-      }
+        hex: "0x1E8480",
+        type: "hex",
+      };
       // send transaction internally calls signTransaction and sends it to connected relayer
-      const txHash = await wallet.sendTransaction({ tx: transaction, gasLimit });
+      const txHash = await wallet.sendTransaction({
+        tx: transaction,
+        gasLimit,
+      });
       console.log(txHash);
       showSuccessMessage(`Transaction sent: ${txHash}`);
 
       // check if tx is mined
-      /*let txn_mined = await provider.getTransaction(txHash);
-      if (txn_mined) {
-        if (txn_mined.blockNumber) {
-          console.log("txn_mined: ", txn_mined);
-          showSuccessMessage(`Transaction mined: ${txHash}`);
-        }
-      }*/
-      ethersProvider.once(txHash, (transaction: any) => {
+      web3Provider.once(txHash, (transaction: any) => {
         // Emitted when the transaction has been mined
-        console.log("txn_mined:");
-        console.log(transaction);
+        console.log("txn_mined:", transaction);
         showSuccessMessage(`Transaction mined: ${txHash}`);
-      })
+      });
     } catch (err: any) {
       console.error(err);
       showErrorMessage(err.message || "Error in sending the transaction");
@@ -256,11 +245,7 @@ const Swap: React.FC = () => {
           </li>
         ))}
       </ul>
-      <Button
-        title="Do transaction (One Click Swap)"
-        onClickFunc={makeTx}
-        isLoading={!txnArray.length}
-      />
+      <Button title="Do transaction (One Click Swap)" onClickFunc={makeTx} />
     </main>
   );
 };
