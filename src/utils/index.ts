@@ -1,4 +1,4 @@
-import { BigNumber, ethers, Wallet as EOAWallet } from "ethers";
+import { BigNumber, Wallet as EOAWallet } from "ethers";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import configInfo from "./configs/contractsInfo.json";
 import { toast } from "react-toastify";

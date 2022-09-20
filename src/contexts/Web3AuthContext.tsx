@@ -3,7 +3,7 @@ import { Web3Auth } from "@web3auth/web3auth";
 import { CHAIN_NAMESPACES } from "@web3auth/base";
 import { CoinbaseAdapter } from "@web3auth/coinbase-adapter";
 import { ethers } from "ethers";
-import { activeChainId } from "../utils/chainConfig";
+import { activeChainId, getRPCProvider } from "../utils/chainConfig";
 
 interface web3AuthContextType {
   connectWeb3: () => Promise<void>;
@@ -36,8 +36,8 @@ const web3auth = new Web3Auth({
   clientId: CLIENT_ID,
   chainConfig: {
     chainNamespace: CHAIN_NAMESPACES.EIP155,
-    chainId: '0x5', // TODO // ethers.BigNumber.from(activeChainId).toHexString(),
-    rpcTarget: "https://eth-goerli.alchemyapi.io/v2/lmW2og_aq-OXWKYRoRu-X6Yl6wDQYt_2", // TODO: our RPC corresponding to activeChainId
+    chainId: ethers.utils.hexValue(activeChainId),
+    rpcTarget: getRPCProvider(activeChainId),
   },
 });
 const coinbaseAdapter = new CoinbaseAdapter({

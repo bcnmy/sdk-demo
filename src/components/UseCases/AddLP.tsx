@@ -242,8 +242,8 @@ const AddLP: React.FC = () => {
       )}
 
       <ul>
-        {payment.map((token) => (
-          <li className={classes.listHover}>
+        {payment.map((token, ind) => (
+          <li className={classes.listHover} key={ind}>
             {token.value} {token.symbol}
           </li>
         ))}
