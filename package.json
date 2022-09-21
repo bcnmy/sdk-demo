@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@biconomy-sdk/core-types": "^1.0.8",
-    "@biconomy-sdk/relayer": "^1.0.8",
-    "@biconomy-sdk/smart-account": "^1.0.8",
+    "@biconomy-sdk/core-types": "1.0.11",
+    "@biconomy-sdk/relayer": "1.0.11",
+    "@biconomy-sdk/smart-account": "1.0.11",
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
     "@types/node": "^16.7.13",
