@@ -36,7 +36,7 @@ const AddLP: React.FC = () => {
         url: "https://sdk-relayer.staging.biconomy.io/api/v1/relay",
       });
       let smartAccount = wallet;
-      smartAccount = smartAccount.setRelayer(relayer);
+      await smartAccount.setRelayer(relayer);
       const txs = [];
       const usdcContract = new ethers.Contract(
         config.usdc.address,
@@ -105,7 +105,7 @@ const AddLP: React.FC = () => {
 
       // to do transaction on smart account we need to set relayer
       let smartAccount = wallet;
-      smartAccount = smartAccount.setRelayer(relayer);
+      smartAccount.setRelayer(relayer);
       showInfoMessage("Setting Relayer");
 
       // currently step 1 building wallet transaction
