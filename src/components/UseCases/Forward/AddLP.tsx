@@ -5,17 +5,17 @@ import { CircularProgress } from "@material-ui/core";
 
 import { RestRelayer } from "@biconomy-sdk/relayer";
 import { GasLimit } from "@biconomy-sdk/core-types";
-import Button from "../Button";
-import { useWeb3AuthContext } from "../../contexts/Web3AuthContext";
-import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
+import Button from "../../Button";
+import { useWeb3AuthContext } from "../../../contexts/Web3AuthContext";
+import { useSmartAccountContext } from "../../../contexts/SmartAccountContext";
 import {
   configInfo as config,
   showSuccessMessage,
   showInfoMessage,
   showErrorMessage,
-} from "../../utils";
+} from "../../../utils";
 
-const AddLP: React.FC = () => {
+const AddLPForward: React.FC = () => {
   const classes = useStyles();
   const { provider, web3Provider } = useWeb3AuthContext();
   const { state: walletState, wallet } = useSmartAccountContext();
@@ -25,7 +25,7 @@ const AddLP: React.FC = () => {
       value: string;
     }[]
   >([]);
-  // const [txnArray, setTxnArray] = useState<any[]>([]);
+  const [txnArray, setTxnArray] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -35,6 +35,7 @@ const AddLP: React.FC = () => {
       const relayer = new RestRelayer({
         url: "https://sdk-relayer.staging.biconomy.io/api/v1/relay",
       });
+      // to do transaction on smart account we need to set relayer
       let smartAccount = wallet;
       await smartAccount.setRelayer(relayer);
       const txs = [];
@@ -52,11 +53,11 @@ const AddLP: React.FC = () => {
         config.hyphenLP.address,
         ethers.BigNumber.from("1000000")
       );
-      const tx3 = {
+      const tx1 = {
         to: config.usdc.address,
         data: approveUSDCTx.data,
       };
-      txs.push(tx3);
+      txs.push(tx1);
 
       const hyphenLPTx =
         await hyphenContract.populateTransaction.addTokenLiquidity(
@@ -64,17 +65,17 @@ const AddLP: React.FC = () => {
           ethers.BigNumber.from("1000000")
         );
 
-      const tx4 = {
+      const tx2 = {
         to: config.hyphenLP.address,
         data: hyphenLPTx.data,
       };
-      txs.push(tx4);
-      console.log(txs);
+      txs.push(tx2);
+      console.log("Tx array created", txs);
+      // prepare refund txn batch before so that we have accurate token gas price
       const feeQuotes = await smartAccount.prepareRefundTransactionBatch({
         transactions: txs,
       });
-      // debugger;
-      console.log(feeQuotes);
+      console.log("prepareRefundTransactionBatch", feeQuotes);
       const pmtArr: {
         symbol: string;
         value: string;
@@ -89,7 +90,8 @@ const AddLP: React.FC = () => {
         });
       }
       setPayment(pmtArr);
-      console.log(pmtArr);
+      console.log("pmtArr", pmtArr);
+      setTxnArray(txs);
       setIsLoading(false);
     };
     fetchFeeOption();
@@ -97,7 +99,7 @@ const AddLP: React.FC = () => {
   }, [provider]);
 
   const makeTx = async () => {
-    if (!wallet || !walletState || !web3Provider) return;
+    if (!wallet || !walletState || !web3Provider || !txnArray) return;
     try {
       const relayer = new RestRelayer({
         url: "https://sdk-relayer.staging.biconomy.io/api/v1/relay",
@@ -105,7 +107,7 @@ const AddLP: React.FC = () => {
 
       // to do transaction on smart account we need to set relayer
       let smartAccount = wallet;
-      smartAccount.setRelayer(relayer);
+      await smartAccount.setRelayer(relayer);
       showInfoMessage("Setting Relayer");
 
       // currently step 1 building wallet transaction
@@ -202,14 +204,12 @@ const AddLP: React.FC = () => {
   return (
     <main className={classes.main}>
       <p style={{ color: "#7E7E7E" }}>
-        Use Cases {"->"} Gas paid by user {"->"} USDC Liquidity on Hyphen
+        Use Cases {"->"} Forward {"->"} USDC Liquidity on Hyphen
       </p>
 
       <h3 className={classes.subTitle}>Approve and Add Liquidity in Hyphen</h3>
 
       <p>
-        {/*This magic bundle will swap WETH to USDC first and then provide the USDC
-        liquidity to Hyphen Pool.*/}
         This magic bundle will approve USDC then provide the USDC liquidity to
         Hyphen Pool
       </p>
@@ -217,8 +217,6 @@ const AddLP: React.FC = () => {
       <h3 className={classes.h3Title}>Transaction Batched</h3>
       <ul>
         <li>Deploy Wallet if not already deployed</li>
-        {/*<li>Approve WETH</li>
-        <li>Swap to USDC</li>*/}
         <li>Approve USDC</li>
         <li>Provide USDC Liquidity on Hyphen</li>
       </ul>
@@ -287,4 +285,4 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default AddLP;
+export default AddLPForward;

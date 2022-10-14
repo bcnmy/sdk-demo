@@ -77,13 +77,14 @@ export const SmartAccountProvider = ({ children }: any) => {
     try {
       setLoading(true);
       const walletProvider = new ethers.providers.Web3Provider(provider);
-
+      console.log("walletProvider", walletProvider);
       // New instance, all config params are optional
       const wallet = new SmartAccount(walletProvider, {
         activeNetworkId: activeChainId,
         supportedNetworksIds: supportedChains,
         // backend_url: 'http://localhost:3000/v1'
       });
+      console.log("wallet", wallet);
 
       // Wallet initialization to fetch wallet info
       const smartAccount = await wallet.init();

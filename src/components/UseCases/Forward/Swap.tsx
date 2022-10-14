@@ -10,15 +10,15 @@ import JSBI from "jsbi";
 import { Percent } from "@uniswap/sdk-core";
 // import { default as IUniswapV3PoolABI } from "@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json";
 // import { default as QuoterABI } from '@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json'
-import Button from "../Button";
-import { useWeb3AuthContext } from "../../contexts/Web3AuthContext";
-import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
+import Button from "../../Button";
+import { useWeb3AuthContext } from "../../../contexts/Web3AuthContext";
+import { useSmartAccountContext } from "../../../contexts/SmartAccountContext";
 import {
   configInfo as config,
   showSuccessMessage,
   showInfoMessage,
   showErrorMessage,
-} from "../../utils";
+} from "../../../utils";
 import { GasLimit } from "@biconomy-sdk/core-types";
 
 const ethersProvider = new ethers.providers.JsonRpcProvider(

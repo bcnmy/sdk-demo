@@ -1,7 +1,10 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import AddLP from "./AddLP";
-import Swap from "./Swap";
+import AddLPForward from "./Forward/AddLP";
+import SwapForward from "./Forward/Swap";
+import SingleTransaction from "./AA/SingleTransaction"
+import BatchTransaction from "./AA/BatchTransaction"
+import BatchDeployTxn from "./AA/BatchDeployTxn"
 
 interface Props {
   useCase: number;
@@ -12,9 +15,15 @@ const UseCases: React.FC<Props> = ({ useCase, setUseCase }) => {
   const classes = useStyles();
 
   if (useCase === 1) {
-    return <AddLP />;
+    return <AddLPForward />;
   } else if (useCase === 2) {
-    return <Swap />;
+    return <SwapForward />;
+  } else if (useCase === 3) {
+    return <SingleTransaction />;
+  } else if (useCase === 4) {
+    return <BatchTransaction />;
+  } else if (useCase === 5) {
+    return <BatchDeployTxn />;
   }
 
   return (
@@ -22,14 +31,23 @@ const UseCases: React.FC<Props> = ({ useCase, setUseCase }) => {
       <h3 className={classes.subTitle}>{"Smart Account Use Cases"}</h3>
       <p>User can do multiple things using smart account like → </p>
       <ul>
-        <li>Paying gas fee in any token.</li>
+        <li>Forward flow - Paying gas fee in any token.</li>
         <li>
-          Batching multiple different transaction in a single transaction.
+          Bundle - Batching multiple different transaction in a single transaction.
+        </li>
+        <li>
+          Account Abstraction - Send gasless transaction ~ batch them and let paymaster pay for your transaction.
         </li>
       </ul>
       <p style={{ marginBottom: 25 }}>
         Here we have added some use cases from which users can test out the sdk.
       </p>
+
+      <hr />
+      <p className={classes.subSubTitle}>
+        Forward Flow
+      </p>
+
       <div className={classes.container}>
         <div className={classes.element} onClick={() => setUseCase(1)}>
           <p className={classes.text} style={{ textAlign: "left" }}>
@@ -52,7 +70,48 @@ const UseCases: React.FC<Props> = ({ useCase, setUseCase }) => {
           </p>
           <ul>
             <li style={{ marginBottom: 10 }}>Approve USDC.</li>
-            <li style={{ marginBottom: 10 }}>Swap USDC to WETH</li>
+            <li style={{ marginBottom: 10 }}>Swap USDC to WETH on Uniswap</li>
+          </ul>
+        </div>
+      </div>
+
+      <hr />
+      <p className={classes.subSubTitle}>
+        AA ~ Gasless Flow
+      </p>
+      <div className={classes.container}>
+        <div className={classes.element} onClick={() => setUseCase(3)}>
+          <p className={classes.text} style={{ textAlign: "left" }}>
+            Gasless transaction:
+          </p>
+          <ul>
+            <li style={{ marginBottom: 10 }}>Approve USDC.</li>
+            <li style={{ marginBottom: 10 }}>
+              Send tx (paid via paymaster).
+            </li>
+          </ul>
+        </div>
+
+        <div className={classes.element} onClick={() => setUseCase(4)}>
+          <p className={classes.text} style={{ textAlign: "left" }}>
+            Batch Gasless:
+          </p>
+          <ul>
+            <li style={{ marginBottom: 10 }}>Approve USDC.</li>
+            <li style={{ marginBottom: 10 }}>Provide USDC Liquidity on Hyphen.</li>
+          </ul>
+        </div>
+
+        <div className={classes.element} onClick={() => setUseCase(5)}>
+          <p className={classes.text} style={{ textAlign: "left" }}>
+            Batch Gasless:
+          </p>
+          <ul>
+            <li style={{ marginBottom: 10 }}>
+              Deploy Wallet if not already deployed.
+            </li>
+            <li style={{ marginBottom: 10 }}>Approve USDC.</li>
+            <li style={{ marginBottom: 10 }}>Provide USDC Liquidity on Hyphen.</li>
           </ul>
         </div>
       </div>
@@ -72,10 +131,17 @@ const useStyles = makeStyles(() => ({
     color: "#BDC2FF",
     fontSize: 28,
   },
+  subSubTitle: {
+    fontFamily: "Rubik",
+    color: "#BDC2FF",
+    fontSize: 20,
+    marginLeft: 20,
+    marginTop: 10
+  },
   container: {
     width: "100%",
     display: "flex",
-    // justifyContent: "space-between",
+    marginBottom: 40,
     gap: 20,
     "@media (max-width: 699px)": {
       width: "90%",
