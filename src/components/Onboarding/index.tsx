@@ -38,15 +38,26 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
       const relayer = new LocalRelayer(
         getEOAWallet(process.env.REACT_APP_PKEY || "", null)
       );
-      // console.log(relayer);
+
+      console.log('relayer');
+      console.log(relayer);
       const context = smartAccount.getSmartAccountContext();
+
+      try{
       const deployment = await relayer.deployWallet({
         config: state,
         context,
         index: 0,
       }); // index 0
+
       const res = await deployment.wait(1);
       console.log(res);
+    } catch(err) {
+      console.log('fails here')
+      console.log(err)
+    }
+      
+      
       getSmartAccount();
       showSuccessMessage("Smart Account deployed");
       setDeployLoading1(false);

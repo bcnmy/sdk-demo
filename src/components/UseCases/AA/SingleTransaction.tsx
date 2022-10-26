@@ -26,11 +26,14 @@ const SingleTransaction: React.FC = () => {
         config.usdc.abi,
         web3Provider
       );
+      console.log('AA single txn')
+      console.log('smartAccount.address ', smartAccount.address)
       const approveUSDCTx = await usdcContract.populateTransaction.approve(
         config.hyphenLP.address,
         ethers.BigNumber.from("1000000"),
         { from: smartAccount.address }
       );
+      console.log(approveUSDCTx.data)
       const tx1 = {
         to: config.usdc.address,
         data: approveUSDCTx.data,

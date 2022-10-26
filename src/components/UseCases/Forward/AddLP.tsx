@@ -143,6 +143,7 @@ const AddLPForward: React.FC = () => {
         to: config.hyphenLP.address,
         data: hyphenLPTx.data,
       };
+      // comment below line (if estimation fails) to double check reason is not hyophen LP
       txs.push(tx2);
 
       console.log("Tx array created", txs);
