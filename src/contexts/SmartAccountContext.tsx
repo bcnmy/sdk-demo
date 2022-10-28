@@ -4,6 +4,7 @@ import SmartAccount from "@biconomy-sdk/smart-account";
 import {
   SmartAccountState,
   SmartAccountVersion,
+  SignTypeMethod,
 } from "@biconomy-sdk/core-types";
 import { supportedChains, activeChainId } from "../utils/chainConfig";
 import { useWeb3AuthContext } from "./Web3AuthContext";
@@ -80,9 +81,11 @@ export const SmartAccountProvider = ({ children }: any) => {
       console.log("walletProvider", walletProvider);
       // New instance, all config params are optional
       const wallet = new SmartAccount(walletProvider, {
+        // signType: SignTypeMethod.PERSONAL_SIGN,
         activeNetworkId: activeChainId,
         supportedNetworksIds: supportedChains,
-        // backend_url: 'http://localhost:3000/v1'
+        // backend_url: 'http://localhost:3000/v1',
+        // relayer_url: 'https://sdk-relayer-preview.staging.biconomy.io/api/v1/relay'
       });
       console.log("wallet", wallet);
 
