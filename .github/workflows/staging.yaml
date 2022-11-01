@@ -26,10 +26,6 @@ jobs:
       - name: Generate build
         run: |
           yarn install
-          cd node_modules/@uniswap/v3-periphery
-          npm i
-          npx hardhat compile
-          cd ../..
           yarn run build
         env:
           CI: false
