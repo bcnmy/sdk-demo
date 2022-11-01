@@ -27,9 +27,9 @@ jobs:
         run: |
           yarn install
           cd node_modules/@uniswap/v3-periphery
-          yarn
+          npm i
           npx hardhat compile
-          cd -
+          cd ../..
           yarn run build
         env:
           CI: false
