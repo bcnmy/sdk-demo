@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         node-version: [16.13.2]
-    
+
     steps:
       - uses: actions/checkout@v2
 
@@ -26,6 +26,10 @@ jobs:
       - name: Generate build
         run: |
           yarn install
+          cd node_modules/@uniswap/v3-periphery
+          yarn
+          npx hardhat compile
+          cd -
           yarn run build
         env:
           CI: false
@@ -35,7 +39,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }} 
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           role-session-name: staging-deploy
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
 
