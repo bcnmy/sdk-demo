@@ -85,7 +85,8 @@ export const SmartAccountProvider = ({ children }: any) => {
         activeNetworkId: activeChainId,
         supportedNetworksIds: supportedChains,
         // backend_url: 'http://localhost:3000/v1',
-        // relayer_url: 'https://sdk-relayer-preview.staging.biconomy.io/api/v1/relay'
+        relayer_url: 'https://sdk-relayer.staging.biconomy.io/api/v1/relay',
+        bundlerUrl: 'https://sdk-relayer.staging.biconomy.io/api/v1/relay',
       });
       console.log("wallet", wallet);
 

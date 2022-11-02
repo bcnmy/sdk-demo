@@ -37,7 +37,7 @@ const AddLPForward: React.FC = () => {
       });
       // to do transaction on smart account we need to set relayer
       let smartAccount = wallet;
-      await smartAccount.setRelayer(relayer);
+      // await smartAccount.setRelayer(relayer);
       const txs = [];
       const usdcContract = new ethers.Contract(
         config.usdc.address,
@@ -69,7 +69,7 @@ const AddLPForward: React.FC = () => {
         to: config.hyphenLP.address,
         data: hyphenLPTx.data,
       };
-      txs.push(tx2);
+      // txs.push(tx2);
       console.log("Tx array created", txs);
       // prepare refund txn batch before so that we have accurate token gas price
       const feeQuotes = await smartAccount.prepareRefundTransactionBatch({
@@ -107,7 +107,7 @@ const AddLPForward: React.FC = () => {
 
       // to do transaction on smart account we need to set relayer
       let smartAccount = wallet;
-      await smartAccount.setRelayer(relayer);
+      // await smartAccount.setRelayer(relayer);
       showInfoMessage("Setting Relayer");
 
       // currently step 1 building wallet transaction
@@ -144,7 +144,7 @@ const AddLPForward: React.FC = () => {
         data: hyphenLPTx.data,
       };
       // comment below line (if estimation fails) to double check reason is not hyophen LP
-      txs.push(tx2);
+      // txs.push(tx2);
 
       console.log("Tx array created", txs);
 
