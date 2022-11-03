@@ -40,6 +40,8 @@ const SingleTransaction: React.FC = () => {
       };
 
       const txHash = await smartAccount.sendGasLessTransaction({ transaction: tx1 });
+      console.log('response txHash object')
+      console.log(txHash)
       showSuccessMessage(`Transaction sent: ${txHash}`);
 
       // check if tx is mined
