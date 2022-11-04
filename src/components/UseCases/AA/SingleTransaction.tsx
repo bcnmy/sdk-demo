@@ -20,7 +20,6 @@ const SingleTransaction: React.FC = () => {
     if (!wallet || !walletState || !web3Provider) return;
     try {
       let smartAccount = wallet;
-
       const usdcContract = new ethers.Contract(
         config.usdc.address,
         config.usdc.abi,
@@ -39,17 +38,29 @@ const SingleTransaction: React.FC = () => {
         data: approveUSDCTx.data,
       };
 
+      smartAccount.on('txHashGenerated', (response: any) => {
+        console.log('txHashGenerated event received via emitter', response);
+      });
+
+      smartAccount.on('txMined', (response: any) => {
+        console.log('txMined event received via emitter', response);
+      });
+
+      smartAccount.on('error', (response: any) => {
+        console.log('error event received via emitter', response);
+      });
+
       const txHash = await smartAccount.sendGasLessTransaction({ transaction: tx1 });
-      console.log('response txHash object')
-      console.log(txHash)
-      showSuccessMessage(`Transaction sent: ${txHash}`);
+      console.log('response txHash')
+      console.log(txHash.hash)
+      showSuccessMessage(`Transaction mined: ${txHash.hash}`);
 
       // check if tx is mined
-      web3Provider.once(txHash.hash, (transaction: any) => {
-        // Emitted when the transaction has been mined
-        console.log("txn_mined:", transaction);
-        showSuccessMessage(`Transaction mined: ${txHash.hash}`);
-      });
+      // web3Provider.once(txHash.hash, (transaction: any) => {
+      //   // Emitted when the transaction has been mined
+      //   console.log("txn_mined:", transaction);
+      //   showSuccessMessage(`Transaction mined: ${txHash.hash}`);
+      // });
     } catch (err: any) {
       console.error(err);
       showErrorMessage(err.message || "Error in sending the transaction");
