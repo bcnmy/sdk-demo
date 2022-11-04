@@ -37,6 +37,20 @@ const AddLPForward: React.FC = () => {
       });
       // to do transaction on smart account we need to set relayer
       let smartAccount = wallet;
+      //set listener for transaction
+
+      smartAccount.on('txHashGenerated', (response: any) => {
+        console.log('txHashGenerated event received in AddLP via emitter', response);
+      });
+
+      smartAccount.on('txMined', (response: any) => {
+        console.log('txMined event received in AddLP via emitter', response);
+      });
+
+      smartAccount.on('error', (response: any) => {
+        console.log('error event received in AddLP via emitter', response);
+      });
+
       // await smartAccount.setRelayer(relayer);
       const txs = [];
       const usdcContract = new ethers.Contract(
