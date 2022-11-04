@@ -40,20 +40,22 @@ const SingleTransaction: React.FC = () => {
 
       smartAccount.on('txHashGenerated', (response: any) => {
         console.log('txHashGenerated event received via emitter', response);
+        showSuccessMessage(`Transaction sent: ${response.hash}`);
       });
 
       smartAccount.on('txMined', (response: any) => {
         console.log('txMined event received via emitter', response);
+        showSuccessMessage(`Transaction mined: ${response.hash}`);
       });
 
       smartAccount.on('error', (response: any) => {
         console.log('error event received via emitter', response);
       });
 
-      const txHash = await smartAccount.sendGasLessTransaction({ transaction: tx1 });
-      console.log('response txHash')
-      console.log(txHash.hash)
-      showSuccessMessage(`Transaction mined: ${txHash.hash}`);
+      const txResponse = await smartAccount.sendGasLessTransaction({ transaction: tx1 });
+      console.log('tx response')
+      console.log(txResponse.hash) // Note! : for AA this will actually be a request id
+      
 
       // check if tx is mined
       // web3Provider.once(txHash.hash, (transaction: any) => {
