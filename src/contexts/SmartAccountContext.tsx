@@ -9,6 +9,13 @@ import {
 import { supportedChains, activeChainId } from "../utils/chainConfig";
 import { useWeb3AuthContext } from "./Web3AuthContext";
 
+export const ChainId = {
+  MAINNET: 1, // Ethereum
+  GOERLI: 5,
+  POLYGON_MUMBAI: 80001,
+  POLYGON_MAINNET: 137,
+};
+
 // Types
 type Balance = {
   totalBalanceInUsd: number;
@@ -84,9 +91,17 @@ export const SmartAccountProvider = ({ children }: any) => {
         // signType: SignTypeMethod.PERSONAL_SIGN,
         activeNetworkId: activeChainId,
         supportedNetworksIds: supportedChains,
-        // backend_url: 'http://localhost:3000/v1',
+        // backend_url: 'https://sdk-backend.prod.biconomy.io/v1',
         relayer_url: 'https://sdk-relayer.staging.biconomy.io/api/v1/relay',
-        bundlerUrl: 'https://sdk-relayer.staging.biconomy.io/api/v1/relay',
+        // bundlerUrl: 'http://localhost:3005/rpc',
+        /*networkConfig: [
+          {
+          chainId: ChainId.GOERLI,
+          // dummy
+          dappAPIKey: 'gUv-7Xh-M.aa270a76-a1aa-4e79-bab5-8d857161c561',
+          // if need to override // providerUrl: 
+        }
+      ]*/
       });
       console.log("wallet", wallet);
 
