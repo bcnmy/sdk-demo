@@ -39,7 +39,10 @@ const BatchTransaction: React.FC = () => {
       const hyphenLPTx =
         await hyphenContract.populateTransaction.addTokenLiquidity(
           config.usdc.address,
-          ethers.BigNumber.from("1000000")
+          ethers.BigNumber.from("1000000"),
+          {
+            from: smartAccount.address
+          }
         );
       const tx2 = {
         to: config.hyphenLP.address,

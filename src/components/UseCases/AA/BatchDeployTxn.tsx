@@ -45,7 +45,7 @@ const BatchDeployTxn: React.FC = () => {
         to: config.hyphenLP.address,
         data: hyphenLPTx.data,
       };
-      txs.push(tx2);
+      // txs.push(tx2);
 
       const response = await smartAccount.sendGaslessTransactionBatch({ transactions: txs });
 

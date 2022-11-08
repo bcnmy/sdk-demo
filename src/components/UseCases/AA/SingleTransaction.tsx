@@ -20,7 +20,6 @@ const SingleTransaction: React.FC = () => {
     if (!wallet || !walletState || !web3Provider) return;
     try {
       let smartAccount = wallet;
-
       const usdcContract = new ethers.Contract(
         config.usdc.address,
         config.usdc.abi,
@@ -39,15 +38,31 @@ const SingleTransaction: React.FC = () => {
         data: approveUSDCTx.data,
       };
 
-      const txHash = await smartAccount.sendGasLessTransaction({ transaction: tx1 });
-      showSuccessMessage(`Transaction sent: ${txHash}`);
+      smartAccount.on('txHashGenerated', (response: any) => {
+        console.log('txHashGenerated event received via emitter', response);
+        showSuccessMessage(`Transaction sent: ${response.hash}`);
+      });
+
+      smartAccount.on('txMined', (response: any) => {
+        console.log('txMined event received via emitter', response);
+        showSuccessMessage(`Transaction mined: ${response.hash}`);
+      });
+
+      smartAccount.on('error', (response: any) => {
+        console.log('error event received via emitter', response);
+      });
+
+      const txResponse = await smartAccount.sendGasLessTransaction({ transaction: tx1 });
+      console.log('tx response')
+      console.log(txResponse.hash) // Note! : for AA this will actually be a request id
+      
 
       // check if tx is mined
-      web3Provider.once(txHash.hash, (transaction: any) => {
-        // Emitted when the transaction has been mined
-        console.log("txn_mined:", transaction);
-        showSuccessMessage(`Transaction mined: ${txHash.hash}`);
-      });
+      // web3Provider.once(txHash.hash, (transaction: any) => {
+      //   // Emitted when the transaction has been mined
+      //   console.log("txn_mined:", transaction);
+      //   showSuccessMessage(`Transaction mined: ${txHash.hash}`);
+      // });
     } catch (err: any) {
       console.error(err);
       showErrorMessage(err.message || "Error in sending the transaction");

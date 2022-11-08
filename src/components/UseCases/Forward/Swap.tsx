@@ -124,7 +124,7 @@ const Swap: React.FC = () => {
           to: uniswapTx.to,
           data: uniswapTx.data,
         };
-        txs.push(tx2);
+        // txs.push(tx2);
         console.log("Tx array created", txs);
         setTxnArray(txs);
 
