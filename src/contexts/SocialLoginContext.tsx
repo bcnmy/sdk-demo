@@ -100,7 +100,16 @@ export const Web3AuthProvider = ({ children }: any) => {
     }
     setLoading(true);
     const sdk = new SocialLogin();
-    await sdk.init(ethers.utils.hexValue(5));
+    // const proof = await sdk.whitelistUrl("", "http://sdk-staging.biconomy.io");
+    // console.log("proof", proof);
+    await sdk.init(ethers.utils.hexValue(5), {
+      "https://sdk-staging.biconomy.io":
+        "MEUCIQDGT4pzu8GStArnh19bG4jBrBrzI8kO5YbZg2I_ShVFigIgWXtobCl4bMNxGUgKJfCMylvM5AtGZyrZLwJ_1aGVlu4",
+      "http://sdk-staging.biconomy.io":
+        "MEUCIQDWedAc9mhlinYJjPs9kam4dTBl8P8mBPscYsI_t2hQ4wIgSSWkOEYSvC9wFtHjFwQVSUleWaoarsE9C0tnj2M7yec",
+      // "http://localhost:3000":
+      //   "MEUCIQDCrwqCFSAoivC8NfJdHv9WneLfdMADQCUitF6zs2QCagIgOdh3_6dZ81Le1PFzNfDLSImuugEb46Tz64SjOcQWcZA",
+    });
     sdk.showConnectModal();
     sdk.showWallet();
     setSocialLoginSDK(sdk);
