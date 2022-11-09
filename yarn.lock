@@ -1129,10 +1129,21 @@
     "@openzeppelin/contracts" "^4.7.3"
     ethers "^5.7.0"
 
-"@biconomy-sdk/core-types@*", "@biconomy-sdk/core-types@1.0.22":
+"@biconomy-sdk/core-types@*":
   version "1.0.22"
   resolved "https://registry.yarnpkg.com/@biconomy-sdk/core-types/-/core-types-1.0.22.tgz#3e27a2c63bf346de674304a842866ef093df9e75"
   integrity sha512-IXM66rPet89hKoOW0V8xoHHMTAnwNX9x2hAnyVx9mATYSqU/5PxFYONNUkmDCRR0Pt6RvhNroQ6XfimabqEnHw==
+  dependencies:
+    "@ethersproject/bignumber" "^5.6.0"
+    "@ethersproject/contracts" "^5.6.0"
+    "@ethersproject/providers" "^5.6.8"
+    "@gnosis.pm/safe-deployments" "^1.16.0"
+    web3-core "^1.7.1"
+
+"@biconomy-sdk/core-types@1.0.23":
+  version "1.0.23"
+  resolved "https://registry.yarnpkg.com/@biconomy-sdk/core-types/-/core-types-1.0.23.tgz#fe3fc66aef2d2702bfafd992aa11cb40797d1df0"
+  integrity sha512-Mstip3taM0pd4pho16+O0o4Xag6J7uElW5Ywkx6AiyaCqudAzkTNuYmlKyeXv37oo0dAJsB7A6Z8I05ORQO78w==
   dependencies:
     "@ethersproject/bignumber" "^5.6.0"
     "@ethersproject/contracts" "^5.6.0"
@@ -1163,7 +1174,7 @@
     "@nomiclabs/hardhat-ethers" "^2.1.0"
     node-fetch "^2.6.6"
 
-"@biconomy-sdk/relayer@*", "@biconomy-sdk/relayer@1.0.22":
+"@biconomy-sdk/relayer@*":
   version "1.0.22"
   resolved "https://registry.yarnpkg.com/@biconomy-sdk/relayer/-/relayer-1.0.22.tgz#de334172d06a83da6669d13530dd1ce21dfd570d"
   integrity sha512-gmuY/3473f7we5VK034IHQ9eS6DzH1SdWdOXgMnzEutW8S+GudHV+SaAYCqF8gOOs2wvHiyo6pU5XXP06Y2RmQ==
@@ -1174,10 +1185,21 @@
     isomorphic-ws "^5.0.0"
     messaging-sdk "^0.0.3"
 
-"@biconomy-sdk/smart-account@1.0.22":
-  version "1.0.22"
-  resolved "https://registry.yarnpkg.com/@biconomy-sdk/smart-account/-/smart-account-1.0.22.tgz#dfc874465aef541e43cd940638595a432a8d9420"
-  integrity sha512-1oAvDuRN6oHVLcjZ0EgCOqImdQUY6FixsN9RqrkkYSF95ggsWTAtYgSkqUG/Mkaw/taHh7EKc9L9lhvtNf9k/g==
+"@biconomy-sdk/relayer@1.0.23":
+  version "1.0.23"
+  resolved "https://registry.yarnpkg.com/@biconomy-sdk/relayer/-/relayer-1.0.23.tgz#cbeba4102a68aa8eefccf6416689bd7121f311c9"
+  integrity sha512-FWcIUFM/NmQkwcleaNyfjYYzrqh9489PwVb3xU6Fa4fN8GWHdziCecR4qzs/KRrRddSqQMofLiiTLo9Zrr2JxQ==
+  dependencies:
+    "@biconomy-sdk/core-types" "*"
+    "@ethersproject/providers" "^5.6.8"
+    ethers "^5.6.9"
+    isomorphic-ws "^5.0.0"
+    messaging-sdk "^0.0.3"
+
+"@biconomy-sdk/smart-account@1.0.23":
+  version "1.0.23"
+  resolved "https://registry.yarnpkg.com/@biconomy-sdk/smart-account/-/smart-account-1.0.23.tgz#4dd81af076331f42e0979d68e65fe610e6ad54ec"
+  integrity sha512-4bEZB/wdcflIMQRN005Pxb1idiHtVYOZjux9HjIvVMrq3WC/I06KjF5u/97rJ7H7N80zGMqHUn7G7Aj3xxHcHA==
   dependencies:
     "@0xsequence/network" "^0.41.0"
     "@biconomy-sdk/account-abstraction" "*"
@@ -1195,7 +1217,7 @@
     concurrently "^7.4.0"
     lodash "^4.17.21"
 
-"@biconomy-sdk/transactions@*", "@biconomy-sdk/transactions@1.0.22":
+"@biconomy-sdk/transactions@*":
   version "1.0.22"
   resolved "https://registry.yarnpkg.com/@biconomy-sdk/transactions/-/transactions-1.0.22.tgz#fe0f7fc51c1bc9912cd82a6f7a0b019732a06f3e"
   integrity sha512-WPj4kFUNRPtl6sCtg8hpPxxpuZeOStz+FqqyZqDNLNzrUtxXxN6tDsCG+sUfpSDXuf0yFU/Y91eGfnfvAUEg0g==
@@ -1209,10 +1231,24 @@
     ethereumjs-util "^7.1.5"
     ethers "^5.6.9"
 
-"@biconomy-sdk/web3-auth@^1.0.22":
-  version "1.0.22"
-  resolved "https://registry.yarnpkg.com/@biconomy-sdk/web3-auth/-/web3-auth-1.0.22.tgz#30aeb1b90f7a7651c875fdb23128ae1049bc5a83"
-  integrity sha512-jhULUGJ4AWWEhV1yS79BTMqHI5eeh/qDdaHplf6+gJfjgp8s/2XyvT96cZL4/Ij2iIaLRvs2B2jJkCPfOawGlw==
+"@biconomy-sdk/transactions@1.0.23":
+  version "1.0.23"
+  resolved "https://registry.yarnpkg.com/@biconomy-sdk/transactions/-/transactions-1.0.23.tgz#386455d762511029883e1897362810fd06f04e0a"
+  integrity sha512-MPpys/DAeeTVs5zyQ1ntRbECRszDzVEtx63NfcurEk0QkGW1s9nMIK9VtbPgrghwOx7hr8uRbxj1DyY88qbrsA==
+  dependencies:
+    "@biconomy-sdk/core-types" "*"
+    "@biconomy-sdk/ethers-lib" "*"
+    "@biconomy-sdk/node-client" "*"
+    "@biconomy-sdk/relayer" "*"
+    "@ethersproject/abstract-signer" "^5.6.2"
+    "@ethersproject/constants" "^5.6.1"
+    ethereumjs-util "^7.1.5"
+    ethers "^5.6.9"
+
+"@biconomy-sdk/web3-auth@^1.0.23":
+  version "1.0.23"
+  resolved "https://registry.yarnpkg.com/@biconomy-sdk/web3-auth/-/web3-auth-1.0.23.tgz#acd263d6799db0673558368a81c8ddc5476c85b7"
+  integrity sha512-QVD6cgRZ6nRFZTQagyuqJTr7r8CtWAb0evgWw09DUBiTdEwaPrATJR4qj+q1CdgSvlw/WP+oKYwZ7YbtkRHvew==
   dependencies:
     "@toruslabs/eccrypto" "^1.1.8"
     "@toruslabs/openlogin-utils" "^2.1.0"
