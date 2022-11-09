@@ -77,6 +77,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
       setDeployLoading2(true);
       const relayer = new RestRelayer({
         url: "https://sdk-relayer.staging.biconomy.io/api/v1/relay",
+        socketServerUrl: 'wss://sdk-testing-ws.staging.biconomy.io/connection/websocket'
       });
       smartAccount.setRelayer(relayer);
 

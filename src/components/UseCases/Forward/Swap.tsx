@@ -74,6 +74,7 @@ const Swap: React.FC = () => {
         // to do transaction on smart account we need to set relayer
         const relayer = new RestRelayer({
           url: "https://sdk-relayer.staging.biconomy.io/api/v1/relay",
+          socketServerUrl: 'wss://sdk-testing-ws.staging.biconomy.io/connection/websocket'
         });
         wallet.setRelayer(relayer);
 

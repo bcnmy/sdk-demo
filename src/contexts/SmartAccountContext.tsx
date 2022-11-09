@@ -91,17 +91,17 @@ export const SmartAccountProvider = ({ children }: any) => {
         // signType: SignTypeMethod.PERSONAL_SIGN,
         activeNetworkId: activeChainId,
         supportedNetworksIds: supportedChains,
-        // backend_url: 'https://sdk-backend.prod.biconomy.io/v1',
-        relayer_url: 'https://sdk-relayer.staging.biconomy.io/api/v1/relay',
+        // backendUrl: 'https://sdk-backend.prod.biconomy.io/v1',
+        relayerUrl: 'https://sdk-relayer.staging.biconomy.io/api/v1/relay',
         // bundlerUrl: 'http://localhost:3005/rpc',
-        /*networkConfig: [
+        networkConfig: [
           {
           chainId: ChainId.GOERLI,
           // dummy
           dappAPIKey: 'gUv-7Xh-M.aa270a76-a1aa-4e79-bab5-8d857161c561',
           // if need to override // providerUrl: 
         }
-      ]*/
+      ]
       });
       console.log("wallet", wallet);
 

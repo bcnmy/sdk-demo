@@ -34,6 +34,7 @@ const AddLPForward: React.FC = () => {
       if (!wallet || !walletState || !web3Provider) return;
       const relayer = new RestRelayer({
         url: "https://sdk-relayer.staging.biconomy.io/api/v1/relay",
+        socketServerUrl: 'wss://sdk-testing-ws.staging.biconomy.io/connection/websocket'
       });
       // to do transaction on smart account we need to set relayer
       let smartAccount = wallet;
@@ -117,6 +118,7 @@ const AddLPForward: React.FC = () => {
     try {
       const relayer = new RestRelayer({
         url: "https://sdk-relayer.staging.biconomy.io/api/v1/relay",
+        socketServerUrl: 'wss://sdk-testing-ws.staging.biconomy.io/connection/websocket'
       });
 
       // to do transaction on smart account we need to set relayer
