@@ -1,21 +1,21 @@
 import { useState } from "react";
 import { AppBar } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { useWeb3AuthContext } from "../contexts/Web3AuthContext";
+import { useWeb3AuthContext } from "../contexts/SocialLoginContext";
 import { useSmartAccountContext } from "../contexts/SmartAccountContext";
 import Button from "./Button";
 import {
   copyToClipBoard,
   ellipseAddress,
-  showErrorMessage,
-  showSuccessMessage,
+  // showErrorMessage,
+  // showSuccessMessage,
 } from "../utils";
 
 const Navbar = () => {
   const classes = useStyles();
   const { disconnect } = useWeb3AuthContext();
   const {
-    getSmartAccount,
+    // getSmartAccount,
     loading,
     selectedAccount,
     smartAccountsArray,
@@ -27,11 +27,11 @@ const Navbar = () => {
     showModal ? setShowModal(false) : setShowModal(true);
   };
 
-  const getSmartAccountFunc = async () => {
-    const error = await getSmartAccount();
-    if (error) showErrorMessage(error);
-    else showSuccessMessage("Fetched smart account state");
-  };
+  // const getSmartAccountFunc = async () => {
+  //   const error = await getSmartAccount();
+  //   if (error) showErrorMessage(error);
+  //   else showSuccessMessage("Fetched smart account state");
+  // };
 
   const disconnectWallet = () => {
     disconnect();
@@ -113,7 +113,7 @@ const useStyles = makeStyles((theme: any) => ({
     boxShadow: "none",
     background: "inherit",
     // marginBottom: "40px",
-    borderBottom: "2px solid #CDF0EA",
+    borderBottom: "2px solid #393E46",
     "@media (max-width:1100px)": {
       padding: "0 20px",
     },
@@ -146,7 +146,7 @@ const useStyles = makeStyles((theme: any) => ({
   modal: {
     position: "absolute",
     top: 24,
-    right: 9,
+    right: 10,
     backgroundColor: "#21325E",
     borderLeft: "2px solid #3E497A",
     borderRight: "2px solid #3E497A",
@@ -166,10 +166,9 @@ const useStyles = makeStyles((theme: any) => ({
     },
   },
   element: {
-    width: "220",
     padding: "0 5px",
     display: "flex",
-    border: "1px solid #F5E8E4",
+    // border: "1px solid #F5E8E4",
     justifyContent: "space-between",
     borderRadius: 10,
 

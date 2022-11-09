@@ -128,15 +128,14 @@ const useStyles = makeStyles(() => ({
   },
   subTitle: {
     fontFamily: "Rubik",
-    color: "#BDC2FF",
+    color: "#fff",
     fontSize: 28,
   },
   subSubTitle: {
     fontFamily: "Rubik",
     color: "#BDC2FF",
     fontSize: 20,
-    marginLeft: 20,
-    marginTop: 10
+    margin: 20
   },
   container: {
     width: "100%",
@@ -151,12 +150,12 @@ const useStyles = makeStyles(() => ({
   element: {
     cursor: "pointer",
     width: "30%",
-    backgroundColor: "#191F2A",
+    backgroundColor: "#1a1e23",
     height: 180,
     filter: "drop-shadow(0px 2px 24px rgba(0, 0, 0, 0.1))",
-    border: "2px solid #2C3333",
-    borderLeft: "solid 3px #2C3333",
-    boxShadow: "5px 5px 0px #2C3333",
+    border: "2px solid #000000",
+    borderLeft: "solid 3px #000000",
+    boxShadow: "5px 5px 0px #000000",
     borderRadius: 12,
     // height: "max-content",
     padding: 25,
@@ -168,13 +167,13 @@ const useStyles = makeStyles(() => ({
     },
 
     "&:hover": {
-      boxShadow: "2px 2px 0px #2C3333",
+      boxShadow: "2px 2px 0px #000000",
       // transform: "translate(5px, 5px)",
     },
   },
   text: {
     fontSize: 20,
-    color: "#BDC2FF",
+    color: "#fff",
     // wordBreak: "break-all",
   },
   subText: {

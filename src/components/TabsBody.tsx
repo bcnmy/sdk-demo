@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   tabs: {
-    borderRight: `3px solid #3E497A`,
+    borderRight: `3px solid #393E46`,
     padding: "30px 10px",
     width: "15%",
     "@media (max-width:699px)": {

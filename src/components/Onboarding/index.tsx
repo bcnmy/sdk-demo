@@ -130,7 +130,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
         <div className={classes.container}>
           <div className={classes.element}>
             <p className={classes.text}>
-              Demo dapp pays for wallet deployment cost.
+              Demo dapp pays for the wallet deployment cost.
             </p>
             <ul style={{ width: "100%" }}>
               <li style={{ marginBottom: 20 }}>Single click deployment.</li>
@@ -195,7 +195,7 @@ const useStyles = makeStyles(() => ({
   },
   subTitle: {
     fontFamily: "Rubik",
-    color: "#BDC2FF",
+    color: "#fff",
     fontSize: 28,
   },
   container: {
@@ -209,12 +209,12 @@ const useStyles = makeStyles(() => ({
   },
   element: {
     width: "27%",
-    backgroundColor: "#191F2A",
+    backgroundColor: "#1a1e23",
     height: 300,
     filter: "drop-shadow(0px 2px 24px rgba(0, 0, 0, 0.1))",
-    border: "2px solid #2C3333",
-    borderLeft: "solid 3px #2C3333",
-    boxShadow: "5px 5px 0px #2C3333",
+    border: "2px solid #000000",
+    borderLeft: "solid 3px #000000",
+    boxShadow: "5px 5px 0px #000000",
     borderRadius: 12,
     // height: "max-content",
     padding: 25,
@@ -229,7 +229,7 @@ const useStyles = makeStyles(() => ({
   },
   text: {
     fontSize: 20,
-    color: "#BDC2FF",
+    color: "#fff",
     // wordBreak: "break-all",
   },
   subText: {
