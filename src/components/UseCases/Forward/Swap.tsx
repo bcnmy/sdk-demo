@@ -11,7 +11,7 @@ import { Percent } from "@uniswap/sdk-core";
 // import { default as IUniswapV3PoolABI } from "@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json";
 // import { default as QuoterABI } from '@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json'
 import Button from "../../Button";
-import { useWeb3AuthContext } from "../../../contexts/Web3AuthContext";
+import { useWeb3AuthContext } from "../../../contexts/SocialLoginContext";
 import { useSmartAccountContext } from "../../../contexts/SmartAccountContext";
 import {
   configInfo as config,
@@ -263,7 +263,7 @@ const useStyles = makeStyles(() => ({
     fontSize: 28,
   },
   h3Title: {
-    color: "#BDC2FF",
+    color: "#fff",
   },
   container: {
     // backgroundColor: "rgb(29, 31, 33)",

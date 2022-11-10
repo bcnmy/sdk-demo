@@ -3,7 +3,7 @@ import App from "./App";
 import "./index.css";
 import "react-toastify/dist/ReactToastify.css";
 // import { Web3Provider } from "./contexts/Web3Context";
-import { Web3AuthProvider } from "./contexts/Web3AuthContext";
+import { Web3AuthProvider } from "./contexts/SocialLoginContext";
 import { SmartAccountProvider } from "./contexts/SmartAccountContext";
 
 const element = document.getElementById("root");

@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { ethers } from "ethers";
 import { makeStyles } from "@material-ui/core/styles";
 
 import Button from "../../Button";
-import { useWeb3AuthContext } from "../../../contexts/Web3AuthContext";
+import { useWeb3AuthContext } from "../../../contexts/SocialLoginContext";
 import { useSmartAccountContext } from "../../../contexts/SmartAccountContext";
 import {
   configInfo as config,
@@ -98,7 +98,7 @@ const useStyles = makeStyles(() => ({
     fontSize: 28,
   },
   h3Title: {
-    color: "#BDC2FF",
+    color: "#fff",
   },
   container: {
     // backgroundColor: "rgb(29, 31, 33)",

@@ -4,10 +4,9 @@ import SmartAccount from "@biconomy-sdk/smart-account";
 import {
   SmartAccountState,
   SmartAccountVersion,
-  SignTypeMethod,
 } from "@biconomy-sdk/core-types";
 import { supportedChains, activeChainId } from "../utils/chainConfig";
-import { useWeb3AuthContext } from "./Web3AuthContext";
+import { useWeb3AuthContext } from "./SocialLoginContext";
 
 export const ChainId = {
   MAINNET: 1, // Ethereum

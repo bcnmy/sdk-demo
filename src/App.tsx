@@ -4,16 +4,12 @@ import { ToastContainer } from "react-toastify";
 import Navbar from "./components/Navbar";
 import TabsBody from "./components/TabsBody";
 import { useSmartAccountContext } from "./contexts/SmartAccountContext";
-import { useWeb3AuthContext } from "./contexts/Web3AuthContext";
+import { useWeb3AuthContext } from "./contexts/SocialLoginContext";
 import Button from "./components/Button";
 
 const App: React.FC = () => {
   const classes = useStyles();
-  const {
-    connectWeb3,
-    address,
-    loading: eoaWalletLoading,
-  } = useWeb3AuthContext();
+  const { connect, address, loading: eoaWalletLoading } = useWeb3AuthContext();
   const { loading } = useSmartAccountContext();
 
   if (!address) {
@@ -30,7 +26,7 @@ const App: React.FC = () => {
         <h1 className={classes.title}>Biconomy SDK Demo</h1>
         <Button
           title="Get Started"
-          onClickFunc={connectWeb3}
+          onClickFunc={connect}
           isLoading={eoaWalletLoading}
           style={{
             fontSize: 20,
@@ -62,12 +58,13 @@ const App: React.FC = () => {
 
 const useStyles = makeStyles(() => ({
   bgCover: {
-    backgroundColor: "#19282F",
-    backgroundImage: `url(/img/northern-lights-bg.png)`,
+    backgroundColor: "#1a1e23",
+    // backgroundImage: `url(/img/northern-lights-bg.png)`,
     backgroundSize: "cover",
     width: "100%",
     minHeight: "100vh",
-    color: "#BDC2FF",
+    color: "#fff",
+    fontStyle: "italic",
   },
   container: {
     display: "flex",
