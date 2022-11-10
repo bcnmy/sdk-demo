@@ -6,7 +6,7 @@ import { CircularProgress } from "@material-ui/core";
 import { RestRelayer } from "@biconomy-sdk/relayer";
 import { GasLimit } from "@biconomy-sdk/core-types";
 import Button from "../../Button";
-import { useWeb3AuthContext } from "../../../contexts/Web3AuthContext";
+import { useWeb3AuthContext } from "../../../contexts/SocialLoginContext";
 import { useSmartAccountContext } from "../../../contexts/SmartAccountContext";
 import {
   configInfo as config,
@@ -32,6 +32,7 @@ const AddLPForward: React.FC = () => {
     const fetchFeeOption = async () => {
       setIsLoading(true);
       console.log('we here...')
+      console.log(wallet, walletState, web3Provider);
       if (!wallet || !walletState || !web3Provider) return;
       const relayer = new RestRelayer({
         url: "https://sdk-relayer.staging.biconomy.io/api/v1/relay",
