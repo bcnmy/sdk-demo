@@ -31,6 +31,7 @@ const AddLPForward: React.FC = () => {
   useEffect(() => {
     const fetchFeeOption = async () => {
       setIsLoading(true);
+      console.log('we here...')
       if (!wallet || !walletState || !web3Provider) return;
       const relayer = new RestRelayer({
         url: "https://sdk-relayer.staging.biconomy.io/api/v1/relay",
