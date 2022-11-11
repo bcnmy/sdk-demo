@@ -188,7 +188,7 @@ const Swap: React.FC = () => {
         gasLimit,
       });
       console.log(txHash);
-      showSuccessMessage(`Transaction sent: ${txHash}`);
+      // showSuccessMessage(`Transaction sent: ${txHash}`);
 
       // check if tx is mined
       web3Provider.once(txHash, (transaction: any) => {

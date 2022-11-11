@@ -7,6 +7,10 @@ import {
 } from "@biconomy-sdk/core-types";
 import { supportedChains, activeChainId } from "../utils/chainConfig";
 import { useWeb3AuthContext } from "./SocialLoginContext";
+import {
+  showSuccessMessage,
+  showErrorMessage,
+} from "../utils";
 
 export const ChainId = {
   MAINNET: 1, // Ethereum
@@ -108,6 +112,25 @@ export const SmartAccountProvider = ({ children }: any) => {
       const smartAccount = await wallet.init();
       setWallet(wallet);
       console.info("smartAccount", smartAccount);
+
+      smartAccount.on('txHashGenerated', (response: any) => {
+        console.log('txHashGenerated event received in AddLP via emitter', response);
+        showSuccessMessage(`Transaction sent: ${response.hash}`);
+      });
+
+      smartAccount.on('txHashChanged', (response: any) => {
+        console.log('txHashChanged event received in AddLP via emitter', response);
+        showSuccessMessage(`Transaction updated with hash: ${response.hash}`);
+      });
+
+      smartAccount.on('txMined', (response: any) => {
+        console.log('txMined event received in AddLP via emitter', response);
+        showSuccessMessage(`Transaction confirmed: ${response.hash}`);
+      });
+
+      smartAccount.on('error', (response: any) => {
+        console.log('error event received in AddLP via emitter', response);
+      });
 
       // get all smart account versions available and update in state
       const { data } = await smartAccount.getSmartAccountsByOwner({

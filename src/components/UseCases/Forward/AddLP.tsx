@@ -42,18 +42,6 @@ const AddLPForward: React.FC = () => {
       let smartAccount = wallet;
       //set listener for transaction
 
-      smartAccount.on('txHashGenerated', (response: any) => {
-        console.log('txHashGenerated event received in AddLP via emitter', response);
-      });
-
-      smartAccount.on('txMined', (response: any) => {
-        console.log('txMined event received in AddLP via emitter', response);
-      });
-
-      smartAccount.on('error', (response: any) => {
-        console.log('error event received in AddLP via emitter', response);
-      });
-
       // await smartAccount.setRelayer(relayer);
       const txs = [];
       const usdcContract = new ethers.Contract(
@@ -206,7 +194,7 @@ const AddLPForward: React.FC = () => {
         gasLimit,
       });
       console.log(txHash);
-      showSuccessMessage(`Transaction sent: ${txHash}`);
+      
 
       // check if tx is mined
       web3Provider.once(txHash, (transaction: any) => {

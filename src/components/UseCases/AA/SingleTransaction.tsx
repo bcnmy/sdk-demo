@@ -38,19 +38,7 @@ const SingleTransaction: React.FC = () => {
         data: approveUSDCTx.data,
       };
 
-      smartAccount.on('txHashGenerated', (response: any) => {
-        console.log('txHashGenerated event received via emitter', response);
-        showSuccessMessage(`Transaction sent: ${response.hash}`);
-      });
 
-      smartAccount.on('txMined', (response: any) => {
-        console.log('txMined event received via emitter', response);
-        showSuccessMessage(`Transaction mined: ${response.hash}`);
-      });
-
-      smartAccount.on('error', (response: any) => {
-        console.log('error event received via emitter', response);
-      });
 
       const txResponse = await smartAccount.sendGasLessTransaction({ transaction: tx1 });
       console.log('tx response')
