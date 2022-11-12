@@ -1,10 +1,11 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
+import { Web3Auth } from "@web3auth/web3auth";
+import { CHAIN_NAMESPACES } from "@web3auth/base";
+import { CoinbaseAdapter } from "@web3auth/coinbase-adapter";
 import { ethers } from "ethers";
-import WalletConnectProvider from "@walletconnect/web3-provider";
-import Web3Modal from "web3modal";
-import WalletLink from "walletlink";
+import { activeChainId, getRPCProvider } from "../utils/chainConfig";
 
-interface web3ContextType {
+interface web3AuthContextType {
   connectWeb3: () => Promise<void>;
   disconnect: () => Promise<void>;
   provider: any;
@@ -15,63 +16,35 @@ interface web3ContextType {
   address: string;
 }
 
-export const Web3Context = React.createContext<web3ContextType>({
+export const Web3AuthContext = React.createContext<web3AuthContextType>({
   connectWeb3: () => Promise.resolve(),
   disconnect: () => Promise.resolve(),
   loading: false,
   provider: null,
   ethersProvider: null,
   web3Provider: null,
-  chainId: 0,
+  chainId: activeChainId,
   address: "",
 });
 
-export const useWeb3Context = () => useContext(Web3Context);
+export const useWeb3AuthContext = () => useContext(Web3AuthContext);
 
-const INFURA_ID = "5ead597854fc415d97a3626c3fa39fb3";
+const CLIENT_ID =
+  "BEQgHQ6oRgaJXc3uMnGIr-AY-FLTwRinuq8xfgnInrnDrQZYXxDO0e53osvXzBXC1dcUTyD2Itf-zN1VEB8xZlo"; // TODO: in env
 
-const providerOptions = {
-  walletconnect: {
-    package: WalletConnectProvider,
-    options: {
-      infuraId: INFURA_ID,
-    },
+const web3auth = new Web3Auth({
+  clientId: CLIENT_ID,
+  chainConfig: {
+    chainNamespace: CHAIN_NAMESPACES.EIP155,
+    chainId: ethers.utils.hexValue(activeChainId),
+    rpcTarget: getRPCProvider(activeChainId),
   },
-  "custom-walletlink": {
-    display: {
-      logo: "https://play-lh.googleusercontent.com/PjoJoG27miSglVBXoXrxBSLveV6e3EeBPpNY55aiUUBM9Q1RCETKCOqdOkX2ZydqVf0",
-      name: "Coinbase",
-      description: "Connect to Coinbase Wallet (not Coinbase App)",
-    },
-    options: {
-      appName: "Coinbase",
-      networkUrl: `https://mainnet.infura.io/v3/${INFURA_ID}`,
-      chainId: 1,
-    },
-    package: WalletLink,
-    connector: async (
-      _: any,
-      options: { appName: any; networkUrl: any; chainId: any }
-    ) => {
-      const { appName, networkUrl, chainId } = options;
-      const walletLink = new WalletLink({
-        appName,
-      });
-      const provider = walletLink.makeWeb3Provider(networkUrl, chainId);
-      await provider.enable();
-      return provider;
-    },
-  },
-};
-
-let web3Modal: Web3Modal;
-if (typeof window !== "undefined") {
-  web3Modal = new Web3Modal({
-    network: "mainnet",
-    cacheProvider: true,
-    providerOptions,
-  });
-}
+});
+const coinbaseAdapter = new CoinbaseAdapter({
+  clientId: "YOUR_WEB3AUTH_CLIENT_ID",
+});
+web3auth.configureAdapter(coinbaseAdapter);
+web3auth.initModal();
 
 type StateType = {
   provider?: any;
@@ -80,16 +53,15 @@ type StateType = {
   address?: string;
   chainId?: number;
 };
-
 const initialState: StateType = {
   provider: null,
   web3Provider: null,
   ethersProvider: null,
   address: "",
-  chainId: 1,
+  chainId: activeChainId,
 };
 
-export const Web3Provider = ({ children }: any) => {
+export const Web3AuthProvider = ({ children }: any) => {
   const [web3State, setWeb3State] = useState<StateType>(initialState);
   const { provider, web3Provider, ethersProvider, address, chainId } =
     web3State;
@@ -98,11 +70,14 @@ export const Web3Provider = ({ children }: any) => {
   const connectWeb3 = useCallback(async () => {
     try {
       setLoading(true);
-      const modalProvider = await web3Modal.connect();
+      const modalProvider = await web3auth.connect();
+      console.info("web3AuthProvider", modalProvider);
+      if (!modalProvider) return;
       const web3Provider = new ethers.providers.Web3Provider(modalProvider);
       const signer = web3Provider.getSigner();
       const gotAccount = await signer.getAddress();
       const network = await web3Provider.getNetwork();
+      console.info("EOA Address", gotAccount);
       setWeb3State({
         provider: modalProvider,
         web3Provider: web3Provider,
@@ -112,30 +87,27 @@ export const Web3Provider = ({ children }: any) => {
       });
       setLoading(false);
     } catch (error) {
-      console.log({ web3ModalError: error });
+      setLoading(false);
+      console.error({ web3AuthError: error });
     }
-    setLoading(false);
   }, []);
 
   const disconnect = useCallback(async () => {
-    web3Modal.clearCachedProvider();
-    if (provider?.disconnect && typeof provider.disconnect === "function") {
-      await provider.disconnect();
+    if (web3auth) {
+      await web3auth.logout();
     }
     setWeb3State({
       provider: null,
       web3Provider: null,
       ethersProvider: null,
       address: "",
-      chainId: 0,
+      chainId: activeChainId,
     });
-  }, [provider]);
+  }, []);
 
   useEffect(() => {
-    // if (window.ethereum) {
-    //   window.ethereum.autoRefreshOnNetworkChange = true;
-    // }
-    if (web3Modal.cachedProvider) {
+    if (web3auth.provider) {
+      console.log(web3auth.provider);
       connectWeb3();
     } else {
       setLoading(false);
@@ -178,7 +150,7 @@ export const Web3Provider = ({ children }: any) => {
   }, [provider, disconnect]);
 
   return (
-    <Web3Context.Provider
+    <Web3AuthContext.Provider
       value={{
         connectWeb3,
         disconnect,
@@ -191,6 +163,6 @@ export const Web3Provider = ({ children }: any) => {
       }}
     >
       {children}
-    </Web3Context.Provider>
+    </Web3AuthContext.Provider>
   );
 };
