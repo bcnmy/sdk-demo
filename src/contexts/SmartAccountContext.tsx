@@ -94,8 +94,8 @@ export const SmartAccountProvider = ({ children }: any) => {
         // signType: SignTypeMethod.PERSONAL_SIGN,
         activeNetworkId: activeChainId,
         supportedNetworksIds: supportedChains,
-        // backendUrl: 'https://sdk-backend.prod.biconomy.io/v1',
-        relayerUrl: 'https://sdk-relayer.staging.biconomy.io/api/v1/relay',
+        // backendUrl: 'https://sdk-backend.staging.biconomy.io/v1',
+        // relayerUrl: 'https://sdk-relayer.staging.biconomy.io/api/v1/relay',
         // bundlerUrl: 'http://localhost:3005/rpc',
         networkConfig: [
           {
