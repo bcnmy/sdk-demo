@@ -3,8 +3,8 @@ import { ethers } from "ethers";
 import { makeStyles } from "@material-ui/core/styles";
 import { CircularProgress } from "@material-ui/core";
 
-import { RestRelayer } from "@biconomy-sdk/relayer";
-import { GasLimit } from "@biconomy-sdk/core-types";
+import { RestRelayer } from "@biconomy/relayer";
+import { GasLimit } from "@biconomy/core-types";
 import Button from "../../Button";
 import { useWeb3AuthContext } from "../../../contexts/SocialLoginContext";
 import { useSmartAccountContext } from "../../../contexts/SmartAccountContext";
