@@ -1,10 +1,10 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { ethers } from "ethers";
-import SmartAccount from "@biconomy-sdk/smart-account";
+import SmartAccount from "@biconomy/smart-account";
 import {
   SmartAccountState,
   SmartAccountVersion,
-} from "@biconomy-sdk/core-types";
+} from "@biconomy/core-types";
 import { supportedChains, activeChainId } from "../utils/chainConfig";
 import { useWeb3AuthContext } from "./SocialLoginContext";
 import {
@@ -95,14 +95,18 @@ export const SmartAccountProvider = ({ children }: any) => {
         activeNetworkId: activeChainId,
         supportedNetworksIds: supportedChains,
         // backendUrl: 'https://sdk-backend.staging.biconomy.io/v1',
+        // socketServerUrl: 'wss://sdk-testing-ws.staging.biconomy.io/connection/websocket',
         // relayerUrl: 'https://sdk-relayer.staging.biconomy.io/api/v1/relay',
         // bundlerUrl: 'http://localhost:3005/rpc',
         networkConfig: [
           {
-          chainId: ChainId.GOERLI,
-          // dummy
-          dappAPIKey: 'gUv-7Xh-M.aa270a76-a1aa-4e79-bab5-8d857161c561',
+          chainId: ChainId.POLYGON_MUMBAI,
+          // dappAPIKey: '59fRCMXvk.8a1652f0-b522-4ea7-b296-98628499aee3',
           // if need to override // providerUrl: 
+        },
+        {
+          chainId: ChainId.POLYGON_MAINNET,
+          // dappAPIKey: todo
         }
       ]
       });
