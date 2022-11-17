@@ -17,7 +17,7 @@ export const getEOAWallet = (privateKey: string, provider: any) => {
   if (!provider) {
     // TODO
     // Fetch rpc url as per active chain id
-    provider = "https://eth-goerli.alchemyapi.io/v2/lmW2og_aq-OXWKYRoRu-X6Yl6wDQYt_2";
+    provider = "https://rpc.ankr.com/polygon_mumbai";
     // provider = ""
   }
 
