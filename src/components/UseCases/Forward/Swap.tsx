@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import { makeStyles } from "@material-ui/core/styles";
 import { CircularProgress } from "@material-ui/core";
 
-import { RestRelayer } from "@biconomy-sdk/relayer";
+import { RestRelayer } from "@biconomy/relayer";
 import { CurrencyAmount, Token, TradeType } from "@uniswap/sdk-core";
 import { AlphaRouter } from "@uniswap/smart-order-router";
 import JSBI from "jsbi";
@@ -19,7 +19,7 @@ import {
   showInfoMessage,
   showErrorMessage,
 } from "../../../utils";
-import { GasLimit } from "@biconomy-sdk/core-types";
+import { GasLimit } from "@biconomy/core-types";
 
 const ethersProvider = new ethers.providers.JsonRpcProvider(
   "https://goerli.infura.io/v3/d126f392798444609246423b06116c77"

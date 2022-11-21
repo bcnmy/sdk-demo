@@ -48,6 +48,7 @@ const BatchTransaction: React.FC = () => {
         to: config.hyphenLP.address,
         data: hyphenLPTx.data,
       };
+      // todo check this for hyphen LP on Mumbai!
       txs.push(tx2);
 
       const response = await smartAccount.sendGaslessTransactionBatch({ transactions: txs });

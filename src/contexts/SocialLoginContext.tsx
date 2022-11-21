@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { ethers } from "ethers";
-import SocialLogin from "@biconomy-sdk/web3-auth";
+import SocialLogin from "@biconomy/web3-auth";
 import { activeChainId } from "../utils/chainConfig";
 
 interface web3AuthContextType {
@@ -58,7 +58,7 @@ export const Web3AuthProvider = ({ children }: any) => {
   useEffect(() => {
     const initWallet = async () => {
       const sdk = new SocialLogin();
-      await sdk.init(ethers.utils.hexValue(5), {
+      await sdk.init(ethers.utils.hexValue(80001), {
         "https://sdk-staging.biconomy.io":
           "MEUCIQDGT4pzu8GStArnh19bG4jBrBrzI8kO5YbZg2I_ShVFigIgWXtobCl4bMNxGUgKJfCMylvM5AtGZyrZLwJ_1aGVlu4",
         "http://sdk-staging.biconomy.io":
@@ -109,7 +109,7 @@ export const Web3AuthProvider = ({ children }: any) => {
     const sdk = new SocialLogin();
     // const proof = await sdk.whitelistUrl("", "http://sdk-staging.biconomy.io");
     // console.log("proof", proof);
-    await sdk.init(ethers.utils.hexValue(5), {
+    await sdk.init(ethers.utils.hexValue(80001), {
       "https://sdk-staging.biconomy.io":
         "MEUCIQDGT4pzu8GStArnh19bG4jBrBrzI8kO5YbZg2I_ShVFigIgWXtobCl4bMNxGUgKJfCMylvM5AtGZyrZLwJ_1aGVlu4",
       "http://sdk-staging.biconomy.io":
