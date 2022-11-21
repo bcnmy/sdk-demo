@@ -60,9 +60,9 @@ export const Web3AuthProvider = ({ children }: any) => {
       const sdk = new SocialLogin();
       await sdk.init(ethers.utils.hexValue(80001), {
         "https://sdk-staging.biconomy.io":
-          "MEUCIQDGT4pzu8GStArnh19bG4jBrBrzI8kO5YbZg2I_ShVFigIgWXtobCl4bMNxGUgKJfCMylvM5AtGZyrZLwJ_1aGVlu4",
+          "MEQCIBgO86Ds-nQ6JLHWmo5umziadaY-VDCQxLmwy-DX6nCxAiBJPnc0SOZmFTkphRfS7yd81DsC--Uj6Vb-WqvfSXngnQ",
         "http://sdk-staging.biconomy.io":
-          "MEUCIQDWedAc9mhlinYJjPs9kam4dTBl8P8mBPscYsI_t2hQ4wIgSSWkOEYSvC9wFtHjFwQVSUleWaoarsE9C0tnj2M7yec",
+          "MEUCIQDW2lTR5y_sTv3UTJEhfnC3_cLDb_aBrWtev8Ih4kXG4QIgIMjQhpQs9g14c3t64bEt3mQMMPuWHrbLBfo7hRAGEZc",
         // "http://localhost:3000":
         //   "MEUCIQDCrwqCFSAoivC8NfJdHv9WneLfdMADQCUitF6zs2QCagIgOdh3_6dZ81Le1PFzNfDLSImuugEb46Tz64SjOcQWcZA",
       });
@@ -111,9 +111,9 @@ export const Web3AuthProvider = ({ children }: any) => {
     // console.log("proof", proof);
     await sdk.init(ethers.utils.hexValue(80001), {
       "https://sdk-staging.biconomy.io":
-        "MEUCIQDGT4pzu8GStArnh19bG4jBrBrzI8kO5YbZg2I_ShVFigIgWXtobCl4bMNxGUgKJfCMylvM5AtGZyrZLwJ_1aGVlu4",
+        "MEQCIBgO86Ds-nQ6JLHWmo5umziadaY-VDCQxLmwy-DX6nCxAiBJPnc0SOZmFTkphRfS7yd81DsC--Uj6Vb-WqvfSXngnQ",
       "http://sdk-staging.biconomy.io":
-        "MEUCIQDWedAc9mhlinYJjPs9kam4dTBl8P8mBPscYsI_t2hQ4wIgSSWkOEYSvC9wFtHjFwQVSUleWaoarsE9C0tnj2M7yec",
+        "MEUCIQDW2lTR5y_sTv3UTJEhfnC3_cLDb_aBrWtev8Ih4kXG4QIgIMjQhpQs9g14c3t64bEt3mQMMPuWHrbLBfo7hRAGEZc",
       // "http://localhost:3000":
       //   "MEUCIQDCrwqCFSAoivC8NfJdHv9WneLfdMADQCUitF6zs2QCagIgOdh3_6dZ81Le1PFzNfDLSImuugEb46Tz64SjOcQWcZA",
     });
