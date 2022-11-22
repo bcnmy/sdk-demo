@@ -2,6 +2,7 @@ import { BigNumber, Wallet as EOAWallet } from "ethers";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import configInfo from "./configs/contractsInfo.json";
 import { toast } from "react-toastify";
+import { activeChainId, getExplorer, getRPCProvider } from "./chainConfig";
 
 export { configInfo };
 
@@ -15,10 +16,8 @@ export function ellipseAddress(address = "", width = 10): string {
 export const getEOAWallet = (privateKey: string, provider: any) => {
   // defaults
   if (!provider) {
-    // TODO
-    // Fetch rpc url as per active chain id
-    provider = "https://rpc.ankr.com/polygon_mumbai";
-    // provider = ""
+    // TODO Fetch rpc url as per active chain id
+    provider = getRPCProvider(activeChainId);
   }
 
   const wallet = new EOAWallet(privateKey);
@@ -54,8 +53,11 @@ export const showInfoMessage = (message: string) => {
   });
 };
 
-export const showSuccessMessage = (message: string) => {
+export const showSuccessMessage = (message: string, txHash?: string) => {
   toast.success(message, {
+    onClick: () => {
+      window.open(`${getExplorer(activeChainId)}/tx/${txHash}`, "_blank");
+    },
     position: "top-right",
     autoClose: 5000,
     hideProgressBar: false,
@@ -80,8 +82,10 @@ export const copyToClipBoard = (copyMe: string) => {
 
 export const formatBalance = (value: string, decimals: number) => {
   const divideBy = BigNumber.from(10).pow(BigNumber.from(decimals));
-  const balance = (parseFloat(value) / parseFloat(divideBy.toString())).toFixed(4);
-  console.log(' formatBalance ', balance);
+  const balance = (parseFloat(value) / parseFloat(divideBy.toString())).toFixed(
+    4
+  );
+  console.log(" formatBalance ", balance);
   // let res = ethers.utils.formatEther(balance);
   return balance.toString();
 };

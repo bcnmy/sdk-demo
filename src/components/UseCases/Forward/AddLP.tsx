@@ -3,14 +3,14 @@ import { ethers } from "ethers";
 import { makeStyles } from "@material-ui/core/styles";
 import { CircularProgress } from "@material-ui/core";
 
-import { RestRelayer } from "@biconomy/relayer";
+// import { RestRelayer } from "@biconomy/relayer";
 import { GasLimit } from "@biconomy/core-types";
 import Button from "../../Button";
 import { useWeb3AuthContext } from "../../../contexts/SocialLoginContext";
 import { useSmartAccountContext } from "../../../contexts/SmartAccountContext";
 import {
   configInfo as config,
-  showSuccessMessage,
+  // showSuccessMessage,
   showInfoMessage,
   showErrorMessage,
 } from "../../../utils";
@@ -31,13 +31,12 @@ const AddLPForward: React.FC = () => {
   useEffect(() => {
     const fetchFeeOption = async () => {
       setIsLoading(true);
-      console.log('we here...')
-      console.log(wallet, walletState, web3Provider);
       if (!wallet || !walletState || !web3Provider) return;
-      const relayer = new RestRelayer({
-        url: "https://sdk-relayer.staging.biconomy.io/api/v1/relay",
-        socketServerUrl: 'wss://sdk-testing-ws.staging.biconomy.io/connection/websocket'
-      });
+      // const relayer = new RestRelayer({
+      //   url: "https://sdk-relayer.staging.biconomy.io/api/v1/relay",
+      //   socketServerUrl:
+      //     "wss://sdk-testing-ws.staging.biconomy.io/connection/websocket",
+      // });
       // to do transaction on smart account we need to set relayer
       let smartAccount = wallet;
       //set listener for transaction
@@ -106,10 +105,11 @@ const AddLPForward: React.FC = () => {
   const makeTx = async () => {
     if (!wallet || !walletState || !web3Provider || !txnArray) return;
     try {
-      const relayer = new RestRelayer({
-        url: "https://sdk-relayer.staging.biconomy.io/api/v1/relay",
-        socketServerUrl: 'wss://sdk-testing-ws.staging.biconomy.io/connection/websocket'
-      });
+      // const relayer = new RestRelayer({
+      //   url: "https://sdk-relayer.staging.biconomy.io/api/v1/relay",
+      //   socketServerUrl:
+      //     "wss://sdk-testing-ws.staging.biconomy.io/connection/websocket",
+      // });
 
       // to do transaction on smart account we need to set relayer
       let smartAccount = wallet;
@@ -194,14 +194,6 @@ const AddLPForward: React.FC = () => {
         gasLimit,
       });
       console.log(txHash);
-      
-
-      // check if tx is mined
-      web3Provider.once(txHash, (transaction: any) => {
-        // Emitted when the transaction has been mined
-        console.log("txn_mined:", transaction);
-        showSuccessMessage(`Transaction mined: ${txHash}`);
-      });
     } catch (err: any) {
       console.error(err);
       showErrorMessage(err.message || "Error in sending the transaction");

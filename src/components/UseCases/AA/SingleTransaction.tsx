@@ -5,11 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Button from "../../Button";
 import { useWeb3AuthContext } from "../../../contexts/SocialLoginContext";
 import { useSmartAccountContext } from "../../../contexts/SmartAccountContext";
-import {
-  configInfo as config,
-  showSuccessMessage,
-  showErrorMessage,
-} from "../../../utils";
+import { configInfo as config, showErrorMessage } from "../../../utils";
 
 const SingleTransaction: React.FC = () => {
   const classes = useStyles();
@@ -25,25 +21,24 @@ const SingleTransaction: React.FC = () => {
         config.usdc.abi,
         web3Provider
       );
-      console.log('AA single txn')
-      console.log('smartAccount.address ', smartAccount.address)
+      console.log("AA single txn");
+      console.log("smartAccount.address ", smartAccount.address);
       const approveUSDCTx = await usdcContract.populateTransaction.approve(
         config.hyphenLP.address,
         ethers.BigNumber.from("1000000"),
         { from: smartAccount.address }
       );
-      console.log(approveUSDCTx.data)
+      console.log(approveUSDCTx.data);
       const tx1 = {
         to: config.usdc.address,
         data: approveUSDCTx.data,
       };
 
-
-
-      const txResponse = await smartAccount.sendGasLessTransaction({ transaction: tx1 });
-      console.log('tx response')
-      console.log(txResponse.hash) // Note! : for AA this will actually be a request id
-      
+      const txResponse = await smartAccount.sendGasLessTransaction({
+        transaction: tx1,
+      });
+      console.log("tx response");
+      console.log(txResponse.hash); // Note! : for AA this will actually be a request id
 
       // check if tx is mined
       // web3Provider.once(txHash.hash, (transaction: any) => {
@@ -65,7 +60,7 @@ const SingleTransaction: React.FC = () => {
 
       <h3 className={classes.subTitle}>Approve USDC Gasless Flow</h3>
 
-      <p style={{marginBottom: 30}}>
+      <p style={{ marginBottom: 30 }}>
         This is an example gasless transaction to approve USDC.
       </p>
 
