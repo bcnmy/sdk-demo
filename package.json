@@ -7,7 +7,7 @@
     "@biconomy/relayer": "0.0.2",
     "@biconomy/smart-account": "0.0.2",
     "@biconomy/transactions": "0.0.2",
-    "@biconomy/web3-auth": "0.0.1",
+    "@biconomy/web3-auth": "0.0.2",
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
     "@types/node": "^16.7.13",
