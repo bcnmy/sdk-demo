@@ -1270,7 +1270,7 @@
     ]
   },
   "usdc": {
-    "address": "0xdA5289fCAAF71d52a80A254da614a192b693e977",
+    "address": "0xbf22b04E250A5921ab4dC0d4ceD6E391459e92D4",
     "abi": [
       {
         "inputs": [

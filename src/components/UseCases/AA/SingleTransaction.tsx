@@ -29,7 +29,7 @@ const SingleTransaction: React.FC = () => {
       console.log('smartAccount.address ', smartAccount.address)
       const approveUSDCTx = await usdcContract.populateTransaction.approve(
         config.hyphenLP.address,
-        ethers.BigNumber.from("1000000"),
+        ethers.utils.parseEther("1"),
         { from: smartAccount.address }
       );
       console.log(approveUSDCTx.data)

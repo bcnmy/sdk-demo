@@ -24,7 +24,7 @@ const BatchTransaction: React.FC = () => {
       let smartAccount = wallet;
       const txs = []
 
-      const approveCallData = iFace.encodeFunctionData('approve', [config.hyphenLP.address, ethers.BigNumber.from("1000000")])
+      const approveCallData = iFace.encodeFunctionData('approve', [config.hyphenLP.address, ethers.utils.parseEther("1")])
       const tx1 = {
         to: config.usdc.address,
         data: approveCallData,
@@ -39,7 +39,7 @@ const BatchTransaction: React.FC = () => {
       const hyphenLPTx =
         await hyphenContract.populateTransaction.addTokenLiquidity(
           config.usdc.address,
-          ethers.BigNumber.from("1000000"),
+          ethers.utils.parseEther("1"),
           {
             from: smartAccount.address
           }

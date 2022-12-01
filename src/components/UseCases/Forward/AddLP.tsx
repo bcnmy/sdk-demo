@@ -56,7 +56,7 @@ const AddLPForward: React.FC = () => {
       );
       const approveUSDCTx = await usdcContract.populateTransaction.approve(
         config.hyphenLP.address,
-        ethers.BigNumber.from("1000000")
+        ethers.utils.parseEther("1")
       );
       const tx1 = {
         to: config.usdc.address,
@@ -67,14 +67,14 @@ const AddLPForward: React.FC = () => {
       const hyphenLPTx =
         await hyphenContract.populateTransaction.addTokenLiquidity(
           config.usdc.address,
-          ethers.BigNumber.from("1000000")
+          ethers.utils.parseEther("1")
         );
 
       const tx2 = {
         to: config.hyphenLP.address,
         data: hyphenLPTx.data,
       };
-      txs.push(tx2);
+      //txs.push(tx2);
       console.log("Tx array created", txs);
       // prepare refund txn batch before so that we have accurate token gas price
       const feeQuotes = await smartAccount.prepareRefundTransactionBatch({
@@ -132,7 +132,7 @@ const AddLPForward: React.FC = () => {
 
       const approveUSDCTx = await usdcContract.populateTransaction.approve(
         config.hyphenLP.address,
-        ethers.BigNumber.from("1000000")
+        ethers.utils.parseEther("1")
       );
       const tx1 = {
         to: config.usdc.address,
@@ -143,14 +143,14 @@ const AddLPForward: React.FC = () => {
       const hyphenLPTx =
         await hyphenContract.populateTransaction.addTokenLiquidity(
           config.usdc.address,
-          ethers.BigNumber.from("1000000")
+          ethers.utils.parseEther("1")
         );
       const tx2 = {
         to: config.hyphenLP.address,
         data: hyphenLPTx.data,
       };
       // comment below line (if estimation fails) to double check reason is not hyophen LP
-      txs.push(tx2);
+      //txs.push(tx2);
 
       console.log("Tx array created", txs);
 

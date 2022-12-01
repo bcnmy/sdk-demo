@@ -111,6 +111,7 @@ export const SmartAccountProvider = ({ children }: any) => {
         },
         {
           chainId: ChainId.BNB_TESTNET,
+          dappAPIKey: 'xIogoMZ7n.65cb71d2-afbe-4792-b68f-f653bd65765b',
           providerUrl: 'https://data-seed-prebsc-1-s1.binance.org:8545/'
         }
       ]
