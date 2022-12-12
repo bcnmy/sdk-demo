@@ -10,6 +10,7 @@ import {
   showSuccessMessage,
   showErrorMessage,
 } from "../../../utils";
+import { TransactionReceipt } from '@ethersproject/providers'
 
 const iFace = new ethers.utils.Interface(config.usdc.abi);
 
@@ -51,17 +52,36 @@ const BatchTransaction: React.FC = () => {
       // todo check this for hyphen LP on Mumbai!
       txs.push(tx2);
 
-      const response = await smartAccount.sendGaslessTransactionBatch({ transactions: txs });
+      const txResponse = await smartAccount.sendGaslessTransactionBatch({ transactions: txs });
+      console.log("txResponse", txResponse);
+      if(txResponse) {
+        let receipt: TransactionReceipt = await txResponse.wait(2);
+        let txn = {
+          state: "Pending",
+          txHash: receipt.transactionHash,
+          explorerLink: `https://mumbai.polygonscan.com/tx/${receipt.transactionHash}`
+        }
+        // transactions.push(txn);
+        // setTransactions(transactions);
+        console.log("Receipt: ", receipt);
+        console.log(txn)
+        /*if(smartAccountAddress) {
+          getTokenBalances(smartAccountAddress);
+        }*/
+      }
+
 
       // const response = await smartAccount.deployWalletUsingPaymaster();
-      console.log(response)
-      showSuccessMessage(`Transaction sent: ${response.hash}`);
+      console.log(txResponse)
+      showSuccessMessage(`Transaction sent: ${txResponse.hash}`);
 
       // check if tx is mined
-      web3Provider.once(response.hash, (transaction: any) => {
+      // Review
+      // Note: txResponse.hash here is requestId and not transactionHash
+      web3Provider.once(txResponse.hash, (transaction: any) => {
         // Emitted when the transaction has been mined
         console.log("txn_mined:", transaction);
-        showSuccessMessage(`Transaction mined: ${response.hash}`);
+        showSuccessMessage(`Transaction mined: ${txResponse.hash}`);
       });
     } catch (err: any) {
       console.error(err);
