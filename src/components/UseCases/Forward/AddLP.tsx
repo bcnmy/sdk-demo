@@ -188,15 +188,13 @@ const AddLPForward: React.FC = () => {
         type: "hex",
       };
 
-      // send transaction internally calls signTransaction and sends it to connected relayer
-      const txHash = await smartAccount.sendTransaction({
-        tx: transaction,
-        // gasLimit, // test and fix
-        /* Note: after changes : if you don’t provide custom gas limit it works but internal txn fails with BSA010 
-         require(gasleft() >= max((_tx.targetTxGas * 64) / 63,_tx.targetTxGas + 2500) + 500, "BSA010");
-         This is because of gasLimit calculated in relayer and targetTxGas estimated and sent! 
-         provide custom gas limit to fix above issue*/
+      const signature = await smartAccount.signTransaction({tx: transaction, signer: smartAccount.getsigner()})
 
+      // send transaction internally calls signTransaction and sends it to connected relayer
+      const txHash = await smartAccount.sendSignedTransaction({
+        tx: transaction,
+        gasLimit, 
+        signature
       });
       console.log(txHash);
       
