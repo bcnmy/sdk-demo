@@ -130,6 +130,12 @@ const AddLPForward: React.FC = () => {
         web3Provider
       );
 
+      const lpContract = new ethers.Contract(
+        config.lp.address,
+        config.lp.abi,
+        web3Provider
+      );
+
       const approveUSDCTx = await usdcContract.populateTransaction.approve(
         config.hyphenLP.address,
         ethers.BigNumber.from("1000000")
@@ -140,6 +146,11 @@ const AddLPForward: React.FC = () => {
       };
       txs.push(tx1);
 
+      const totalNftSupply =
+        Number(await lpContract.totalSupply()) + 1
+
+      console.log('totalNftSupply ', totalNftSupply);
+      
       const hyphenLPTx =
         await hyphenContract.populateTransaction.addTokenLiquidity(
           config.usdc.address,
@@ -151,6 +162,15 @@ const AddLPForward: React.FC = () => {
       };
       // comment below line (if estimation fails) to double check reason is not hyophen LP
       txs.push(tx2);
+      const approveERC721CallData = await lpContract.populateTransaction.approve(
+        config.hyphenLP.address,
+        totalNftSupply
+      );
+      const tx3 = {
+        to: config.lp.address,
+        data: approveERC721CallData.data
+      }
+      txs.push(tx3)
 
       console.log("Tx array created", txs);
 
