@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { makeStyles } from "@material-ui/core/styles";
 import { CircularProgress } from "@material-ui/core";
-
+import HDWalletProvider from "@truffle/hdwallet-provider"
 import { RestRelayer } from "@biconomy/relayer";
-import { GasLimit } from "@biconomy/core-types";
+import { GasLimit, ChainId } from "@biconomy/core-types";
+import SmartAccount from "@biconomy/smart-account";
 import Button from "../../Button";
 import { useWeb3AuthContext } from "../../../contexts/SocialLoginContext";
 import { useSmartAccountContext } from "../../../contexts/SmartAccountContext";
@@ -111,6 +112,44 @@ const AddLPForward: React.FC = () => {
         socketServerUrl: 'wss://sdk-testing-ws.staging.biconomy.io/connection/websocket'
       });
 
+      // todo
+      // update private key
+      let provider = new HDWalletProvider(config.privateKey, 'https://polygon-mumbai.g.alchemy.com/v2/Q4WqQVxhEEmBYREX22xfsS2-s5EXWD31');
+      const walletProvider = new ethers.providers.Web3Provider(provider as any);
+
+      // get EOA address from wallet provider
+      const eoa = await walletProvider.getSigner().getAddress();
+      console.log(`EOA address: ${eoa}`);
+
+
+      // const walletProvider = new ethers.providers.Web3Provider(provider);
+      console.log("walletProvider", walletProvider);
+      // New instance, all config params are optional
+      const wallet2 = new SmartAccount(walletProvider, {
+        // signType: SignTypeMethod.PERSONAL_SIGN,
+        activeNetworkId: ChainId.POLYGON_MUMBAI,
+        supportedNetworksIds: [ChainId.POLYGON_MUMBAI],
+        // backendUrl: 'https://sdk-backend.staging.biconomy.io/v1',
+        // socketServerUrl: 'wss://sdk-testing-ws.staging.biconomy.io/connection/websocket',
+        // relayerUrl: 'https://sdk-relayer.staging.biconomy.io/api/v1/relay',
+        // bundlerUrl: 'http://localhost:3005/rpc',
+        networkConfig: [
+          {
+          chainId: ChainId.POLYGON_MUMBAI,
+          dappAPIKey: '59fRCMXvk.8a1652f0-b522-4ea7-b296-98628499aee3',
+          // if need to override // providerUrl: 
+        },
+        {
+          chainId: ChainId.POLYGON_MAINNET,
+          // dappAPIKey: todo
+        }
+      ]
+      });
+      console.log("wallet", wallet2);
+
+      // Wallet initialization to fetch wallet info
+      const smartAccount2 = await wallet2.init();
+
       // to do transaction on smart account we need to set relayer
       let smartAccount = wallet;
       // await smartAccount.setRelayer(relayer);
@@ -191,7 +230,9 @@ const AddLPForward: React.FC = () => {
       const signature = await smartAccount.signTransaction({tx: transaction, signer: smartAccount.getsigner()})
 
       // send transaction internally calls signTransaction and sends it to connected relayer
-      const txHash = await smartAccount.sendSignedTransaction({
+      console.log('smartAccount 2 owner ', smartAccount2.owner)
+      console.log('smartAccount 2 address ', smartAccount2.address)
+      const txHash = await smartAccount2.sendSignedTransaction({
         tx: transaction,
         gasLimit, 
         signature
