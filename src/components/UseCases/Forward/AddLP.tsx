@@ -6,6 +6,7 @@ import HDWalletProvider from "@truffle/hdwallet-provider"
 import { RestRelayer } from "@biconomy/relayer";
 import { GasLimit, ChainId } from "@biconomy/core-types";
 import SmartAccount from "@biconomy/smart-account";
+import TransactionManager from "@biconomy/transactions";
 import Button from "../../Button";
 import { useWeb3AuthContext } from "../../../contexts/SocialLoginContext";
 import { useSmartAccountContext } from "../../../contexts/SmartAccountContext";
@@ -112,20 +113,18 @@ const AddLPForward: React.FC = () => {
         socketServerUrl: 'wss://sdk-testing-ws.staging.biconomy.io/connection/websocket'
       });
 
-      // todo
-      // update private key
-      let provider = new HDWalletProvider(config.privateKey, 'https://polygon-mumbai.g.alchemy.com/v2/Q4WqQVxhEEmBYREX22xfsS2-s5EXWD31');
-      const walletProvider = new ethers.providers.Web3Provider(provider as any);
+      let backendProvider = new HDWalletProvider('3f841bf589fdf83a521e55d51afddc34fa65351161eead24f064855fc29c9580', 'https://polygon-mumbai.g.alchemy.com/v2/Q4WqQVxhEEmBYREX22xfsS2-s5EXWD31');
+      const backendWalletProvider = new ethers.providers.Web3Provider(backendProvider as any);
 
       // get EOA address from wallet provider
-      const eoa = await walletProvider.getSigner().getAddress();
+      const eoa = await backendWalletProvider.getSigner().getAddress();
       console.log(`EOA address: ${eoa}`);
 
 
       // const walletProvider = new ethers.providers.Web3Provider(provider);
-      console.log("walletProvider", walletProvider);
+      console.log("walletProvider", backendWalletProvider);
       // New instance, all config params are optional
-      const wallet2 = new SmartAccount(walletProvider, {
+      const backendWallet = new SmartAccount(backendWalletProvider, {
         // signType: SignTypeMethod.PERSONAL_SIGN,
         activeNetworkId: ChainId.POLYGON_MUMBAI,
         supportedNetworksIds: [ChainId.POLYGON_MUMBAI],
@@ -145,13 +144,13 @@ const AddLPForward: React.FC = () => {
         }
       ]
       });
-      console.log("wallet", wallet2);
+      console.log("wallet", backendWallet);
 
       // Wallet initialization to fetch wallet info
-      const smartAccount2 = await wallet2.init();
+      const backendInstance = await backendWallet.init();
 
       // to do transaction on smart account we need to set relayer
-      let smartAccount = wallet;
+      let frontEndInstance = wallet;
       // await smartAccount.setRelayer(relayer);
       showInfoMessage("Setting Relayer");
 
@@ -193,8 +192,23 @@ const AddLPForward: React.FC = () => {
 
       console.log("Tx array created", txs);
 
+      backendInstance.address = frontEndInstance.address
+      backendInstance.owner = frontEndInstance.owner
+
+      backendInstance.smartAccountState = frontEndInstance.smartAccountState
+      // await backendInstance.initializeContractsAtChain(ChainId.POLYGON_MUMBAI)
+
+      const txManager = new TransactionManager(backendInstance.smartAccountState)
+      await txManager.initialize(backendInstance.relayer, backendInstance.nodeClient, backendInstance.contractUtils)
+      backendInstance.transactionManager = txManager
+
+      console.log("here")
+      console.log(backendInstance.owner)
+      console.log(backendInstance.address)
+      console.log(backendInstance.smartAccountState)
+
       // prepare refund txn batch before so that we have accurate token gas price
-      const feeQuotes = await smartAccount.prepareRefundTransactionBatch({
+      const feeQuotes = await backendInstance.prepareRefundTransactionBatch({
         transactions: txs,
       });
       console.log("prepareRefundTransactionBatch", feeQuotes);
@@ -215,8 +229,10 @@ const AddLPForward: React.FC = () => {
       console.log("pmtArr", pmtArr);
       showInfoMessage("Batching transactions");
 
+      backendInstance.address = frontEndInstance.address
+
       // making transaction with version, set feeQuotes[1].tokenGasPrice = 6
-      const transaction = await smartAccount.createRefundTransactionBatch({
+      const transaction = await backendInstance.createRefundTransactionBatch({
         transactions: txs,
         feeQuote: feeQuotes[1],
       });
@@ -227,12 +243,14 @@ const AddLPForward: React.FC = () => {
         type: "hex",
       };
 
-      const signature = await smartAccount.signTransaction({tx: transaction, signer: smartAccount.getsigner()})
+      const signature = await frontEndInstance.signTransaction({tx: transaction, signer: frontEndInstance.getsigner()})
+
+      // const signature2 = await eoaSigner._signTypedData({ verifyingContract: smartAccount2.address, chainId: (await eoaSigner2.provider.getNetwork()).chainId}, EIP712_WALLET_TX_TYPE, transaction)
+      
 
       // send transaction internally calls signTransaction and sends it to connected relayer
-      console.log('smartAccount 2 owner ', smartAccount2.owner)
-      console.log('smartAccount 2 address ', smartAccount2.address)
-      const txHash = await smartAccount2.sendSignedTransaction({
+
+      const txHash = await backendInstance.sendSignedTransaction({
         tx: transaction,
         gasLimit, 
         signature

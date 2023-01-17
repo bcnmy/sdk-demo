@@ -40,7 +40,7 @@ const SingleTransaction: React.FC = () => {
 
 
 
-      const txResponse = await smartAccount.sendGasLessTransaction({ transaction: tx1 });
+      const txResponse = await smartAccount.sendGaslessTransaction({ transaction: tx1 });
       console.log('tx response')
       console.log(txResponse.hash) // Note! : for AA this will actually be a request id
       
