@@ -94,19 +94,16 @@ export const SmartAccountProvider = ({ children }: any) => {
         // signType: SignTypeMethod.PERSONAL_SIGN,
         activeNetworkId: activeChainId,
         supportedNetworksIds: supportedChains,
-        // backendUrl: 'https://sdk-backend.staging.biconomy.io/v1',
+        backendUrl: 'http://localhost:3005/v1',
         // socketServerUrl: 'wss://sdk-testing-ws.staging.biconomy.io/connection/websocket',
         // relayerUrl: 'https://sdk-relayer.staging.biconomy.io/api/v1/relay',
-        // bundlerUrl: 'http://localhost:3005/rpc',
+        // bundlerUrl: 'https://sdk-relayer.staging.biconomy.io/api/v1/relay',
+        bundlerUrl: 'http://localhost:3000/rpc',
         networkConfig: [
           {
           chainId: ChainId.POLYGON_MUMBAI,
           dappAPIKey: '59fRCMXvk.8a1652f0-b522-4ea7-b296-98628499aee3',
           // if need to override // providerUrl: 
-        },
-        {
-          chainId: ChainId.POLYGON_MAINNET,
-          // dappAPIKey: todo
         }
       ]
       });
