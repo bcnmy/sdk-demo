@@ -34,22 +34,6 @@ const BatchDeployTxn: React.FC = () => {
       };
       txs.push(tx1);
 
-      const hyphenContract = new ethers.Contract(
-        config.hyphenLP.address,
-        config.hyphenLP.abi,
-        web3Provider
-      );
-      const hyphenLPTx =
-        await hyphenContract.populateTransaction.addTokenLiquidity(
-          config.usdc.address,
-          ethers.BigNumber.from("1000000")
-        );
-      const tx2 = {
-        to: config.hyphenLP.address,
-        data: hyphenLPTx.data,
-      };
-      // txs.push(tx2);
-
       const response = await smartAccount.sendGaslessTransactionBatch({
         transactions: txs,
       });

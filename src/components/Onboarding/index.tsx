@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { LocalRelayer } from "@biconomy/relayer";
+import { LocalRelayer } from "@biconomy-sdk-dev/relayer";
 import Button from "../Button";
 // import { useWeb3Context } from "../../contexts/Web3Context";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
@@ -40,24 +40,17 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
         getEOAWallet(process.env.REACT_APP_PKEY || "", null)
       );
 
-      console.log("relayer");
-      console.log(relayer);
+      console.log("relayer", relayer);
       const context = smartAccount.getSmartAccountContext();
 
-      try {
-        const deployment = await relayer.deployWallet({
-          config: state,
-          context,
-          index: 0,
-        }); // index 0
+      const deployment = await relayer.deployWallet({
+        config: state,
+        context,
+        index: 0,
+      }); // index 0
 
-        const res = await deployment.wait(1);
-        console.log(res);
-      } catch (err) {
-        console.log("fails here");
-        console.log(err);
-      }
-
+      const res = await deployment.wait(1);
+      console.log(res);
       getSmartAccount();
       showInfoMessage("Smart Account deployed");
       setDeployLoading1(false);
@@ -100,39 +93,6 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
     }
   };
 
-  const deploySmartAccount3 = async () => {
-    try {
-      if (!smartAccount || !state) {
-        showErrorMessage("Init Smart Account First");
-        return;
-      }
-      setDeployLoading1(true);
-      try{
-      debugger;
-      const response = await smartAccount.deployWalletUsingPaymaster();
-      console.log('response')
-      console.log(response)
-      // todo : only show success and reload when mined event is received! 
-    } catch(err) {
-      console.log('fails here')
-      console.log(err)
-    }
-      
-      
-      getSmartAccount();
-      showSuccessMessage("Smart Account deployed");
-      setDeployLoading1(false);
-    } catch (err: any) {
-      setDeployLoading1(false);
-      showErrorMessage(err.message.slice(0, 60));
-      console.error("deploySmartAccount", err);
-    }
-  };
-
-  function sleep(ms: any) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
-
   return (
     <main className={classes.main}>
       <h3 className={classes.subTitle}>{"Deploy Smart Account"}</h3>
@@ -170,21 +130,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
               onClickFunc={deploySmartAccount1}
             />
           </div>
-          <div className={classes.element}>
-            <p className={classes.text}>
-              Deploy Account along with first transaction.
-            </p>
-            <ul style={{ width: "100%" }}>
-              <li style={{ marginBottom: 20 }}>
-                User pay for deployment along with the first transaction.
-              </li>
-              <li style={{ marginBottom: 10 }}>
-                Select bundled transaction which deploys the wallet and add
-                liquidity to Hyphen bridge.
-              </li>
-            </ul>
-            <Button title="Go to Use Cases" onClickFunc={() => setValue(2)} />
-          </div>
+
           <div className={classes.element}>
             <p className={classes.text}>
               User pays for wallet deployment cost.
@@ -205,6 +151,22 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
               isLoading={deployLoading2}
               onClickFunc={deploySmartAccount2}
             />
+          </div>
+
+          <div className={classes.element}>
+            <p className={classes.text}>
+              Deploy Account along with first transaction.
+            </p>
+            <ul style={{ width: "100%" }}>
+              <li style={{ marginBottom: 20 }}>
+                User pay for deployment along with the first transaction.
+              </li>
+              <li style={{ marginBottom: 10 }}>
+                Select bundled transaction which deploys the wallet and add
+                liquidity to Hyphen bridge.
+              </li>
+            </ul>
+            <Button title="Go to Use Cases" onClickFunc={() => setValue(2)} />
           </div>
         </div>
       )}

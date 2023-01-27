@@ -10,7 +10,6 @@ import {
   showSuccessMessage,
   showErrorMessage,
 } from "../../../utils";
-import { TransactionReceipt } from '@ethersproject/providers'
 
 const iFace = new ethers.utils.Interface(config.usdc.abi);
 

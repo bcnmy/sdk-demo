@@ -3,8 +3,6 @@ import { ethers } from "ethers";
 import { makeStyles } from "@material-ui/core/styles";
 import { CircularProgress } from "@material-ui/core";
 
-// import { RestRelayer } from "@biconomy/relayer";
-import { GasLimit } from "@biconomy/core-types";
 import Button from "../../Button";
 import { useWeb3AuthContext } from "../../../contexts/SocialLoginContext";
 import { useSmartAccountContext } from "../../../contexts/SmartAccountContext";
@@ -183,10 +181,10 @@ const AddLPForward: React.FC = () => {
       });
       console.log("transaction", transaction);
 
-      let gasLimit: GasLimit = {
-        hex: "0x1E8480",
-        type: "hex",
-      };
+      // let gasLimit: GasLimit = {
+      //   hex: "0x1E8480",
+      //   type: "hex",
+      // };
 
       // send transaction internally calls signTransaction and sends it to connected relayer
       const txHash = await smartAccount.sendTransaction({
