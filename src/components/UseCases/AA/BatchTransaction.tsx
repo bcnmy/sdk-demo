@@ -23,14 +23,17 @@ const BatchTransaction: React.FC = () => {
     if (!wallet || !walletState || !web3Provider) return;
     try {
       let smartAccount = wallet;
-      const txs = []
+      const txs = [];
 
-      const approveCallData = iFace.encodeFunctionData('approve', [config.hyphenLP.address, ethers.BigNumber.from("1000000")])
+      const approveCallData = iFace.encodeFunctionData("approve", [
+        config.hyphenLP.address,
+        ethers.BigNumber.from("1000000"),
+      ]);
       const tx1 = {
         to: config.usdc.address,
         data: approveCallData,
       };
-      txs.push(tx1)
+      txs.push(tx1);
 
       const hyphenContract = new ethers.Contract(
         config.hyphenLP.address,
@@ -42,7 +45,7 @@ const BatchTransaction: React.FC = () => {
           config.usdc.address,
           ethers.BigNumber.from("1000000"),
           {
-            from: smartAccount.address
+            from: smartAccount.address,
           }
         );
       const tx2 = {
@@ -52,28 +55,13 @@ const BatchTransaction: React.FC = () => {
       // todo check this for hyphen LP on Mumbai!
       txs.push(tx2);
 
-      const txResponse = await smartAccount.sendGaslessTransactionBatch({ transactions: txs });
-      console.log("txResponse", txResponse);
-      if(txResponse) {
-        let receipt: TransactionReceipt = await txResponse.wait(2);
-        let txn = {
-          state: "Pending",
-          txHash: receipt.transactionHash,
-          explorerLink: `https://mumbai.polygonscan.com/tx/${receipt.transactionHash}`
-        }
-        // transactions.push(txn);
-        // setTransactions(transactions);
-        console.log("Receipt: ", receipt);
-        console.log(txn)
-        /*if(smartAccountAddress) {
-          getTokenBalances(smartAccountAddress);
-        }*/
-      }
-
+      const response = await smartAccount.sendGaslessTransactionBatch({
+        transactions: txs,
+      });
 
       // const response = await smartAccount.deployWalletUsingPaymaster();
-      console.log(txResponse)
-      showSuccessMessage(`Transaction sent: ${txResponse.hash}`);
+      console.log(response);
+      showSuccessMessage(`Transaction sent: ${response.hash}`, response.hash);
 
       // check if tx is mined
       // Review
@@ -81,7 +69,10 @@ const BatchTransaction: React.FC = () => {
       web3Provider.once(txResponse.hash, (transaction: any) => {
         // Emitted when the transaction has been mined
         console.log("txn_mined:", transaction);
-        showSuccessMessage(`Transaction mined: ${txResponse.hash}`);
+        showSuccessMessage(
+          `Transaction mined: ${response.hash}`,
+          response.hash
+        );
       });
     } catch (err: any) {
       console.error(err);

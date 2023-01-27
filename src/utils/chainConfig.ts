@@ -27,4 +27,19 @@ export const getRPCProvider = (chainId: number) => {
   }
 };
 
+export const getExplorer = (chainId: number) => {
+  switch (chainId) {
+    case 1:
+      return "https://etherscan.io";
+    case 5:
+      return "https://goerli.etherscan.io";
+    case 80001:
+      return "https://mumbai.polygonscan.com";
+    case 137:
+      return "https://polygonscan.com";
+    default:
+      return "https://mumbai.polygonscan.com";
+  }
+};
+
 export const getSupportedChains = () => {};
