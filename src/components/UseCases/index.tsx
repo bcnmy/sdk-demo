@@ -1,10 +1,12 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import ApproveForward from "./Forward/Approve";
 import AddLPForward from "./Forward/AddLP";
+// import SwapUniswap from "./Forward/Swap"
 import SwapForward from "./Forward/Swap";
-import SingleTransaction from "./AA/SingleTransaction"
-import BatchTransaction from "./AA/BatchTransaction"
-import BatchDeployTxn from "./AA/BatchDeployTxn"
+import SingleTransaction from "./AA/SingleTransaction";
+import BatchTransaction from "./AA/BatchTransaction";
+import BatchDeployTxn from "./AA/BatchDeployTxn";
 
 interface Props {
   useCase: number;
@@ -15,14 +17,16 @@ const UseCases: React.FC<Props> = ({ useCase, setUseCase }) => {
   const classes = useStyles();
 
   if (useCase === 1) {
-    return <AddLPForward />;
+    return <ApproveForward />;
   } else if (useCase === 2) {
-    return <SwapForward />;
+    return <AddLPForward />;
   } else if (useCase === 3) {
-    return <SingleTransaction />;
+    return <SwapForward />;
   } else if (useCase === 4) {
-    return <BatchTransaction />;
+    return <SingleTransaction />;
   } else if (useCase === 5) {
+    return <BatchTransaction />;
+  } else if (useCase === 6) {
     return <BatchDeployTxn />;
   }
 
@@ -33,10 +37,12 @@ const UseCases: React.FC<Props> = ({ useCase, setUseCase }) => {
       <ul>
         <li>Forward flow - Paying gas fee in any token.</li>
         <li>
-          Bundle - Batching multiple different transaction in a single transaction.
+          Bundle - Batching multiple different transaction in a single
+          transaction.
         </li>
         <li>
-          Account Abstraction - Send gasless transaction ~ batch them and let paymaster pay for your transaction.
+          Account Abstraction - Send gasless transaction ~ batch them and let
+          paymaster pay for your transaction.
         </li>
       </ul>
       <p style={{ marginBottom: 25 }}>
@@ -45,11 +51,23 @@ const UseCases: React.FC<Props> = ({ useCase, setUseCase }) => {
 
       <hr />
       <p className={classes.subSubTitle}>
-        Forward Flow
+        Forward Flow: <i>User's SCW pays in ERC20 </i>
       </p>
 
       <div className={classes.container}>
         <div className={classes.element} onClick={() => setUseCase(1)}>
+          <p className={classes.text} style={{ textAlign: "left" }}>
+            Single transaction Forward:
+          </p>
+          <ul>
+            <li style={{ marginBottom: 10 }}>Arrpove any ERC20 contract</li>
+            <li style={{ marginBottom: 10 }}>
+              Send tx (scw pays gas fee in USDC)
+            </li>
+          </ul>
+        </div>
+
+        <div className={classes.element} onClick={() => setUseCase(2)}>
           <p className={classes.text} style={{ textAlign: "left" }}>
             Batch User Pays:
           </p>
@@ -64,7 +82,7 @@ const UseCases: React.FC<Props> = ({ useCase, setUseCase }) => {
           </ul>
         </div>
 
-        <div className={classes.element} onClick={() => setUseCase(2)}>
+        {/* <div className={classes.element} onClick={() => setUseCase(3)}>
           <p className={classes.text} style={{ textAlign: "left" }}>
             Batch User Pays:
           </p>
@@ -72,33 +90,21 @@ const UseCases: React.FC<Props> = ({ useCase, setUseCase }) => {
             <li style={{ marginBottom: 10 }}>Approve USDC.</li>
             <li style={{ marginBottom: 10 }}>Swap USDC to WETH on Uniswap</li>
           </ul>
-        </div>
+        </div> */}
       </div>
 
       <hr />
       <p className={classes.subSubTitle}>
-        AA ~ Gasless Flow
+        AA ~ <i>Gasless Flow, dapp pays tx fee </i>{" "}
       </p>
       <div className={classes.container}>
-        <div className={classes.element} onClick={() => setUseCase(3)}>
+        <div className={classes.element} onClick={() => setUseCase(4)}>
           <p className={classes.text} style={{ textAlign: "left" }}>
             Gasless transaction:
           </p>
           <ul>
             <li style={{ marginBottom: 10 }}>Approve USDC.</li>
-            <li style={{ marginBottom: 10 }}>
-              Send tx (paid via paymaster).
-            </li>
-          </ul>
-        </div>
-
-        <div className={classes.element} onClick={() => setUseCase(4)}>
-          <p className={classes.text} style={{ textAlign: "left" }}>
-            Batch Gasless:
-          </p>
-          <ul>
-            <li style={{ marginBottom: 10 }}>Approve USDC.</li>
-            <li style={{ marginBottom: 10 }}>Provide USDC Liquidity on Hyphen.</li>
+            <li style={{ marginBottom: 10 }}>Send tx (paid via paymaster).</li>
           </ul>
         </div>
 
@@ -107,11 +113,25 @@ const UseCases: React.FC<Props> = ({ useCase, setUseCase }) => {
             Batch Gasless:
           </p>
           <ul>
+            <li style={{ marginBottom: 10 }}>Approve USDC.</li>
+            <li style={{ marginBottom: 10 }}>
+              Provide USDC Liquidity on Hyphen.
+            </li>
+          </ul>
+        </div>
+
+        <div className={classes.element} onClick={() => setUseCase(6)}>
+          <p className={classes.text} style={{ textAlign: "left" }}>
+            Batch Gasless:
+          </p>
+          <ul>
             <li style={{ marginBottom: 10 }}>
               Deploy Wallet if not already deployed.
             </li>
             <li style={{ marginBottom: 10 }}>Approve USDC.</li>
-            <li style={{ marginBottom: 10 }}>Provide USDC Liquidity on Hyphen.</li>
+            <li style={{ marginBottom: 10 }}>
+              Provide USDC Liquidity on Hyphen.
+            </li>
           </ul>
         </div>
       </div>
@@ -130,12 +150,13 @@ const useStyles = makeStyles(() => ({
     fontFamily: "Rubik",
     color: "#fff",
     fontSize: 28,
+    fontStyle: "normal",
   },
   subSubTitle: {
     fontFamily: "Rubik",
     color: "#BDC2FF",
     fontSize: 20,
-    margin: 20
+    margin: 20,
   },
   container: {
     width: "100%",

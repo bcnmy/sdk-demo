@@ -10,6 +10,7 @@ import {
   showSuccessMessage,
   showErrorMessage,
 } from "../../../utils";
+import { TransactionReceipt } from '@ethersproject/providers'
 
 const iFace = new ethers.utils.Interface(config.usdc.abi);
 
@@ -22,14 +23,17 @@ const BatchTransaction: React.FC = () => {
     if (!wallet || !walletState || !web3Provider) return;
     try {
       let smartAccount = wallet;
-      const txs = []
+      const txs = [];
 
-      const approveCallData = iFace.encodeFunctionData('approve', [config.hyphenLP.address, ethers.BigNumber.from("1000000")])
+      const approveCallData = iFace.encodeFunctionData("approve", [
+        config.hyphenLP.address,
+        ethers.BigNumber.from("1000000"),
+      ]);
       const tx1 = {
         to: config.usdc.address,
         data: approveCallData,
       };
-      txs.push(tx1)
+      txs.push(tx1);
 
       const hyphenContract = new ethers.Contract(
         config.hyphenLP.address,
@@ -41,7 +45,7 @@ const BatchTransaction: React.FC = () => {
           config.usdc.address,
           ethers.BigNumber.from("1000000"),
           {
-            from: smartAccount.address
+            from: smartAccount.address,
           }
         );
       const tx2 = {
@@ -51,17 +55,24 @@ const BatchTransaction: React.FC = () => {
       // todo check this for hyphen LP on Mumbai!
       txs.push(tx2);
 
-      const response = await smartAccount.sendGaslessTransactionBatch({ transactions: txs });
+      const response = await smartAccount.sendGaslessTransactionBatch({
+        transactions: txs,
+      });
 
       // const response = await smartAccount.deployWalletUsingPaymaster();
-      console.log(response)
-      showSuccessMessage(`Transaction sent: ${response.hash}`);
+      console.log(response);
+      showSuccessMessage(`Transaction sent: ${response.hash}`, response.hash);
 
       // check if tx is mined
+      // Review
+      // Note: txResponse.hash here is requestId and not transactionHash
       web3Provider.once(response.hash, (transaction: any) => {
         // Emitted when the transaction has been mined
         console.log("txn_mined:", transaction);
-        showSuccessMessage(`Transaction mined: ${response.hash}`);
+        showSuccessMessage(
+          `Transaction mined: ${response.hash}`,
+          response.hash
+        );
       });
     } catch (err: any) {
       console.error(err);

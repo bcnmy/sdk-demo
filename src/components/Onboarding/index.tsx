@@ -1,15 +1,16 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
-// import { ethers } from "ethers";
 import { makeStyles } from "@material-ui/core/styles";
-import { LocalRelayer, RestRelayer } from "@biconomy/relayer";
+import { LocalRelayer } from "@biconomy/relayer";
 import Button from "../Button";
 // import { useWeb3Context } from "../../contexts/Web3Context";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import {
   getEOAWallet,
   showErrorMessage,
+  showInfoMessage,
   showSuccessMessage,
 } from "../../utils";
+import { activeChainId } from "../../utils/chainConfig";
 
 type OnboardingProps = {
   setValue: Dispatch<SetStateAction<number>>;
@@ -39,27 +40,26 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
         getEOAWallet(process.env.REACT_APP_PKEY || "", null)
       );
 
-      console.log('relayer');
+      console.log("relayer");
       console.log(relayer);
       const context = smartAccount.getSmartAccountContext();
 
-      try{
-      const deployment = await relayer.deployWallet({
-        config: state,
-        context,
-        index: 0,
-      }); // index 0
+      try {
+        const deployment = await relayer.deployWallet({
+          config: state,
+          context,
+          index: 0,
+        }); // index 0
 
-      const res = await deployment.wait(1);
-      console.log(res);
-    } catch(err) {
-      console.log('fails here')
-      console.log(err)
-    }
-      
-      
+        const res = await deployment.wait(1);
+        console.log(res);
+      } catch (err) {
+        console.log("fails here");
+        console.log(err);
+      }
+
       getSmartAccount();
-      showSuccessMessage("Smart Account deployed");
+      showInfoMessage("Smart Account deployed");
       setDeployLoading1(false);
     } catch (err: any) {
       setDeployLoading1(false);
@@ -75,29 +75,55 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
         return;
       }
       setDeployLoading2(true);
-      const relayer = new RestRelayer({
-        url: "https://sdk-relayer.staging.biconomy.io/api/v1/relay",
-        socketServerUrl: 'wss://sdk-testing-ws.staging.biconomy.io/connection/websocket'
-      });
-      smartAccount.setRelayer(relayer);
+      const context = smartAccount.getSmartAccountContext();
+      console.log(context);
 
       const feeQuotes = await smartAccount.prepareDeployAndPayFees();
       console.log("feeQuotes ", feeQuotes);
 
       console.log("token address ", feeQuotes[1].address);
 
-      const txHash = await smartAccount.deployAndPayFees(5, feeQuotes[1]);
-      showSuccessMessage(`Tx hash ${txHash}`);
-      //console.log(sendTx);
+      const txHash = await smartAccount.deployAndPayFees(
+        activeChainId,
+        feeQuotes[1]
+      );
+      showSuccessMessage(`Tx hash ${txHash}`, txHash);
       console.log(txHash);
-
-      await sleep(5000);
 
       getSmartAccount();
       showSuccessMessage("Smart Account deployed");
       setDeployLoading2(false);
     } catch (err: any) {
       setDeployLoading2(false);
+      showErrorMessage(err.message.slice(0, 60));
+      console.error("deploySmartAccount", err);
+    }
+  };
+
+  const deploySmartAccount3 = async () => {
+    try {
+      if (!smartAccount || !state) {
+        showErrorMessage("Init Smart Account First");
+        return;
+      }
+      setDeployLoading1(true);
+      try{
+      debugger;
+      const response = await smartAccount.deployWalletUsingPaymaster();
+      console.log('response')
+      console.log(response)
+      // todo : only show success and reload when mined event is received! 
+    } catch(err) {
+      console.log('fails here')
+      console.log(err)
+    }
+      
+      
+      getSmartAccount();
+      showSuccessMessage("Smart Account deployed");
+      setDeployLoading1(false);
+    } catch (err: any) {
+      setDeployLoading1(false);
       showErrorMessage(err.message.slice(0, 60));
       console.error("deploySmartAccount", err);
     }

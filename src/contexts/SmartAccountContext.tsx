@@ -1,16 +1,10 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { ethers } from "ethers";
 import SmartAccount from "@biconomy/smart-account";
-import {
-  SmartAccountState,
-  SmartAccountVersion,
-} from "@biconomy/core-types";
+import { SmartAccountState, SmartAccountVersion } from "@biconomy/core-types";
 import { supportedChains, activeChainId } from "../utils/chainConfig";
 import { useWeb3AuthContext } from "./SocialLoginContext";
-import {
-  showSuccessMessage,
-  showErrorMessage,
-} from "../utils";
+import { showSuccessMessage } from "../utils";
 
 export const ChainId = {
   MAINNET: 1, // Ethereum
@@ -100,15 +94,15 @@ export const SmartAccountProvider = ({ children }: any) => {
         // bundlerUrl: 'http://localhost:3005/rpc',
         networkConfig: [
           {
-          chainId: ChainId.POLYGON_MUMBAI,
-          dappAPIKey: '59fRCMXvk.8a1652f0-b522-4ea7-b296-98628499aee3',
-          // if need to override // providerUrl: 
-        },
-        {
-          chainId: ChainId.POLYGON_MAINNET,
-          // dappAPIKey: todo
-        }
-      ]
+            chainId: ChainId.POLYGON_MUMBAI,
+            dappAPIKey: "59fRCMXvk.8a1652f0-b522-4ea7-b296-98628499aee3",
+            // if need to override // providerUrl:
+          },
+          {
+            chainId: ChainId.POLYGON_MAINNET,
+            // dappAPIKey: todo
+          },
+        ],
       });
       console.log("wallet", wallet);
 
@@ -117,23 +111,35 @@ export const SmartAccountProvider = ({ children }: any) => {
       setWallet(wallet);
       console.info("smartAccount", smartAccount);
 
-      smartAccount.on('txHashGenerated', (response: any) => {
-        console.log('txHashGenerated event received in AddLP via emitter', response);
-        showSuccessMessage(`Transaction sent: ${response.hash}`);
+      smartAccount.on("txHashGenerated", (response: any) => {
+        console.log(
+          "txHashGenerated event received in AddLP via emitter",
+          response
+        );
+        showSuccessMessage(`Transaction sent: ${response.hash}`, response.hash);
       });
 
-      smartAccount.on('txHashChanged', (response: any) => {
-        console.log('txHashChanged event received in AddLP via emitter', response);
-        showSuccessMessage(`Transaction updated with hash: ${response.hash}`);
+      smartAccount.on("txHashChanged", (response: any) => {
+        console.log(
+          "txHashChanged event received in AddLP via emitter",
+          response
+        );
+        showSuccessMessage(
+          `Transaction updated with hash: ${response.hash}`,
+          response.hash
+        );
       });
 
-      smartAccount.on('txMined', (response: any) => {
-        console.log('txMined event received in AddLP via emitter', response);
-        showSuccessMessage(`Transaction confirmed: ${response.hash}`);
+      smartAccount.on("txMined", (response: any) => {
+        console.log("txMined event received in AddLP via emitter", response);
+        showSuccessMessage(
+          `Transaction confirmed: ${response.hash}`,
+          response.hash
+        );
       });
 
-      smartAccount.on('error', (response: any) => {
-        console.log('error event received in AddLP via emitter', response);
+      smartAccount.on("error", (response: any) => {
+        console.log("error event received in AddLP via emitter", response);
       });
 
       // get all smart account versions available and update in state

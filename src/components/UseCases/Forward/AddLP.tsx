@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import { makeStyles } from "@material-ui/core/styles";
 import { CircularProgress } from "@material-ui/core";
 
-import { RestRelayer } from "@biconomy/relayer";
+// import { RestRelayer } from "@biconomy/relayer";
 import { GasLimit } from "@biconomy/core-types";
 import Button from "../../Button";
 import { useWeb3AuthContext } from "../../../contexts/SocialLoginContext";
@@ -31,13 +31,12 @@ const AddLPForward: React.FC = () => {
   useEffect(() => {
     const fetchFeeOption = async () => {
       setIsLoading(true);
-      console.log('we here...')
-      console.log(wallet, walletState, web3Provider);
       if (!wallet || !walletState || !web3Provider) return;
-      const relayer = new RestRelayer({
-        url: "https://sdk-relayer.staging.biconomy.io/api/v1/relay",
-        socketServerUrl: 'wss://sdk-testing-ws.staging.biconomy.io/connection/websocket'
-      });
+      // const relayer = new RestRelayer({
+      //   url: "https://sdk-relayer.staging.biconomy.io/api/v1/relay",
+      //   socketServerUrl:
+      //     "wss://sdk-testing-ws.staging.biconomy.io/connection/websocket",
+      // });
       // to do transaction on smart account we need to set relayer
       let smartAccount = wallet;
       //set listener for transaction
@@ -106,10 +105,11 @@ const AddLPForward: React.FC = () => {
   const makeTx = async () => {
     if (!wallet || !walletState || !web3Provider || !txnArray) return;
     try {
-      const relayer = new RestRelayer({
-        url: "https://sdk-relayer.staging.biconomy.io/api/v1/relay",
-        socketServerUrl: 'wss://sdk-testing-ws.staging.biconomy.io/connection/websocket'
-      });
+      // const relayer = new RestRelayer({
+      //   url: "https://sdk-relayer.staging.biconomy.io/api/v1/relay",
+      //   socketServerUrl:
+      //     "wss://sdk-testing-ws.staging.biconomy.io/connection/websocket",
+      // });
 
       // to do transaction on smart account we need to set relayer
       let smartAccount = wallet;
@@ -191,11 +191,15 @@ const AddLPForward: React.FC = () => {
       // send transaction internally calls signTransaction and sends it to connected relayer
       const txHash = await smartAccount.sendTransaction({
         tx: transaction,
-        gasLimit,
+        // gasLimit, // test and fix
+        /* Note: after changes : if you don’t provide custom gas limit it works but internal txn fails with BSA010 
+         require(gasleft() >= max((_tx.targetTxGas * 64) / 63,_tx.targetTxGas + 2500) + 500, "BSA010");
+         This is because of gasLimit calculated in relayer and targetTxGas estimated and sent! 
+         provide custom gas limit to fix above issue*/
+
       });
       console.log(txHash);
       
-
       // check if tx is mined
       web3Provider.once(txHash, (transaction: any) => {
         // Emitted when the transaction has been mined
