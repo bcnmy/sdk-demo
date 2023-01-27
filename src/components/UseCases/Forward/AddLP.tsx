@@ -10,7 +10,7 @@ import { useWeb3AuthContext } from "../../../contexts/SocialLoginContext";
 import { useSmartAccountContext } from "../../../contexts/SmartAccountContext";
 import {
   configInfo as config,
-  // showSuccessMessage,
+  showSuccessMessage,
   showInfoMessage,
   showErrorMessage,
 } from "../../../utils";

@@ -66,7 +66,7 @@ const BatchTransaction: React.FC = () => {
       // check if tx is mined
       // Review
       // Note: txResponse.hash here is requestId and not transactionHash
-      web3Provider.once(txResponse.hash, (transaction: any) => {
+      web3Provider.once(response.hash, (transaction: any) => {
         // Emitted when the transaction has been mined
         console.log("txn_mined:", transaction);
         showSuccessMessage(
