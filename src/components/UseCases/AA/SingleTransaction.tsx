@@ -34,11 +34,11 @@ const SingleTransaction: React.FC = () => {
         data: approveUSDCTx.data,
       };
 
-      const txResponse = await smartAccount.sendGasLessTransaction({
-        transaction: tx1,
-      });
-      console.log("tx response");
-      console.log(txResponse.hash); // Note! : for AA this will actually be a request id
+
+      const txResponse = await smartAccount.sendGaslessTransaction({ transaction: tx1 });
+      console.log('tx response')
+      console.log(txResponse.hash) // Note! : for AA this will actually be a request id
+      
 
       // check if tx is mined
       // web3Provider.once(txHash.hash, (transaction: any) => {

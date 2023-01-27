@@ -100,9 +100,38 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
     }
   };
 
-  // function sleep(ms: any) {
-  //   return new Promise((resolve) => setTimeout(resolve, ms));
-  // }
+  const deploySmartAccount3 = async () => {
+    try {
+      if (!smartAccount || !state) {
+        showErrorMessage("Init Smart Account First");
+        return;
+      }
+      setDeployLoading1(true);
+      try{
+      debugger;
+      const response = await smartAccount.deployWalletUsingPaymaster();
+      console.log('response')
+      console.log(response)
+      // todo : only show success and reload when mined event is received! 
+    } catch(err) {
+      console.log('fails here')
+      console.log(err)
+    }
+      
+      
+      getSmartAccount();
+      showSuccessMessage("Smart Account deployed");
+      setDeployLoading1(false);
+    } catch (err: any) {
+      setDeployLoading1(false);
+      showErrorMessage(err.message.slice(0, 60));
+      console.error("deploySmartAccount", err);
+    }
+  };
+
+  function sleep(ms: any) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
 
   return (
     <main className={classes.main}>

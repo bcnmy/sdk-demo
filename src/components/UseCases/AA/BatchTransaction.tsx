@@ -10,6 +10,7 @@ import {
   showSuccessMessage,
   showErrorMessage,
 } from "../../../utils";
+import { TransactionReceipt } from '@ethersproject/providers'
 
 const iFace = new ethers.utils.Interface(config.usdc.abi);
 
@@ -63,7 +64,9 @@ const BatchTransaction: React.FC = () => {
       showSuccessMessage(`Transaction sent: ${response.hash}`, response.hash);
 
       // check if tx is mined
-      web3Provider.once(response.hash, (transaction: any) => {
+      // Review
+      // Note: txResponse.hash here is requestId and not transactionHash
+      web3Provider.once(txResponse.hash, (transaction: any) => {
         // Emitted when the transaction has been mined
         console.log("txn_mined:", transaction);
         showSuccessMessage(

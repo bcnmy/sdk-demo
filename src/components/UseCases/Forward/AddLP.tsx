@@ -191,9 +191,21 @@ const AddLPForward: React.FC = () => {
       // send transaction internally calls signTransaction and sends it to connected relayer
       const txHash = await smartAccount.sendTransaction({
         tx: transaction,
-        gasLimit,
+        // gasLimit, // test and fix
+        /* Note: after changes : if you don’t provide custom gas limit it works but internal txn fails with BSA010 
+         require(gasleft() >= max((_tx.targetTxGas * 64) / 63,_tx.targetTxGas + 2500) + 500, "BSA010");
+         This is because of gasLimit calculated in relayer and targetTxGas estimated and sent! 
+         provide custom gas limit to fix above issue*/
+
       });
       console.log(txHash);
+      
+      // check if tx is mined
+      web3Provider.once(txHash, (transaction: any) => {
+        // Emitted when the transaction has been mined
+        console.log("txn_mined:", transaction);
+        showSuccessMessage(`Transaction mined: ${txHash}`);
+      });
     } catch (err: any) {
       console.error(err);
       showErrorMessage(err.message || "Error in sending the transaction");
