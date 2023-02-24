@@ -13,6 +13,7 @@ module.exports = function override(config) {
         "url": require.resolve("url"),
         "zlib": require.resolve("browserify-zlib"),
         "path": require.resolve("path-browserify"),
+        "c-kzg": require.resolve("c-kzg"),
         "process/browser": require.resolve("process/browser"),
     })
     config.resolve.fallback = fallback;
