@@ -19,6 +19,7 @@ const BatchDeployTxn: React.FC = () => {
   const { state: walletState, wallet } = useSmartAccountContext();
 
   const makeTx = async () => {
+    console.log('I am Batch Deploy');
     if (!wallet || !walletState || !web3Provider) return;
     try {
       let smartAccount = wallet;
@@ -45,7 +46,7 @@ const BatchDeployTxn: React.FC = () => {
         to: config.hyphenLP.address,
         data: hyphenLPTx.data,
       };
-      // txs.push(tx2);
+      txs.push(tx2);
 
       const response = await smartAccount.sendGaslessTransactionBatch({ transactions: txs });
 

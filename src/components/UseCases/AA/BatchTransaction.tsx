@@ -1,5 +1,5 @@
 import React from "react";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { makeStyles } from "@material-ui/core/styles";
 
 import Button from "../../Button";
@@ -20,6 +20,8 @@ const BatchTransaction: React.FC = () => {
   const { state: walletState, wallet } = useSmartAccountContext();
 
   const makeTx = async () => {
+    console.log('I am Batch Trx');
+    
     if (!wallet || !walletState || !web3Provider) return;
     try {
       let smartAccount = wallet;
@@ -31,6 +33,9 @@ const BatchTransaction: React.FC = () => {
         data: approveCallData,
       };
       txs.push(tx1)
+
+      console.log('tx1 ', tx1);
+      
 
       const hyphenContract = new ethers.Contract(
         config.hyphenLP.address,
@@ -45,12 +50,24 @@ const BatchTransaction: React.FC = () => {
             from: smartAccount.address
           }
         );
+      const transferCallData = iFace.encodeFunctionData('transfer', [config.hyphenLP.address, ethers.BigNumber.from("1000000")])
       const tx2 = {
-        to: config.hyphenLP.address,
-        data: hyphenLPTx.data,
+        to: config.usdc.address,
+        data: transferCallData,
       };
+      console.log('transfer call');
+      console.log('tx1 ', tx2);
+
       // todo check this for hyphen LP on Mumbai!
       txs.push(tx2);
+
+      // const trx3 = {
+      //   to: '0x4281d6888D7a3A6736B0F596823810ffBd7D4808',
+      //   value: ethers.BigNumber.from("10000000000000000000"),
+      //   data: '0x'
+      // }
+
+      // txs.push(trx3);
 
       const txResponse = await smartAccount.sendGaslessTransactionBatch({ transactions: txs });
       console.log("txResponse", txResponse);

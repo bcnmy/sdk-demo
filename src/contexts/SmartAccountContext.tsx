@@ -2,6 +2,7 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import { ethers } from "ethers";
 import SmartAccount from "@biconomy/smart-account";
 import {
+  SignTypeMethod,
   SmartAccountState,
   SmartAccountVersion,
 } from "@biconomy/core-types";
@@ -17,6 +18,7 @@ export const ChainId = {
   GOERLI: 5,
   POLYGON_MUMBAI: 80001,
   POLYGON_MAINNET: 137,
+  GANACHE: 1337
 };
 
 // Types
@@ -90,23 +92,55 @@ export const SmartAccountProvider = ({ children }: any) => {
       const walletProvider = new ethers.providers.Web3Provider(provider);
       console.log("walletProvider", walletProvider);
       // New instance, all config params are optional
+      // const wallet = new SmartAccount(walletProvider, {
+      //   // signType: SignTypeMethod.PERSONAL_SIGN,
+      //   activeNetworkId: activeChainId,
+      //   supportedNetworksIds: supportedChains,
+      //   backendUrl: 'http://localhost:3005/v1',
+      //   // socketServerUrl: 'wss://sdk-testing-ws.staging.biconomy.io/connection/websocket',
+      //   // relayerUrl: 'https://sdk-relayer.staging.biconomy.io/api/v1/relay',
+      //   // bundlerUrl: 'http://localhost:3000/rpc',
+      //   biconomySigningServiceUrl: 'https://us-central1-biconomy-staging.cloudfunctions.net/staging-signing-service',
+      //   bundlerUrl: 'https://sdk-relayer.staging.biconomy.io/api/v1/relay',
+      //   networkConfig: [
+      //     {
+      //     chainId: ChainId.POLYGON_MUMBAI,
+      //     dappAPIKey: '59fRCMXvk.8a1652f0-b522-4ea7-b296-98628499aee3',
+      //     // if need to override // providerUrl:
+      //   }
+      // ]
+      // });
+      const rpcUrl = 'http://localhost:8545/'
       const wallet = new SmartAccount(walletProvider, {
-        // signType: SignTypeMethod.PERSONAL_SIGN,
+        signType: SignTypeMethod.PERSONAL_SIGN,
         activeNetworkId: activeChainId,
         supportedNetworksIds: supportedChains,
-        backendUrl: 'http://localhost:3005/v1',
+        backendUrl: 'https://sdk-backend.test.biconomy.io/v1/',
         // socketServerUrl: 'wss://sdk-testing-ws.staging.biconomy.io/connection/websocket',
+        socketServerUrl: 'wss://sdk-testing-ws.staging.biconomy.io/connection/websocket',
         // relayerUrl: 'https://sdk-relayer.staging.biconomy.io/api/v1/relay',
+        relayerUrl: 'https://sdk-relayer.test.biconomy.io/api/v1/relay',
         // bundlerUrl: 'https://sdk-relayer.staging.biconomy.io/api/v1/relay',
-        bundlerUrl: 'http://localhost:3000/rpc',
+        bundlerUrl: 'https://sdk-relayer.test.biconomy.io/api/v1/relay',
+        // bundlerUrl: 'http://localhost:3009/relay',
+        // bundlerUrl: 'http://localhost:3000/rpc',
+        // biconomySigningServiceUrl: 'https://us-central1-biconomy-staging.cloudfunctions.net/staging-signing-service',
+        // biconomySigningServiceUrl: 'https://us-central1-biconomy-staging.cloudfunctions.net/signing-service',
+        // biconomySigningServiceUrl: 'https://paymaster-signing-service.staging.biconomy.io/api/v1/sign',
+        biconomySigningServiceUrl: 'https://paymaster-signing-service.test.biconomy.io/api/v1/sign',
         networkConfig: [
           {
           chainId: ChainId.POLYGON_MUMBAI,
-          dappAPIKey: '59fRCMXvk.8a1652f0-b522-4ea7-b296-98628499aee3',
-          // if need to override // providerUrl: 
+          dappAPIKey: 'acYx8mfg3.d957b4c3-73c1-4e9b-9529-58abc4d68b11'
+          // dappAPIKey: '9oGvtmNSf.93fbe12b-5022-4807-a1e0-85649c13806f',
+          // if need to override // providerUrl:
+        },
+        {
+          chainId: ChainId.POLYGON_MAINNET,
+          // dappAPIKey: todo
         }
       ]
-      });
+      })
       console.log("wallet", wallet);
 
       // Wallet initialization to fetch wallet info

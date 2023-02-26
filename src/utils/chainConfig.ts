@@ -3,13 +3,14 @@ export const ChainId = {
   GOERLI: 5,
   POLYGON_MUMBAI: 80001,
   POLYGON_MAINNET: 137,
+  GANACHE: 1337
 };
 
 export let activeChainId = ChainId.POLYGON_MUMBAI;
 export const supportedChains = [
   ChainId.GOERLI,
   ChainId.POLYGON_MAINNET,
-  ChainId.POLYGON_MUMBAI,
+  ChainId.POLYGON_MUMBAI
 ];
 
 export const getRPCProvider = (chainId: number) => {
