@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@mui/styles";
 
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import { formatBalance, showErrorMessage } from "../../utils";
@@ -29,7 +29,7 @@ const Assets: React.FC = () => {
 
   return (
     <main className={classes.main}>
-      <h1 className="title">Biconomy SDK Demo</h1>
+      <h1 className="title">Smart Account Balance</h1>
       {/* <button onClick={getSmartAccountBalanceFunc}>get balance</button> */}
       <div className={classes.container}>
         <div className={classes.element}>
@@ -78,9 +78,9 @@ const useStyles = makeStyles(() => ({
     width: "45%",
     height: "70vh",
     overflowY: "auto",
-    border: "2px solid #145374",
-    borderLeft: "solid 3px #145374",
-    boxShadow: "5px 5px 0px #145374",
+    border: "2px solid #2C3333",
+    borderLeft: "solid 3px #2C3333",
+    boxShadow: "5px 5px 0px #2C3333",
     borderRadius: 10,
   },
   balance: {
@@ -88,7 +88,7 @@ const useStyles = makeStyles(() => ({
     justifyContent: "space-between",
     fontSize: 25,
     padding: "0 10px",
-    borderBottom: "1px solid #145374",
+    borderBottom: "1px solid #2C3333",
   },
   tokenTitle: {
     display: "flex",
@@ -98,7 +98,7 @@ const useStyles = makeStyles(() => ({
   img: {
     width: 35,
     height: 35,
-    border: "1px solid #145374",
+    border: "1px solid #2C3333",
     borderRadius: "50%",
     marginRight: 10,
   },

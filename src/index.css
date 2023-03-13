@@ -5,7 +5,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-code, pre {
+code,
+pre {
   font-size: 14px;
   font-family: Inconsolata, Monaco, Consolas, "Courier New", Courier, monospace;
 }
@@ -16,4 +17,8 @@ p {
 
 .Toastify__toast-body {
   word-break: break-all;
+}
+
+.MuiTab-textColorInherit {
+  text-transform: inherit !important;
 }

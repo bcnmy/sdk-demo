@@ -1,19 +1,19 @@
 import React from "react";
 import { ethers } from "ethers";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@mui/styles";
 
-import Button from "../../Button";
-import { useWeb3AuthContext } from "../../../contexts/SocialLoginContext";
-import { useSmartAccountContext } from "../../../contexts/SmartAccountContext";
+import Button from "../Button";
+import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
+import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import {
   configInfo as config,
   showSuccessMessage,
   showErrorMessage,
-} from "../../../utils";
+} from "../../utils";
 
 const iFace = new ethers.utils.Interface(config.usdc.abi);
 
-const BatchDeployTxn: React.FC = () => {
+const BatchLiquidity: React.FC = () => {
   const classes = useStyles();
   const { web3Provider } = useWeb3AuthContext();
   const { state: walletState, wallet } = useSmartAccountContext();
@@ -34,6 +34,26 @@ const BatchDeployTxn: React.FC = () => {
       };
       txs.push(tx1);
 
+      const hyphenContract = new ethers.Contract(
+        config.hyphenLP.address,
+        config.hyphenLP.abi,
+        web3Provider
+      );
+      const hyphenLPTx =
+        await hyphenContract.populateTransaction.addTokenLiquidity(
+          config.usdc.address,
+          ethers.BigNumber.from("1000000"),
+          {
+            from: smartAccount.address,
+          }
+        );
+      const tx2 = {
+        to: config.hyphenLP.address,
+        data: hyphenLPTx.data,
+      };
+      // todo check this for hyphen LP on Mumbai!
+      txs.push(tx2);
+
       const response = await smartAccount.sendGaslessTransactionBatch({
         transactions: txs,
       });
@@ -43,6 +63,8 @@ const BatchDeployTxn: React.FC = () => {
       showSuccessMessage(`Transaction sent: ${response.hash}`, response.hash);
 
       // check if tx is mined
+      // Review
+      // Note: txResponse.hash here is requestId and not transactionHash
       web3Provider.once(response.hash, (transaction: any) => {
         // Emitted when the transaction has been mined
         console.log("txn_mined:", transaction);
@@ -72,7 +94,6 @@ const BatchDeployTxn: React.FC = () => {
 
       <h3 className={classes.h3Title}>Transaction Batched</h3>
       <ul>
-        <li>Deploy Wallet if not already deployed</li>
         <li>Approve USDC</li>
         <li>Provide USDC Liquidity on Hyphen</li>
       </ul>
@@ -116,4 +137,4 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default BatchDeployTxn;
+export default BatchLiquidity;

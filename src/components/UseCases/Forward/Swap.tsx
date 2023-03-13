@@ -1,7 +1,7 @@
 // import React, { useEffect, useState } from "react";
 // import { ethers } from "ethers";
-// import { makeStyles } from "@material-ui/core/styles";
-// import { CircularProgress } from "@material-ui/core";
+// import { makeStyles } from "@mui/styles";
+// import { CircularProgress } from "@mui/material";
 
 // import { RestRelayer } from "@biconomy-sdk-dev/relayer";
 // import { CurrencyAmount, Token, TradeType } from "@uniswap/sdk-core";

@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@mui/styles";
 import { LocalRelayer } from "@biconomy-sdk-dev/relayer";
 import Button from "../Button";
 // import { useWeb3Context } from "../../contexts/Web3Context";
@@ -18,7 +18,6 @@ type OnboardingProps = {
 
 const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
   const classes = useStyles();
-  // const { provider } = useWeb3Context();
   const {
     state,
     wallet: smartAccount,
@@ -179,7 +178,7 @@ const useStyles = makeStyles(() => ({
     margin: "auto",
     padding: "10px 40px",
     maxWidth: 1200,
-    color: "#a0aec0",
+    color: "#fff",
   },
   subTitle: {
     fontFamily: "Rubik",
@@ -190,29 +189,31 @@ const useStyles = makeStyles(() => ({
     width: "100%",
     display: "flex",
     justifyContent: "space-between",
-    "@media (max-width: 699px)": {
+    "@media (max-width: 899px)": {
       width: "90%",
       flexDirection: "column",
     },
   },
   element: {
-    width: "27%",
+    width: "32%",
     backgroundColor: "#1a1e23",
-    height: 300,
+    // height: 300,
+    minHeight: 400,
     filter: "drop-shadow(0px 2px 24px rgba(0, 0, 0, 0.1))",
     border: "2px solid #393E46",
     borderLeft: "solid 3px #393E46",
     boxShadow: "5px 5px 0px #393E46",
     borderRadius: 12,
-    // height: "max-content",
+    height: "max-content",
     padding: 25,
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
     alignItems: "center",
-    "@media (max-width: 699px)": {
+    "@media (max-width: 899px)": {
       width: "100%",
       marginBottom: 20,
+      height: "max-content",
     },
   },
   text: {

@@ -1,37 +1,51 @@
 import { useState } from "react";
-import { AppBar } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@mui/styles";
+import { styled } from "@mui/material/styles";
+import LegendToggleIcon from '@mui/icons-material/LegendToggle';
+import IconButton from "@mui/material/IconButton";
+import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { useWeb3AuthContext } from "../contexts/SocialLoginContext";
 import { useSmartAccountContext } from "../contexts/SmartAccountContext";
 import Button from "./Button";
-import {
-  copyToClipBoard,
-  ellipseAddress,
-  // showErrorMessage,
-  // showSuccessMessage,
-} from "../utils";
+import { copyToClipBoard, ellipseAddress } from "../utils";
 
-const Navbar = () => {
+type INavBar = {
+  open: boolean;
+  handleDrawerOpen: () => void;
+};
+
+const drawerWidth = 260;
+interface AppBarProps extends MuiAppBarProps {
+  open?: boolean;
+}
+const AppBar = styled(MuiAppBar, {
+  shouldForwardProp: (prop) => prop !== "open",
+})<AppBarProps>(({ theme, open }) => ({
+  zIndex: theme.zIndex.drawer + 1,
+  transition: theme.transitions.create(["width", "margin"], {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  ...(open && {
+    marginLeft: drawerWidth,
+    width: `calc(100% - ${drawerWidth}px)`,
+    transition: theme.transitions.create(["width", "margin"], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  }),
+}));
+
+const Navbar = ({ open, handleDrawerOpen }: INavBar) => {
   const classes = useStyles();
   const { disconnect } = useWeb3AuthContext();
-  const {
-    // getSmartAccount,
-    loading,
-    selectedAccount,
-    smartAccountsArray,
-    setSelectedAccount,
-  } = useSmartAccountContext();
+  const { loading, selectedAccount, smartAccountsArray, setSelectedAccount } =
+    useSmartAccountContext();
 
   const [showModal, setShowModal] = useState(false);
   const toggleLogoutButton = () => {
     showModal ? setShowModal(false) : setShowModal(true);
   };
-
-  // const getSmartAccountFunc = async () => {
-  //   const error = await getSmartAccount();
-  //   if (error) showErrorMessage(error);
-  //   else showSuccessMessage("Fetched smart account state");
-  // };
 
   const disconnectWallet = () => {
     disconnect();
@@ -39,9 +53,21 @@ const Navbar = () => {
   };
 
   return (
-    <AppBar position="static" classes={{ root: classes.nav }}>
+    <AppBar position="fixed" open={open} classes={{ root: classes.nav }}>
       <div className={classes.flexContainer}>
-        <img src="img/logo.svg" alt="logo" className={classes.logo} />
+        <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          onClick={handleDrawerOpen}
+          edge="start"
+          sx={{
+            marginRight: 5,
+            ...(open && { display: "none" }),
+          }}
+        >
+          <LegendToggleIcon />
+        </IconButton>
+        <div></div>
         <div className={classes.walletBtnContainer}>
           {selectedAccount?.smartAccountAddress && (
             <p className={classes.btnTitle}>Smart Account Address</p>
@@ -54,7 +80,6 @@ const Navbar = () => {
             }
             onClickFunc={toggleLogoutButton}
             isLoading={loading}
-            // style={{ marginTop: 6 }}
           >
             {showModal && (
               <div className={classes.modal}>
@@ -83,23 +108,6 @@ const Navbar = () => {
               </div>
             )}
           </Button>
-          {/* <FormControl className={classes.formControl}>
-            <InputLabel id="demo-simple-select-label">Version</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={version}
-              onChange={(event) => setVersion(event.target.value as string)}
-            >
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
-
-              {versions.map((ver) => (
-                <MenuItem value={ver}>{ver}</MenuItem>
-              ))}
-            </Select>
-          </FormControl> */}
           <Button title="Logout" onClickFunc={disconnectWallet} />
         </div>
       </div>
@@ -109,11 +117,10 @@ const Navbar = () => {
 
 const useStyles = makeStyles((theme: any) => ({
   nav: {
-    height: "70px",
+    height: "66px",
     boxShadow: "none",
-    background: "inherit",
-    // marginBottom: "40px",
-    borderBottom: "2px solid #393E46",
+    background: "#14171a !important",
+    borderBottom: "2px solid #323a43",
     "@media (max-width:1100px)": {
       padding: "0 20px",
     },
@@ -123,14 +130,9 @@ const useStyles = makeStyles((theme: any) => ({
     justifyContent: "space-between",
     alignItems: "center",
     margin: "auto",
-    maxWidth: 1250,
+    maxWidth: 1400,
     padding: "0 10px",
-    // maxWidth: 1080,
     width: "90%",
-  },
-  logo: {
-    height: "25px",
-    marginTop: 2,
   },
   walletBtnContainer: {
     display: "flex",

@@ -1,6 +1,6 @@
 {
-  "name": "demo",
-  "version": "0.1.0",
+  "name": "biconomy-sdk-demo",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@biconomy-sdk-dev/core-types": "1.0.13",
@@ -8,29 +8,22 @@
     "@biconomy-sdk-dev/smart-account": "1.0.13",
     "@biconomy-sdk-dev/transactions": "1.0.13",
     "@biconomy-sdk-dev/web3-auth": "1.0.13",
-    "@material-ui/core": "^4.11.3",
-    "@material-ui/icons": "^4.11.2",
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
+    "@mui/icons-material": "^5.11.11",
+    "@mui/material": "^5.11.12",
+    "@mui/styles": "^5.11.12",
     "@types/node": "^16.7.13",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
-    "@walletconnect/web3-provider": "^1.8.0",
-    "@web3auth/base": "^2.1.2",
-    "@web3auth/coinbase-adapter": "^2.1.2",
-    "@web3auth/web3auth": "^2.1.2",
     "ethers": "^5.6.9",
-    "net": "^1.0.2",
-    "path-browserify": "^1.0.1",
     "process": "^0.11.10",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
     "react-toastify": "^9.0.8",
-    "tls": "^0.0.1",
     "typescript": "^4.4.2",
-    "walletlink": "^2.5.0",
-    "web-vitals": "^2.1.0",
-    "web3": "^1.7.5",
-    "web3modal": "^1.9.8"
+    "web-vitals": "^2.1.0"
   },
   "scripts": {
     "start": "react-app-rewired start",
@@ -67,10 +60,13 @@
     "c-kzg": "^1.0.9",
     "crypto-browserify": "^3.12.0",
     "https-browserify": "^1.0.0",
+    "net": "^1.0.2",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
     "react-app-rewired": "^2.2.1",
+    "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
+    "tls": "^0.0.1",
     "url": "^0.11.0"
   }
 }

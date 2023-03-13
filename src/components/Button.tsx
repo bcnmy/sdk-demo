@@ -1,6 +1,6 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { CircularProgress } from "@material-ui/core";
+import { makeStyles } from "@mui/styles";
+import { CircularProgress } from "@mui/material";
 
 type ButtonProp = {
   title: string;
@@ -44,31 +44,31 @@ const Button: React.FC<ButtonProp> = ({
 const useStyles = makeStyles((theme: any) => ({
   btn: {
     width: "max-content",
-    background: "#21325E",
+    background: "#B85252",
     position: "relative",
     cursor: "pointer",
     borderRadius: 5,
     outline: "none",
     border: 0,
-    boxShadow: "2px 2px #3E497A",
+    boxShadow: "2px 2px #F58840",
     height: 40,
     lineHeight: "36px",
     padding: "0px 12px",
     display: "flex",
     alignItems: "center",
-    color: "#CDF0EA",
+    color: "#ECDBBA",
     transition: "0.3s",
     fontWeight: "bold",
     fontSize: 15,
 
     "@media (max-width:599px)": {
-      padding: 0,
+      padding: "0 5px",
     },
 
     "&:hover": {
       // backgroundColor: "#FFC4C4",
-      boxShadow: "1px 1px 0px #3E497A",
-      // transform: "translate(5px, 5px)",
+      boxShadow: "0px 0px 0px #F58840",
+      transform: "translate(3px, 3px)",
     },
 
     "& div": {

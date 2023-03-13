@@ -1,12 +1,12 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@mui/styles";
 import ApproveForward from "./Forward/Approve";
 import AddLPForward from "./Forward/AddLP";
 // import SwapUniswap from "./Forward/Swap"
 import SwapForward from "./Forward/Swap";
-import SingleTransaction from "./AA/SingleTransaction";
-import BatchTransaction from "./AA/BatchTransaction";
-import BatchDeployTxn from "./AA/BatchDeployTxn";
+// import SingleTransaction from "../AA/SingleTransaction";
+// import BatchTransaction from "../AA/BatchTransaction";
+// import BatchDeployTxn from "../AA/BatchDeployTxn";
 
 interface Props {
   useCase: number;
@@ -22,13 +22,14 @@ const UseCases: React.FC<Props> = ({ useCase, setUseCase }) => {
     return <AddLPForward />;
   } else if (useCase === 3) {
     return <SwapForward />;
-  } else if (useCase === 4) {
-    return <SingleTransaction />;
-  } else if (useCase === 5) {
-    return <BatchTransaction />;
-  } else if (useCase === 6) {
-    return <BatchDeployTxn />;
   }
+  // } else if (useCase === 4) {
+  //   return <SingleTransaction />;
+  // } else if (useCase === 5) {
+  //   return <BatchTransaction />;
+  // } else if (useCase === 6) {
+  //   return <BatchDeployTxn />;
+  // }
 
   return (
     <main className={classes.main}>
