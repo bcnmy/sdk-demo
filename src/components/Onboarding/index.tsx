@@ -108,7 +108,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
           <Button
             title="Go to Use Cases"
             isLoading={deployLoading1}
-            onClickFunc={() => setValue(2)}
+            onClickFunc={() => setValue(3)}
           />
         </div>
       ) : (
@@ -165,7 +165,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
                 liquidity to Hyphen bridge.
               </li>
             </ul>
-            <Button title="Go to Use Cases" onClickFunc={() => setValue(2)} />
+            <Button title="Go to Use Cases" onClickFunc={() => setValue(3)} />
           </div>
         </div>
       )}

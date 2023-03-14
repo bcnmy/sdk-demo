@@ -1,32 +1,57 @@
 import React, { useState } from "react";
-// import { ethers } from "ethers";
+import { ethers } from "ethers";
 import { makeStyles } from "@mui/styles";
 
 import Button from "../Button";
-// import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
+import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
-// import {
-//   configInfo as config,
-//   showInfoMessage,
-//   showErrorMessage,
-// } from "../../utils";
+import { configInfo as config, showErrorMessage } from "../../utils";
 
 const Faucet: React.FC = () => {
   const classes = useStyles();
-  // const { address, web3Provider } = useWeb3AuthContext();
-  const { state: walletState } = useSmartAccountContext();
+  const { web3Provider } = useWeb3AuthContext();
+  const { selectedAccount, wallet } = useSmartAccountContext();
   const [scwAddress, setScwAddress] = useState(
-    (walletState && walletState.address) || ""
+    selectedAccount?.smartAccountAddress || ""
   );
 
-  const makeTx = async () => {};
+  const makeTx = async () => {
+    if (!selectedAccount?.smartAccountAddress || !web3Provider || !wallet) {
+      showErrorMessage("Please connect your wallet");
+      return;
+    }
+    try {
+      let smartAccount = wallet;
+      const faucetContract = new ethers.Contract(
+        config.faucet.address,
+        config.faucet.abi,
+        web3Provider
+      );
+      const faucetTxData = await faucetContract.populateTransaction.drip(
+        scwAddress
+      );
+      const tx1 = {
+        to: config.faucet.address,
+        data: faucetTxData.data,
+      };
+
+      const txResponse = await smartAccount.sendGaslessTransaction({
+        transaction: tx1,
+      });
+      console.log("tx response", txResponse);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <main className={classes.main}>
       <h3 className={classes.subTitle}>Faucet</h3>
 
       <p>Get USDC and USDT test tokens.</p>
-      <p>We will airdrop these tokens to the SCW address so you can test the SDK.</p>
+      <p>
+        We will airdrop these tokens to the SCW address so you can test the SDK.
+      </p>
 
       <h3 className={classes.h3Title}>You can change the address</h3>
 
@@ -78,11 +103,12 @@ const useStyles = makeStyles(() => ({
   input: {
     maxWidth: 350,
     width: "100%",
-    padding: "12px 20px",
+    padding: "12px 10px",
     margin: "8px 0",
+    color: "#fff",
     boxSizing: "border-box",
-    outlineColor: "#BDC2FF",
-    backgroundColor: "#EFF5F5",
+    outlineColor: "#181818",
+    backgroundColor: "#282A3A",
     border: "none",
     marginBottom: 20,
   },
