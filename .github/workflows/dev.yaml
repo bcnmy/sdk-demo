@@ -1,4 +1,4 @@
-name: dev Sdk Deployment
+name: Sdk Dev Deployment
 
 on:
   push:
@@ -39,7 +39,7 @@ jobs:
           role-session-name: dev-deploy
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
 
-      # publish to staging environment
+      # publish to dev environment
       - name: Deploy to S3
         run: |
           aws s3 sync build s3://${{ secrets.DEV_S3_BUCKET_NAME }}
