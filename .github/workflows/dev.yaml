@@ -1,9 +1,9 @@
-name: Staging Sdk Deployment
+name: dev Sdk Deployment
 
 on:
   push:
     branches:
-      - staging
+      - dev
 permissions:
       id-token: write
       contents: read
@@ -36,11 +36,11 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v1
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          role-session-name: staging-deploy
+          role-session-name: dev-deploy
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
 
       # publish to staging environment
       - name: Deploy to S3
         run: |
-          aws s3 sync build s3://${{ secrets.STAGING_S3_BUCKET_NAME }}
-          aws cloudfront create-invalidation --distribution-id ${{ secrets.STAGING_CF_ID }} --paths /
+          aws s3 sync build s3://${{ secrets.DEV_S3_BUCKET_NAME }}
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.DEV_CF_ID }} --paths /
