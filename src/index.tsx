@@ -2,7 +2,7 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
 import "react-toastify/dist/ReactToastify.css";
-import "@biconomy/web3-auth/dist/src/style.css"
+import "@biconomy-sdk-dev/web3-auth/dist/src/style.css"
 // import { Web3Provider } from "./contexts/Web3Context";
 import { Web3AuthProvider } from "./contexts/SocialLoginContext";
 import { SmartAccountProvider } from "./contexts/SmartAccountContext";

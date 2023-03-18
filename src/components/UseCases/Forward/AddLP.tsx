@@ -3,10 +3,10 @@ import { ethers } from "ethers";
 import { makeStyles } from "@material-ui/core/styles";
 import { CircularProgress } from "@material-ui/core";
 import HDWalletProvider from "@truffle/hdwallet-provider"
-import { RestRelayer } from "@biconomy/relayer";
-import { GasLimit, ChainId } from "@biconomy/core-types";
-import SmartAccount from "@biconomy/smart-account";
-import TransactionManager from "@biconomy/transactions";
+import { RestRelayer } from "@biconomy-sdk-dev/relayer";
+import { GasLimit, ChainId } from "@biconomy-sdk-dev/core-types";
+import SmartAccount from "@biconomy-sdk-dev/smart-account";
+import TransactionManager from "@biconomy-sdk-dev/transactions";
 import Button from "../../Button";
 import { useWeb3AuthContext } from "../../../contexts/SocialLoginContext";
 import { useSmartAccountContext } from "../../../contexts/SmartAccountContext";
@@ -76,13 +76,13 @@ const AddLPForward: React.FC = () => {
         to: config.hyphenLP.address,
         data: hyphenLPTx.data,
       };
-      txs.push(tx2);
+      // txs.push(tx2);
       console.log("Tx array created", txs);
       // prepare refund txn batch before so that we have accurate token gas price
-      const feeQuotes = await smartAccount.prepareRefundTransactionBatch({
-        transactions: txs,
+      const feeQuotes = await smartAccount.prepareRefundTransaction({
+        transaction: tx1,
       });
-      console.log("prepareRefundTransactionBatch", feeQuotes);
+      console.log("prepareRefundTransaction", feeQuotes);
       const pmtArr: {
         symbol: string;
         value: string;
@@ -113,12 +113,13 @@ const AddLPForward: React.FC = () => {
         socketServerUrl: 'wss://sdk-testing-ws.staging.biconomy.io/connection/websocket'
       });
 
-      let backendProvider = new HDWalletProvider('3f841bf589fdf83a521e55d51afddc34fa65351161eead24f064855fc29c9580', 'https://polygon-mumbai.g.alchemy.com/v2/Q4WqQVxhEEmBYREX22xfsS2-s5EXWD31');
+      let backendProvider = new HDWalletProvider('8676e4dfe3dab2ba63f98e098e74fe0d33d6d90cfecf8bb595ca2f75f369b305', 'https://polygon-mumbai.g.alchemy.com/v2/Q4WqQVxhEEmBYREX22xfsS2-s5EXWD31');
       const backendWalletProvider = new ethers.providers.Web3Provider(backendProvider as any);
 
       // get EOA address from wallet provider
       const eoa = await backendWalletProvider.getSigner().getAddress();
       console.log(`EOA address: ${eoa}`);
+      // 0x93A
 
 
       // const walletProvider = new ethers.providers.Web3Provider(provider);
@@ -148,6 +149,8 @@ const AddLPForward: React.FC = () => {
 
       // Wallet initialization to fetch wallet info
       const backendInstance = await backendWallet.init();
+      console.log("backendInstance.address", backendInstance.address);
+      // 0xeb03
 
       // to do transaction on smart account we need to set relayer
       let frontEndInstance = wallet;
@@ -188,7 +191,7 @@ const AddLPForward: React.FC = () => {
         data: hyphenLPTx.data,
       };
       // comment below line (if estimation fails) to double check reason is not hyophen LP
-      txs.push(tx2);
+      // txs.push(tx2);
 
       console.log("Tx array created", txs);
 
@@ -202,16 +205,18 @@ const AddLPForward: React.FC = () => {
       await txManager.initialize(backendInstance.relayer, backendInstance.nodeClient, backendInstance.contractUtils)
       backendInstance.transactionManager = txManager
 
-      console.log("here")
+      console.log("here now")
       console.log(backendInstance.owner)
-      console.log(backendInstance.address)
+      // 0x742
+      console.log("backendInstance.address now", backendInstance.address);
+      // 0x8866
       console.log(backendInstance.smartAccountState)
 
       // prepare refund txn batch before so that we have accurate token gas price
-      const feeQuotes = await backendInstance.prepareRefundTransactionBatch({
-        transactions: txs,
+      const feeQuotes = await backendInstance.prepareRefundTransaction({
+        transaction: tx1,
       });
-      console.log("prepareRefundTransactionBatch", feeQuotes);
+      console.log("prepareRefundTransaction", feeQuotes);
       const pmtArr: {
         symbol: string;
         value: string;
@@ -232,9 +237,9 @@ const AddLPForward: React.FC = () => {
       backendInstance.address = frontEndInstance.address
 
       // making transaction with version, set feeQuotes[1].tokenGasPrice = 6
-      const transaction = await backendInstance.createRefundTransactionBatch({
-        transactions: txs,
-        feeQuote: feeQuotes[1],
+      const transaction = await backendInstance.createRefundTransaction({
+        transaction: tx1,
+        feeQuote: feeQuotes[0],
       });
       console.log("transaction", transaction);
 
