@@ -1,11 +1,29 @@
-body {
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @font-face {
+      font-display: fallback;
+      font-family: Satoshi;
+      font-style: normal;
+      font-weight: 100 900;
+      src: local("Satoshi"),
+        url("../public/fonts/Satoshi-Variable.woff2") format("woff2");
+    }
+  }
+}
+
+/* body {
   margin: 0;
   font-family: rubik, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
+} */
 
-code, pre {
+code,
+pre {
   font-size: 14px;
   font-family: Inconsolata, Monaco, Consolas, "Courier New", Courier, monospace;
 }
