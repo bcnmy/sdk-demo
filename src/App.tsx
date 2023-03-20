@@ -15,27 +15,18 @@ const App: React.FC = () => {
   if (!address) {
     return (
       <div
-        className={classes.bgCover}
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          paddingTop: "30vh",
-        }}
+        className="p-8 flex items-center justify-start bg-gradient-to-br from-gradientFrom to-gradientTo w-screen h-screen"
       >
-        <h1 className={classes.title}>Biconomy SDK Demo</h1>
+        <div className="p-12 flex flex-col rounded-2xl items-start justify-start w-2/3 h-2/3 bg-blue-10">
+        <h1 className='text-5xl text-textPrimary'>Biconomy SDK Demo</h1>
+        <p className='text-textWhite pb-16'>Welcome to the SDK Demo</p>
         <Button
+        className="bg-buttonOrange transition-colors hover:bg-buttonOrangeHover text-white w-32 h-12 rounded-lg"
           title="Get Started"
           onClickFunc={connect}
           isLoading={eoaWalletLoading}
-          style={{
-            fontSize: 20,
-            padding: "30px 20px",
-            border: 0,
-            background:
-              "linear-gradient(90deg, #0063FF -2.21%, #9100FF 89.35%)",
-          }}
         />
+        </div>
         <ToastContainer />
       </div>
     );

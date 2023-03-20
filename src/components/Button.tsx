@@ -8,6 +8,7 @@ type ButtonProp = {
   onClickFunc: any;
   children?: any;
   style?: any;
+  className?: string;
 };
 
 const Button: React.FC<ButtonProp> = ({
@@ -16,13 +17,14 @@ const Button: React.FC<ButtonProp> = ({
   isLoading = false,
   children,
   style,
+  className,
 }) => {
   const classes = useStyles();
 
   return (
     <button
       onClick={onClickFunc}
-      className={classes.btn}
+      className={className ? className : classes.btn}
       disabled={isLoading}
       style={style}
     >
