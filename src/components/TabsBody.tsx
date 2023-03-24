@@ -91,8 +91,8 @@ const TabsBody = () => {
   const [pageIndex, setPageIndex] = React.useState(0);
   const [useCase, setUseCase] = React.useState(0);
   const [open, setOpen] = React.useState(true);
-  const [isAAOpen, setIsAAOpen] = React.useState(true);
-  const [isForwardOpen, setIsForwardOpen] = React.useState(true);
+  const [isAAOpen, setIsAAOpen] = React.useState(false);
+  const [isForwardOpen, setIsForwardOpen] = React.useState(false);
 
   const handleChange = (event: any, newValue: any) => {
     setUseCase(0);

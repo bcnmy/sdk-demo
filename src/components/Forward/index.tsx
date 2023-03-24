@@ -40,21 +40,21 @@ const ForwardFlow: React.FC<Props> = ({ useCase, setUseCase }) => {
           paddingBottom: 5,
         }}
       >
-        <Card sx={{ maxWidth: 250 }} onClick={() => {}}>
+        <Card sx={{ maxWidth: 250 }}>
           <CardActionArea>
             <CardMedia
               component="img"
               height="140"
-              image="/img/erc20.png"
+              image="/img/batch.png"
               alt="img"
             />
             <CardContent>
               <Typography gutterBottom variant="h5" component="div">
-                Allow ERC20 Token
+                Batch BatchLiquidity
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                This is single transaction to give allowance on an ERC-20
-                contract.
+                This magic bundle will approve USDC then provide the USDC
+                liquidity to Hyphen Pool.
               </Typography>
             </CardContent>
           </CardActionArea>

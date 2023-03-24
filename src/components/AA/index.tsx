@@ -88,7 +88,7 @@ const AccountAbstraction: React.FC<Props> = ({ useCase, setUseCase }) => {
             <CardMedia
               component="img"
               height="140"
-              image="/img/erc20.png"
+              image="/img/batch.png"
               alt="img"
             />
             <CardContent>
@@ -107,7 +107,7 @@ const AccountAbstraction: React.FC<Props> = ({ useCase, setUseCase }) => {
             <CardMedia
               component="img"
               height="140"
-              image="/img/nft.png"
+              image="/img/nfts.png"
               alt="img"
             />
             <CardContent>
