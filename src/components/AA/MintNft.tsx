@@ -5,7 +5,11 @@ import { makeStyles } from "@mui/styles";
 import Button from "../Button";
 import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
-import { configInfo as config, showErrorMessage } from "../../utils";
+import {
+  configInfo as config,
+  showErrorMessage,
+  showSuccessMessage,
+} from "../../utils";
 
 const MintNft: React.FC = () => {
   const classes = useStyles();
@@ -50,8 +54,13 @@ const MintNft: React.FC = () => {
       const txResponse = await smartAccount.sendGaslessTransaction({
         transaction: tx1,
       });
-      console.log("tx response");
-      console.log(txResponse.hash); // Note! : for AA this will actually be a request id
+      console.log("userOpHash", txResponse);
+      const txHash = await txResponse.wait();
+      console.log("txHash", txHash);
+      showSuccessMessage(
+        `Minted Nft ${txHash.transactionHash}`,
+        txHash.transactionHash
+      );
     } catch (err: any) {
       console.error(err);
       showErrorMessage(err.message || "Error in sending the transaction");

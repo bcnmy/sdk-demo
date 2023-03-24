@@ -5,7 +5,11 @@ import { makeStyles } from "@mui/styles";
 import Button from "../Button";
 import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
-import { configInfo as config, showErrorMessage } from "../../utils";
+import {
+  configInfo as config,
+  showErrorMessage,
+  showSuccessMessage,
+} from "../../utils";
 
 const Faucet: React.FC = () => {
   const classes = useStyles();
@@ -38,9 +42,16 @@ const Faucet: React.FC = () => {
       const txResponse = await smartAccount.sendGaslessTransaction({
         transaction: tx1,
       });
-      console.log("tx response", txResponse);
-    } catch (error) {
+      console.log("userOpHash", txResponse);
+      const txHash = await txResponse.wait();
+      console.log("txHash", txHash);
+      showSuccessMessage(
+        `Tokens sent ${txHash.transactionHash}`,
+        txHash.transactionHash
+      );
+    } catch (error: any) {
       console.error(error);
+      showErrorMessage(error.message);
     }
   };
 

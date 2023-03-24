@@ -90,8 +90,8 @@ export const SmartAccountProvider = ({ children }: any) => {
         environment: Environments.QA,
         networkConfig: [
           {
-            chainId: ChainId.GOERLI,
-            dappAPIKey: "TnZcwsjRK.0a5c2a79-8793-43ea-b104-267f11a83e20",
+            chainId: ChainId.POLYGON_MUMBAI,
+            dappAPIKey: "yUvsiKayF.24bd641b-d4db-41f4-85b3-a4492e1e79f8",
           },
         ],
       });

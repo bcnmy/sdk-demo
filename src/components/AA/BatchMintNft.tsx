@@ -55,21 +55,14 @@ const BatchMintNft: React.FC = () => {
         data: safeMintTx.data,
       };
 
-      const response = await smartAccount.sendGaslessTransactionBatch({
+      const txResponse = await smartAccount.sendGaslessTransactionBatch({
         transactions: [tx1, tx2],
       });
 
-      showSuccessMessage(`Transaction sent: ${response.hash}`);
-
-      // Note: txResponse.hash here is requestId and not transactionHash
-      web3Provider.once(response.hash, (transaction: any) => {
-        // Emitted when the transaction has been mined
-        console.log("txn_mined:", transaction);
-        showSuccessMessage(
-          `Transaction mined: ${response.hash}`,
-          response.hash
-        );
-      });
+      showSuccessMessage(`userOpHash: ${txResponse.hash}`);
+      const txHash = await txResponse.wait();
+      console.log("txHash", txHash);
+      showSuccessMessage(`Minted Nft ${txHash.transactionHash}`, txHash.transactionHash);
     } catch (err: any) {
       console.error(err);
       showErrorMessage(err.message || "Error in sending the transaction");

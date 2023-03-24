@@ -5,7 +5,11 @@ import { makeStyles } from "@mui/styles";
 import Button from "../Button";
 import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
-import { configInfo as config, showErrorMessage } from "../../utils";
+import {
+  configInfo as config,
+  showErrorMessage,
+  showSuccessMessage,
+} from "../../utils";
 
 const AllowErc20: React.FC = () => {
   const classes = useStyles();
@@ -37,8 +41,13 @@ const AllowErc20: React.FC = () => {
       const txResponse = await smartAccount.sendGaslessTransaction({
         transaction: tx1,
       });
-      console.log("tx response");
-      console.log(txResponse.hash); // Note! : for AA this will actually be a request id
+      console.log("userOpHash", txResponse);
+      const txHash = await txResponse.wait();
+      console.log("txHash", txHash);
+      showSuccessMessage(
+        `Approved USDC ${txHash.transactionHash}`,
+        txHash.transactionHash
+      );
     } catch (err: any) {
       console.error(err);
       showErrorMessage(err.message || "Error in sending the transaction");
@@ -54,7 +63,7 @@ const AllowErc20: React.FC = () => {
       <h3 className={classes.subTitle}>Approve USDC Gasless Flow</h3>
 
       <p>This is single transaction to give allowance on an ERC-20 contract.</p>
-      <h3 className={classes.h3Title}>Enter any erc-20 contract to approve</h3>
+      <h3 className={classes.h3Title}>USDC erc-20 contract to approve</h3>
 
       <input
         type="text"
