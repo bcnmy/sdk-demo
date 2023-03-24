@@ -1836,7 +1836,7 @@
     ]
   },
   "hyphenLP": {
-    "address": "0x66AAD3DC0f9AAc8a31e07f0787D3D476489D75D3",
+    "address": "0xF9Af530Ab07796B1EC5706Fc448d315A4586Fda9",
     "abi": [
       {
         "anonymous": false,
@@ -3790,7 +3790,7 @@
     }
   },
   "nft": {
-    "address": "0xA3700a559E6ff03eB3A788ed6637523E9Dc98892",
+    "address": "0xdd526eba63ef200ed95f0f0fb8993fe3e20a23d0",
     "abi": [
       {
         "inputs": [],

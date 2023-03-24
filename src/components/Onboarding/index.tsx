@@ -70,20 +70,20 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
       const context = smartAccount.getSmartAccountContext();
       console.log(context);
 
-      const feeQuotes = await smartAccount.prepareDeployAndPayFees();
-      console.log("feeQuotes ", feeQuotes);
+      // const feeQuotes = await smartAccount.prepareDeployAndPayFees();
+      // console.log("feeQuotes ", feeQuotes);
 
-      console.log("token address ", feeQuotes[1].address);
+      // console.log("token address ", feeQuotes[1].address);
 
-      const txHash = await smartAccount.deployAndPayFees(
-        activeChainId,
-        feeQuotes[1]
-      );
-      showSuccessMessage(`Tx hash ${txHash}`, txHash);
-      console.log(txHash);
+      // const txHash = await smartAccount.deployAndPayFees(
+      //   activeChainId,
+      //   feeQuotes[1]
+      // );
+      // showSuccessMessage(`Tx hash ${txHash}`, txHash);
+      // console.log(txHash);
 
-      getSmartAccount();
-      showSuccessMessage("Smart Account deployed");
+      // getSmartAccount();
+      // showSuccessMessage("Smart Account deployed");
       setDeployLoading2(false);
     } catch (err: any) {
       setDeployLoading2(false);

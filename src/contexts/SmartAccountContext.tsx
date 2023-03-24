@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { ethers } from "ethers";
 import SmartAccount from "@biconomy-sdk-dev/smart-account";
-import { SmartAccountState, SmartAccountVersion } from "@biconomy-sdk-dev/core-types";
+import { SmartAccountState, SmartAccountVersion, Environments } from "@biconomy-sdk-dev/core-types";
 import { supportedChains, activeChainId } from "../utils/chainConfig";
 import { useWeb3AuthContext } from "./SocialLoginContext";
 import { showSuccessMessage } from "../utils";
@@ -85,22 +85,13 @@ export const SmartAccountProvider = ({ children }: any) => {
       console.log("walletProvider", walletProvider);
       // New instance, all config params are optional
       const wallet = new SmartAccount(walletProvider, {
-        // signType: SignTypeMethod.PERSONAL_SIGN,
         activeNetworkId: activeChainId,
         supportedNetworksIds: supportedChains,
-        // backendUrl: 'https://sdk-backend.staging.biconomy.io/v1',
-        // socketServerUrl: 'wss://sdk-testing-ws.staging.biconomy.io/connection/websocket',
-        // relayerUrl: 'https://sdk-relayer.staging.biconomy.io/api/v1/relay',
-        // bundlerUrl: 'http://localhost:3005/rpc',
+        environment: Environments.QA,
         networkConfig: [
           {
-            chainId: ChainId.POLYGON_MUMBAI,
-            dappAPIKey: "59fRCMXvk.8a1652f0-b522-4ea7-b296-98628499aee3",
-            // if need to override // providerUrl:
-          },
-          {
-            chainId: ChainId.POLYGON_MAINNET,
-            // dappAPIKey: todo
+            chainId: ChainId.GOERLI,
+            dappAPIKey: "TnZcwsjRK.0a5c2a79-8793-43ea-b104-267f11a83e20",
           },
         ],
       });
