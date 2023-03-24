@@ -3,43 +3,32 @@ import { ethers } from "ethers";
 import { makeStyles } from "@mui/styles";
 import { CircularProgress } from "@mui/material";
 
-import Button from "../../Button";
-import { useWeb3AuthContext } from "../../../contexts/SocialLoginContext";
-import { useSmartAccountContext } from "../../../contexts/SmartAccountContext";
+import Button from "../Button";
+import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
+import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import {
   configInfo as config,
   showSuccessMessage,
   showInfoMessage,
   showErrorMessage,
-} from "../../../utils";
+} from "../../utils";
+import { FeeQuote } from "@biconomy-sdk-dev/core-types";
 
-const AddLPForward: React.FC = () => {
+const BatchLiquidity: React.FC = () => {
   const classes = useStyles();
   const { provider, web3Provider } = useWeb3AuthContext();
   const { state: walletState, wallet } = useSmartAccountContext();
-  const [payment, setPayment] = useState<
-    {
-      symbol: string;
-      value: string;
-    }[]
-  >([]);
+  const [payment, setPayment] = useState<FeeQuote[]>([]);
   const [txnArray, setTxnArray] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  // pre calculate the fee
   useEffect(() => {
     const fetchFeeOption = async () => {
       setIsLoading(true);
+      setPayment([]);
       if (!wallet || !walletState || !web3Provider) return;
-      // const relayer = new RestRelayer({
-      //   url: "https://sdk-relayer.staging.biconomy.io/api/v1/relay",
-      //   socketServerUrl:
-      //     "wss://sdk-testing-ws.staging.biconomy.io/connection/websocket",
-      // });
-      // to do transaction on smart account we need to set relayer
       let smartAccount = wallet;
-      //set listener for transaction
-
-      // await smartAccount.setRelayer(relayer);
       const txs = [];
       const usdcContract = new ethers.Contract(
         config.usdc.address,
@@ -73,26 +62,11 @@ const AddLPForward: React.FC = () => {
       };
       txs.push(tx2);
       console.log("Tx array created", txs);
-      // prepare refund txn batch before so that we have accurate token gas price
       const feeQuotes = await smartAccount.prepareRefundTransactionBatch({
         transactions: txs,
       });
       console.log("prepareRefundTransactionBatch", feeQuotes);
-      const pmtArr: {
-        symbol: string;
-        value: string;
-      }[] = [];
-      for (let i = 0; i < feeQuotes.length; ++i) {
-        const pmnt = parseFloat(
-          (feeQuotes[i].payment / Math.pow(10, feeQuotes[i].decimal)).toString()
-        ).toFixed(8);
-        pmtArr.push({
-          symbol: feeQuotes[i].symbol,
-          value: pmnt,
-        });
-      }
-      setPayment(pmtArr);
-      console.log("pmtArr", pmtArr);
+      setPayment(feeQuotes);
       setTxnArray(txs);
       setIsLoading(false);
     };
@@ -103,20 +77,8 @@ const AddLPForward: React.FC = () => {
   const makeTx = async () => {
     if (!wallet || !walletState || !web3Provider || !txnArray) return;
     try {
-      // const relayer = new RestRelayer({
-      //   url: "https://sdk-relayer.staging.biconomy.io/api/v1/relay",
-      //   socketServerUrl:
-      //     "wss://sdk-testing-ws.staging.biconomy.io/connection/websocket",
-      // });
-
-      // to do transaction on smart account we need to set relayer
       let smartAccount = wallet;
-      // await smartAccount.setRelayer(relayer);
-      showInfoMessage("Setting Relayer");
-
-      // currently step 1 building wallet transaction
       const txs = [];
-
       const usdcContract = new ethers.Contract(
         config.usdc.address,
         config.usdc.abi,
@@ -152,26 +114,9 @@ const AddLPForward: React.FC = () => {
 
       console.log("Tx array created", txs);
 
-      // prepare refund txn batch before so that we have accurate token gas price
-      const feeQuotes = await smartAccount.prepareRefundTransactionBatch({
-        transactions: txs,
-      });
-      console.log("prepareRefundTransactionBatch", feeQuotes);
-      const pmtArr: {
-        symbol: string;
-        value: string;
-      }[] = [];
-      for (let i = 0; i < feeQuotes.length; ++i) {
-        const pmnt = parseFloat(
-          (feeQuotes[i].payment / Math.pow(10, feeQuotes[i].decimal)).toString()
-        ).toFixed(8);
-        pmtArr.push({
-          symbol: feeQuotes[i].symbol,
-          value: pmnt,
-        });
-      }
-      setPayment(pmtArr);
-      console.log("pmtArr", pmtArr);
+      // Fee already calculated in useEffect prepareRefundTransactionBatch
+      // stored in payment state
+      const feeQuotes = payment;
       showInfoMessage("Batching transactions");
 
       // making transaction with version, set feeQuotes[1].tokenGasPrice = 6
@@ -194,10 +139,9 @@ const AddLPForward: React.FC = () => {
          require(gasleft() >= max((_tx.targetTxGas * 64) / 63,_tx.targetTxGas + 2500) + 500, "BSA010");
          This is because of gasLimit calculated in relayer and targetTxGas estimated and sent! 
          provide custom gas limit to fix above issue*/
-
       });
       console.log(txHash);
-      
+
       // check if tx is mined
       web3Provider.once(txHash, (transaction: any) => {
         // Emitted when the transaction has been mined
@@ -249,9 +193,12 @@ const AddLPForward: React.FC = () => {
       )}
 
       <ul>
-        {payment.map((token, ind) => (
+        {payment.map((token: FeeQuote, ind) => (
           <li className={classes.listHover} key={ind}>
-            {token.value} {token.symbol}
+            {parseFloat(
+              (token.payment / Math.pow(10, token.decimal)).toString()
+            ).toFixed(8)}{" "}
+            {token.symbol}
           </li>
         ))}
       </ul>
@@ -294,4 +241,4 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default AddLPForward;
+export default BatchLiquidity;

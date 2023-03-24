@@ -21,6 +21,7 @@ import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
 import BurstModeIcon from "@mui/icons-material/BurstMode";
 import LegendToggleIcon from "@mui/icons-material/LegendToggle";
 import GamesIcon from "@mui/icons-material/Games";
+import ContactlessIcon from '@mui/icons-material/Contactless';
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import Onboarding from "./Onboarding/index";
 import Navbar from "./Navbar";
@@ -28,11 +29,16 @@ import Assets from "./Balance";
 import Collapse from "@mui/material/Collapse/Collapse";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import Faucet from "./Faucet";
+// Account Abstraction
 import AccountAbstraction from "./AA";
 import MintNft from "./AA/MintNft";
 import BatchMintNft from "./AA/BatchMintNft";
 import AllowErc20 from "./AA/AllowErc20";
 import BatchLiquidity from "./AA/BatchLiquidity";
+// Forward
+import ForwardFlow from "./Forward";
+import MintNftForward from "./Forward/MintNft";
+import BatchLiquidityForward from "./Forward/BatchLiquidity";
 
 const drawerWidth = 260;
 const onboardingList = [
@@ -69,12 +75,24 @@ const AAList = [
   },
 ];
 
+const ForwardList = [
+  {
+    name: "Batch Add Liquidity",
+    icon: <GamesIcon />,
+  },
+  {
+    name: "Mint NFT",
+    icon: <InsertPhotoIcon />,
+  },
+];
+
 const TabsBody = () => {
   const classes = useStyles();
   const [pageIndex, setPageIndex] = React.useState(0);
   const [useCase, setUseCase] = React.useState(0);
   const [open, setOpen] = React.useState(true);
   const [isAAOpen, setIsAAOpen] = React.useState(true);
+  const [isForwardOpen, setIsForwardOpen] = React.useState(true);
 
   const handleChange = (event: any, newValue: any) => {
     setUseCase(0);
@@ -93,6 +111,7 @@ const TabsBody = () => {
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <Navbar open={open} handleDrawerOpen={handleDrawerOpen} />
+      {/* Left Panel */}
       <Drawer
         variant="permanent"
         open={open}
@@ -154,7 +173,7 @@ const TabsBody = () => {
             </ListItem>
           ))}
         </List>
-
+        {/* AA Left Panel */}
         <Divider style={{ borderColor: "#323a43", borderWidth: 1 }} />
         <List
           sx={{
@@ -224,10 +243,81 @@ const TabsBody = () => {
             </List>
           </Collapse>
         </List>
+        {/* Forward Left Panel */}
+        <Divider style={{ borderColor: "#323a43", borderWidth: 1 }} />
+        <List
+          sx={{
+            display: "block",
+            "& .MuiListItemButton-root": {
+              "&:hover": {
+                backgroundColor: "#1a1f23",
+              },
+            },
+          }}
+        >
+          <ListItemButton
+            onClick={(e: any) => {
+              setIsForwardOpen(!isForwardOpen);
+              handleChange(e, 8);
+            }}
+          >
+            <ListItemIcon
+              sx={{
+                minWidth: 0,
+                mr: open ? 3 : "auto",
+                justifyContent: "center",
+                color: pageIndex === 8 ? "#1da1f2" : "#fff",
+              }}
+            >
+              <ContactlessIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary="Pay gas in ERC20"
+              sx={{ opacity: open ? 1 : 0 }}
+            />
+            {isForwardOpen ? <ExpandLess /> : <ExpandMore />}
+          </ListItemButton>
+          <Collapse in={isForwardOpen} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              {ForwardList.map((ele, index) => (
+                <ListItem
+                  key={ele.name}
+                  disablePadding
+                  sx={{ display: "block" }}
+                >
+                  <ListItemButton
+                    sx={{
+                      minHeight: 48,
+                      justifyContent: open ? "initial" : "center",
+                      px: 2.5,
+                    }}
+                    onClick={(e: any) => handleChange(e, index + 9)}
+                  >
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: open ? 3 : "auto",
+                        justifyContent: "center",
+                        color: pageIndex === index + 9 ? "#1da1f2" : "#fff",
+                      }}
+                    >
+                      {ele.icon}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={ele.name}
+                      sx={{ opacity: open ? 1 : 0 }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              ))}
+            </List>
+          </Collapse>
+        </List>
       </Drawer>
 
       <DrawerHeader />
 
+      {/* content menu */}
       <TabPanel value={pageIndex} index={0}>
         <Onboarding setValue={setPageIndex} />
       </TabPanel>
@@ -251,6 +341,16 @@ const TabsBody = () => {
       </TabPanel>
       <TabPanel value={pageIndex} index={7}>
         <BatchMintNft />
+      </TabPanel>
+
+      <TabPanel value={pageIndex} index={8}>
+        <ForwardFlow setUseCase={setUseCase} useCase={useCase} />
+      </TabPanel>
+      <TabPanel value={pageIndex} index={9}>
+        <BatchLiquidityForward />
+      </TabPanel>
+      <TabPanel value={pageIndex} index={10}>
+        <MintNftForward />
       </TabPanel>
     </Box>
   );

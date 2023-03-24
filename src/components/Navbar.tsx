@@ -130,7 +130,7 @@ const useStyles = makeStyles((theme: any) => ({
     justifyContent: "space-between",
     alignItems: "center",
     margin: "auto",
-    maxWidth: 1400,
+    // maxWidth: 1400,
     padding: "0 10px",
     width: "90%",
   },
