@@ -64,6 +64,7 @@ const useStyles = makeStyles(() => ({
   main: {
     margin: "auto",
     padding: "10px 40px",
+    color: "#ffffff"
   },
   subTitle: {
     fontFamily: "Rubik",

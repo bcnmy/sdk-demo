@@ -8,75 +8,9 @@ import Tab from "@material-ui/core/Tab";
 import Onboarding from "./Onboarding/index";
 import Assets from "./Assets/index";
 import UseCases from "./UseCases/index";
-
-function TabPanel(props: any) {
-  const classes = useStyles();
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      className={classes.tabpanel}
-      hidden={value !== index}
-      id={`vertical-tabpanel-${index}`}
-      aria-labelledby={`vertical-tab-${index}`}
-      {...other}
-    >
-      {value === index && children}
-    </div>
-  );
-}
-
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired,
-};
-
-function a11yProps(index: any) {
-  return {
-    id: `vertical-tab-${index}`,
-    "aria-controls": `vertical-tabpanel-${index}`,
-  };
-}
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-    // backgroundColor: theme.palette.background.paper,
-    display: "flex",
-    width: "100%",
-    // maxWidth: 1200,
-    margin: "auto",
-    height: "max-content",
-    minHeight: "92vh",
-    // border: "1px solid #D48158",
-    // borderRadius: 5,
-    "@media (max-width:699px)": {
-      flexDirection: "column",
-    },
-  },
-  tabs: {
-    borderRight: `3px solid #393E46`,
-    padding: "30px 10px",
-    width: "15%",
-    "@media (max-width:699px)": {
-      width: "90%",
-      margin: "auto",
-    },
-  },
-  tabpanel: {
-    width: "85%",
-    "@media (max-width:699px)": {
-      width: "90%",
-      margin: "auto",
-      minHeight: "80vh",
-    },
-  },
-}));
+import { tabs } from "../setup";
 
 function App() {
-  const classes = useStyles();
   const [value, setValue] = React.useState(0);
   const [useCase, setUseCase] = React.useState(0);
 
@@ -86,31 +20,33 @@ function App() {
   };
 
   return (
-    <div className={classes.root}>
-      <Tabs
-        orientation="vertical"
-        variant="scrollable"
-        value={value}
-        onChange={handleChange}
-        aria-label="Vertical tabs"
-        className={classes.tabs}
-      >
-        <Tab label="Onboarding" {...a11yProps(0)} />
-        <Tab label="Assets" {...a11yProps(1)} />
-        <Tab label="Use Cases" {...a11yProps(2)} />
-      </Tabs>
-
-      <TabPanel value={value} index={0}>
-        <Onboarding setValue={setValue} />
-      </TabPanel>
-
-      <TabPanel value={value} index={1}>
-        <Assets />
-      </TabPanel>
-
-      <TabPanel value={value} index={2}>
-        <UseCases setUseCase={setUseCase} useCase={useCase} />
-      </TabPanel>
+    <div className="w-full h-full flex items-center justify-start px-4">
+      <div className="w-full h-full px-4 bg-blue-10 rounded-2xl flex items-start justify-start">
+        <div className="w-[15%] border-r border-blue-24 py-8 rounded-l-2xl h-full flex flex-col gap-4 items-center justify-start">
+          {tabs.map((tab, index) => (
+            <button
+              key={index}
+              className={`${
+                useCase === index
+                  ? "text-textActive hover:text-textActive"
+                  : "text-white hover:text-textPrimary"
+              } w-full h-16 flex items-center justify-center transition-colors`}
+              onClick={() => setUseCase(index)}
+            >
+              {tab.name}
+            </button>
+          ))}
+        </div>
+        <div className="w-full transition-all rounded-r-2xl h-full p-8">
+          {useCase === 0 ? (
+            <Onboarding setValue={setUseCase} />
+          ) : useCase === 1 ? (
+            <Assets />
+          ) : (
+            <UseCases useCase={0} setUseCase={setUseCase}/>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
