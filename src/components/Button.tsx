@@ -29,12 +29,12 @@ const Button: React.FC<ButtonProp> = ({
       style={style}
     >
       {isLoading ? (
-        <>
+        <div className="flex items-center justify-center">
           <CircularProgress
-            style={{ width: 25, height: 25, marginRight: 10, color: "#fff" }}
+            style={{ width: 20, height: 20, marginRight: 10, color: "#fff" }}
           />{" "}
           {" Loading"}
-        </>
+        </div>
       ) : (
         title
       )}

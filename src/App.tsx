@@ -6,45 +6,66 @@ import TabsBody from "./components/TabsBody";
 import { useSmartAccountContext } from "./contexts/SmartAccountContext";
 import { useWeb3AuthContext } from "./contexts/SocialLoginContext";
 import Button from "./components/Button";
+import CandySVG from "./img/candy.svg";
+import BicoLogo from './img/bico-theme.svg';
 
 const App: React.FC = () => {
   const classes = useStyles();
   const { connect, address, loading: eoaWalletLoading } = useWeb3AuthContext();
+  console.log("🚀 ~ file: App.tsx:14 ~ address:", address)
   const { loading } = useSmartAccountContext();
 
-  if (!address) {
-    return (
-      <div
-        className="p-8 flex items-center justify-start bg-gradient-to-br from-gradientFrom to-gradientTo w-screen h-screen"
-      >
-        <div className="p-12 flex flex-col rounded-2xl items-start justify-start w-2/3 h-2/3 bg-blue-10">
-        <h1 className='text-5xl text-textPrimary'>Biconomy SDK Demo</h1>
-        <p className='text-textWhite pb-16'>Welcome to the SDK Demo</p>
-        <Button
-        className="bg-buttonOrange transition-colors hover:bg-buttonOrangeHover text-white w-32 h-12 rounded-lg"
-          title="Get Started"
-          onClickFunc={connect}
-          isLoading={eoaWalletLoading}
-        />
-        </div>
+  return <>
+    {/* {!address && 
+        } */}
+    {address && !loading ? (
+      <div className="">
+        <Navbar />
+        <TabsBody />
         <ToastContainer />
       </div>
-    );
-  }
-
-  return (
-    <div className={classes.bgCover}>
-      <Navbar />
-      {loading ? (
-        <div className={classes.container}>
-          <img src="/logo.svg" className={classes.animateBlink} alt="" />
+    ) : (
+      <>
+<img src={BicoLogo} className="z-10 absolute translate-x-4 translate-y-4" alt="" />
+      <div
+    className="p-8 flex items-center justify-start bg-gradient-to-br from-gradientFrom to-gradientTo w-screen h-screen"
+  >
+      <div className="p-12 flex rounded-2xl items-center justify-between gap-8 w-full lg:w-2/3 max-w-[960px] h-2/3 bg-blue-10">
+        <div className="w-1/2 flex items-center justify-center">
+          <img src={CandySVG} className="w-[330px]" alt="" />
         </div>
-      ) : (
-        <TabsBody />
-      )}
-      <ToastContainer />
-    </div>
-  );
+        <div>
+          <h1 className='text-5xl text-textPrimary'>Biconomy SDK Demo</h1>
+          <p className='text-textWhite pb-16'>Welcome to the SDK Demo</p>
+          <Button
+            className="bg-buttonOrange transition-colors hover:bg-buttonOrangeHover text-white w-32 h-12 rounded-lg"
+            title="Get Started"
+            onClickFunc={connect}
+            isLoading={loading}
+          />
+        </div>
+      </div>
+      </div>
+      </>
+    )}
+    <ToastContainer />
+  </>
+
+
+
+  // return (
+  //   <div className={classes.bgCover}>
+  //     <Navbar />
+  //     {loading ? (
+  //       <div className={classes.container}>
+  //         <img src="/logo.svg" className={classes.animateBlink} alt="" />
+  //       </div>
+  //     ) : (
+  //       <TabsBody />
+  //     )}
+  //     <ToastContainer />
+  //   </div>
+  // );
 };
 
 const useStyles = makeStyles(() => ({
