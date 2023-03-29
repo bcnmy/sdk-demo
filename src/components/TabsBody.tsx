@@ -49,7 +49,7 @@ function App() {
 
   return (
     <div className="w-full h-full flex items-center justify-start px-4">
-      <div className="w-full h-full px-4 bg-blue-10 rounded-2xl flex items-start justify-start">
+      <div className="w-full h-full bg-blue-10 rounded-2xl flex items-start justify-start">
         <nav className="w-[15%] border-r border-blue-24 py-8 rounded-l-2xl h-full flex flex-col gap-4 items-center justify-start">
           {tabs.map((tab, index) => (
             <button
