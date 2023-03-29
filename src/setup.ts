@@ -1,5 +1,5 @@
 export const tabs = [
-    { name: 'Onboarding', path: '/onboarding' },
-    { name: 'Assets', path: '/assets' },
-    { name: 'Use Cases', path: '/uses' },
+  { name: "Onboarding", path: "/onboarding", emoji: "🚢", },
+  { name: "Assets", path: "/assets", emoji: "🪙", },
+  { name: "Use Cases", path: "/uses", emoji: "🛠️", },
 ];

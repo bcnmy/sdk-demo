@@ -17,7 +17,6 @@ type OnboardingProps = {
 };
 
 const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
-  const classes = useStyles();
   // const { provider } = useWeb3Context();
   const {
     state,
@@ -107,18 +106,17 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
         return;
       }
       setDeployLoading1(true);
-      try{
-      debugger;
-      const response = await smartAccount.deployWalletUsingPaymaster();
-      console.log('response')
-      console.log(response)
-      // todo : only show success and reload when mined event is received! 
-    } catch(err) {
-      console.log('fails here')
-      console.log(err)
-    }
-      
-      
+      try {
+        debugger;
+        const response = await smartAccount.deployWalletUsingPaymaster();
+        console.log("response");
+        console.log(response);
+        // todo : only show success and reload when mined event is received!
+      } catch (err) {
+        console.log("fails here");
+        console.log(err);
+      }
+
       getSmartAccount();
       showSuccessMessage("Smart Account deployed");
       setDeployLoading1(false);
@@ -134,73 +132,69 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
   }
 
   return (
-    <main className={classes.main}>
-      <h3 className={classes.subTitle}>{"Deploy Smart Account"}</h3>
-      <p>
+    <main className="flex flex-col gap-4 h-full w-full">
+      <h1 className="text-4xl text-textPrimary">{"Deploy Smart Account"}</h1>
+      <p className="text-white">
         Welcome onboard! This is the demo of the new Biconomy SDK. You need to
         deploy your smart account wallet to get started.
       </p>
-      <p style={{ marginBottom: 25 }}>Wallet Deployment → </p>
       {state?.isDeployed ? (
-        <div className={classes.container2}>
-          <p className={classes.text} style={{ marginBottom: 30 }}>
-            Your Smart Account is already created.
+        <div className="w-full flex flex-col gap-8 mt-10 items-center justify-center">
+          <p className="text-xl text-green-400">
+            ✅ Your Smart Account is already created.
           </p>
           <Button
+            className="bg-buttonOrange transition-colors hover:bg-buttonOrangeHover text-white px-4 h-10 rounded-lg"
             title="Go to Use Cases"
             isLoading={deployLoading1}
             onClickFunc={() => setValue(2)}
           />
         </div>
       ) : (
-        <div className={classes.container}>
-          <div className={classes.element}>
-            <p className={classes.text}>
+        <div className="flex items-center h-full justify-between gap-8">
+          <div className="w-full flex flex-col gap-8 items-center justify-center border-2 border-dashed h-full rounded-2xl transition-colors border-white hover:border-textPrimary p-10">
+            <h2 className="text-2xl text-textPrimary">
               Demo dapp pays for the wallet deployment cost.
-            </p>
-            <ul style={{ width: "100%" }}>
-              <li style={{ marginBottom: 20 }}>Single click deployment.</li>
-              <li style={{ marginBottom: 20 }}>
-                Relayers deploys / funds the wallet deployment for you.
-              </li>
+            </h2>
+            <ul className="flex list-disc flex-col text-center items-center justify-center gap-2 text-white">
+              <li>Single click deployment.</li>
+              <li>Relayers deploys / funds the wallet deployment for you.</li>
             </ul>
             <Button
+              className="bg-buttonOrange transition-colors hover:bg-buttonOrangeHover text-white px-4 h-10 rounded-lg"
               title="Deploy Smart Account"
               isLoading={deployLoading1}
               onClickFunc={deploySmartAccount1}
             />
           </div>
-          <div className={classes.element}>
-            <p className={classes.text}>
+          <div className="w-full flex flex-col gap-8 items-center justify-center border-2 border-dashed h-full rounded-2xl border-white hover:border-textPrimary transition-colors p-10">
+            <h2 className="text-2xl text-textPrimary">
               Deploy Account along with first transaction.
-            </p>
-            <ul style={{ width: "100%" }}>
-              <li style={{ marginBottom: 20 }}>
-                User pay for deployment along with the first transaction.
-              </li>
-              <li style={{ marginBottom: 10 }}>
+            </h2>
+            <ul className="flex list-disc flex-col text-center items-center justify-center gap-2 text-white">
+              <li>User pay for deployment along with the first transaction.</li>
+              <li>
                 Select bundled transaction which deploys the wallet and add
                 liquidity to Hyphen bridge.
               </li>
             </ul>
-            <Button title="Go to Use Cases" onClickFunc={() => setValue(2)} />
+            <Button
+              className="bg-buttonOrange transition-colors hover:bg-buttonOrangeHover text-white px-4 h-10 rounded-lg"
+              title="Go to Use Cases"
+              onClickFunc={() => setValue(2)}
+            />
           </div>
-          <div className={classes.element}>
-            <p className={classes.text}>
+          <div className="w-full flex flex-col gap-8 items-center justify-center border-2 border-dashed h-full rounded-2xl border-white hover:border-textPrimary transition-colors p-10">
+            <h2 className="text-2xl text-textPrimary">
               User pays for wallet deployment cost.
-            </p>
-            <ul style={{ width: "100%" }}>
-              <li style={{ marginBottom: 20 }}>
-                You have to deposit funds in the counter factual address.
-              </li>
-              <li style={{ marginBottom: 20 }}>
-                Copy your counter factual address from navbar.
-              </li>
-              <li style={{ marginBottom: 0 }}>
-                Get USDC funds from our testnet faucet and deploy.
-              </li>
+            </h2>
+            <ul className="flex list-disc flex-col text-center items-center justify-center gap-2 text-white">
+              <li>You have to deposit funds in the counter factual address.</li>
+              <li>Copy your counter factual address from navbar.</li>
+              <li>Get USDC funds from our testnet faucet and deploy.</li>
             </ul>
             <Button
+              className="bg-buttonOrange transition-colors hover:bg-buttonOrangeHover text-white px-4 h-10 rounded-lg"
               title="Deploy Smart Account"
               isLoading={deployLoading2}
               onClickFunc={deploySmartAccount2}
@@ -211,65 +205,5 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
     </main>
   );
 };
-
-const useStyles = makeStyles(() => ({
-  main: {
-    margin: "auto",
-    padding: "10px 40px",
-    maxWidth: 1200,
-    color: "#a0aec0",
-  },
-  subTitle: {
-    fontFamily: "Rubik",
-    color: "#fff",
-    fontSize: 28,
-  },
-  container: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "space-between",
-    "@media (max-width: 699px)": {
-      width: "90%",
-      flexDirection: "column",
-    },
-  },
-  element: {
-    width: "27%",
-    backgroundColor: "#1a1e23",
-    height: 300,
-    filter: "drop-shadow(0px 2px 24px rgba(0, 0, 0, 0.1))",
-    border: "2px solid #393E46",
-    borderLeft: "solid 3px #393E46",
-    boxShadow: "5px 5px 0px #393E46",
-    borderRadius: 12,
-    // height: "max-content",
-    padding: 25,
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
-    alignItems: "center",
-    "@media (max-width: 699px)": {
-      width: "100%",
-      marginBottom: 20,
-    },
-  },
-  text: {
-    fontSize: 20,
-    color: "#fff",
-    // wordBreak: "break-all",
-  },
-  subText: {
-    fontSize: 14,
-    padding: 10,
-    backgroundColor: "#FF996647",
-  },
-  container2: {
-    textAlign: "center",
-    marginTop: 80,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-}));
 
 export default Onboarding;

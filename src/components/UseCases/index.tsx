@@ -31,108 +31,89 @@ const UseCases: React.FC<Props> = ({ useCase, setUseCase }) => {
   }
 
   return (
-    <main className={classes.main}>
-      <h3 className={classes.subTitle}>{"Smart Account Use Cases"}</h3>
-      <p>User can do multiple things using smart account like → </p>
-      <ul>
-        <li>Forward flow - Paying gas fee in any token.</li>
-        <li>
-          Bundle - Batching multiple different transaction in a single
-          transaction.
-        </li>
-        <li>
-          Account Abstraction - Send gasless transaction ~ batch them and let
-          paymaster pay for your transaction.
-        </li>
-      </ul>
-      <p style={{ marginBottom: 25 }}>
-        Here we have added some use cases from which users can test out the sdk.
-      </p>
-
-      <hr />
-      <p className={classes.subSubTitle}>
-        Forward Flow: <i>User's SCW pays in ERC20 </i>
-      </p>
-
-      <div className={classes.container}>
-        <div className={classes.element} onClick={() => setUseCase(1)}>
-          <p className={classes.text} style={{ textAlign: "left" }}>
-            Single transaction Forward:
-          </p>
-          <ul>
-            <li style={{ marginBottom: 10 }}>Arrpove any ERC20 contract</li>
-            <li style={{ marginBottom: 10 }}>
-              Send tx (scw pays gas fee in USDC)
-            </li>
-          </ul>
-        </div>
-
-        <div className={classes.element} onClick={() => setUseCase(2)}>
-          <p className={classes.text} style={{ textAlign: "left" }}>
-            Batch User Pays:
-          </p>
-          <ul>
-            <li style={{ marginBottom: 10 }}>
-              Deploy Wallet if not already deployed.
-            </li>
-            <li style={{ marginBottom: 10 }}>Approve USDC.</li>
-            <li style={{ marginBottom: 10 }}>
-              Provide USDC Liquidity on Hyphen.
-            </li>
-          </ul>
-        </div>
-
-        {/* <div className={classes.element} onClick={() => setUseCase(3)}>
-          <p className={classes.text} style={{ textAlign: "left" }}>
-            Batch User Pays:
-          </p>
-          <ul>
-            <li style={{ marginBottom: 10 }}>Approve USDC.</li>
-            <li style={{ marginBottom: 10 }}>Swap USDC to WETH on Uniswap</li>
-          </ul>
-        </div> */}
+    <main className="w-full h-full flex flex-col items-start justify-start gap-8">
+      <h1 className="text-4xl text-textPrimary">{"Smart Account Use Cases"}</h1>
+      <div className="flex flex-col gap-2 text-white">
+        <p>User can do multiple things using smart account like: </p>
+        <ul className="ml-8 flex list-disc flex-col">
+          <li>Forward flow - Paying gas fee in any token.</li>
+          <li>
+            Bundle - Batching multiple different transaction in a single
+            transaction.
+          </li>
+          <li>
+            Account Abstraction - Send gasless transaction ~ batch them and let
+            paymaster pay for your transaction.
+          </li>
+        </ul>
       </div>
+      <div className="flex w-full gap-16 items-start justify-start">
+        <div className="w-1/2 flex flex-col gap-4">
+          <h2 className="text-2xl mt-4 text-textPrimary">
+            Forward Flow: <i>User's SCW pays in ERC20 </i>
+          </h2>
+          <div
+            className="w-full p-8 cursor-pointer flex flex-col gap-4 items-start justify-start border-2 border-white hover:border-textPrimary transition-colors text-white border-dashed rounded-2xl"
+            onClick={() => setUseCase(3)}
+          >
+            <h3 className="text-2xl text-textPrimary">
+              Single transaction Forward:
+            </h3>
+            <ul className="ml-8 flex list-disc flex-col">
+              <li>Arrpove any ERC20 contract</li>
+              <li>Send tx (scw pays gas fee in USDC)</li>
+            </ul>
+          </div>
 
-      <hr />
-      <p className={classes.subSubTitle}>
-        AA ~ <i>Gasless Flow, dapp pays tx fee </i>{" "}
-      </p>
-      <div className={classes.container}>
-        <div className={classes.element} onClick={() => setUseCase(4)}>
-          <p className={classes.text} style={{ textAlign: "left" }}>
-            Gasless transaction:
-          </p>
-          <ul>
-            <li style={{ marginBottom: 10 }}>Approve USDC.</li>
-            <li style={{ marginBottom: 10 }}>Send tx (paid via paymaster).</li>
-          </ul>
+          <div
+            className="w-full p-8 cursor-pointer flex flex-col gap-4 items-start justify-start border-2 border-white hover:border-textPrimary transition-colors text-white border-dashed rounded-2xl"
+            onClick={() => setUseCase(4)}
+          >
+            <h3 className="text-2xl text-textPrimary">Batch User Pays:</h3>
+            <ul className="ml-8 flex list-disc flex-col">
+              <li>Deploy Wallet if not already deployed.</li>
+              <li>Approve USDC.</li>
+              <li>Provide USDC Liquidity on Hyphen.</li>
+            </ul>
+          </div>
         </div>
+        <div className="w-1/2 flex flex-col gap-4">
+          <h2 className="text-2xl mt-4 text-textPrimary">
+            AA: <i>Gasless Flow, dapp pays tx fee </i>{" "}
+          </h2>
+          <div
+            className="w-full p-8 cursor-pointer flex flex-col gap-4 items-start justify-start border-2 border-white hover:border-textPrimary transition-colors text-white border-dashed rounded-2xl"
+            onClick={() => setUseCase(5)}
+          >
+            <h3 className="text-2xl text-textPrimary">Gasless transaction:</h3>
+            <ul className="ml-8 flex list-disc flex-col">
+              <li>Approve USDC.</li>
+              <li>Send tx (paid via paymaster).</li>
+            </ul>
+          </div>
 
-        <div className={classes.element} onClick={() => setUseCase(5)}>
-          <p className={classes.text} style={{ textAlign: "left" }}>
-            Batch Gasless:
-          </p>
-          <ul>
-            <li style={{ marginBottom: 10 }}>Approve USDC.</li>
-            <li style={{ marginBottom: 10 }}>
-              Provide USDC Liquidity on Hyphen.
-            </li>
-          </ul>
-        </div>
+          <div
+            className="w-full p-8 cursor-pointer flex flex-col gap-4 items-start justify-start border-2 border-white hover:border-textPrimary transition-colors text-white border-dashed rounded-2xl"
+            onClick={() => setUseCase(6)}
+          >
+            <h3 className="text-2xl text-textPrimary">Batch Gasless:</h3>
+            <ul className="ml-8 flex list-disc flex-col">
+              <li>Approve USDC.</li>
+              <li>Provide USDC Liquidity on Hyphen.</li>
+            </ul>
+          </div>
 
-        <div className={classes.element} onClick={() => setUseCase(6)}>
-          <p className={classes.text} style={{ textAlign: "left" }}>
-            Batch Gasless:
-          </p>
-          <ul>
-            <li style={{ marginBottom: 10 }}>
-              Deploy Wallet if not already deployed.
-            </li>
-            <li style={{ marginBottom: 10 }}>Approve USDC.</li>
-            <li style={{ marginBottom: 10 }}>
-              Provide USDC Liquidity on Hyphen.
-            </li>
-          </ul>
+          <div
+            className="w-full p-8 cursor-pointer flex flex-col gap-4 items-start justify-start border-2 border-white hover:border-textPrimary transition-colors text-white border-dashed rounded-2xl"
+            onClick={() => setUseCase(7)}
+          >
+            <h3 className="text-2xl text-textPrimary">Batch Gasless:</h3>
+            <ul className="ml-8 flex list-disc flex-col">
+              <li>Deploy Wallet if not already deployed.</li>
+              <li>Approve USDC.</li>
+              <li>Provide USDC Liquidity on Hyphen.</li>
+            </ul>
+          </div>
         </div>
       </div>
     </main>
