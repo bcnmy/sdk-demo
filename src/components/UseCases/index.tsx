@@ -31,7 +31,7 @@ const UseCases: React.FC<Props> = ({ useCase, setUseCase }) => {
   }
 
   return (
-    <main className="w-full h-full flex flex-col items-start justify-start gap-8">
+    <main className="w-full h-full overflow-hidden flex flex-col items-start justify-start gap-8">
       <h1 className="text-4xl text-textPrimary">{"Smart Account Use Cases"}</h1>
       <div className="flex flex-col gap-2 text-white">
         <p>User can do multiple things using smart account like: </p>
@@ -47,7 +47,7 @@ const UseCases: React.FC<Props> = ({ useCase, setUseCase }) => {
           </li>
         </ul>
       </div>
-      <div className="flex w-full gap-16 items-start justify-start">
+      <div className="flex w-full overflow-scroll pb-20 gap-8 items-start justify-start">
         <div className="w-1/2 flex flex-col gap-4">
           <h2 className="text-2xl mt-4 text-textPrimary">
             Forward Flow: <i>User's SCW pays in ERC20 </i>
@@ -91,6 +91,7 @@ const UseCases: React.FC<Props> = ({ useCase, setUseCase }) => {
               <li>Send tx (paid via paymaster).</li>
             </ul>
           </div>
+          
 
           <div
             className="w-full p-8 cursor-pointer flex flex-col gap-4 items-start justify-start border-2 border-white hover:border-textPrimary transition-colors text-white border-dashed rounded-2xl"
@@ -107,7 +108,7 @@ const UseCases: React.FC<Props> = ({ useCase, setUseCase }) => {
             className="w-full p-8 cursor-pointer flex flex-col gap-4 items-start justify-start border-2 border-white hover:border-textPrimary transition-colors text-white border-dashed rounded-2xl"
             onClick={() => setUseCase(7)}
           >
-            <h3 className="text-2xl text-textPrimary">Batch Gasless:</h3>
+            <h3 className="text-2xl text-textPrimary">Deploy and Batch Gasless:</h3>
             <ul className="ml-8 flex list-disc flex-col">
               <li>Deploy Wallet if not already deployed.</li>
               <li>Approve USDC.</li>
