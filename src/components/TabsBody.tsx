@@ -33,7 +33,7 @@ import Faucet from "./Faucet";
 import AccountAbstraction from "./AA";
 import MintNft from "./AA/MintNft";
 import BatchMintNft from "./AA/BatchMintNft";
-import AllowErc20 from "./AA/AllowErc20";
+import MintErc20 from "./AA/MintErc20";
 import BatchLiquidity from "./AA/BatchLiquidity";
 // Forward
 import ForwardFlow from "./Forward";
@@ -58,7 +58,7 @@ const onboardingList = [
 
 const AAList = [
   {
-    name: "Allow ERC20 Token",
+    name: "Mint ERC20 Token",
     icon: <TokenIcon />,
   },
   {
@@ -331,7 +331,7 @@ const TabsBody = () => {
         <AccountAbstraction setUseCase={setUseCase} useCase={useCase} />
       </TabPanel>
       <TabPanel value={pageIndex} index={4}>
-        <AllowErc20 />
+        <MintErc20 />
       </TabPanel>
       <TabPanel value={pageIndex} index={5}>
         <MintNft />

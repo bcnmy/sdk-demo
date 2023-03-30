@@ -25,6 +25,7 @@ const MintNftForward: React.FC = () => {
     }[]
   >([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingFee, setIsLoadingFee] = useState(false);
 
   useEffect(() => {
     const getNftCount = async () => {
@@ -45,6 +46,7 @@ const MintNftForward: React.FC = () => {
     if (!wallet || !walletState || !web3Provider) return;
     try {
       setIsLoading(true);
+      setIsLoadingFee(true);
       let smartAccount = wallet;
       const nftContract = new ethers.Contract(
         config.nft.address,
@@ -80,7 +82,7 @@ const MintNftForward: React.FC = () => {
         });
       }
       setPayment(pmtArr);
-      setIsLoading(false);
+      setIsLoadingFee(false);
       showInfoMessage("Batching transactions");
 
       // making transaction with version, set feeQuotes[1].tokenGasPrice = 6
@@ -106,8 +108,10 @@ const MintNftForward: React.FC = () => {
         console.log("txn_mined:", transaction);
         showSuccessMessage(`Transaction mined: ${txHash}`);
       });
+      setIsLoading(false);
     } catch (err: any) {
       console.error(err);
+      setIsLoading(false);
       showErrorMessage(err.message || "Error in sending the transaction");
     }
   };
@@ -134,7 +138,7 @@ const MintNftForward: React.FC = () => {
 
       <h3 className={classes.h3Title}>Available Fee options</h3>
 
-      {isLoading && (
+      {isLoadingFee && (
         <div
           style={{
             display: "flex",
@@ -157,7 +161,7 @@ const MintNftForward: React.FC = () => {
         ))}
       </ul>
 
-      <Button title="Mint NFT" onClickFunc={makeTx} />
+      <Button title="Mint NFT" isLoading={isLoading} onClickFunc={makeTx} />
     </main>
   );
 };

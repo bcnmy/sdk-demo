@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { makeStyles } from "@mui/styles";
 
@@ -16,25 +16,29 @@ const BatchMintNft: React.FC = () => {
   const { web3Provider } = useWeb3AuthContext();
   const { state: walletState, wallet } = useSmartAccountContext();
   const [nftCount, setNftCount] = useState<number | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const getNftCount = useCallback(async () => {
+    if (!walletState?.address || !web3Provider) return;
+    const nftContract = new ethers.Contract(
+      config.nft.address,
+      config.nft.abi,
+      web3Provider
+    );
+    const count = await nftContract.balanceOf(walletState?.address);
+    console.log("count", Number(count));
+    setNftCount(Number(count));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
-    const getNftCount = async () => {
-      if (!walletState?.address || !web3Provider) return;
-      const nftContract = new ethers.Contract(
-        config.nft.address,
-        config.nft.abi,
-        web3Provider
-      );
-      const count = await nftContract.balanceOf(walletState?.address);
-      console.log("count", Number(count));
-      setNftCount(Number(count));
-    };
     getNftCount();
-  }, [walletState?.address, web3Provider]);
+  }, [getNftCount, web3Provider]);
 
   const mintNft = async () => {
     if (!wallet || !walletState || !web3Provider) return;
     try {
+      setLoading(true);
       let smartAccount = wallet;
       const nftContract = new ethers.Contract(
         config.nft.address,
@@ -60,11 +64,18 @@ const BatchMintNft: React.FC = () => {
       });
 
       showSuccessMessage(`userOpHash: ${txResponse.hash}`);
+      console.log("waiting for tx hash...");
       const txHash = await txResponse.wait();
       console.log("txHash", txHash);
-      showSuccessMessage(`Minted Nft ${txHash.transactionHash}`, txHash.transactionHash);
+      showSuccessMessage(
+        `Minted Nft ${txHash.transactionHash}`,
+        txHash.transactionHash
+      );
+      getNftCount();
+      setLoading(false);
     } catch (err: any) {
       console.error(err);
+      setLoading(false);
       showErrorMessage(err.message || "Error in sending the transaction");
     }
   };
@@ -81,7 +92,12 @@ const BatchMintNft: React.FC = () => {
         This magic bundle will batch two signle safeMint into one transaction
       </p>
 
-      <p>Nft Contract Address: {config.nft.address}</p>
+      <p>
+        Nft Contract Address: {config.nft.address}{" "}
+        <span style={{ fontSize: 13, color: "#FFB4B4" }}>
+          (same of goerli, mumbai, polygon)
+        </span>
+      </p>
       <p style={{ marginBottom: 30 }}>
         Nft Balance in SCW:{" "}
         {nftCount === null ? (
@@ -97,7 +113,11 @@ const BatchMintNft: React.FC = () => {
         <li>safeMint 1 nft</li>
       </ul>
 
-      <Button title="Mint Nft twice" onClickFunc={mintNft} />
+      <Button
+        title="Mint Nft twice"
+        onClickFunc={mintNft}
+        isLoading={loading}
+      />
     </main>
   );
 };

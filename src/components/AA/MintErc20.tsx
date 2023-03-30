@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { ethers } from "ethers";
 import { makeStyles } from "@mui/styles";
 
@@ -11,62 +11,60 @@ import {
   showSuccessMessage,
 } from "../../utils";
 
-const MintNft: React.FC = () => {
+const MintErc20: React.FC = () => {
   const classes = useStyles();
   const { web3Provider } = useWeb3AuthContext();
   const { state: walletState, wallet } = useSmartAccountContext();
-  const [nftCount, setNftCount] = useState<number | null>(null);
+  const [balance, setBalance] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  const getNftCount = useCallback(async () => {
+  const getBalance = useCallback(async () => {
     if (!walletState?.address || !web3Provider) return;
-    const nftContract = new ethers.Contract(
-      config.nft.address,
-      config.nft.abi,
+    const erc20Contract = new ethers.Contract(
+      config.terc20.address,
+      config.terc20.abi,
       web3Provider
     );
-    const count = await nftContract.balanceOf(walletState?.address);
+    const count = await erc20Contract.balanceOf(walletState?.address);
     console.log("count", Number(count));
-    setNftCount(Number(count));
+    setBalance(Number(count));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    getNftCount();
-  }, [getNftCount, walletState]);
+    getBalance();
+  }, [getBalance, web3Provider]);
 
-  const mintNft = async () => {
+  const makeTx = async () => {
     if (!wallet || !walletState || !web3Provider) return;
     try {
       setLoading(true);
       let smartAccount = wallet;
-      const nftContract = new ethers.Contract(
-        config.nft.address,
-        config.nft.abi,
+      const erc20Contract = new ethers.Contract(
+        config.terc20.address,
+        config.terc20.abi,
         web3Provider
       );
-      console.log("smartAccount.address ", smartAccount.address);
-      const safeMintTx = await nftContract.populateTransaction.safeMint(
-        smartAccount.address
-      );
-      console.log(safeMintTx.data);
-      const tx1 = {
-        to: config.nft.address,
-        data: safeMintTx.data,
+      const amountGwei = ethers.utils.parseEther("100");
+      const data = erc20Contract.interface.encodeFunctionData("mint", [
+        smartAccount.address,
+        amountGwei,
+      ]);
+      const tx = {
+        to: config.terc20.address,
+        data: data,
       };
-
       const txResponse = await smartAccount.sendGaslessTransaction({
-        transaction: tx1,
+        transaction: tx,
       });
-      console.log("Tx sent, userOpHash:", txResponse);
-      console.log("Waiting for tx to be mined...");
+      console.log("userOpHash", txResponse);
       const txHash = await txResponse.wait();
       console.log("txHash", txHash);
       showSuccessMessage(
-        `Minted Nft ${txHash.transactionHash}`,
+        `Minted EROC20 ${txHash.transactionHash}`,
         txHash.transactionHash
       );
-      getNftCount();
+      getBalance();
       setLoading(false);
     } catch (err: any) {
       console.error(err);
@@ -78,30 +76,29 @@ const MintNft: React.FC = () => {
   return (
     <main className={classes.main}>
       <p style={{ color: "#7E7E7E" }}>
-        Use Cases {"->"} Gasless {"->"} Mint Nft
+        Use Cases {"->"} Gasless {"->"} Mint ERC-20
       </p>
 
-      <h3 className={classes.subTitle}>Mint Nft Flow</h3>
+      <h3 className={classes.subTitle}>Mint erc20 Gasless Flow</h3>
 
-      <p style={{ marginBottom: 20 }}>
-        This is an example gasless transaction to Mint Nft.
-      </p>
+      <p>This is single transaction to mint an test ERC-20 contract.</p>
+
       <p>
-        Nft Contract Address: {config.nft.address}{" "}
+        Test ERC20 Token: {config.terc20.address}
         <span style={{ fontSize: 13, color: "#FFB4B4" }}>
           (same of goerli, mumbai, polygon)
         </span>
       </p>
       <p style={{ marginBottom: 30 }}>
         Nft Balance in SCW:{" "}
-        {nftCount === null ? (
+        {balance === null ? (
           <p style={{ color: "#7E7E7E", display: "contents" }}>fetching...</p>
         ) : (
-          nftCount
+          ethers.utils.formatEther(ethers.utils.parseEther(balance.toString()))
         )}
       </p>
 
-      <Button title="Mint NFT" isLoading={loading} onClickFunc={mintNft} />
+      <Button title="Mint ERC-20" isLoading={loading} onClickFunc={makeTx} />
     </main>
   );
 };
@@ -110,7 +107,6 @@ const useStyles = makeStyles(() => ({
   main: {
     margin: "auto",
     padding: "10px 40px",
-    color: "#EEEEEE",
   },
   subTitle: {
     fontFamily: "Rubik",
@@ -120,6 +116,18 @@ const useStyles = makeStyles(() => ({
   h3Title: {
     color: "#fff",
   },
+  input: {
+    maxWidth: 350,
+    width: "100%",
+    padding: "12px 10px",
+    margin: "8px 0",
+    color: "#fff",
+    boxSizing: "border-box",
+    outlineColor: "#181818",
+    backgroundColor: "#282A3A",
+    border: "none",
+    marginBottom: 20,
+  },
 }));
 
-export default MintNft;
+export default MintErc20;

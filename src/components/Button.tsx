@@ -71,6 +71,12 @@ const useStyles = makeStyles((theme: any) => ({
       transform: "translate(3px, 3px)",
     },
 
+    // disable button
+    "&:disabled": {
+      cursor: "not-allowed",
+      opacity: 0.5,
+    },
+
     "& div": {
       "@media (max-width:599px)": {
         margin: 0,

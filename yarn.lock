@@ -1151,14 +1151,14 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@biconomy-sdk-dev/account-abstraction@^1.0.18":
-  version "1.0.18"
-  resolved "https://registry.yarnpkg.com/@biconomy-sdk-dev/account-abstraction/-/account-abstraction-1.0.18.tgz#674dc1074806ce60e0f19a77e787c76fa910801a"
-  integrity sha512-Qx1WmC+Zm3oadpR22QAVVsIrspclJ6fYB9dj0aJKRQsvUFA9OHNdx2n8ZOzzGJ5TxTR3bec38sjrK1jqtcZJcA==
+"@biconomy-sdk-dev/account-abstraction@^1.0.21":
+  version "1.0.21"
+  resolved "https://registry.yarnpkg.com/@biconomy-sdk-dev/account-abstraction/-/account-abstraction-1.0.21.tgz#2d14302204d7f0af85a143e8f5e6574bd17759c9"
+  integrity sha512-R+mjSBU4GrfPXVcLkjKzx5yAL+5cdePswZyo55fnHJf+WNZ8xx4JRlIDu4oPsso5dszImXP1CMu9tMevfCb3kw==
   dependencies:
     "@account-abstraction/contracts" "^0.4.0"
     "@account-abstraction/utils" "^0.4.0"
-    "@biconomy-sdk-dev/common" "^1.0.18"
+    "@biconomy-sdk-dev/common" "^1.0.21"
     "@ethersproject/abstract-provider" "^5.7.0"
     "@ethersproject/abstract-signer" "^5.7.0"
     "@ethersproject/networks" "^5.7.0"
@@ -1171,15 +1171,15 @@
     hardhat "^2.9.7"
     solidity-coverage "^0.7.22"
 
-"@biconomy-sdk-dev/common@^1.0.18":
-  version "1.0.18"
-  resolved "https://registry.yarnpkg.com/@biconomy-sdk-dev/common/-/common-1.0.18.tgz#4293daf85544f40a3af38f52c4897daf0a2d3c8f"
-  integrity sha512-r7mEmuY9PtfK2EQt8M5pzUCPLsXZz+UK4P8KD280PGkKZUX0cIZVSaOlFo0g4mhgP5hdTAzNRL75wmq2kP4Nzw==
+"@biconomy-sdk-dev/common@^1.0.21":
+  version "1.0.21"
+  resolved "https://registry.yarnpkg.com/@biconomy-sdk-dev/common/-/common-1.0.21.tgz#30a7d4fdcdddd589bf83b9eb46738edb0c9bfaf8"
+  integrity sha512-2Kka/s49qhK2sktVTap9/g14m+v4K5nuytdpLEipklIivGMx9jjflryu27F3BOPhOC4gTDzp3cJ2CgS4fRt/Tg==
   dependencies:
     "@account-abstraction/contracts" "^0.5.0"
-    "@biconomy-sdk-dev/core-types" "^1.0.18"
-    "@biconomy-sdk-dev/ethers-lib" "^1.0.18"
-    "@biconomy-sdk-dev/node-client" "^1.0.18"
+    "@biconomy-sdk-dev/core-types" "^1.0.21"
+    "@biconomy-sdk-dev/ethers-lib" "^1.0.21"
+    "@biconomy-sdk-dev/node-client" "^1.0.21"
     "@ethersproject/abi" "^5.7.0"
     "@ethersproject/bytes" "^5.7.0"
     "@ethersproject/providers" "^5.7.0"
@@ -1187,10 +1187,10 @@
     debug "^4.3.4"
     ethers "^5.7.0"
 
-"@biconomy-sdk-dev/core-types@1.0.18", "@biconomy-sdk-dev/core-types@^1.0.18":
-  version "1.0.18"
-  resolved "https://registry.yarnpkg.com/@biconomy-sdk-dev/core-types/-/core-types-1.0.18.tgz#59dddaf1cfe11ca98eb45fb236715d0ccf815860"
-  integrity sha512-PXb/ROcoccCQ2g9X71JigzBnxJyHq9QF7P5/3Wiqf/UDDDV06LqGvy0iwxHKQkcA4uEttbttxzYJn60RXWr2pA==
+"@biconomy-sdk-dev/core-types@1.0.21", "@biconomy-sdk-dev/core-types@^1.0.21":
+  version "1.0.21"
+  resolved "https://registry.yarnpkg.com/@biconomy-sdk-dev/core-types/-/core-types-1.0.21.tgz#54b59592cf91237b1a0637dc8bc159199feb6cec"
+  integrity sha512-zeid4SB5bneUdx/IxXCKyb9L8euVo9SpdsbLTtVb+01IfRBuYuICkI27lHBe34gp5TXwEU3YvHmzpKWCDrnhiw==
   dependencies:
     "@ethersproject/bignumber" "^5.6.0"
     "@ethersproject/contracts" "^5.6.0"
@@ -1198,55 +1198,55 @@
     "@gnosis.pm/safe-deployments" "^1.16.0"
     web3-core "^1.7.1"
 
-"@biconomy-sdk-dev/ethers-lib@^1.0.18":
-  version "1.0.18"
-  resolved "https://registry.yarnpkg.com/@biconomy-sdk-dev/ethers-lib/-/ethers-lib-1.0.18.tgz#525f0eb19d4589008179f9ba53217aa3074b7d1d"
-  integrity sha512-1ZYJnUWK4OosUvpqeIch2diOT+JRH3bSFzHbdtbKeq7o+nw23a6BVsKRudWyx/NpVTXq41Shxjk7Mg2fM7PrcA==
+"@biconomy-sdk-dev/ethers-lib@^1.0.21":
+  version "1.0.21"
+  resolved "https://registry.yarnpkg.com/@biconomy-sdk-dev/ethers-lib/-/ethers-lib-1.0.21.tgz#7ca9644e05f67452421e99d26c9a5276edabeb23"
+  integrity sha512-d+aJ/PNRpM2Dwr/d4ibBL4xCIkP3+0z6HLWegPDwZiqOuAuhU1/3JfpRj/LqjcLEGiCEiVl5WopzGJYY0YPaZw==
   dependencies:
     "@account-abstraction/contracts" "^0.5.0"
-    "@biconomy-sdk-dev/core-types" "^1.0.18"
+    "@biconomy-sdk-dev/core-types" "^1.0.21"
     "@gnosis.pm/safe-core-sdk-utils" "^1.1.0"
     "@nomiclabs/hardhat-ethers" "^2.1.0"
     "@openzeppelin/contracts" "^4.6.0"
     fallback-contracts-v1.0.0 "npm:@biconomy-devx/fallback-gastank@1.0.0"
     scw-contracts-v1.0.0 "npm:@biconomy-devx/wallet-contracts@1.0.1"
 
-"@biconomy-sdk-dev/node-client@^1.0.18":
-  version "1.0.18"
-  resolved "https://registry.yarnpkg.com/@biconomy-sdk-dev/node-client/-/node-client-1.0.18.tgz#c7083e98f9797018b8d416553af0309c0edfb17a"
-  integrity sha512-8gTS3e6DZoT3HKAmFJl3d/BRXJHHG/XU2hP9M27hM+CyFUEpBrk23MhUCzE/XJH5wF2zDhys7OHKnqsgujmYzQ==
+"@biconomy-sdk-dev/node-client@^1.0.21":
+  version "1.0.21"
+  resolved "https://registry.yarnpkg.com/@biconomy-sdk-dev/node-client/-/node-client-1.0.21.tgz#d0357edc198a38f32e131b962a7ffad319227f4a"
+  integrity sha512-ICys4F4Wt7mCQUq+8cMkqBXV85wh/ekeLWqF3FzK2XAZJWkYw5nxHv0q6L90MM7k7zhSIToKehxJsF3YM5SCXw==
   dependencies:
-    "@biconomy-sdk-dev/core-types" "^1.0.18"
+    "@biconomy-sdk-dev/core-types" "^1.0.21"
     "@ethersproject/abstract-signer" "^5.6.0"
     "@gnosis.pm/safe-core-sdk" "^2.1.0"
     "@nomiclabs/hardhat-ethers" "^2.1.0"
     node-fetch "^2.6.6"
 
-"@biconomy-sdk-dev/relayer@1.0.18", "@biconomy-sdk-dev/relayer@^1.0.18":
-  version "1.0.18"
-  resolved "https://registry.yarnpkg.com/@biconomy-sdk-dev/relayer/-/relayer-1.0.18.tgz#f71c089c4bb4c8470d5c7a4c5f0f9d527135a7e2"
-  integrity sha512-U7pOIACJjRvXm4aojM4KP8VSG1fUvf+TJoXDhlcwxDMelF75GhFE1e6+SKobtUjoABsGpPve6JoSeV95pjx9Fg==
+"@biconomy-sdk-dev/relayer@1.0.21", "@biconomy-sdk-dev/relayer@^1.0.21":
+  version "1.0.21"
+  resolved "https://registry.yarnpkg.com/@biconomy-sdk-dev/relayer/-/relayer-1.0.21.tgz#f51e3f60215155e712d9e89f623b18dba5cb8a13"
+  integrity sha512-+a0Kzhm3bmFzkGizCuu8Q4uxeor5zE+FS+3VzzXl27E7AZ9aDvQXabUAH9+Vq/WFNVaEYEJZJy0AZxg32p2vkg==
   dependencies:
-    "@biconomy-sdk-dev/common" "^1.0.18"
-    "@biconomy-sdk-dev/core-types" "^1.0.18"
+    "@biconomy-sdk-dev/common" "^1.0.21"
+    "@biconomy-sdk-dev/core-types" "^1.0.21"
     "@biconomy/gasless-messaging-sdk" "^0.0.3"
     "@ethersproject/providers" "^5.6.8"
     axios "^1.3.4"
     ethers "^5.6.9"
     isomorphic-ws "^5.0.0"
 
-"@biconomy-sdk-dev/smart-account@1.0.18":
-  version "1.0.18"
-  resolved "https://registry.yarnpkg.com/@biconomy-sdk-dev/smart-account/-/smart-account-1.0.18.tgz#432221143f30e13eb0a3bad3f6618a386f12cb36"
-  integrity sha512-qUtRXbEUc6M2h1v2w/mL/yAECtG21BaUMRmYKZULymMxJSVnFwR/kEeyVPDtJO3e8X890c7BYWaxR1Y8KjAJJg==
+"@biconomy-sdk-dev/smart-account@1.0.21":
+  version "1.0.21"
+  resolved "https://registry.yarnpkg.com/@biconomy-sdk-dev/smart-account/-/smart-account-1.0.21.tgz#335d23d5127d126c546ea00aedee5f47222f1a6f"
+  integrity sha512-/U/bvHkh8yVhS6XJxeFe7sYtG6+PcjXnaD810IkTL28+pFR2G//w0LauS5tL8bxOTjKnn9W3CLECo/AlmGH0hg==
   dependencies:
     "@0xsequence/network" "^0.41.0"
-    "@biconomy-sdk-dev/account-abstraction" "^1.0.18"
-    "@biconomy-sdk-dev/core-types" "^1.0.18"
-    "@biconomy-sdk-dev/ethers-lib" "^1.0.18"
-    "@biconomy-sdk-dev/node-client" "^1.0.18"
-    "@biconomy-sdk-dev/relayer" "^1.0.18"
-    "@biconomy-sdk-dev/transactions" "^1.0.18"
+    "@biconomy-sdk-dev/account-abstraction" "^1.0.21"
+    "@biconomy-sdk-dev/core-types" "^1.0.21"
+    "@biconomy-sdk-dev/ethers-lib" "^1.0.21"
+    "@biconomy-sdk-dev/node-client" "^1.0.21"
+    "@biconomy-sdk-dev/relayer" "^1.0.21"
+    "@biconomy-sdk-dev/transactions" "^1.0.21"
     "@ethersproject/bignumber" "^5.6.0"
     "@ethersproject/contracts" "^5.6.0"
     "@ethersproject/providers" "^5.6.8"
@@ -1256,27 +1256,27 @@
     concurrently "^7.4.0"
     lodash "^4.17.21"
 
-"@biconomy-sdk-dev/transactions@1.0.18", "@biconomy-sdk-dev/transactions@^1.0.18":
-  version "1.0.18"
-  resolved "https://registry.yarnpkg.com/@biconomy-sdk-dev/transactions/-/transactions-1.0.18.tgz#13560a57b761d971605c596d8ebabb24e6f9604c"
-  integrity sha512-hwB2Zd58bHqL15iOTZQ7SKHoG2Q829vBinkAi+bPh6RT4O8XWiyL57WWFXYIg948F6IyOY5Nrgz5VHiWBEKn7w==
+"@biconomy-sdk-dev/transactions@1.0.21", "@biconomy-sdk-dev/transactions@^1.0.21":
+  version "1.0.21"
+  resolved "https://registry.yarnpkg.com/@biconomy-sdk-dev/transactions/-/transactions-1.0.21.tgz#2ac9a66719a3731e86d021e9f05337a1fd08f28b"
+  integrity sha512-Kgz8LTWOwcYLtR43000fbCyc5j8gHExBZtvTCFQWT/DMOQvWKHR7fgqiyKBthvIorB0uTB58DzgS8R1d2pPBqg==
   dependencies:
-    "@biconomy-sdk-dev/common" "^1.0.18"
-    "@biconomy-sdk-dev/core-types" "^1.0.18"
-    "@biconomy-sdk-dev/ethers-lib" "^1.0.18"
-    "@biconomy-sdk-dev/node-client" "^1.0.18"
-    "@biconomy-sdk-dev/relayer" "^1.0.18"
+    "@biconomy-sdk-dev/common" "^1.0.21"
+    "@biconomy-sdk-dev/core-types" "^1.0.21"
+    "@biconomy-sdk-dev/ethers-lib" "^1.0.21"
+    "@biconomy-sdk-dev/node-client" "^1.0.21"
+    "@biconomy-sdk-dev/relayer" "^1.0.21"
     "@ethersproject/abstract-signer" "^5.6.2"
     "@ethersproject/constants" "^5.6.1"
     ethereumjs-util "^7.1.5"
     ethers "^5.6.9"
 
-"@biconomy-sdk-dev/web3-auth@1.0.18":
-  version "1.0.18"
-  resolved "https://registry.yarnpkg.com/@biconomy-sdk-dev/web3-auth/-/web3-auth-1.0.18.tgz#b2dd92f7f98da085c845ce838fb17d05d38d8e45"
-  integrity sha512-y8N8JHrUaQCN6Zf00ESj7w7wa/LRezyAZ1pWjruWPumNS2rU1XsZnLThQLhCw0mJKOvRPhwigO7WkUYjvYwgdQ==
+"@biconomy-sdk-dev/web3-auth@1.0.21":
+  version "1.0.21"
+  resolved "https://registry.yarnpkg.com/@biconomy-sdk-dev/web3-auth/-/web3-auth-1.0.21.tgz#a2817a62e788e4ab786ee9dba40f65a0117012a6"
+  integrity sha512-334i6oxAaLjcXY8Y3ToU2+QRQ19xq1LzHNAvgvf1ObUSP5rznl3X7k6E33YYPlCqLa1kAdC4/0aivtlgjwdtjw==
   dependencies:
-    "@biconomy-sdk-dev/node-client" "^1.0.18"
+    "@biconomy-sdk-dev/node-client" "^1.0.21"
     "@walletconnect/qrcode-modal" "^1.8.0"
     "@web3auth/base" "^3.0.0"
     "@web3auth/core" "^3.0.0"
@@ -7287,9 +7287,9 @@ ejs@^3.1.6:
     jake "^10.8.5"
 
 electron-to-chromium@^1.4.284:
-  version "1.4.345"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.345.tgz#c90b7183b39245cddf0e990337469063bfced6f0"
-  integrity sha512-znGhOQK2TUYLICgS25uaM0a7pHy66rSxbre7l762vg9AUoCcJK+Bu+HCPWpjL/U/kK8/Hf+6E0szAUJSyVYb3Q==
+  version "1.4.347"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.347.tgz#4b72564912c3456c6704d4250918aa6a105d5dc3"
+  integrity sha512-LNi3+/9nV0vT6Bz1OsSoZ/w7IgNuWdefZ7mjKNjZxyRlI/ag6uMXxsxAy5Etvuixq3Q26exw2fc4bNYvYQqXSw==
 
 elliptic@6.5.4, elliptic@^6.4.0, elliptic@^6.5.2, elliptic@^6.5.3, elliptic@^6.5.4:
   version "6.5.4"
@@ -15143,9 +15143,9 @@ sync-rpc@^1.2.1:
     get-port "^3.1.0"
 
 tailwindcss@^3.0.2:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/tailwindcss/-/tailwindcss-3.3.0.tgz#8cab40e5a10a10648118c0859ba8bfbc744a761e"
-  integrity sha512-hOXlFx+YcklJ8kXiCAfk/FMyr4Pm9ck477G0m/us2344Vuj355IpoEDB5UmGAsSpTBmr+4ZhjzW04JuFXkb/fw==
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/tailwindcss/-/tailwindcss-3.3.1.tgz#b6662fab6a9b704779e48d083a9fef5a81d2b81e"
+  integrity sha512-Vkiouc41d4CEq0ujXl6oiGFQ7bA3WEhUZdTgXAhtKxSy49OmKs8rEfQmupsfF0IGW8fv2iQkp1EVUuapCFrZ9g==
   dependencies:
     arg "^5.0.2"
     chokidar "^3.5.3"

@@ -56,11 +56,10 @@ const AccountAbstraction: React.FC<Props> = ({ useCase, setUseCase }) => {
             />
             <CardContent>
               <Typography gutterBottom variant="h5" component="div">
-                Allow ERC20 Token
+                Mint ERC20 Token
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                This is single transaction to give allowance on an ERC-20
-                contract.
+                This is single transaction to give Mint an ERC-20 token.
               </Typography>
             </CardContent>
           </CardActionArea>

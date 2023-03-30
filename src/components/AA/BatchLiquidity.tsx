@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { ethers } from "ethers";
 import { makeStyles } from "@mui/styles";
 
@@ -17,10 +17,12 @@ const BatchLiquidity: React.FC = () => {
   const classes = useStyles();
   const { web3Provider } = useWeb3AuthContext();
   const { state: walletState, wallet } = useSmartAccountContext();
+  const [loading, setLoading] = useState(false);
 
   const makeTx = async () => {
     if (!wallet || !walletState || !web3Provider) return;
     try {
+      setLoading(true);
       let smartAccount = wallet;
       const txs = [];
 
@@ -54,27 +56,22 @@ const BatchLiquidity: React.FC = () => {
       // todo check this for hyphen LP on Mumbai!
       txs.push(tx2);
 
-      const response = await smartAccount.sendGaslessTransactionBatch({
+      const txResponse = await smartAccount.sendGaslessTransactionBatch({
         transactions: txs,
       });
 
-      // const response = await smartAccount.deployWalletUsingPaymaster();
-      console.log(response);
-      showSuccessMessage(`Transaction sent: ${response.hash}`, response.hash);
-
-      // check if tx is mined
-      // Review
-      // Note: txResponse.hash here is requestId and not transactionHash
-      web3Provider.once(response.hash, (transaction: any) => {
-        // Emitted when the transaction has been mined
-        console.log("txn_mined:", transaction);
-        showSuccessMessage(
-          `Transaction mined: ${response.hash}`,
-          response.hash
-        );
-      });
+      showSuccessMessage(`Tx sent, userOpHash: ${txResponse.hash}`);
+      console.log("waiting for tx hash...");
+      const txHash = await txResponse.wait();
+      console.log("txHash", txHash);
+      showSuccessMessage(
+        `Minted Nft ${txHash.transactionHash}`,
+        txHash.transactionHash
+      );
+      setLoading(false);
     } catch (err: any) {
       console.error(err);
+      setLoading(false);
       showErrorMessage(err.message || "Error in sending the transaction");
     }
   };
@@ -98,7 +95,11 @@ const BatchLiquidity: React.FC = () => {
         <li>Provide USDC Liquidity on Hyphen</li>
       </ul>
 
-      <Button title="Do transaction (One Click LP)" onClickFunc={makeTx} />
+      <Button
+        title="Do transaction (One Click LP)"
+        isLoading={loading}
+        onClickFunc={makeTx}
+      />
     </main>
   );
 };

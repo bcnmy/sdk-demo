@@ -4,7 +4,6 @@ import SmartAccount from "@biconomy-sdk-dev/smart-account";
 import {
   SmartAccountState,
   SmartAccountVersion,
-  Environments,
 } from "@biconomy-sdk-dev/core-types";
 import { supportedChains, activeChainId } from "../utils/chainConfig";
 import { useWeb3AuthContext } from "./SocialLoginContext";
@@ -91,14 +90,10 @@ export const SmartAccountProvider = ({ children }: any) => {
       const wallet = new SmartAccount(walletProvider, {
         activeNetworkId: activeChainId,
         supportedNetworksIds: supportedChains,
-        environment: Environments.QA,
-        bundlerUrl: 'https://sdk-relayer.prod.biconomy.io/api/v1/relay',
-        relayerUrl: "https://sdk-relayer.prod.biconomy.io/api/v1/relay",
-        socketServerUrl: 'wss://sdk-ws.prod.biconomy.io/connection/websocket',
         networkConfig: [
           {
-            chainId: ChainId.POLYGON_MUMBAI,
-            dappAPIKey: "yUvsiKayF.24bd641b-d4db-41f4-85b3-a4492e1e79f8",
+            chainId: ChainId.POLYGON_MAINNET,
+            dappAPIKey: "4gZjRhX4n.269ed9ba-159b-4588-8800-b5bbe52d3efb",
           },
         ],
       });

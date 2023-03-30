@@ -21,11 +21,13 @@ const BatchLiquidity: React.FC = () => {
   const [payment, setPayment] = useState<FeeQuote[]>([]);
   const [txnArray, setTxnArray] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingFee, setIsLoadingFee] = useState(false);
 
   // pre calculate the fee
   useEffect(() => {
     const fetchFeeOption = async () => {
       setIsLoading(true);
+      setIsLoadingFee(true);
       setPayment([]);
       if (!wallet || !walletState || !web3Provider) return;
       let smartAccount = wallet;
@@ -69,6 +71,7 @@ const BatchLiquidity: React.FC = () => {
       setPayment(feeQuotes);
       setTxnArray(txs);
       setIsLoading(false);
+      setIsLoadingFee(false);
     };
     fetchFeeOption();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -77,6 +80,7 @@ const BatchLiquidity: React.FC = () => {
   const makeTx = async () => {
     if (!wallet || !walletState || !web3Provider || !txnArray) return;
     try {
+      setIsLoading(true);
       let smartAccount = wallet;
       const txs = [];
       const usdcContract = new ethers.Contract(
@@ -152,8 +156,10 @@ const BatchLiquidity: React.FC = () => {
         console.log("txn_mined:", transaction);
         showSuccessMessage(`Transaction mined: ${txHash}`);
       });
+      setIsLoading(false);
     } catch (err: any) {
       console.error(err);
+      setIsLoading(false);
       showErrorMessage(err.message || "Error in sending the transaction");
     }
   };
@@ -180,7 +186,7 @@ const BatchLiquidity: React.FC = () => {
 
       <h3 className={classes.h3Title}>Available Fee options</h3>
 
-      {isLoading && (
+      {isLoadingFee && (
         <div
           style={{
             display: "flex",
@@ -206,7 +212,11 @@ const BatchLiquidity: React.FC = () => {
           </li>
         ))}
       </ul>
-      <Button title="Do transaction (One Click LP)" onClickFunc={makeTx} />
+      <Button
+        title="Do transaction (One Click LP)"
+        isLoading={isLoading}
+        onClickFunc={makeTx}
+      />
     </main>
   );
 };
