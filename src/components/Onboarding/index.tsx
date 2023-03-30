@@ -8,9 +8,8 @@ import {
   getEOAWallet,
   showErrorMessage,
   showInfoMessage,
-  showSuccessMessage,
 } from "../../utils";
-import { activeChainId } from "../../utils/chainConfig";
+// import { activeChainId } from "../../utils/chainConfig";
 
 type OnboardingProps = {
   setValue: Dispatch<SetStateAction<number>>;

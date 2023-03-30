@@ -1,7 +1,11 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { ethers } from "ethers";
 import SmartAccount from "@biconomy-sdk-dev/smart-account";
-import { SmartAccountState, SmartAccountVersion, Environments } from "@biconomy-sdk-dev/core-types";
+import {
+  SmartAccountState,
+  SmartAccountVersion,
+  Environments,
+} from "@biconomy-sdk-dev/core-types";
 import { supportedChains, activeChainId } from "../utils/chainConfig";
 import { useWeb3AuthContext } from "./SocialLoginContext";
 import { showSuccessMessage } from "../utils";
@@ -88,6 +92,9 @@ export const SmartAccountProvider = ({ children }: any) => {
         activeNetworkId: activeChainId,
         supportedNetworksIds: supportedChains,
         environment: Environments.QA,
+        bundlerUrl: 'https://sdk-relayer.prod.biconomy.io/api/v1/relay',
+        relayerUrl: "https://sdk-relayer.prod.biconomy.io/api/v1/relay",
+        socketServerUrl: 'wss://sdk-ws.prod.biconomy.io/connection/websocket',
         networkConfig: [
           {
             chainId: ChainId.POLYGON_MUMBAI,

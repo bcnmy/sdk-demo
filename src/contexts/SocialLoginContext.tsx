@@ -68,8 +68,8 @@ export const Web3AuthProvider = ({ children }: any) => {
             "MEUCIQDW2lTR5y_sTv3UTJEhfnC3_cLDb_aBrWtev8Ih4kXG4QIgIMjQhpQs9g14c3t64bEt3mQMMPuWHrbLBfo7hRAGEZc",
           "https://sdk-dev.biconomy.io":
             "MEQCID90gUAazem-Ia_YIfVqLZr0lxo0Oawnx9ZoIcCiTtCNAiB6fZOA3AV22CDKtQ0QKYUSucPymeJoP3wmMsHZjNj-wQ",
-          // "http://localhost:3000":
-          //   "MEUCIQDCrwqCFSAoivC8NfJdHv9WneLfdMADQCUitF6zs2QCagIgOdh3_6dZ81Le1PFzNfDLSImuugEb46Tz64SjOcQWcZA",
+          "http://sdk-dev.biconomy.io":
+            "MEUCIQCt5ga5aLrrAjtojAZmfTFwcv9bgmTbR_VKjDTtbRf0pAIgESLgcY-tBQe1pzsawiPdEY0vQwe8ux0XDTAtBh--MRM",
         },
       });
       // sdk.showConnectModal();
@@ -113,8 +113,6 @@ export const Web3AuthProvider = ({ children }: any) => {
     }
     setLoading(true);
     const sdk = new SocialLogin();
-    // const proof = await sdk.whitelistUrl("", "http://sdk-staging.biconomy.io");
-    // console.log("proof", proof);
     await sdk.init({
       chainId: ethers.utils.hexValue(activeChainId).toString(),
       network: "testnet",
@@ -123,8 +121,10 @@ export const Web3AuthProvider = ({ children }: any) => {
           "MEQCIBgO86Ds-nQ6JLHWmo5umziadaY-VDCQxLmwy-DX6nCxAiBJPnc0SOZmFTkphRfS7yd81DsC--Uj6Vb-WqvfSXngnQ",
         "http://sdk-staging.biconomy.io":
           "MEUCIQDW2lTR5y_sTv3UTJEhfnC3_cLDb_aBrWtev8Ih4kXG4QIgIMjQhpQs9g14c3t64bEt3mQMMPuWHrbLBfo7hRAGEZc",
-        // "http://localhost:3000":
-        //   "MEUCIQDCrwqCFSAoivC8NfJdHv9WneLfdMADQCUitF6zs2QCagIgOdh3_6dZ81Le1PFzNfDLSImuugEb46Tz64SjOcQWcZA",
+        "https://sdk-dev.biconomy.io":
+          "MEQCID90gUAazem-Ia_YIfVqLZr0lxo0Oawnx9ZoIcCiTtCNAiB6fZOA3AV22CDKtQ0QKYUSucPymeJoP3wmMsHZjNj-wQ",
+        "http://sdk-dev.biconomy.io":
+          "MEUCIQCt5ga5aLrrAjtojAZmfTFwcv9bgmTbR_VKjDTtbRf0pAIgESLgcY-tBQe1pzsawiPdEY0vQwe8ux0XDTAtBh--MRM",
       },
     });
     // sdk.showConnectModal();
