@@ -32,13 +32,7 @@ const App: React.FC = () => {
 
   return (
     <div className={classes.bgCover}>
-      {loading ? (
-        <div className={classes.container}>
-          <img src="/logo.svg" className={classes.animateBlink} alt="" />
-        </div>
-      ) : (
-        <TabsBody />
-      )}
+      <TabsBody loading={loading} />
       <ToastContainer />
     </div>
   );
@@ -75,29 +69,6 @@ const useStyles = makeStyles(() => ({
   subTitle: {
     fontSize: 22,
     margin: 0,
-  },
-  animateBlink: {
-    animation: "$bottom_up 2s linear infinite",
-    "&:hover": {
-      transform: "scale(1.2)",
-    },
-  },
-  "@keyframes bottom_up": {
-    "0%": {
-      transform: "translateY(0px)",
-    },
-    "25%": {
-      transform: "translateY(20px)",
-    },
-    "50%": {
-      transform: "translateY(0px)",
-    },
-    "75%": {
-      transform: "translateY(-20px)",
-    },
-    "100%": {
-      transform: "translateY(0px)",
-    },
   },
 }));
 

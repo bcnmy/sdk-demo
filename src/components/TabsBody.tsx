@@ -21,7 +21,7 @@ import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
 import BurstModeIcon from "@mui/icons-material/BurstMode";
 import LegendToggleIcon from "@mui/icons-material/LegendToggle";
 import GamesIcon from "@mui/icons-material/Games";
-import ContactlessIcon from '@mui/icons-material/Contactless';
+import ContactlessIcon from "@mui/icons-material/Contactless";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import Onboarding from "./Onboarding/index";
 import Navbar from "./Navbar";
@@ -86,7 +86,7 @@ const ForwardList = [
   },
 ];
 
-const TabsBody = () => {
+const TabsBody = ({ loading }: { loading: boolean }) => {
   const classes = useStyles();
   const [pageIndex, setPageIndex] = React.useState(0);
   const [useCase, setUseCase] = React.useState(0);
@@ -107,7 +107,11 @@ const TabsBody = () => {
     setOpen(false);
   };
 
-  return (
+  return loading ? (
+    <div className={classes.container}>
+      <img src="/logo.svg" className={classes.animateBlink} alt="" />
+    </div>
+  ) : (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <Navbar open={open} handleDrawerOpen={handleDrawerOpen} />
@@ -440,6 +444,13 @@ const useStyles = makeStyles((theme) => ({
       flexDirection: "column",
     },
   },
+  container:{
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   drawer: {
     backgroundColor: "#323a43",
   },
@@ -464,6 +475,29 @@ const useStyles = makeStyles((theme) => ({
       margin: "auto",
       marginTop: 66,
       minHeight: "80vh",
+    },
+  },
+  animateBlink: {
+    animation: "$blink 4s linear infinite",
+    "&:hover": {
+      transform: "scale(1.2)",
+    },
+  },
+  "@keyframes blink": {
+    "0%": {
+      opacity: "0",
+    },
+    "25%": {
+      opacity: "100",
+    },
+    "50%": {
+      opacity: "0",
+    },
+    "75%": {
+      opacity: "100",
+    },
+    "100%": {
+      opacity: "0",
     },
   },
 }));
