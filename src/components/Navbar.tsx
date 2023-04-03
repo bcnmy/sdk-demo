@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { makeStyles } from "@mui/styles";
 import { styled } from "@mui/material/styles";
-import LegendToggleIcon from '@mui/icons-material/LegendToggle';
+import LegendToggleIcon from "@mui/icons-material/LegendToggle";
 import IconButton from "@mui/material/IconButton";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { useWeb3AuthContext } from "../contexts/SocialLoginContext";
@@ -117,10 +117,9 @@ const Navbar = ({ open, handleDrawerOpen }: INavBar) => {
 
 const useStyles = makeStyles((theme: any) => ({
   nav: {
-    height: "66px",
-    boxShadow: "none",
-    background: "#14171a !important",
-    borderBottom: "2px solid #323a43",
+    height: "80px",
+    boxShadow: "none !important",
+    background: "rgba(0,0,0,0) !important",
     "@media (max-width:1100px)": {
       padding: "0 20px",
     },
