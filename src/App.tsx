@@ -15,7 +15,13 @@ const App: React.FC = () => {
     return (
       <div className={classes.bgCover}>
         <div className={classes.container}>
-          <h1 className={classes.title}>Biconomy SDK</h1>
+          <h1 className={classes.title}>
+          <img width={35} style={
+            {
+              marginRight: 20,
+            }
+          } src="/logo.svg" alt="" />
+            Biconomy SDK</h1>
           <p className={classes.subTitle}>
             Solve complex UX challenges with customisable SDK modules in
             minutes.
