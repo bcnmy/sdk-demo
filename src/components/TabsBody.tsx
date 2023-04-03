@@ -109,7 +109,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
 
   return loading ? (
     <div className={classes.container}>
-      <img src="/logo.svg" className={classes.animateBlink} alt="" />
+      <img width={50} src="/logo.svg" className={classes.animateBlink} alt="" />
     </div>
   ) : (
     <Box sx={{ display: "flex" }}>
@@ -119,12 +119,11 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
       <Drawer
         variant="permanent"
         open={open}
-        className={classes.drawer}
         sx={{
           "& .MuiDrawer-paper": {
-            backgroundColor: "#14171a",
-            color: "#fff",
-            borderRight: "2px solid #323a43",
+            background: "rgba(0,0,0,0)",
+            color: "#e6e6e6",
+            border: 0,
           },
           "& .MuiTypography-root": {
             fontSize: 14,
@@ -132,21 +131,12 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
         }}
       >
         <DrawerHeader>
-          <img src="img/logo.svg" alt="logo" className={classes.logo} />
-
-          <IconButton onClick={handleDrawerClose} sx={{ color: "#fff" }}>
-            <LegendToggleIcon />
-          </IconButton>
+          <img src="/logo.svg" alt="logo" width={25} />
         </DrawerHeader>
-        <Divider style={{ borderColor: "#323a43", borderWidth: 1 }} />
+        {/* <Divider style={{ borderColor: "#323a43", borderWidth: 1 }} /> */}
         <List
           sx={{
             display: "block",
-            "& .MuiListItemButton-root": {
-              "&:hover": {
-                backgroundColor: "#1a1f23",
-              },
-            },
           }}
         >
           {onboardingList.map((ele, index) => (
@@ -164,7 +154,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
                     minWidth: 0,
                     mr: open ? 3 : "auto",
                     justifyContent: "center",
-                    color: pageIndex === index ? "#1da1f2" : "#fff",
+                    color: pageIndex === index ? "#FFB999" : "#e6e6e6",
                   }}
                 >
                   {ele.icon}
@@ -178,15 +168,10 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
           ))}
         </List>
         {/* AA Left Panel */}
-        <Divider style={{ borderColor: "#323a43", borderWidth: 1 }} />
+        {/* <Divider style={{ borderColor: "#323a43", borderWidth: 1 }} /> */}
         <List
           sx={{
             display: "block",
-            "& .MuiListItemButton-root": {
-              "&:hover": {
-                backgroundColor: "#1a1f23",
-              },
-            },
           }}
         >
           <ListItemButton
@@ -200,7 +185,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
                 minWidth: 0,
                 mr: open ? 3 : "auto",
                 justifyContent: "center",
-                color: pageIndex === 3 ? "#1da1f2" : "#fff",
+                color: pageIndex === 3 ? "#FFB999" : "#e6e6e6",
               }}
             >
               <EvStationIcon />
@@ -232,7 +217,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
                         minWidth: 0,
                         mr: open ? 3 : "auto",
                         justifyContent: "center",
-                        color: pageIndex === index + 4 ? "#1da1f2" : "#fff",
+                        color: pageIndex === index + 4 ? "#FFB999" : "#e6e6e6",
                       }}
                     >
                       {ele.icon}
@@ -248,15 +233,9 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
           </Collapse>
         </List>
         {/* Forward Left Panel */}
-        <Divider style={{ borderColor: "#323a43", borderWidth: 1 }} />
         <List
           sx={{
             display: "block",
-            "& .MuiListItemButton-root": {
-              "&:hover": {
-                backgroundColor: "#1a1f23",
-              },
-            },
           }}
         >
           <ListItemButton
@@ -270,7 +249,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
                 minWidth: 0,
                 mr: open ? 3 : "auto",
                 justifyContent: "center",
-                color: pageIndex === 8 ? "#1da1f2" : "#fff",
+                color: pageIndex === 8 ? "#FFB999" : "#e6e6e6",
               }}
             >
               <ContactlessIcon />
@@ -302,7 +281,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
                         minWidth: 0,
                         mr: open ? 3 : "auto",
                         justifyContent: "center",
-                        color: pageIndex === index + 9 ? "#1da1f2" : "#fff",
+                        color: pageIndex === index + 9 ? "#FFB999" : "#e6e6e6",
                       }}
                     >
                       {ele.icon}
@@ -407,8 +386,9 @@ const closedMixin = (theme: Theme): CSSObject => ({
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
-  justifyContent: "flex-end",
-  padding: theme.spacing(0, 1),
+  width: "100%",
+  justifyContent: "space-between",
+  padding: theme.spacing(0, 2),
   // necessary for content to be below app bar
   ...theme.mixins.toolbar,
 }));
@@ -451,13 +431,6 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     justifyContent: "center",
   },
-  drawer: {
-    backgroundColor: "#323a43",
-  },
-  logo: {
-    width: "70%",
-    margin: "auto",
-  },
   tabs: {
     borderRight: `1.5px solid #323a43`,
     padding: "30px 10px",
@@ -479,9 +452,6 @@ const useStyles = makeStyles((theme) => ({
   },
   animateBlink: {
     animation: "$blink 4s linear infinite",
-    "&:hover": {
-      transform: "scale(1.2)",
-    },
   },
   "@keyframes blink": {
     "0%": {
