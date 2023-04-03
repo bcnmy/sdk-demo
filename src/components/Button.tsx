@@ -44,19 +44,17 @@ const Button: React.FC<ButtonProp> = ({
 const useStyles = makeStyles((theme: any) => ({
   btn: {
     width: "max-content",
-    background: "#B85252",
+    background: "#884c30",
     position: "relative",
     cursor: "pointer",
-    borderRadius: 5,
-    outline: "none",
     border: 0,
-    boxShadow: "2px 2px #F58840",
+    borderRadius: "6px",
     height: 40,
     lineHeight: "36px",
     padding: "0px 12px",
     display: "flex",
     alignItems: "center",
-    color: "#ECDBBA",
+    color: "#E6E6E6",
     transition: "0.3s",
     fontWeight: "bold",
     fontSize: 15,
@@ -66,9 +64,7 @@ const useStyles = makeStyles((theme: any) => ({
     },
 
     "&:hover": {
-      // backgroundColor: "#FFC4C4",
-      boxShadow: "0px 0px 0px #F58840",
-      transform: "translate(3px, 3px)",
+      backgroundColor: "#5B3320",
     },
 
     // disable button
