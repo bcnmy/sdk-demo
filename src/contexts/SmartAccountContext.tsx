@@ -4,6 +4,8 @@ import SmartAccount from "@biconomy-sdk-dev/smart-account";
 import {
   SmartAccountState,
   SmartAccountVersion,
+  SignTypeMethod,
+  Environments
 } from "@biconomy-sdk-dev/core-types";
 import { supportedChains, activeChainId } from "../utils/chainConfig";
 import { useWeb3AuthContext } from "./SocialLoginContext";
@@ -88,19 +90,24 @@ export const SmartAccountProvider = ({ children }: any) => {
       console.log("walletProvider", walletProvider);
       // New instance, all config params are optional
       const wallet = new SmartAccount(walletProvider, {
+        // environment: Environments.QA,
         activeNetworkId: activeChainId,
+        // signType: SignTypeMethod.PERSONAL_SIGN, 
         supportedNetworksIds: supportedChains,
+        // strictSponsorshipMode: false,
+        //backendUrl: 'http://localhost:3000/v1',
         networkConfig: [
           {
-            chainId: ChainId.POLYGON_MAINNET,
-            dappAPIKey: "4gZjRhX4n.269ed9ba-159b-4588-8800-b5bbe52d3efb",
-          },
-        ],
+            chainId: ChainId.POLYGON_MUMBAI,
+            dappAPIKey: "rpFl8rVOp.d57239d0-5bf7-4edb-adba-71d17c722222",
+          }
+        ]
       });
       console.log("wallet", wallet);
 
       // Wallet initialization to fetch wallet info
       const smartAccount = await wallet.init();
+      // smartAccount.setActiveChain(ChainId.POLYGON_MUMBAI)
       setWallet(wallet);
       console.info("smartAccount", smartAccount);
 

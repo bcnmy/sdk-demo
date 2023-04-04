@@ -54,7 +54,7 @@ const MintErc20: React.FC = () => {
         to: config.terc20.address,
         data: data,
       };
-      const txResponse = await smartAccount.sendGaslessTransaction({
+      const txResponse = await smartAccount.sendTransaction({
         transaction: tx,
       });
       console.log("userOpHash", txResponse);

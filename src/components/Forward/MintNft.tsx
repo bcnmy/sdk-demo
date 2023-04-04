@@ -63,10 +63,10 @@ const MintNftForward: React.FC = () => {
         data: safeMintTx.data,
       };
       // prepare refund txn batch before so that we have accurate token gas price
-      const feeQuotes = await smartAccount.prepareRefundTransaction({
+      const feeQuotes = await smartAccount.getFeeQuotes({
         transaction: tx1,
       });
-      console.log("prepareRefundTransactionBatch", feeQuotes);
+      console.log("getFeeQuotesForBatch", feeQuotes);
 
       const pmtArr: {
         symbol: string;
@@ -86,14 +86,14 @@ const MintNftForward: React.FC = () => {
       showInfoMessage("Batching transactions");
 
       // making transaction with version, set feeQuotes[1].tokenGasPrice = 6
-      const transaction = await smartAccount.createRefundTransaction({
+      const transaction = await smartAccount.createTransactionWithFeeQuote({
         transaction: tx1,
         feeQuote: feeQuotes[1],
       });
       console.log("transaction", transaction);
 
       // send transaction internally calls signTransaction and sends it to connected relayer
-      const txHash = await smartAccount.sendTransaction({
+      const txHash = await smartAccount.sendTransactionWithFeeQuote({
         tx: transaction,
         gasLimit: {
           hex: "0x1E8480",

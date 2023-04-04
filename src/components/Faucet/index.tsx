@@ -39,7 +39,7 @@ const Faucet: React.FC = () => {
         data: faucetTxData.data,
       };
 
-      const txResponse = await smartAccount.sendGaslessTransaction({
+      const txResponse = await smartAccount.sendTransaction({
         transaction: tx1,
       });
       console.log("userOpHash", txResponse);

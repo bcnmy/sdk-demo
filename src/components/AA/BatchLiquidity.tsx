@@ -56,7 +56,7 @@ const BatchLiquidity: React.FC = () => {
       // todo check this for hyphen LP on Mumbai!
       txs.push(tx2);
 
-      const txResponse = await smartAccount.sendGaslessTransactionBatch({
+      const txResponse = await smartAccount.sendTransactionBatch({
         transactions: txs,
       });
 

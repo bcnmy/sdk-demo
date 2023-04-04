@@ -64,10 +64,10 @@ const BatchLiquidity: React.FC = () => {
       };
       txs.push(tx2);
       console.log("Tx array created", txs);
-      const feeQuotes = await smartAccount.prepareRefundTransactionBatch({
+      const feeQuotes = await smartAccount.getFeeQuotesForBatch({
         transactions: txs,
       });
-      console.log("prepareRefundTransactionBatch", feeQuotes);
+      console.log("getFeeQuotesForBatch", feeQuotes);
       setPayment(feeQuotes);
       setTxnArray(txs);
       setIsLoading(false);
@@ -118,13 +118,13 @@ const BatchLiquidity: React.FC = () => {
 
       console.log("Tx array created", txs);
 
-      // Fee already calculated in useEffect prepareRefundTransactionBatch
+      // Fee already calculated in useEffect getFeeQuotesForBatch
       // stored in payment state
       const feeQuotes = payment;
       showInfoMessage("Batching transactions");
 
       // making transaction with version, set feeQuotes[1].tokenGasPrice = 6
-      const transaction = await smartAccount.createRefundTransactionBatch({
+      const transaction = await smartAccount.createTransactionBatchWithFeeQuote({
         transactions: txs,
         feeQuote: feeQuotes[1],
       });
@@ -136,7 +136,7 @@ const BatchLiquidity: React.FC = () => {
       // };
 
       // send transaction internally calls signTransaction and sends it to connected relayer
-      const txHash = await smartAccount.sendTransaction({
+      const txHash = await smartAccount.sendTransactionWithFeeQuote({
         tx: transaction,
         gasLimit: {
           hex: "0x1E8480",

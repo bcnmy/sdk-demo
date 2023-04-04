@@ -5,7 +5,7 @@ export const ChainId = {
   POLYGON_MAINNET: 137,
 };
 
-export let activeChainId = ChainId.POLYGON_MAINNET;
+export let activeChainId = ChainId.POLYGON_MUMBAI;
 export const supportedChains = [
   ChainId.GOERLI,
   ChainId.POLYGON_MAINNET,
@@ -21,7 +21,7 @@ export const getRPCProvider = (chainId: number) => {
     case 80001:
       return "https://polygon-mumbai.g.alchemy.com/v2/Q4WqQVxhEEmBYREX22xfsS2-s5EXWD31";
     case 137:
-      return "https://polygon-mainnet.g.alchemy.com/v2/6Tn--QDkp1vRBXzRV3Cc8fLXayr5Yoij";
+      return "https://rpc.ankr.com/polygon";
     default:
       return "https://eth-mainnet.g.alchemy.com/v2/YMRFBPG1iyBwiRQIHThSWZanZj0NXUjv";
   }
