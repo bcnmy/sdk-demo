@@ -56,7 +56,7 @@ const useStyles = makeStyles(() => ({
     padding: "0px 20px",
   },
   container: {
-    width: "40vw",
+    width: "60vw",
     height: "60vh",
     backgroundColor: "#151520",
     padding: "32px",
