@@ -39,7 +39,7 @@ const App: React.FC = () => {
   return (
     <div className={classes.bgCover}>
       <TabsBody loading={loading} />
-      <ToastContainer />
+      <ToastContainer position="bottom-left" newestOnTop theme="dark" />
     </div>
   );
 };
@@ -59,6 +59,7 @@ const useStyles = makeStyles(() => ({
     width: "60vw",
     height: "60vh",
     backgroundColor: "#151520",
+    border: "1px solid #5B3320",
     padding: "32px",
     borderRadius: 20,
     display: "flex",

@@ -5,6 +5,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+:root{
+  --toastify-color-dark: #151520;
+}
+
 code,
 pre {
   font-size: 14px;
