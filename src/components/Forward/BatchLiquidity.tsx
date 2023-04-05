@@ -196,7 +196,7 @@ const BatchLiquidity: React.FC = () => {
         >
           <CircularProgress
             color="secondary"
-            style={{ width: 25, height: 25, marginRight: 10, color: "#fff" }}
+            style={{ width: 25, height: 25, marginRight: 10, color: "#e6e6e6" }}
           />{" "}
           {" Loading Fee Options"}
         </div>

@@ -114,14 +114,14 @@ const useStyles = makeStyles(() => ({
     fontSize: 28,
   },
   h3Title: {
-    color: "#fff",
+    color: "#e6e6e6",
   },
   input: {
     maxWidth: 350,
     width: "100%",
     padding: "12px 10px",
     margin: "8px 0",
-    color: "#fff",
+    color: "#e6e6e6",
     boxSizing: "border-box",
     outlineColor: "#181818",
     backgroundColor: "#282A3A",

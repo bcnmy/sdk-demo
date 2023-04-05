@@ -118,7 +118,7 @@ const useStyles = makeStyles(() => ({
     fontSize: 28,
   },
   h3Title: {
-    color: "#fff",
+    color: "#e6e6e6",
   },
 }));
 

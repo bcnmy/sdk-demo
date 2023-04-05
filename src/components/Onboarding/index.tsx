@@ -114,7 +114,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
         <div className={classes.container}>
           <div style={{
             display: "flex",
-            justifyContent: "center",
+            justifyContent: "stretch",
             gap: 20,
             width: "100%",
             height: "100%",
@@ -189,7 +189,7 @@ const useStyles = makeStyles(() => ({
     width: "100%",
     height: "100%",
     gap: 20,
-    color: "#fff",
+    color: "#e6e6e6",
     display: "flex",
     flexDirection: "column",
     alignItems: "start",
@@ -202,6 +202,7 @@ const useStyles = makeStyles(() => ({
   },
   container: {
     width: "100%",
+    height: "100%",
     display: "flex",
     justifyContent: "space-between",
     "@media (max-width: 899px)": {
@@ -212,7 +213,7 @@ const useStyles = makeStyles(() => ({
   element: {
     width: "100%",
     height: "100%",
-    minHeight: "100%",
+    minHeight: "410px",
     backgroundColor: "#151520",
     borderRadius: 12,
     padding: 25,
@@ -230,7 +231,7 @@ const useStyles = makeStyles(() => ({
   },
   text: {
     fontSize: 20,
-    color: "#fff",
+    color: "#e6e6e6",
     // wordBreak: "break-all",
   },
   subText: {
