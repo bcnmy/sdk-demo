@@ -83,9 +83,7 @@ const Faucet: React.FC = () => {
 
 const useStyles = makeStyles(() => ({
   main: {
-    margin: "auto",
     padding: "10px 40px",
-    maxWidth: 1200,
     width: "100%",
     height: "100%",
     gap: 20,
