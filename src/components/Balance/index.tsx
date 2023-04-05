@@ -1,13 +1,15 @@
-import React, { useCallback, useEffect } from "react";
+import React, { ReactNode, useCallback, useEffect } from "react";
 import { makeStyles } from "@mui/styles";
 
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import { formatBalance, showErrorMessage } from "../../utils";
+import PaidIcon from "@mui/icons-material/Paid";
 
 const Assets: React.FC = () => {
   const classes = useStyles();
   const { getSmartAccountBalance, isFetchingBalance, balance } =
     useSmartAccountContext();
+  console.log("🚀 ~ file: index.tsx:10 ~ balance:", balance);
 
   const getSmartAccountBalanceFunc = useCallback(async () => {
     const error = await getSmartAccountBalance();
@@ -19,10 +21,31 @@ const Assets: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (isFetchingBalance) {
+  const FetchImage = async (token: any) => {
+    return await fetch(token.logo_url, { method: "HEAD" })
+      .then((res) => {
+        if (res.ok) {
+          return token.logo_url;
+        } else {
+          return null;
+        }
+      })
+      .catch(
+        (err) =>
+          // <PaidIcon className={classes.img} />
+          null
+      );
+  };
+
+  if (isFetchingBalance || balance.alltokenBalances.length === 0) {
     return (
       <div className={classes.containerLoader}>
-        <img src="/logo.svg" className={classes.animateBlink} alt="" />
+        <img
+          width={50}
+          src="/logo.svg"
+          className={classes.animateBlink}
+          alt=""
+        />
       </div>
     );
   }
@@ -39,20 +62,22 @@ const Assets: React.FC = () => {
           {balance.alltokenBalances.map((token, ind) => (
             <div className={classes.balance} key={ind}>
               <div className={classes.tokenTitle}>
-                <img className={classes.img} alt="logo" src={token.logo_url} />
+              <img className={classes.img} src={token.logo_url} onError={({currentTarget})=>{
+                currentTarget.src = 'https://cdn.icon-icons.com/icons2/3947/PNG/512/cash_currency_money_finance_exchange_coin_bitcoin_icon_251415.png'
+              }} alt="" />
                 <p>{token.contract_ticker_symbol}</p>
               </div>
               <p>{formatBalance(token.balance, token.contract_decimals)}</p>
             </div>
           ))}
         </div>
-        <div className={classes.element} style={{ height: 250 }}>
+        <div className={classes.element}>
           <div className={classes.balance}>
             <p>My Balance</p>
           </div>
 
-          <p style={{ fontSize: 30, textAlign: "center", padding: 40 }}>
-            $ {balance.totalBalanceInUsd}
+          <p style={{ fontSize: 108, textAlign: "center", color: "#FFB999" }}>
+            ${balance.totalBalanceInUsd}
           </p>
         </div>
       </div>
@@ -64,24 +89,29 @@ const useStyles = makeStyles(() => ({
   main: {
     margin: "auto",
     padding: "10px 40px",
+    width: "100%",
+    height: "100%",
   },
   subTitle: {
-    fontFamily: "Rubik",
-    fontSize: 28,
+    color: "#FFB999",
+    fontSize: 36,
+    margin: 0,
   },
   container: {
     display: "flex",
     justifyContent: "space-between",
     gap: 10,
+    height: "100%",
+    width: "100%",
   },
   element: {
-    width: "45%",
-    height: "70vh",
+    width: "100%",
+    maxHeight: 300,
+    height: 300,
     overflowY: "auto",
-    border: "2px solid #2C3333",
-    borderLeft: "solid 3px #2C3333",
-    boxShadow: "5px 5px 0px #2C3333",
-    borderRadius: 10,
+    border: "1px solid #5B3320",
+    backgroundColor: "#151520",
+    borderRadius: 12,
   },
   balance: {
     display: "flex",
@@ -106,31 +136,28 @@ const useStyles = makeStyles(() => ({
     display: "flex",
     flexDirection: "column",
     width: "100%",
-    height: "80vh",
+    height: "100%",
     justifyContent: "center",
     alignItems: "center",
   },
   animateBlink: {
-    animation: "$bottom_up 2s linear infinite",
-    "&:hover": {
-      transform: "scale(1.2)",
-    },
+    animation: "$blink 4s linear infinite",
   },
-  "@keyframes bottom_up": {
+  "@keyframes blink": {
     "0%": {
-      transform: "translateY(0px)",
+      opacity: "0",
     },
     "25%": {
-      transform: "translateY(20px)",
+      opacity: "100",
     },
     "50%": {
-      transform: "translateY(0px)",
+      opacity: "0",
     },
     "75%": {
-      transform: "translateY(-20px)",
+      opacity: "100",
     },
     "100%": {
-      transform: "translateY(0px)",
+      opacity: "0",
     },
   },
 }));
