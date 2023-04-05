@@ -196,9 +196,8 @@ const useStyles = makeStyles(() => ({
     justifyContent: "center",
   },
   subTitle: {
-    fontFamily: "Rubik",
-    color: "#fff",
-    fontSize: 28,
+    color: "#FFB999",
+    fontSize: 36,
     margin: 0,
   },
   container: {

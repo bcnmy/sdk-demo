@@ -112,7 +112,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
       <img width={50} src="/logo.svg" className={classes.animateBlink} alt="" />
     </div>
   ) : (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", width: "100%" }}>
       <CssBaseline />
       <Navbar open={open} handleDrawerOpen={handleDrawerOpen} />
       {/* Left Panel */}
@@ -440,7 +440,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   tabpanel: {
-    width: "90%",
+    width: "100%",
     marginTop: 66,
     "@media (max-width:699px)": {
       width: "100%",

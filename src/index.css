@@ -3,6 +3,8 @@ body {
   font-family: 'Satoshi Variable', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: "linear-gradient(120.85deg, #3F2E27 23.78%, #0E1117 68.7%)";
+  overflow: hidden;
 }
 
 :root{
