@@ -95,6 +95,9 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
   const [isForwardOpen, setIsForwardOpen] = React.useState(false);
 
   const handleChange = (event: any, newValue: any) => {
+    if(newValue >= 4 && newValue <= 7) {
+      setIsAAOpen(true);
+    }
     setUseCase(0);
     setPageIndex(newValue);
   };
@@ -298,42 +301,49 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
         </List>
       </Drawer>
 
-      
-        {/* content menu */}
-        <TabPanel value={pageIndex} index={0}>
-          <Onboarding setValue={setPageIndex} />
-        </TabPanel>
-        <TabPanel value={pageIndex} index={1}>
-          <Faucet />
-        </TabPanel>
-        <TabPanel value={pageIndex} index={2}>
-          <Assets />
-        </TabPanel>
-        <TabPanel value={pageIndex} index={3}>
-          <AccountAbstraction setUseCase={setUseCase} useCase={useCase} />
-        </TabPanel>
-        <TabPanel value={pageIndex} index={4}>
-          <MintErc20 />
-        </TabPanel>
-        <TabPanel value={pageIndex} index={5}>
-          <MintNft />
-        </TabPanel>
-        <TabPanel value={pageIndex} index={6}>
-          <BatchLiquidity />
-        </TabPanel>
-        <TabPanel value={pageIndex} index={7}>
-          <BatchMintNft />
-        </TabPanel>
+      {/* content menu */}
+      <TabPanel value={pageIndex} index={0}>
+        <Onboarding setValue={setPageIndex} />
+      </TabPanel>
+      <TabPanel value={pageIndex} index={1}>
+        <Faucet />
+      </TabPanel>
+      <TabPanel value={pageIndex} index={2}>
+        <Assets />
+      </TabPanel>
+      <TabPanel value={pageIndex} index={3}>
+        <AccountAbstraction
+          pageIndexChange={handleChange}
+          setUseCase={setUseCase}
+          useCase={useCase}
+        />
+      </TabPanel>
+      <TabPanel value={pageIndex} index={4}>
+        <MintErc20 />
+      </TabPanel>
+      <TabPanel value={pageIndex} index={5}>
+        <MintNft />
+      </TabPanel>
+      <TabPanel value={pageIndex} index={6}>
+        <BatchLiquidity />
+      </TabPanel>
+      <TabPanel value={pageIndex} index={7}>
+        <BatchMintNft />
+      </TabPanel>
 
-        <TabPanel value={pageIndex} index={8}>
-          <ForwardFlow setUseCase={setUseCase} useCase={useCase} />
-        </TabPanel>
-        <TabPanel value={pageIndex} index={9}>
-          <BatchLiquidityForward />
-        </TabPanel>
-        <TabPanel value={pageIndex} index={10}>
-          <MintNftForward />
-        </TabPanel>
+      <TabPanel value={pageIndex} index={8}>
+        <ForwardFlow
+          pageIndexChange={handleChange}
+          setUseCase={setUseCase}
+          useCase={useCase}
+        />
+      </TabPanel>
+      <TabPanel value={pageIndex} index={9}>
+        <BatchLiquidityForward />
+      </TabPanel>
+      <TabPanel value={pageIndex} index={10}>
+        <MintNftForward />
+      </TabPanel>
     </Box>
   );
 };
@@ -441,11 +451,10 @@ const useStyles = makeStyles((theme) => ({
   },
   tabpanel: {
     width: "100%",
-    marginTop: 66,
+    height: "100%",
     "@media (max-width:699px)": {
       width: "100%",
       margin: "auto",
-      marginTop: 66,
       minHeight: "80vh",
     },
   },
