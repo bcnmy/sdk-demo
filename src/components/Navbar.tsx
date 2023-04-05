@@ -67,7 +67,6 @@ const Navbar = ({ open, handleDrawerOpen }: INavBar) => {
         >
           <LegendToggleIcon />
         </IconButton>
-        <div></div>
         <div className={classes.walletBtnContainer}>
           {selectedAccount?.smartAccountAddress && (
             <p className={classes.btnTitle}>Smart Account Address</p>
@@ -118,6 +117,7 @@ const Navbar = ({ open, handleDrawerOpen }: INavBar) => {
 const useStyles = makeStyles((theme: any) => ({
   nav: {
     height: "80px",
+    width: "100%",
     boxShadow: "none !important",
     background: "rgba(0,0,0,0) !important",
     "@media (max-width:1100px)": {
@@ -126,12 +126,12 @@ const useStyles = makeStyles((theme: any) => ({
   },
   flexContainer: {
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent: "end",
     alignItems: "center",
     margin: "auto",
     // maxWidth: 1400,
     padding: "0 10px",
-    width: "90%",
+    width: "100%",
   },
   walletBtnContainer: {
     display: "flex",
@@ -139,10 +139,11 @@ const useStyles = makeStyles((theme: any) => ({
     gap: 20,
   },
   btnTitle: {
-    opacity: 0.56,
-    fontSize: 12,
+    opacity: 0.75,
+    fontSize: 10,
+    margin: 0,
     position: "absolute",
-    top: -10,
+    top: 4,
   },
   modal: {
     position: "absolute",
