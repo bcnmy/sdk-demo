@@ -10,9 +10,10 @@ import Typography from "@mui/material/Typography";
 interface Props {
   useCase: number;
   setUseCase: any;
+  pageIndexChange: any;
 }
 
-const ForwardFlow: React.FC<Props> = ({ useCase, setUseCase }) => {
+const ForwardFlow: React.FC<Props> = ({ useCase, setUseCase, pageIndexChange }) => {
   const classes = useStyles();
 
   return (
@@ -91,7 +92,7 @@ const useStyles = makeStyles(() => ({
   },
   subTitle: {
     fontFamily: "Rubik",
-    color: "#fff",
+    color: "#e6e6e6",
     fontSize: 28,
     fontStyle: "normal",
   },
