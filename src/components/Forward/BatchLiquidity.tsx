@@ -124,7 +124,7 @@ const BatchLiquidity: React.FC = () => {
       showInfoMessage("Batching transactions");
 
       // making transaction with version, set feeQuotes[1].tokenGasPrice = 6
-      const transaction = await smartAccount.createTransactionBatchWithFeeQuote({
+      const transaction = await smartAccount.createUserPaidTransactionBatch({
         transactions: txs,
         feeQuote: feeQuotes[1],
       });
@@ -136,7 +136,7 @@ const BatchLiquidity: React.FC = () => {
       // };
 
       // send transaction internally calls signTransaction and sends it to connected relayer
-      const txHash = await smartAccount.sendTransactionWithFeeQuote({
+      const txHash = await smartAccount.sendUserPaidTransaction({
         tx: transaction,
         gasLimit: {
           hex: "0x1E8480",
