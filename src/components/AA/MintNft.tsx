@@ -92,7 +92,7 @@ const MintNft: React.FC = () => {
           (same of goerli, mumbai, polygon)
         </span>
       </p>
-      <p style={{ marginBottom: 30 }}>
+      <p style={{ marginBottom: 30, marginTop: 30, fontSize: 24 }}>
         Nft Balance in SCW:{" "}
         {nftCount === null ? (
           <p style={{ color: "#7E7E7E", display: "contents" }}>fetching...</p>
@@ -108,14 +108,13 @@ const MintNft: React.FC = () => {
 
 const useStyles = makeStyles(() => ({
   main: {
-    margin: "auto",
     padding: "10px 40px",
     color: "#EEEEEE",
   },
   subTitle: {
-    fontFamily: "Rubik",
-    color: "#BDC2FF",
-    fontSize: 28,
+    color: "#FFB999",
+    fontSize: 36,
+    margin: 0,
   },
   h3Title: {
     color: "#e6e6e6",

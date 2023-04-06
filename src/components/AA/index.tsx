@@ -221,7 +221,7 @@ const useStyles = makeStyles(() => ({
     backgroundColor: "#151520",
     borderRadius: 12,
     padding: 16,
-    border: "1px solid #FFB999",
+    border: "1px solid #5B3320",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",

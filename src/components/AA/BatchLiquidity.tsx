@@ -106,14 +106,13 @@ const BatchLiquidity: React.FC = () => {
 
 const useStyles = makeStyles(() => ({
   main: {
-    margin: "auto",
     padding: "10px 40px",
     color: "#EEEEEE",
   },
   subTitle: {
-    fontFamily: "Rubik",
-    color: "#BDC2FF",
-    fontSize: 28,
+    color: "#FFB999",
+    fontSize: 36,
+    margin: 0,
   },
   h3Title: {
     color: "#e6e6e6",

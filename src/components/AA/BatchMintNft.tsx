@@ -129,10 +129,9 @@ const useStyles = makeStyles(() => ({
     color: "#EEEEEE",
   },
   subTitle: {
-    fontFamily: "Rubik",
-    color: "#BDC2FF",
-    fontSize: 28,
-    margin: "0",
+    color: "#FFB999",
+    fontSize: 36,
+    margin: 0,
   },
   h3Title: {
     margin: 10,
