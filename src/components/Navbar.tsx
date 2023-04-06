@@ -7,6 +7,7 @@ import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { useWeb3AuthContext } from "../contexts/SocialLoginContext";
 import { useSmartAccountContext } from "../contexts/SmartAccountContext";
 import Button from "./Button";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { copyToClipBoard, ellipseAddress } from "../utils";
 
 type INavBar = {
@@ -100,7 +101,12 @@ const Navbar = ({ open, handleDrawerOpen }: INavBar) => {
                         }
                         className={classes.copyText}
                       >
-                        📁
+                        <ContentCopyIcon
+                          className={classes.copyIcon}
+                          style={{
+                            textAlign: "center",
+                          }}
+                        />
                       </p>
                     </div>
                   ))}
@@ -148,20 +154,17 @@ const useStyles = makeStyles((theme: any) => ({
   modal: {
     position: "absolute",
     top: 24,
-    right: 10,
-    backgroundColor: "#21325E",
-    borderLeft: "2px solid #3E497A",
-    borderRight: "2px solid #3E497A",
-    boxShadow: "4px 5px #3E497A",
+    right: 0,
+    backgroundColor: "#151520",
+    border: "1px solid #5B3320",
     width: "100%",
-    // height: "36px",
     lineHeight: "36px",
     padding: "2 8px",
-    borderRadius: 10,
+    borderRadius: 12,
     cursor: "pointer",
     textAlign: "center",
     fontWeight: 600,
-    transform: "translate(10%, 35%)",
+    transform: "translate(0%, 35%)",
 
     [theme.breakpoints.down("xs")]: {
       width: "auto",
@@ -169,14 +172,11 @@ const useStyles = makeStyles((theme: any) => ({
   },
   element: {
     padding: "0 5px",
+    color: "#e6e6e6",
     display: "flex",
     // border: "1px solid #F5E8E4",
     justifyContent: "space-between",
     borderRadius: 10,
-
-    "&:hover": {
-      backgroundColor: "#191F2A",
-    },
   },
   elementText: {
     fontSize: 14,
@@ -187,13 +187,19 @@ const useStyles = makeStyles((theme: any) => ({
     margin: "auto",
     fontSize: 14,
     padding: "0 5px",
-    "&:hover": {
-      backgroundColor: "#2C3333",
-    },
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   formControl: {
     margin: theme.spacing(1),
     width: 72,
+  },
+  copyIcon: {
+    color: "#e6e6e6",
+    "&:hover": {
+      color: "#ffb999",
+    },
   },
 }));
 
