@@ -73,7 +73,7 @@ export const copyToClipBoard = (copyMe: string) => {
   if (!copyMe) return;
   try {
     navigator.clipboard.writeText(copyMe).then(() => {
-      showSuccessMessage("Copied!");
+      showSuccessMessage("SmartAccount address copied!");
     });
   } catch (err) {
     showErrorMessage("Failed to copy!");
