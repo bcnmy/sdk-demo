@@ -1,18 +1,75 @@
 import React from "react";
 import { makeStyles } from "@mui/styles";
-import Box from "@mui/material/Box/Box";
-import Card from "@mui/material/Card/Card";
-import CardActionArea from "@mui/material/CardActionArea";
-import CardMedia from "@mui/material/CardMedia";
-import CardContent from "@mui/material/CardContent";
-import Typography from "@mui/material/Typography";
+import ControlPointIcon from "@mui/icons-material/ControlPoint";
+import ImageIcon from "@mui/icons-material/Image";
+import ControlPointDuplicateIcon from "@mui/icons-material/ControlPointDuplicate";
+import CollectionsIcon from "@mui/icons-material/Collections";
 
 interface Props {
   useCase: number;
   setUseCase: any;
+  pageIndexChange: any;
 }
 
-const AccountAbstraction: React.FC<Props> = ({ useCase, setUseCase }) => {
+const cardItems = [
+  {
+    title: "Mint ERC20 Token",
+    description: "This is single transaction to give Mint an ERC-20 token",
+    index: 4,
+    icon: (
+      <ControlPointIcon
+        style={{
+          color: "#FFB999",
+          fontSize: 72,
+        }}
+      />
+    ),
+  },
+  {
+    title: "Mint NFT",
+    description:
+      "This is single transaction to give Mint an ERC-721 (NFT) token",
+      index: 5,
+    icon: (
+      <ImageIcon
+        style={{
+          color: "#FFB999",
+          fontSize: 72,
+        }}
+      />
+    ),
+  },
+  {
+    title: "BatchTx - Liquidity",
+    description:
+      "This magic bundle will approve USDC then provide the USDC liquidity to Hyphen Pool.",
+      index: 6,
+    icon: (
+      <ControlPointDuplicateIcon
+        style={{
+          color: "#FFB999",
+          fontSize: 72,
+        }}
+      />
+    ),
+  },
+  {
+    title: "BatchTx - NFT",
+    description:
+      "This magic bundle will batch two single safeMint into one transaction.",
+      index: 7,
+    icon: (
+      <CollectionsIcon
+        style={{
+          color: "#FFB999",
+          fontSize: 72,
+        }}
+      />
+    ),
+  },
+];
+
+const AccountAbstraction: React.FC<Props> = ({ useCase, setUseCase, pageIndexChange }) => {
   const classes = useStyles();
 
   return (
@@ -37,7 +94,36 @@ const AccountAbstraction: React.FC<Props> = ({ useCase, setUseCase }) => {
         Here we have added some use cases from which users can test out the sdk.
       </p>
 
-      <Box
+      <div className={classes.cardContainer}>
+        {cardItems.map((item, index) => (
+          <div onClick={(e)=>pageIndexChange(e,item.index)} key={index} className={classes.card}>
+            {item.icon}
+            <div className={classes.textBox}>
+            <h3
+              style={{
+                color: "#FFB999",
+                textAlign: "start",
+                fontSize: "auto",
+                margin: 0,
+              }}
+            >
+              {item.title}
+            </h3>
+            <p
+              style={{
+                fontSize: 14,
+                margin: 0,
+                textAlign: "center",
+              }}
+            >
+              {item.description}
+            </p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* <Box
         sx={{
           display: "flex",
           flexWrap: "wrap",
@@ -46,42 +132,6 @@ const AccountAbstraction: React.FC<Props> = ({ useCase, setUseCase }) => {
           paddingBottom: 5,
         }}
       >
-        <Card sx={{ maxWidth: 250 }} onClick={() => {}}>
-          <CardActionArea>
-            <CardMedia
-              component="img"
-              height="140"
-              image="/img/erc20.png"
-              alt="img"
-            />
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="div">
-                Mint ERC20 Token
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                This is single transaction to give Mint an ERC-20 token.
-              </Typography>
-            </CardContent>
-          </CardActionArea>
-        </Card>
-        <Card sx={{ maxWidth: 250 }}>
-          <CardActionArea>
-            <CardMedia
-              component="img"
-              height="140"
-              image="/img/nft.png"
-              alt="img"
-            />
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="div">
-                Mint NFT
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                This is an example gasless transaction to Mint Nft.
-              </Typography>
-            </CardContent>
-          </CardActionArea>
-        </Card>
         <Card sx={{ maxWidth: 250 }}>
           <CardActionArea>
             <CardMedia
@@ -120,29 +170,70 @@ const AccountAbstraction: React.FC<Props> = ({ useCase, setUseCase }) => {
             </CardContent>
           </CardActionArea>
         </Card>
-      </Box>
+      </Box> */}
     </main>
   );
 };
 
 const useStyles = makeStyles(() => ({
   main: {
-    margin: "auto",
     padding: "10px 40px",
-    maxWidth: 1250,
-    color: "#a0aec0",
+    width: "100%",
+    color: "#e6e6e6",
   },
   subTitle: {
-    fontFamily: "Rubik",
-    color: "#fff",
-    fontSize: 28,
-    fontStyle: "normal",
+    color: "#FFB999",
+    fontSize: 36,
+    margin: 0,
+  },
+  textBox:{
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 8,
+    "@media (max-width:1640px)": {
+      alignItems: "start",
+    }
   },
   subSubTitle: {
     fontFamily: "Rubik",
     color: "#BDC2FF",
     fontSize: 20,
     margin: 20,
+  },
+  cardContainer: {
+    display: "flex",
+    flexWrap: "wrap",
+    flexDirection: "row",
+    justifyContent: "start",
+    alignItems: "center",
+    gap: 20,
+    cursor: "pointer",
+    "@media (max-width:1640px)": {
+      flexDirection: "column",
+    },
+  },
+  card: {
+    // width: "25%",
+    maxWidth: 300,
+    aspectRatio: 1,
+    backgroundColor: "#151520",
+    borderRadius: 12,
+    padding: 16,
+    border: "1px solid #5B3320",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    gap: 8,
+    alignItems: "center",
+    "@media (max-width:1640px)": {
+      flexDirection: "row-reverse",
+      width: "100%",
+      maxWidth: "unset",
+      aspectRatio: "unset",
+      justifyContent: "space-between",
+    },
   },
 }));
 

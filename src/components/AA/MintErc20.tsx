@@ -61,7 +61,7 @@ const MintErc20: React.FC = () => {
       const txHash = await txResponse.wait();
       console.log("txHash", txHash);
       showSuccessMessage(
-        `Minted EROC20 ${txHash.transactionHash}`,
+        `Minted ERC20 ${txHash.transactionHash}`,
         txHash.transactionHash
       );
       getBalance();
@@ -79,22 +79,21 @@ const MintErc20: React.FC = () => {
         Use Cases {"->"} Gasless {"->"} Mint ERC-20
       </p>
 
-      <h3 className={classes.subTitle}>Mint erc20 Gasless Flow</h3>
+      <h3 className={classes.subTitle}>Mint ERC20 Gasless Flow</h3>
 
       <p>This is single transaction to mint an test ERC-20 contract.</p>
 
-      <p>
-        Test ERC20 Token: {config.terc20.address}
-        <span style={{ fontSize: 13, color: "#FFB4B4" }}>
-          (same of goerli, mumbai, polygon)
-        </span>
+      <p>Test ERC20 Token: {config.terc20.address} {" "}
+      <span style={{ fontSize: 13, color: "#FFB4B4" }}>
+        (same of goerli, mumbai, polygon)
+      </span>
       </p>
-      <p style={{ marginBottom: 30 }}>
+      <p style={{ marginBottom: 30, marginTop: 30, fontSize: 24 }}>
         Nft Balance in SCW:{" "}
         {balance === null ? (
           <p style={{ color: "#7E7E7E", display: "contents" }}>fetching...</p>
         ) : (
-          ethers.utils.formatEther(ethers.utils.parseEther(balance.toString()))
+          ethers.utils.formatEther(balance.toString())
         )}
       </p>
 
@@ -105,23 +104,26 @@ const MintErc20: React.FC = () => {
 
 const useStyles = makeStyles(() => ({
   main: {
-    margin: "auto",
     padding: "10px 40px",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "start",
+    justifyContent: "center",
   },
   subTitle: {
-    fontFamily: "Rubik",
-    color: "#BDC2FF",
-    fontSize: 28,
+    color: "#FFB999",
+    fontSize: 36,
+    margin: 0,
   },
   h3Title: {
-    color: "#fff",
+    color: "#e6e6e6",
   },
   input: {
     maxWidth: 350,
     width: "100%",
     padding: "12px 10px",
     margin: "8px 0",
-    color: "#fff",
+    color: "#e6e6e6",
     boxSizing: "border-box",
     outlineColor: "#181818",
     backgroundColor: "#282A3A",

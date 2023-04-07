@@ -13,22 +13,15 @@ const App: React.FC = () => {
 
   if (!address) {
     return (
-      <div
-        className={classes.bgCover}
-        style={{ display: "flex", justifyContent: "center" }}
-      >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            flexDirection: "column",
-            alignItems: "center",
-            maxWidth: 600,
-            margin: "auto",
-            textAlign: "center",
-          }}
-        >
-          <h1 className={classes.title}>Biconomy SDK</h1>
+      <div className={classes.bgCover}>
+        <div className={classes.container}>
+          <h1 className={classes.title}>
+          <img width={35} style={
+            {
+              marginRight: 20,
+            }
+          } src="/logo.svg" alt="" />
+            Biconomy SDK</h1>
           <p className={classes.subTitle}>
             Solve complex UX challenges with customisable SDK modules in
             minutes.
@@ -37,12 +30,6 @@ const App: React.FC = () => {
             title="Get Started"
             onClickFunc={connect}
             isLoading={eoaWalletLoading}
-            style={{
-              fontSize: 20,
-              padding: "25px 15px",
-              border: 0,
-              borderRadius: 50,
-            }}
           />
         </div>
       </div>
@@ -51,67 +38,44 @@ const App: React.FC = () => {
 
   return (
     <div className={classes.bgCover}>
-      {loading ? (
-        <div className={classes.container}>
-          <img src="/logo.svg" className={classes.animateBlink} alt="" />
-        </div>
-      ) : (
-        <TabsBody />
-      )}
-      <ToastContainer />
+      <TabsBody loading={loading} />
+      <ToastContainer position="bottom-left" newestOnTop theme="dark" />
     </div>
   );
 };
 
 const useStyles = makeStyles(() => ({
   bgCover: {
-    backgroundColor: "#14171a",
-    backgroundSize: "cover",
-    width: "100%",
-    minHeight: "100vh",
-    color: "#fff",
+    width: "100vw",
+    height: "100vh",
+    background: "linear-gradient(120.85deg, #3F2E27 23.78%, #0E1117 68.7%)",
+    display: "flex",
+    color: "#e6e6e6",
+    justifyContent: "start",
+    alignItems: "center",
+    padding: "0px 20px",
   },
   container: {
+    width: "60vw",
+    height: "60vh",
+    backgroundColor: "#151520",
+    border: "1px solid #5B3320",
+    padding: "32px",
+    borderRadius: 20,
     display: "flex",
     flexDirection: "column",
-    width: "100%",
-    height: "80vh",
+    alignItems: "start",
     justifyContent: "center",
-    alignItems: "center",
+    gap: 20,
   },
   title: {
-    marginBottom: 10,
+    margin: 0,
     fontSize: 50,
-    background: "linear-gradient(90deg, #12ECB8 -2.21%, #00B4ED 92.02%)",
-    "-webkit-background-clip": "text",
-    "-webkit-text-fill-color": "transparent",
+    color: "#ffb999",
   },
   subTitle: {
     fontSize: 22,
-    marginBottom: 30,
-  },
-  animateBlink: {
-    animation: "$bottom_up 2s linear infinite",
-    "&:hover": {
-      transform: "scale(1.2)",
-    },
-  },
-  "@keyframes bottom_up": {
-    "0%": {
-      transform: "translateY(0px)",
-    },
-    "25%": {
-      transform: "translateY(20px)",
-    },
-    "50%": {
-      transform: "translateY(0px)",
-    },
-    "75%": {
-      transform: "translateY(-20px)",
-    },
-    "100%": {
-      transform: "translateY(0px)",
-    },
+    margin: 0,
   },
 }));
 

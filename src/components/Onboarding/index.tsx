@@ -98,10 +98,10 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
         Welcome onboard! This is the demo of the new Biconomy SDK. You need to
         deploy your smart account wallet to get started.
       </p>
-      <p style={{ marginBottom: 25 }}>Wallet Deployment → </p>
+      {/* <p>Wallet Deployment → </p> */}
       {state?.isDeployed ? (
         <div className={classes.container2}>
-          <p className={classes.text} style={{ marginBottom: 30 }}>
+          <p className={classes.text} style={{color: "#47EB78"}}>
             Your Smart Account is already created.
           </p>
           <Button
@@ -112,6 +112,14 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
         </div>
       ) : (
         <div className={classes.container}>
+          <div style={{
+            display: "flex",
+            justifyContent: "stretch",
+            gap: 20,
+            width: "100%",
+            height: "100%",
+            alignItems: "center",
+          }}>
           <div className={classes.element}>
             <p className={classes.text}>
               Demo dapp pays for the wallet deployment cost.
@@ -166,6 +174,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
             </ul>
             <Button title="Go to Use Cases" onClickFunc={() => setValue(3)} />
           </div>
+          </div>
         </div>
       )}
     </main>
@@ -174,18 +183,24 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
 
 const useStyles = makeStyles(() => ({
   main: {
-    margin: "auto",
     padding: "10px 40px",
-    maxWidth: 1200,
-    color: "#fff",
+    width: "100%",
+    height: "100%",
+    gap: 20,
+    color: "#e6e6e6",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "start",
+    justifyContent: "center",
   },
   subTitle: {
-    fontFamily: "Rubik",
-    color: "#fff",
-    fontSize: 28,
+    color: "#FFB999",
+    fontSize: 36,
+    margin: 0,
   },
   container: {
     width: "100%",
+    height: "100%",
     display: "flex",
     justifyContent: "space-between",
     "@media (max-width: 899px)": {
@@ -194,21 +209,18 @@ const useStyles = makeStyles(() => ({
     },
   },
   element: {
-    width: "32%",
-    backgroundColor: "#1a1e23",
-    // height: 300,
-    minHeight: 400,
-    filter: "drop-shadow(0px 2px 24px rgba(0, 0, 0, 0.1))",
-    border: "2px solid #393E46",
-    borderLeft: "solid 3px #393E46",
-    boxShadow: "5px 5px 0px #393E46",
+    width: "100%",
+    height: "100%",
+    minHeight: "410px",
+    backgroundColor: "#151520",
     borderRadius: 12,
-    height: "max-content",
     padding: 25,
+    gap: 8,
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
-    alignItems: "center",
+    border: "1px solid #5B3320",
+    alignItems: "start",
     "@media (max-width: 899px)": {
       width: "100%",
       marginBottom: 20,
@@ -217,7 +229,7 @@ const useStyles = makeStyles(() => ({
   },
   text: {
     fontSize: 20,
-    color: "#fff",
+    color: "#e6e6e6",
     // wordBreak: "break-all",
   },
   subText: {
@@ -227,10 +239,9 @@ const useStyles = makeStyles(() => ({
   },
   container2: {
     textAlign: "center",
-    marginTop: 80,
     display: "flex",
     flexDirection: "column",
-    alignItems: "center",
+    alignItems: "start",
   },
 }));
 

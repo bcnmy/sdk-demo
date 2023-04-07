@@ -19,6 +19,8 @@ const BatchLiquidity: React.FC = () => {
   const { provider, web3Provider } = useWeb3AuthContext();
   const { state: walletState, wallet } = useSmartAccountContext();
   const [payment, setPayment] = useState<FeeQuote[]>([]);
+  const [quote, setQuote] = useState<FeeQuote>();
+  console.log("🚀 ~ file: BatchLiquidity.tsx:23 ~ quote:", quote);
   const [txnArray, setTxnArray] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingFee, setIsLoadingFee] = useState(false);
@@ -120,13 +122,17 @@ const BatchLiquidity: React.FC = () => {
 
       // Fee already calculated in useEffect prepareRefundTransactionBatch
       // stored in payment state
-      const feeQuotes = payment;
+      if(!quote){
+        // showErrorMessage("Please select a fee option");
+        throw new Error("Please select a fee option");
+      }
+      // const feeQuotes = payment;
       showInfoMessage("Batching transactions");
 
       // making transaction with version, set feeQuotes[1].tokenGasPrice = 6
       const transaction = await smartAccount.createRefundTransactionBatch({
         transactions: txs,
-        feeQuote: feeQuotes[1],
+        feeQuote: quote,
       });
       console.log("transaction", transaction);
 
@@ -196,20 +202,47 @@ const BatchLiquidity: React.FC = () => {
         >
           <CircularProgress
             color="secondary"
-            style={{ width: 25, height: 25, marginRight: 10, color: "#fff" }}
+            style={{ width: 25, height: 25, marginRight: 10, color: "#e6e6e6" }}
           />{" "}
           {" Loading Fee Options"}
         </div>
       )}
 
-      <ul>
+      <ul
+        style={{
+          display: "flex",
+          alignItems: "start",
+          flexDirection: "column",
+          justifyContent: "start",
+          marginLeft: 0,
+          gap: 8,
+        }}
+      >
         {payment.map((token: FeeQuote, ind) => (
-          <li className={classes.listHover} key={ind}>
-            {parseFloat(
-              (token.payment / Math.pow(10, token.decimal)).toString()
-            ).toFixed(8)}{" "}
-            {token.symbol}
-          </li>
+          // <li className={classes.listHover} key={ind}>
+          //   {parseFloat(
+          //     (token.payment / Math.pow(10, token.decimal)).toString()
+          //   ).toFixed(8)}{" "}
+          //   {token.symbol}
+          // </li>
+          <div>
+            <input
+              type="radio"
+              onChange={() => setQuote(token)}
+              style={{
+                color: "#FFB999",
+              }}
+              name={token.symbol}
+              id={token.symbol}
+              checked={quote === token}
+            />
+            <label htmlFor={token.symbol}>
+              {parseFloat(
+                (token.payment / Math.pow(10, token.decimal)).toString()
+              ).toFixed(8)}{" "}
+              {token.symbol}
+            </label>
+          </div>
         ))}
       </ul>
       <Button
@@ -228,12 +261,12 @@ const useStyles = makeStyles(() => ({
     color: "#EEEEEE",
   },
   subTitle: {
-    fontFamily: "Rubik",
-    color: "#BDC2FF",
-    fontSize: 28,
+    color: "#FFB999",
+    fontSize: 36,
+    margin: 0,
   },
   h3Title: {
-    color: "#BDC2FF",
+    color: "#e6e6e6",
   },
   container: {
     // backgroundColor: "rgb(29, 31, 33)",
@@ -250,7 +283,7 @@ const useStyles = makeStyles(() => ({
   },
   listHover: {
     "&:hover": {
-      color: "#FF9551",
+      color: "#FFB999",
     },
   },
 }));

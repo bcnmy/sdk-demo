@@ -8,6 +8,7 @@ import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import {
   configInfo as config,
   showErrorMessage,
+  showInfoMessage,
   showSuccessMessage,
 } from "../../utils";
 
@@ -24,6 +25,7 @@ const Faucet: React.FC = () => {
       showErrorMessage("Please connect your wallet");
       return;
     }
+    showInfoMessage("Initiating Faucet...");
     try {
       let smartAccount = wallet;
       const faucetContract = new ethers.Contract(
@@ -59,12 +61,12 @@ const Faucet: React.FC = () => {
     <main className={classes.main}>
       <h3 className={classes.subTitle}>Faucet</h3>
 
-      <p>Get USDC and USDT test tokens.</p>
       <p>
-        We will airdrop these tokens to the SCW address so you can test the SDK.
+        Get USDC and USDT test tokens. We will airdrop these tokens to the SCW
+        address so you can test the SDK.
       </p>
 
-      <h3 className={classes.h3Title}>You can change the address</h3>
+      <h3 className={classes.h3Title}>You can also change the address</h3>
 
       <input
         type="text"
@@ -81,17 +83,24 @@ const Faucet: React.FC = () => {
 
 const useStyles = makeStyles(() => ({
   main: {
-    margin: "auto",
     padding: "10px 40px",
-    color: "#EEEEEE",
+    width: "100%",
+    height: "100%",
+    gap: 20,
+    color: "#e6e6e6",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "start",
+    justifyContent: "center",
   },
   subTitle: {
-    fontFamily: "Rubik",
-    color: "#BDC2FF",
-    fontSize: 28,
+    color: "#FFB999",
+    fontSize: 36,
+    margin: 0,
   },
   h3Title: {
-    color: "#BDC2FF",
+    color: "#FFB999",
+    margin: 0,
   },
   container: {
     // backgroundColor: "rgb(29, 31, 33)",
@@ -114,14 +123,12 @@ const useStyles = makeStyles(() => ({
   input: {
     maxWidth: 350,
     width: "100%",
-    padding: "12px 10px",
-    margin: "8px 0",
-    color: "#fff",
-    boxSizing: "border-box",
-    outlineColor: "#181818",
-    backgroundColor: "#282A3A",
+    padding: "12px 12px",
+    color: "#e6e6e6",
+    outline: "1px solid #5B3320",
+    backgroundColor: "#151520",
+    borderRadius: 6,
     border: "none",
-    marginBottom: 20,
   },
 }));
 

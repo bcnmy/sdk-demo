@@ -31,7 +31,7 @@ export const getEOAWallet = (privateKey: string, provider: any) => {
 
 export const showErrorMessage = (message: string) => {
   toast.error(message, {
-    position: "top-right",
+    position: "bottom-left",
     autoClose: 5000,
     hideProgressBar: false,
     closeOnClick: false,
@@ -43,7 +43,7 @@ export const showErrorMessage = (message: string) => {
 
 export const showInfoMessage = (message: string) => {
   toast.info(message, {
-    position: "top-right",
+    position: "bottom-left",
     autoClose: 5000,
     hideProgressBar: false,
     closeOnClick: true,
@@ -58,7 +58,7 @@ export const showSuccessMessage = (message: string, txHash?: string) => {
     onClick: () => {
       window.open(`${getExplorer(activeChainId)}/tx/${txHash}`, "_blank");
     },
-    position: "top-right",
+    position: "bottom-left",
     autoClose: 5000,
     hideProgressBar: false,
     closeOnClick: false,
@@ -73,7 +73,7 @@ export const copyToClipBoard = (copyMe: string) => {
   if (!copyMe) return;
   try {
     navigator.clipboard.writeText(copyMe).then(() => {
-      showSuccessMessage("Copied!");
+      showSuccessMessage("SmartAccount address copied!");
     });
   } catch (err) {
     showErrorMessage("Failed to copy!");

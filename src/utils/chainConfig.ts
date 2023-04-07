@@ -5,7 +5,7 @@ export const ChainId = {
   POLYGON_MAINNET: 137,
 };
 
-export let activeChainId = ChainId.POLYGON_MAINNET;
+export let activeChainId = ChainId.POLYGON_MUMBAI;
 export const supportedChains = [
   ChainId.GOERLI,
   ChainId.POLYGON_MAINNET,
@@ -41,5 +41,3 @@ export const getExplorer = (chainId: number) => {
       return "https://mumbai.polygonscan.com";
   }
 };
-
-export const getSupportedChains = () => {};

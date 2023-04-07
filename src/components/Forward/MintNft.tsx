@@ -12,17 +12,17 @@ import {
   showInfoMessage,
   showSuccessMessage,
 } from "../../utils";
+import { FeeQuote } from "@biconomy-sdk-dev/core-types";
 
 const MintNftForward: React.FC = () => {
   const classes = useStyles();
   const { web3Provider } = useWeb3AuthContext();
   const { state: walletState, wallet } = useSmartAccountContext();
+  const [quote, setQuote] = useState<FeeQuote>();
+  const [tx, setTx] = useState<any>();
   const [nftCount, setNftCount] = useState<number | null>(null);
   const [payment, setPayment] = useState<
-    {
-      symbol: string;
-      value: string;
-    }[]
+  FeeQuote[]
   >([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingFee, setIsLoadingFee] = useState(false);
@@ -40,13 +40,12 @@ const MintNftForward: React.FC = () => {
       setNftCount(Number(count));
     };
     getNftCount();
+    getFee();
   }, [walletState?.address, web3Provider]);
 
-  const makeTx = async () => {
+  const getFee = async () => {
     if (!wallet || !walletState || !web3Provider) return;
-    try {
-      setIsLoading(true);
-      setIsLoadingFee(true);
+    setIsLoadingFee(true);
       let smartAccount = wallet;
       const nftContract = new ethers.Contract(
         config.nft.address,
@@ -62,33 +61,41 @@ const MintNftForward: React.FC = () => {
         to: config.nft.address,
         data: safeMintTx.data,
       };
+      setTx(tx1);
       // prepare refund txn batch before so that we have accurate token gas price
       const feeQuotes = await smartAccount.prepareRefundTransaction({
         transaction: tx1,
       });
+      setPayment(feeQuotes);
       console.log("prepareRefundTransactionBatch", feeQuotes);
-
-      const pmtArr: {
-        symbol: string;
-        value: string;
-      }[] = [];
-      for (let i = 0; i < feeQuotes.length; ++i) {
-        const pmnt = parseFloat(
-          (feeQuotes[i].payment / Math.pow(10, feeQuotes[i].decimal)).toString()
-        ).toFixed(8);
-        pmtArr.push({
-          symbol: feeQuotes[i].symbol,
-          value: pmnt,
-        });
-      }
-      setPayment(pmtArr);
       setIsLoadingFee(false);
+  }
+
+  const makeTx = async () => {
+    if (!wallet || !walletState || !web3Provider) return;
+    try {
+      let smartAccount = wallet;
+      setIsLoading(true);
+      // const pmtArr: {
+      //   symbol: string;
+      //   value: string;
+      // }[] = [];
+      // for (let i = 0; i < feeQuotes.length; ++i) {
+      //   const pmnt = parseFloat(
+      //     (feeQuotes[i].payment / Math.pow(10, feeQuotes[i].decimal)).toString()
+      //   ).toFixed(8);
+      //   pmtArr.push({
+      //     symbol: feeQuotes[i].symbol,
+      //     value: pmnt,
+      //   });
+      // }
       showInfoMessage("Batching transactions");
 
       // making transaction with version, set feeQuotes[1].tokenGasPrice = 6
+      if(!quote || !tx) throw new Error("Please select a fee option");
       const transaction = await smartAccount.createRefundTransaction({
-        transaction: tx1,
-        feeQuote: feeQuotes[1],
+        transaction: tx,
+        feeQuote: quote,
       });
       console.log("transaction", transaction);
 
@@ -148,16 +155,46 @@ const MintNftForward: React.FC = () => {
         >
           <CircularProgress
             color="secondary"
-            style={{ width: 25, height: 25, marginRight: 10, color: "#fff" }}
+            style={{ width: 25, height: 25, marginRight: 10, color: "#e6e6e6" }}
           />{" "}
           {" Loading Fee Options"}
         </div>
       )}
-      <ul>
-        {payment.map((token, ind) => (
-          <li className={classes.listHover} key={ind}>
-            {token.value} {token.symbol}
-          </li>
+      <ul
+        style={{
+          display: "flex",
+          alignItems: "start",
+          flexDirection: "column",
+          justifyContent: "start",
+          marginLeft: 0,
+          gap: 8,
+        }}
+      >
+        {payment.map((token: FeeQuote, ind) => (
+          // <li className={classes.listHover} key={ind}>
+          //   {parseFloat(
+          //     (token.payment / Math.pow(10, token.decimal)).toString()
+          //   ).toFixed(8)}{" "}
+          //   {token.symbol}
+          // </li>
+          <div>
+            <input
+              type="radio"
+              onChange={() => setQuote(token)}
+              style={{
+                color: "#FFB999",
+              }}
+              name={token.symbol}
+              id={token.symbol}
+              checked={quote === token}
+            />
+            <label htmlFor={token.symbol}>
+              {parseFloat(
+                (token.payment / Math.pow(10, token.decimal)).toString()
+              ).toFixed(8)}{" "}
+              {token.symbol}
+            </label>
+          </div>
         ))}
       </ul>
 
@@ -173,12 +210,12 @@ const useStyles = makeStyles(() => ({
     color: "#EEEEEE",
   },
   subTitle: {
-    fontFamily: "Rubik",
-    color: "#BDC2FF",
-    fontSize: 28,
+    color: "#FFB999",
+    fontSize: 36,
+    margin: 0,
   },
   h3Title: {
-    color: "#fff",
+    color: "#e6e6e6",
   },
   listHover: {
     "&:hover": {

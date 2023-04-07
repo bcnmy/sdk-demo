@@ -21,7 +21,7 @@ import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
 import BurstModeIcon from "@mui/icons-material/BurstMode";
 import LegendToggleIcon from "@mui/icons-material/LegendToggle";
 import GamesIcon from "@mui/icons-material/Games";
-import ContactlessIcon from '@mui/icons-material/Contactless';
+import ContactlessIcon from "@mui/icons-material/Contactless";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import Onboarding from "./Onboarding/index";
 import Navbar from "./Navbar";
@@ -86,7 +86,7 @@ const ForwardList = [
   },
 ];
 
-const TabsBody = () => {
+const TabsBody = ({ loading }: { loading: boolean }) => {
   const classes = useStyles();
   const [pageIndex, setPageIndex] = React.useState(0);
   const [useCase, setUseCase] = React.useState(0);
@@ -95,6 +95,9 @@ const TabsBody = () => {
   const [isForwardOpen, setIsForwardOpen] = React.useState(false);
 
   const handleChange = (event: any, newValue: any) => {
+    if(newValue >= 4 && newValue <= 7) {
+      setIsAAOpen(true);
+    }
     setUseCase(0);
     setPageIndex(newValue);
   };
@@ -107,20 +110,23 @@ const TabsBody = () => {
     setOpen(false);
   };
 
-  return (
-    <Box sx={{ display: "flex" }}>
+  return loading ? (
+    <div className={classes.container}>
+      <img width={50} src="/logo.svg" className={classes.animateBlink} alt="" />
+    </div>
+  ) : (
+    <Box sx={{ display: "flex", width: "100%" }}>
       <CssBaseline />
       <Navbar open={open} handleDrawerOpen={handleDrawerOpen} />
       {/* Left Panel */}
       <Drawer
         variant="permanent"
         open={open}
-        className={classes.drawer}
         sx={{
           "& .MuiDrawer-paper": {
-            backgroundColor: "#14171a",
-            color: "#fff",
-            borderRight: "2px solid #323a43",
+            background: "rgba(0,0,0,0)",
+            color: "#e6e6e6",
+            border: 0,
           },
           "& .MuiTypography-root": {
             fontSize: 14,
@@ -128,21 +134,12 @@ const TabsBody = () => {
         }}
       >
         <DrawerHeader>
-          <img src="img/logo.svg" alt="logo" className={classes.logo} />
-
-          <IconButton onClick={handleDrawerClose} sx={{ color: "#fff" }}>
-            <LegendToggleIcon />
-          </IconButton>
+          <img src="/logo.svg" alt="logo" width={25} />
         </DrawerHeader>
-        <Divider style={{ borderColor: "#323a43", borderWidth: 1 }} />
+        {/* <Divider style={{ borderColor: "#323a43", borderWidth: 1 }} /> */}
         <List
           sx={{
             display: "block",
-            "& .MuiListItemButton-root": {
-              "&:hover": {
-                backgroundColor: "#1a1f23",
-              },
-            },
           }}
         >
           {onboardingList.map((ele, index) => (
@@ -160,7 +157,7 @@ const TabsBody = () => {
                     minWidth: 0,
                     mr: open ? 3 : "auto",
                     justifyContent: "center",
-                    color: pageIndex === index ? "#1da1f2" : "#fff",
+                    color: pageIndex === index ? "#FFB999" : "#e6e6e6",
                   }}
                 >
                   {ele.icon}
@@ -174,15 +171,10 @@ const TabsBody = () => {
           ))}
         </List>
         {/* AA Left Panel */}
-        <Divider style={{ borderColor: "#323a43", borderWidth: 1 }} />
+        {/* <Divider style={{ borderColor: "#323a43", borderWidth: 1 }} /> */}
         <List
           sx={{
             display: "block",
-            "& .MuiListItemButton-root": {
-              "&:hover": {
-                backgroundColor: "#1a1f23",
-              },
-            },
           }}
         >
           <ListItemButton
@@ -196,7 +188,7 @@ const TabsBody = () => {
                 minWidth: 0,
                 mr: open ? 3 : "auto",
                 justifyContent: "center",
-                color: pageIndex === 3 ? "#1da1f2" : "#fff",
+                color: pageIndex === 3 ? "#FFB999" : "#e6e6e6",
               }}
             >
               <EvStationIcon />
@@ -228,7 +220,7 @@ const TabsBody = () => {
                         minWidth: 0,
                         mr: open ? 3 : "auto",
                         justifyContent: "center",
-                        color: pageIndex === index + 4 ? "#1da1f2" : "#fff",
+                        color: pageIndex === index + 4 ? "#FFB999" : "#e6e6e6",
                       }}
                     >
                       {ele.icon}
@@ -244,15 +236,9 @@ const TabsBody = () => {
           </Collapse>
         </List>
         {/* Forward Left Panel */}
-        <Divider style={{ borderColor: "#323a43", borderWidth: 1 }} />
         <List
           sx={{
             display: "block",
-            "& .MuiListItemButton-root": {
-              "&:hover": {
-                backgroundColor: "#1a1f23",
-              },
-            },
           }}
         >
           <ListItemButton
@@ -266,7 +252,7 @@ const TabsBody = () => {
                 minWidth: 0,
                 mr: open ? 3 : "auto",
                 justifyContent: "center",
-                color: pageIndex === 8 ? "#1da1f2" : "#fff",
+                color: pageIndex === 8 ? "#FFB999" : "#e6e6e6",
               }}
             >
               <ContactlessIcon />
@@ -298,7 +284,7 @@ const TabsBody = () => {
                         minWidth: 0,
                         mr: open ? 3 : "auto",
                         justifyContent: "center",
-                        color: pageIndex === index + 9 ? "#1da1f2" : "#fff",
+                        color: pageIndex === index + 9 ? "#FFB999" : "#e6e6e6",
                       }}
                     >
                       {ele.icon}
@@ -315,8 +301,6 @@ const TabsBody = () => {
         </List>
       </Drawer>
 
-      <DrawerHeader />
-
       {/* content menu */}
       <TabPanel value={pageIndex} index={0}>
         <Onboarding setValue={setPageIndex} />
@@ -328,7 +312,11 @@ const TabsBody = () => {
         <Assets />
       </TabPanel>
       <TabPanel value={pageIndex} index={3}>
-        <AccountAbstraction setUseCase={setUseCase} useCase={useCase} />
+        <AccountAbstraction
+          pageIndexChange={handleChange}
+          setUseCase={setUseCase}
+          useCase={useCase}
+        />
       </TabPanel>
       <TabPanel value={pageIndex} index={4}>
         <MintErc20 />
@@ -344,7 +332,11 @@ const TabsBody = () => {
       </TabPanel>
 
       <TabPanel value={pageIndex} index={8}>
-        <ForwardFlow setUseCase={setUseCase} useCase={useCase} />
+        <ForwardFlow
+          pageIndexChange={handleChange}
+          setUseCase={setUseCase}
+          useCase={useCase}
+        />
       </TabPanel>
       <TabPanel value={pageIndex} index={9}>
         <BatchLiquidityForward />
@@ -403,8 +395,9 @@ const closedMixin = (theme: Theme): CSSObject => ({
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
-  justifyContent: "flex-end",
-  padding: theme.spacing(0, 1),
+  width: "100%",
+  justifyContent: "space-between",
+  padding: theme.spacing(0, 2),
   // necessary for content to be below app bar
   ...theme.mixins.toolbar,
 }));
@@ -440,12 +433,12 @@ const useStyles = makeStyles((theme) => ({
       flexDirection: "column",
     },
   },
-  drawer: {
-    backgroundColor: "#323a43",
-  },
-  logo: {
-    width: "70%",
-    margin: "auto",
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
   },
   tabs: {
     borderRight: `1.5px solid #323a43`,
@@ -457,13 +450,32 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   tabpanel: {
-    width: "90%",
-    marginTop: 66,
+    width: "100%",
+    height: "100%",
     "@media (max-width:699px)": {
       width: "100%",
       margin: "auto",
-      marginTop: 66,
       minHeight: "80vh",
+    },
+  },
+  animateBlink: {
+    animation: "$blink 4s linear infinite",
+  },
+  "@keyframes blink": {
+    "0%": {
+      opacity: "0",
+    },
+    "25%": {
+      opacity: "100",
+    },
+    "50%": {
+      opacity: "0",
+    },
+    "75%": {
+      opacity: "100",
+    },
+    "100%": {
+      opacity: "0",
     },
   },
 }));

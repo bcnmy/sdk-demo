@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { makeStyles } from "@mui/styles";
 import { styled } from "@mui/material/styles";
-import LegendToggleIcon from '@mui/icons-material/LegendToggle';
+import LegendToggleIcon from "@mui/icons-material/LegendToggle";
 import IconButton from "@mui/material/IconButton";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { useWeb3AuthContext } from "../contexts/SocialLoginContext";
 import { useSmartAccountContext } from "../contexts/SmartAccountContext";
 import Button from "./Button";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { copyToClipBoard, ellipseAddress } from "../utils";
 
 type INavBar = {
@@ -67,7 +68,6 @@ const Navbar = ({ open, handleDrawerOpen }: INavBar) => {
         >
           <LegendToggleIcon />
         </IconButton>
-        <div></div>
         <div className={classes.walletBtnContainer}>
           {selectedAccount?.smartAccountAddress && (
             <p className={classes.btnTitle}>Smart Account Address</p>
@@ -101,7 +101,12 @@ const Navbar = ({ open, handleDrawerOpen }: INavBar) => {
                         }
                         className={classes.copyText}
                       >
-                        📁
+                        <ContentCopyIcon
+                          className={classes.copyIcon}
+                          style={{
+                            textAlign: "center",
+                          }}
+                        />
                       </p>
                     </div>
                   ))}
@@ -117,22 +122,22 @@ const Navbar = ({ open, handleDrawerOpen }: INavBar) => {
 
 const useStyles = makeStyles((theme: any) => ({
   nav: {
-    height: "66px",
-    boxShadow: "none",
-    background: "#14171a !important",
-    borderBottom: "2px solid #323a43",
+    height: "80px",
+    width: "100%",
+    boxShadow: "none !important",
+    background: "rgba(0,0,0,0) !important",
     "@media (max-width:1100px)": {
       padding: "0 20px",
     },
   },
   flexContainer: {
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent: "end",
     alignItems: "center",
     margin: "auto",
     // maxWidth: 1400,
     padding: "0 10px",
-    width: "90%",
+    width: "100%",
   },
   walletBtnContainer: {
     display: "flex",
@@ -140,28 +145,26 @@ const useStyles = makeStyles((theme: any) => ({
     gap: 20,
   },
   btnTitle: {
-    opacity: 0.56,
-    fontSize: 12,
+    opacity: 0.75,
+    fontSize: 10,
+    margin: 0,
     position: "absolute",
-    top: -10,
+    top: 4,
   },
   modal: {
     position: "absolute",
     top: 24,
-    right: 10,
-    backgroundColor: "#21325E",
-    borderLeft: "2px solid #3E497A",
-    borderRight: "2px solid #3E497A",
-    boxShadow: "4px 5px #3E497A",
+    right: 0,
+    backgroundColor: "#151520",
+    border: "1px solid #5B3320",
     width: "100%",
-    // height: "36px",
     lineHeight: "36px",
     padding: "2 8px",
-    borderRadius: 10,
+    borderRadius: 12,
     cursor: "pointer",
     textAlign: "center",
     fontWeight: 600,
-    transform: "translate(10%, 35%)",
+    transform: "translate(0%, 35%)",
 
     [theme.breakpoints.down("xs")]: {
       width: "auto",
@@ -169,14 +172,11 @@ const useStyles = makeStyles((theme: any) => ({
   },
   element: {
     padding: "0 5px",
+    color: "#e6e6e6",
     display: "flex",
     // border: "1px solid #F5E8E4",
     justifyContent: "space-between",
     borderRadius: 10,
-
-    "&:hover": {
-      backgroundColor: "#191F2A",
-    },
   },
   elementText: {
     fontSize: 14,
@@ -187,13 +187,19 @@ const useStyles = makeStyles((theme: any) => ({
     margin: "auto",
     fontSize: 14,
     padding: "0 5px",
-    "&:hover": {
-      backgroundColor: "#2C3333",
-    },
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   formControl: {
     margin: theme.spacing(1),
     width: 72,
+  },
+  copyIcon: {
+    color: "#e6e6e6",
+    "&:hover": {
+      color: "#ffb999",
+    },
   },
 }));
 
