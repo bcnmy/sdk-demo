@@ -12,7 +12,7 @@ import {
   showInfoMessage,
   showErrorMessage,
 } from "../../utils";
-import { FeeQuote } from "@biconomy-sdk-dev/core-types";
+import { FeeQuote } from "@biconomy/core-types";
 
 const BatchLiquidity: React.FC = () => {
   const classes = useStyles();

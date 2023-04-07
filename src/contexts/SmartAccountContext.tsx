@@ -1,12 +1,12 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { ethers } from "ethers";
-import SmartAccount from "@biconomy-sdk-dev/smart-account";
+import SmartAccount from "@biconomy/smart-account";
 import {
   SmartAccountState,
   SmartAccountVersion,
   SignTypeMethod,
   Environments
-} from "@biconomy-sdk-dev/core-types";
+} from "@biconomy/core-types";
 import { supportedChains, activeChainId } from "../utils/chainConfig";
 import { useWeb3AuthContext } from "./SocialLoginContext";
 import { showSuccessMessage } from "../utils";
@@ -108,6 +108,21 @@ export const SmartAccountProvider = ({ children }: any) => {
       // Wallet initialization to fetch wallet info
       const smartAccount = await wallet.init();
       // smartAccount.setActiveChain(ChainId.POLYGON_MUMBAI)
+
+      /*const addr1 = await smartAccount.getSmartAccountAddress("0x7306aC7A32eb690232De81a9FFB44Bb346026faB")
+      console.log("addr1 ", addr1)
+      
+
+      const addr2 = await smartAccount.getSmartAccountAddress("0xDD049E7e7695464113B43b35C3917836B13A8582")
+      console.log("addr2 ", addr2)
+
+      const addr3 = await smartAccount.getSmartAccountAddress("0x7306aC7A32eb690232De81a9FFB44Bb346026faB", ChainId.POLYGON_MUMBAI, 1)
+      console.log("addr3 ", addr3)*/
+
+
+      
+
+
       setWallet(wallet);
       console.info("smartAccount", smartAccount);
 
@@ -154,6 +169,7 @@ export const SmartAccountProvider = ({ children }: any) => {
       }
       setSmartAccountsArray(accountData);
       // set the first wallet version as default
+
       if (accountData.length) {
         wallet.setSmartAccountVersion(
           accountData[0].version as SmartAccountVersion
