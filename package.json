@@ -52,9 +52,6 @@
     ]
   },
   "devDependencies": {
-    "@uniswap/sdk-core": "^3.0.1",
-    "@uniswap/smart-order-router": "^2.8.2",
-    "@uniswap/v3-sdk": "^3.9.0",
     "assert": "^2.0.0",
     "browserify-zlib": "^0.2.0",
     "c-kzg": "^1.0.9",
