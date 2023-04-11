@@ -1270,7 +1270,7 @@
     ]
   },
   "usdc": {
-    "address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+    "address": "0xdA5289fCAAF71d52a80A254da614a192b693e977",
     "abi": [
       {
         "inputs": [
@@ -1836,7 +1836,7 @@
     ]
   },
   "hyphenLP": {
-    "address": "0xebaB24F13de55789eC1F3fFe99A285754e15F7b9",
+    "address": "0x66AAD3DC0f9AAc8a31e07f0787D3D476489D75D3",
     "abi": [
       {
         "anonymous": false,
@@ -3790,7 +3790,7 @@
     }
   },
   "nft": {
-    "address": "0xdd526eba63ef200ed95f0f0fb8993fe3e20a23d0",
+    "address": "0xDd526EBa63eF200Ed95f0F0fb8993FE3E20a23d0",
     "abi": [
       {
         "inputs": [],
