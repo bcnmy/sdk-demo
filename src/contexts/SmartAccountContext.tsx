@@ -1,10 +1,11 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { ethers } from "ethers";
-import SmartAccount from "@biconomy-sdk-dev/smart-account";
+import SmartAccount from "@biconomy-devx/smart-account";
 import {
   SmartAccountState,
   SmartAccountVersion,
-} from "@biconomy-sdk-dev/core-types";
+  Environments
+} from "@biconomy-devx/core-types";
 import { supportedChains, activeChainId } from "../utils/chainConfig";
 import { useWeb3AuthContext } from "./SocialLoginContext";
 import { showSuccessMessage } from "../utils";
@@ -88,6 +89,7 @@ export const SmartAccountProvider = ({ children }: any) => {
       console.log("walletProvider", walletProvider);
       // New instance, all config params are optional
       const wallet = new SmartAccount(walletProvider, {
+        environment: Environments.QA,
         activeNetworkId: activeChainId,
         supportedNetworksIds: supportedChains,
         networkConfig: [

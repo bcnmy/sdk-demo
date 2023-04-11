@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
 import { makeStyles } from "@mui/styles";
-import { LocalRelayer } from "@biconomy-sdk-dev/relayer";
+import { LocalRelayer } from "@biconomy-devx/relayer";
 import Button from "../Button";
 // import { useWeb3Context } from "../../contexts/Web3Context";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";

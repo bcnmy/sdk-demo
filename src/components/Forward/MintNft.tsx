@@ -12,7 +12,7 @@ import {
   showInfoMessage,
   showSuccessMessage,
 } from "../../utils";
-import { FeeQuote } from "@biconomy-sdk-dev/core-types";
+import { FeeQuote } from "@biconomy-devx/core-types";
 
 const MintNftForward: React.FC = () => {
   const classes = useStyles();
@@ -63,11 +63,11 @@ const MintNftForward: React.FC = () => {
       };
       setTx(tx1);
       // prepare refund txn batch before so that we have accurate token gas price
-      const feeQuotes = await smartAccount.prepareRefundTransaction({
+      const feeQuotes = await smartAccount.getFeeQuotes({
         transaction: tx1,
       });
       setPayment(feeQuotes);
-      console.log("prepareRefundTransactionBatch", feeQuotes);
+      console.log("getFeeQuotesForBatch", feeQuotes);
       setIsLoadingFee(false);
   }
 
@@ -93,14 +93,14 @@ const MintNftForward: React.FC = () => {
 
       // making transaction with version, set feeQuotes[1].tokenGasPrice = 6
       if(!quote || !tx) throw new Error("Please select a fee option");
-      const transaction = await smartAccount.createRefundTransaction({
+      const transaction = await smartAccount.createUserPaidTransaction({
         transaction: tx,
         feeQuote: quote,
       });
       console.log("transaction", transaction);
 
       // send transaction internally calls signTransaction and sends it to connected relayer
-      const txHash = await smartAccount.sendTransaction({
+      const txHash = await smartAccount.sendUserPaidTransaction({
         tx: transaction,
         gasLimit: {
           hex: "0x1E8480",

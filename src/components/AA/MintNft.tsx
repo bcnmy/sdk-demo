@@ -55,7 +55,7 @@ const MintNft: React.FC = () => {
         data: safeMintTx.data,
       };
 
-      const txResponse = await smartAccount.sendGaslessTransaction({
+      const txResponse = await smartAccount.sendTransaction({
         transaction: tx1,
       });
       console.log("Tx sent, userOpHash:", txResponse);
