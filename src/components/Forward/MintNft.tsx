@@ -12,7 +12,7 @@ import {
   showInfoMessage,
   showSuccessMessage,
 } from "../../utils";
-import { FeeQuote } from "@biconomy-devx/core-types";
+import { FeeQuote } from "@biconomy/core-types";
 
 const MintNftForward: React.FC = () => {
   const classes = useStyles();
@@ -102,10 +102,6 @@ const MintNftForward: React.FC = () => {
       // send transaction internally calls signTransaction and sends it to connected relayer
       const txHash = await smartAccount.sendUserPaidTransaction({
         tx: transaction,
-        gasLimit: {
-          hex: "0x1E8480",
-          type: "hex",
-        },
       });
       console.log(txHash);
 
