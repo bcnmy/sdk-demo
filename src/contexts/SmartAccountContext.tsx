@@ -1,10 +1,11 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { ethers } from "ethers";
-import SmartAccount from "@biconomy-sdk-dev/smart-account";
+import SmartAccount from "@biconomy/smart-account";
 import {
   SmartAccountState,
   SmartAccountVersion,
-} from "@biconomy-sdk-dev/core-types";
+  Environments
+} from "@biconomy/core-types";
 import { supportedChains, activeChainId } from "../utils/chainConfig";
 import { useWeb3AuthContext } from "./SocialLoginContext";
 import { showSuccessMessage } from "../utils";
@@ -92,8 +93,8 @@ export const SmartAccountProvider = ({ children }: any) => {
         supportedNetworksIds: supportedChains,
         networkConfig: [
           {
-            chainId: ChainId.POLYGON_MAINNET,
-            dappAPIKey: "4gZjRhX4n.269ed9ba-159b-4588-8800-b5bbe52d3efb",
+            chainId: ChainId.POLYGON_MUMBAI,
+            dappAPIKey: "WEX9LXdFW.13107308-4631-4ba5-9e23-2a8bf8270948",
           },
         ],
       });

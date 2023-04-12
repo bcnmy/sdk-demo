@@ -12,7 +12,7 @@ import {
   showInfoMessage,
   showErrorMessage,
 } from "../../utils";
-import { FeeQuote } from "@biconomy-sdk-dev/core-types";
+import { FeeQuote } from "@biconomy/core-types";
 
 const BatchLiquidity: React.FC = () => {
   const classes = useStyles();
@@ -66,10 +66,10 @@ const BatchLiquidity: React.FC = () => {
       };
       txs.push(tx2);
       console.log("Tx array created", txs);
-      const feeQuotes = await smartAccount.prepareRefundTransactionBatch({
+      const feeQuotes = await smartAccount.getFeeQuotesForBatch({
         transactions: txs,
       });
-      console.log("prepareRefundTransactionBatch", feeQuotes);
+      console.log("getFeeQuotesForBatch", feeQuotes);
       setPayment(feeQuotes);
       setTxnArray(txs);
       setIsLoading(false);
@@ -120,7 +120,7 @@ const BatchLiquidity: React.FC = () => {
 
       console.log("Tx array created", txs);
 
-      // Fee already calculated in useEffect prepareRefundTransactionBatch
+      // Fee already calculated in useEffect getFeeQuotesForBatch
       // stored in payment state
       if(!quote){
         // showErrorMessage("Please select a fee option");
@@ -130,7 +130,7 @@ const BatchLiquidity: React.FC = () => {
       showInfoMessage("Batching transactions");
 
       // making transaction with version, set feeQuotes[1].tokenGasPrice = 6
-      const transaction = await smartAccount.createRefundTransactionBatch({
+      const transaction = await smartAccount.createUserPaidTransactionBatch({
         transactions: txs,
         feeQuote: quote,
       });
@@ -142,12 +142,8 @@ const BatchLiquidity: React.FC = () => {
       // };
 
       // send transaction internally calls signTransaction and sends it to connected relayer
-      const txHash = await smartAccount.sendTransaction({
+      const txHash = await smartAccount.sendUserPaidTransaction({
         tx: transaction,
-        gasLimit: {
-          hex: "0x1E8480",
-          type: "hex",
-        },
         // gasLimit, // test and fix
         /* Note: after changes : if you don’t provide custom gas limit it works but internal txn fails with BSA010 
          require(gasleft() >= max((_tx.targetTxGas * 64) / 63,_tx.targetTxGas + 2500) + 500, "BSA010");

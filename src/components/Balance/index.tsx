@@ -1,9 +1,8 @@
-import React, { ReactNode, useCallback, useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { makeStyles } from "@mui/styles";
 
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import { formatBalance, showErrorMessage } from "../../utils";
-import PaidIcon from "@mui/icons-material/Paid";
 
 const Assets: React.FC = () => {
   const classes = useStyles();
