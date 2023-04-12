@@ -5,10 +5,8 @@ import { makeStyles } from "@mui/styles";
 import { styled, Theme, CSSObject } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
-import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
 import CssBaseline from "@mui/material/CssBaseline";
-import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -19,7 +17,6 @@ import TokenIcon from "@mui/icons-material/Token";
 import EvStationIcon from "@mui/icons-material/EvStation";
 import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
 import BurstModeIcon from "@mui/icons-material/BurstMode";
-import LegendToggleIcon from "@mui/icons-material/LegendToggle";
 import GamesIcon from "@mui/icons-material/Games";
 import ContactlessIcon from "@mui/icons-material/Contactless";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
@@ -106,16 +103,12 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
     setOpen(true);
   };
 
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
-
   return loading ? (
     <div className={classes.container}>
       <img width={50} src="/logo.svg" className={classes.animateBlink} alt="" />
     </div>
   ) : (
-    <Box sx={{ display: "flex", width: "100%" }}>
+    <Box sx={{ display: "flex", width: "100%", height: "calc(100vh - 80px)" }}>
       <CssBaseline />
       <Navbar open={open} handleDrawerOpen={handleDrawerOpen} />
       {/* Left Panel */}

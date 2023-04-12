@@ -210,7 +210,7 @@ const useStyles = makeStyles(() => ({
   },
   element: {
     width: "100%",
-    height: "100%",
+    height: "max-content",
     minHeight: "410px",
     backgroundColor: "#151520",
     borderRadius: 12,
