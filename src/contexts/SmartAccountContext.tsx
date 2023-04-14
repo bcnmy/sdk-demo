@@ -1,21 +1,15 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { ethers } from "ethers";
-import SmartAccount from "@biconomy/smart-account";
+import SmartAccount from "@biconomy-sdk-dev/smart-account";
 import {
   SmartAccountState,
   SmartAccountVersion,
-  Environments
-} from "@biconomy/core-types";
-import { supportedChains, activeChainId } from "../utils/chainConfig";
+  Environments,
+  ChainId
+} from "@biconomy-sdk-dev/core-types";
+import { activeChainId, supportedChains } from "../utils/chainConfig";
 import { useWeb3AuthContext } from "./SocialLoginContext";
 import { showSuccessMessage } from "../utils";
-
-export const ChainId = {
-  MAINNET: 1, // Ethereum
-  GOERLI: 5,
-  POLYGON_MUMBAI: 80001,
-  POLYGON_MAINNET: 137,
-};
 
 // Types
 type Balance = {
@@ -89,12 +83,13 @@ export const SmartAccountProvider = ({ children }: any) => {
       console.log("walletProvider", walletProvider);
       // New instance, all config params are optional
       const wallet = new SmartAccount(walletProvider, {
+        environment: Environments.QA,
         activeNetworkId: activeChainId,
         supportedNetworksIds: supportedChains,
         networkConfig: [
           {
-            chainId: ChainId.POLYGON_MUMBAI,
-            dappAPIKey: "WEX9LXdFW.13107308-4631-4ba5-9e23-2a8bf8270948",
+            chainId: ChainId.ZKEVM_TESTNET,
+            dappAPIKey: "yHLGUnU9m.87c1d199-6839-4255-9adb-9186f7a37a38",
           },
         ],
       });
