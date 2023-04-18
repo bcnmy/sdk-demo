@@ -4,7 +4,6 @@ import SmartAccount from "@biconomy/smart-account";
 import {
   SmartAccountState,
   SmartAccountVersion,
-  Environments
 } from "@biconomy/core-types";
 import { supportedChains, activeChainId } from "../utils/chainConfig";
 import { useWeb3AuthContext } from "./SocialLoginContext";

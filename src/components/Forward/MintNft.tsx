@@ -41,6 +41,7 @@ const MintNftForward: React.FC = () => {
     };
     getNftCount();
     getFee();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [walletState?.address, web3Provider]);
 
   const getFee = async () => {
@@ -102,6 +103,10 @@ const MintNftForward: React.FC = () => {
       // send transaction internally calls signTransaction and sends it to connected relayer
       const txHash = await smartAccount.sendUserPaidTransaction({
         tx: transaction,
+        gasLimit: {
+          hex: "0xC3500",
+          type: "hex",
+        }
       });
       console.log(txHash);
 

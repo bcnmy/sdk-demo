@@ -64,8 +64,9 @@ const MintErc20: React.FC = () => {
         `Minted ERC20 ${txHash.transactionHash}`,
         txHash.transactionHash
       );
-      getBalance();
       setLoading(false);
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      getBalance();
     } catch (err: any) {
       console.error(err);
       setLoading(false);

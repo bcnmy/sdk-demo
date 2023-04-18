@@ -20,21 +20,21 @@ const Assets: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const FetchImage = async (token: any) => {
-    return await fetch(token.logo_url, { method: "HEAD" })
-      .then((res) => {
-        if (res.ok) {
-          return token.logo_url;
-        } else {
-          return null;
-        }
-      })
-      .catch(
-        (err) =>
-          // <PaidIcon className={classes.img} />
-          null
-      );
-  };
+  // const FetchImage = async (token: any) => {
+  //   return await fetch(token.logo_url, { method: "HEAD" })
+  //     .then((res) => {
+  //       if (res.ok) {
+  //         return token.logo_url;
+  //       } else {
+  //         return null;
+  //       }
+  //     })
+  //     .catch(
+  //       (err) =>
+  //         // <PaidIcon className={classes.img} />
+  //         null
+  //     );
+  // };
 
   if (isFetchingBalance || balance.alltokenBalances.length === 0) {
     return (

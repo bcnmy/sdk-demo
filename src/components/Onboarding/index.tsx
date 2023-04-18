@@ -65,25 +65,15 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
         showErrorMessage("Init Smart Account First");
         return;
       }
-      setDeployLoading2(true);
-      const context = smartAccount.getSmartAccountContext();
-      console.log(context);
+      setDeployLoading1(true);
 
-      // const feeQuotes = await smartAccount.prepareDeployAndPayFees();
-      // console.log("feeQuotes ", feeQuotes);
-
-      // console.log("token address ", feeQuotes[1].address);
-
-      // const txHash = await smartAccount.deployAndPayFees(
-      //   activeChainId,
-      //   feeQuotes[1]
-      // );
-      // showSuccessMessage(`Tx hash ${txHash}`, txHash);
-      // console.log(txHash);
-
-      // getSmartAccount();
-      // showSuccessMessage("Smart Account deployed");
-      setDeployLoading2(false);
+      const tx = await smartAccount.deployWalletUsingPaymaster();
+      console.log(tx);
+      const res = await tx.wait(1);
+      console.log(res);
+      getSmartAccount();
+      showInfoMessage("Smart Account deployed");
+      setDeployLoading1(false);
     } catch (err: any) {
       setDeployLoading2(false);
       showErrorMessage(err.message.slice(0, 60));
@@ -101,7 +91,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
       {/* <p>Wallet Deployment → </p> */}
       {state?.isDeployed ? (
         <div className={classes.container2}>
-          <p className={classes.text} style={{color: "#47EB78"}}>
+          <p className={classes.text} style={{ color: "#47EB78" }}>
             Your Smart Account is already created.
           </p>
           <Button
@@ -112,68 +102,70 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
         </div>
       ) : (
         <div className={classes.container}>
-          <div style={{
-            display: "flex",
-            justifyContent: "stretch",
-            gap: 20,
-            width: "100%",
-            height: "100%",
-            alignItems: "center",
-          }}>
-          <div className={classes.element}>
-            <p className={classes.text}>
-              Demo dapp pays for the wallet deployment cost.
-            </p>
-            <ul style={{ width: "100%" }}>
-              <li style={{ marginBottom: 20 }}>Single click deployment.</li>
-              <li style={{ marginBottom: 20 }}>
-                Relayers deploys / funds the wallet deployment for you.
-              </li>
-            </ul>
-            <Button
-              title="Deploy Smart Account"
-              isLoading={deployLoading1}
-              onClickFunc={deploySmartAccount1}
-            />
-          </div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "stretch",
+              gap: 20,
+              width: "100%",
+              height: "100%",
+              alignItems: "center",
+            }}
+          >
+            <div className={classes.element}>
+              <p className={classes.text}>
+                Demo dapp pays for the wallet deployment cost.
+              </p>
+              <ul style={{ width: "100%" }}>
+                <li style={{ marginBottom: 20 }}>Single click deployment.</li>
+                <li style={{ marginBottom: 20 }}>
+                  Relayers deploys / funds the wallet deployment for you.
+                </li>
+              </ul>
+              <Button
+                title="Deploy Smart Account"
+                isLoading={deployLoading1}
+                onClickFunc={deploySmartAccount1}
+              />
+            </div>
 
-          <div className={classes.element}>
-            <p className={classes.text}>
-              User pays for wallet deployment cost.
-            </p>
-            <ul style={{ width: "100%" }}>
-              <li style={{ marginBottom: 20 }}>
-                You have to deposit funds in the counter factual address.
-              </li>
-              <li style={{ marginBottom: 20 }}>
-                Copy your counter factual address from navbar.
-              </li>
-              <li style={{ marginBottom: 0 }}>
-                Get USDC funds from our testnet faucet and deploy.
-              </li>
-            </ul>
-            <Button
-              title="Deploy Smart Account"
-              isLoading={deployLoading2}
-              onClickFunc={deploySmartAccount2}
-            />
-          </div>
+            <div className={classes.element}>
+              <p className={classes.text}>
+                User pays for wallet deployment cost.
+              </p>
+              <ul style={{ width: "100%" }}>
+                <li style={{ marginBottom: 20 }}>
+                  You have to deposit funds in the counter factual address.
+                </li>
+                <li style={{ marginBottom: 20 }}>
+                  Copy your counter factual address from navbar.
+                </li>
+                <li style={{ marginBottom: 0 }}>
+                  Get USDC funds from our testnet faucet and deploy.
+                </li>
+              </ul>
+              <Button
+                title="Deploy Smart Account"
+                isLoading={deployLoading2}
+                onClickFunc={deploySmartAccount2}
+              />
+            </div>
 
-          <div className={classes.element}>
-            <p className={classes.text}>
-              Deploy Account along with first transaction.
-            </p>
-            <ul style={{ width: "100%" }}>
-              <li style={{ marginBottom: 20 }}>
-                User pay for deployment along with the first transaction.
-              </li>
-              <li style={{ marginBottom: 10 }}>
-                Select bundled transaction which deploys the wallet and add
-                liquidity to Hyphen bridge.
-              </li>
-            </ul>
-            <Button title="Go to Use Cases" onClickFunc={() => setValue(3)} />
-          </div>
+            <div className={classes.element}>
+              <p className={classes.text}>
+                Deploy Account along with first transaction.
+              </p>
+              <ul style={{ width: "100%" }}>
+                <li style={{ marginBottom: 20 }}>
+                  User pay for deployment along with the first transaction.
+                </li>
+                <li style={{ marginBottom: 10 }}>
+                  Select bundled transaction which deploys the wallet and add
+                  liquidity to Hyphen bridge.
+                </li>
+              </ul>
+              <Button title="Go to Use Cases" onClickFunc={() => setValue(3)} />
+            </div>
           </div>
         </div>
       )}

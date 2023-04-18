@@ -71,8 +71,9 @@ const BatchMintNft: React.FC = () => {
         `Minted Nft ${txHash.transactionHash}`,
         txHash.transactionHash
       );
-      getNftCount();
       setLoading(false);
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      getNftCount();
     } catch (err: any) {
       console.error(err);
       setLoading(false);
