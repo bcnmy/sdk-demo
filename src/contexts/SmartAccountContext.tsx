@@ -90,9 +90,10 @@ export const SmartAccountProvider = ({ children }: any) => {
       const wallet = new SmartAccount(walletProvider, {
         activeNetworkId: activeChainId,
         supportedNetworksIds: supportedChains,
+        biconomySigningServiceUrl: 'http://localhost:3009/sign',
         networkConfig: [
           {
-            chainId: ChainId.POLYGON_MUMBAI,
+            chainId: ChainId.POLYGON_MAINNET,
             dappAPIKey: "WEX9LXdFW.13107308-4631-4ba5-9e23-2a8bf8270948",
           },
         ],

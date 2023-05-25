@@ -5,7 +5,7 @@ export const ChainId = {
   POLYGON_MAINNET: 137,
 };
 
-export let activeChainId = ChainId.POLYGON_MUMBAI;
+export let activeChainId = ChainId.POLYGON_MAINNET;
 export const supportedChains = [
   ChainId.GOERLI,
   ChainId.POLYGON_MAINNET,
