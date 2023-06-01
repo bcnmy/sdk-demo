@@ -41,18 +41,19 @@ const MintNft: React.FC = () => {
       setLoading(true);
       let smartAccount = wallet;
       const nftContract = new ethers.Contract(
-        config.nft.address,
-        config.nft.abi,
+        config.usdc.address,
+        config.usdc.abi,
         web3Provider
       );
       console.log("smartAccount.address ", smartAccount.address);
-      const safeMintTx = await nftContract.populateTransaction.safeMint(
-        smartAccount.address
+      const safeMintTx = await nftContract.populateTransaction.approve(
+        "0xE9f6Ffc87cac92bc94f704AE017e85cB83DBe4EC",
+        "100000000"
       );
       console.log(safeMintTx.data);
       const tx1 = {
-        to: config.nft.address,
-        data: safeMintTx.data,
+        to: config.usdc.address,
+        data: safeMintTx.data
       };
 
       const txResponse = await smartAccount.sendTransaction({

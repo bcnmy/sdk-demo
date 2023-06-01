@@ -14,6 +14,7 @@ export const ChainId = {
   GOERLI: 5,
   POLYGON_MUMBAI: 80001,
   POLYGON_MAINNET: 137,
+  ARBITRUM_GOERLI: 421613,
 };
 
 // Types
@@ -90,10 +91,14 @@ export const SmartAccountProvider = ({ children }: any) => {
       const wallet = new SmartAccount(walletProvider, {
         activeNetworkId: activeChainId,
         supportedNetworksIds: supportedChains,
+        biconomySigningServiceUrl: 'http://localhost:3009/sign',
+        // relayerUrl: 'https://sdk-relayer.staging.biconomy.io/api/v1/relay',
+        // socketServerUrl: 'wss://sdk-testing-ws.staging.biconomy.io/connection/websocket',
         networkConfig: [
           {
             chainId: ChainId.POLYGON_MUMBAI,
             dappAPIKey: "WEX9LXdFW.13107308-4631-4ba5-9e23-2a8bf8270948",
+            // paymasterUrl: 'https://paymaster.biconomy.io/api/v1/80001/SqmqoaZ0x.9a4d382a-2ac3-430a-817d-01ab6b1aec7a'
           },
         ],
       });

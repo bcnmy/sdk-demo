@@ -3,6 +3,7 @@ export const ChainId = {
   GOERLI: 5,
   POLYGON_MUMBAI: 80001,
   POLYGON_MAINNET: 137,
+  ARBITRUM_GOERLI: 421613,
 };
 
 export let activeChainId = ChainId.POLYGON_MUMBAI;
@@ -10,6 +11,7 @@ export const supportedChains = [
   ChainId.GOERLI,
   ChainId.POLYGON_MAINNET,
   ChainId.POLYGON_MUMBAI,
+  ChainId.ARBITRUM_GOERLI
 ];
 
 export const getRPCProvider = (chainId: number) => {
@@ -22,6 +24,8 @@ export const getRPCProvider = (chainId: number) => {
       return "https://polygon-mumbai.g.alchemy.com/v2/Q4WqQVxhEEmBYREX22xfsS2-s5EXWD31";
     case 137:
       return "https://polygon.llamarpc.com";
+    case 421613:
+      return "https://arbitrum-goerli.public.blastapi.io";  
     default:
       return "https://eth-mainnet.g.alchemy.com/v2/YMRFBPG1iyBwiRQIHThSWZanZj0NXUjv";
   }
