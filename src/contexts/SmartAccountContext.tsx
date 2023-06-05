@@ -14,6 +14,7 @@ export const ChainId = {
   GOERLI: 5,
   POLYGON_MUMBAI: 80001,
   POLYGON_MAINNET: 137,
+  ARBITRUM_GOERLI: 421613
 };
 
 // Types

@@ -102,11 +102,7 @@ const MintNftForward: React.FC = () => {
 
       // send transaction internally calls signTransaction and sends it to connected relayer
       const txHash = await smartAccount.sendUserPaidTransaction({
-        tx: transaction,
-        gasLimit: {
-          hex: "0xC3500",
-          type: "hex",
-        }
+        tx: transaction
       });
       console.log(txHash);
 

@@ -3,13 +3,15 @@ export const ChainId = {
   GOERLI: 5,
   POLYGON_MUMBAI: 80001,
   POLYGON_MAINNET: 137,
+  ARBITRUM_GOERLI: 421613,
 };
 
-export let activeChainId = ChainId.POLYGON_MUMBAI;
+export let activeChainId = ChainId.ARBITRUM_GOERLI;
 export const supportedChains = [
   ChainId.GOERLI,
   ChainId.POLYGON_MAINNET,
   ChainId.POLYGON_MUMBAI,
+  ChainId.ARBITRUM_GOERLI
 ];
 
 export const getRPCProvider = (chainId: number) => {
@@ -37,6 +39,8 @@ export const getExplorer = (chainId: number) => {
       return "https://mumbai.polygonscan.com";
     case 137:
       return "https://polygonscan.com";
+    case 421613:
+      return "https://goerli.arbiscan.io/";  
     default:
       return "https://mumbai.polygonscan.com";
   }

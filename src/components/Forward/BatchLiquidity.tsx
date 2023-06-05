@@ -143,11 +143,7 @@ const BatchLiquidity: React.FC = () => {
 
       // send transaction internally calls signTransaction and sends it to connected relayer
       const txHash = await smartAccount.sendUserPaidTransaction({
-        tx: transaction,
-        gasLimit: {
-          hex: "0xC3500",
-          type: "hex",
-        }
+        tx: transaction
         // gasLimit, // test and fix
         /* Note: after changes : if you don’t provide custom gas limit it works but internal txn fails with BSA010 
          require(gasleft() >= max((_tx.targetTxGas * 64) / 63,_tx.targetTxGas + 2500) + 500, "BSA010");
