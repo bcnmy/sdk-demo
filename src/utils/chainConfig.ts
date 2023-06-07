@@ -6,7 +6,7 @@ export const ChainId = {
   ARBITRUM_GOERLI: 421613,
 };
 
-export let activeChainId = ChainId.ARBITRUM_GOERLI;
+export let activeChainId = ChainId.POLYGON_MUMBAI;
 export const supportedChains = [
   ChainId.GOERLI,
   ChainId.POLYGON_MAINNET,
