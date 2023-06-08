@@ -12,7 +12,7 @@ import {
   showInfoMessage,
   showSuccessMessage,
 } from "../../utils";
-import { FeeQuote } from "@biconomy/core-types";
+import { FeeQuote } from "@biconomy-devx/core-types";
 
 const MintNftForward: React.FC = () => {
   const classes = useStyles();

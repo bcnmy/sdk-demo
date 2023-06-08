@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { makeStyles } from "@mui/styles";
-
+import {getPaymaster} from "@biconomy-devx/smart-account";
 import Button from "../Button";
 import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
@@ -12,6 +12,7 @@ import {
 } from "../../utils";
 
 const MintNft: React.FC = () => {
+  const tokenPmUrl = "https://paymaster-signing-service-573.staging.biconomy.io/api/v1/80001/_j_KOEYSy.600ae7b1-e6f9-4a8d-9b0e-34645024663a";
   const classes = useStyles();
   const { web3Provider } = useWeb3AuthContext();
   const { state: walletState, wallet } = useSmartAccountContext();
@@ -55,8 +56,37 @@ const MintNft: React.FC = () => {
         data: safeMintTx.data,
       };
 
+      const paymasterAPI: any = await getPaymaster(tokenPmUrl)
+      console.log('paymasterAPI ', paymasterAPI)
+
+      const pmAddress = await paymasterAPI?.getPaymasterAddress();
+      console.log('paymaster address ', pmAddress)
+
+ const dummyUserOp = {
+  sender: '0x3a7500d42030a23d8720185e808e8b5f28943d18',
+  nonce: '0x0a',
+  initCode: '0x',
+  callData: '0x912ccaa3000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000c000000000000000000000000000000000000000000000000000000000000001200000000000000000000000000000000000000000000000000000000000000002000000000000000000000000da5289fcaaf71d52a80a254da614a192b693e977000000000000000000000000f5a5958b83628fcae33a0ac57bc9b4af44da203400000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000aa87bee5380000000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000044095ea7b3000000000000000000000000e9f6ffc87cac92bc94f704ae017e85cb83dbe4ec0000000000000000000000000000000000000000000000000000000000989680000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+  paymasterAndData: '0x',
+  maxFeePerGas: 1500000034,
+  maxPriorityFeePerGas: 1500000000,
+  callGasLimit: 59536,
+  verificationGasLimit: 200000,
+  preVerificationGas: 50760
+ }
+
+ const feeQuotes : any = await paymasterAPI?.getPaymasterFeeQuotes(dummyUserOp, ["0xda5289fcaaf71d52a80a254da614a192b693e977", "0x27a44456bedb94dbd59d0f0a14fe977c777fc5c3"])
+ console.log('<<<<<<<<<<<<<<<<<< ====================== fee quotes received')
+ console.log(feeQuotes)
+
+
       const txResponse = await smartAccount.sendTransaction({
         transaction: tx1,
+        paymasterServiceData: {
+          tokenPaymasterData: {
+            feeTokenAddress: '0xda5289fcaaf71d52a80a254da614a192b693e977'
+          }
+        }
       });
       console.log("Tx sent, userOpHash:", txResponse);
       console.log("Waiting for tx to be mined...");

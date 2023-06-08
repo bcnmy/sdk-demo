@@ -1,10 +1,10 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { ethers } from "ethers";
-import SmartAccount from "@biconomy/smart-account";
+import SmartAccount from "@biconomy-devx/smart-account";
 import {
   SmartAccountState,
   SmartAccountVersion,
-} from "@biconomy/core-types";
+} from "@biconomy-devx/core-types";
 import { supportedChains, activeChainId } from "../utils/chainConfig";
 import { useWeb3AuthContext } from "./SocialLoginContext";
 import { showSuccessMessage } from "../utils";
@@ -94,7 +94,7 @@ export const SmartAccountProvider = ({ children }: any) => {
         networkConfig: [
           {
             chainId: ChainId.POLYGON_MUMBAI,
-            dappAPIKey: "WEX9LXdFW.13107308-4631-4ba5-9e23-2a8bf8270948",
+            paymasterUrl: "https://paymaster-signing-service-573.staging.biconomy.io/api/v1/80001/_j_KOEYSy.600ae7b1-e6f9-4a8d-9b0e-34645024663a",
           },
         ],
       });
