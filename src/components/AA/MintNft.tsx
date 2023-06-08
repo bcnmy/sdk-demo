@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { makeStyles } from "@mui/styles";
-import {getPaymaster} from "@biconomy-devx/smart-account";
+import { getPaymaster } from "@biconomy-devx/smart-account";
 import Button from "../Button";
 import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
@@ -10,14 +10,20 @@ import {
   showErrorMessage,
   showSuccessMessage,
 } from "../../utils";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const MintNft: React.FC = () => {
-  const tokenPmUrl = "https://paymaster-signing-service-573.staging.biconomy.io/api/v1/80001/_j_KOEYSy.600ae7b1-e6f9-4a8d-9b0e-34645024663a";
+  const tokenPmUrl =
+    "https://paymaster-signing-service-573.staging.biconomy.io/api/v1/80001/_j_KOEYSy.600ae7b1-e6f9-4a8d-9b0e-34645024663a";
   const classes = useStyles();
   const { web3Provider } = useWeb3AuthContext();
   const { state: walletState, wallet } = useSmartAccountContext();
   const [nftCount, setNftCount] = useState<number | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [quote, setQuote] = useState<any>();
+  const [tx, setTx] = useState<any>();
+  const [payment, setPayment] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingFee, setIsLoadingFee] = useState(false);
 
   const getNftCount = useCallback(async () => {
     if (!walletState?.address || !web3Provider) return;
@@ -34,12 +40,47 @@ const MintNft: React.FC = () => {
 
   useEffect(() => {
     getNftCount();
+    getFee();
   }, [getNftCount, walletState]);
+
+  const getFee = async () => {
+    if (!wallet || !walletState || !web3Provider) return;
+    setIsLoadingFee(true);
+
+    const paymasterAPI: any = await getPaymaster(tokenPmUrl);
+    console.log("paymasterAPI ", paymasterAPI);
+
+    const dummyUserOp = {
+      sender: "0x3a7500d42030a23d8720185e808e8b5f28943d18",
+      nonce: "0x0a",
+      initCode: "0x",
+      callData:
+        "0x912ccaa3000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000c000000000000000000000000000000000000000000000000000000000000001200000000000000000000000000000000000000000000000000000000000000002000000000000000000000000da5289fcaaf71d52a80a254da614a192b693e977000000000000000000000000f5a5958b83628fcae33a0ac57bc9b4af44da203400000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000aa87bee5380000000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000044095ea7b3000000000000000000000000e9f6ffc87cac92bc94f704ae017e85cb83dbe4ec0000000000000000000000000000000000000000000000000000000000989680000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      paymasterAndData: "0x",
+      maxFeePerGas: 1500000034,
+      maxPriorityFeePerGas: 1500000000,
+      callGasLimit: 59536,
+      verificationGasLimit: 200000,
+      preVerificationGas: 50760,
+    };
+
+    const feeQuotes: any = await paymasterAPI?.getPaymasterFeeQuotes(
+      dummyUserOp,
+      [
+        "0xda5289fcaaf71d52a80a254da614a192b693e977",
+        "0x27a44456bedb94dbd59d0f0a14fe977c777fc5c3",
+      ]
+    );
+    console.log("getFeeQuotesForBatch", feeQuotes);
+    setPayment(feeQuotes);
+    setQuote(feeQuotes[0]);
+    setIsLoadingFee(false);
+  };
 
   const mintNft = async () => {
     if (!wallet || !walletState || !web3Provider) return;
     try {
-      setLoading(true);
+      setIsLoading(true);
       let smartAccount = wallet;
       const nftContract = new ethers.Contract(
         config.nft.address,
@@ -50,43 +91,18 @@ const MintNft: React.FC = () => {
       const safeMintTx = await nftContract.populateTransaction.safeMint(
         smartAccount.address
       );
-      console.log(safeMintTx.data);
       const tx1 = {
         to: config.nft.address,
         data: safeMintTx.data,
       };
-
-      const paymasterAPI: any = await getPaymaster(tokenPmUrl)
-      console.log('paymasterAPI ', paymasterAPI)
-
-      const pmAddress = await paymasterAPI?.getPaymasterAddress();
-      console.log('paymaster address ', pmAddress)
-
- const dummyUserOp = {
-  sender: '0x3a7500d42030a23d8720185e808e8b5f28943d18',
-  nonce: '0x0a',
-  initCode: '0x',
-  callData: '0x912ccaa3000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000c000000000000000000000000000000000000000000000000000000000000001200000000000000000000000000000000000000000000000000000000000000002000000000000000000000000da5289fcaaf71d52a80a254da614a192b693e977000000000000000000000000f5a5958b83628fcae33a0ac57bc9b4af44da203400000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000aa87bee5380000000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000044095ea7b3000000000000000000000000e9f6ffc87cac92bc94f704ae017e85cb83dbe4ec0000000000000000000000000000000000000000000000000000000000989680000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
-  paymasterAndData: '0x',
-  maxFeePerGas: 1500000034,
-  maxPriorityFeePerGas: 1500000000,
-  callGasLimit: 59536,
-  verificationGasLimit: 200000,
-  preVerificationGas: 50760
- }
-
- const feeQuotes : any = await paymasterAPI?.getPaymasterFeeQuotes(dummyUserOp, ["0xda5289fcaaf71d52a80a254da614a192b693e977", "0x27a44456bedb94dbd59d0f0a14fe977c777fc5c3"])
- console.log('<<<<<<<<<<<<<<<<<< ====================== fee quotes received')
- console.log(feeQuotes)
-
-
+      console.log("paymaster addr set to", quote.tokenAddress);
       const txResponse = await smartAccount.sendTransaction({
         transaction: tx1,
         paymasterServiceData: {
           tokenPaymasterData: {
-            feeTokenAddress: '0xda5289fcaaf71d52a80a254da614a192b693e977'
-          }
-        }
+            feeTokenAddress: quote.tokenAddress,
+          },
+        },
       });
       console.log("Tx sent, userOpHash:", txResponse);
       console.log("Waiting for tx to be mined...");
@@ -96,12 +112,12 @@ const MintNft: React.FC = () => {
         `Minted Nft ${txHash.transactionHash}`,
         txHash.transactionHash
       );
-      setLoading(false);
+      setIsLoading(false);
       await new Promise((resolve) => setTimeout(resolve, 2000));
       getNftCount();
     } catch (err: any) {
       console.error(err);
-      setLoading(false);
+      setIsLoading(false);
       showErrorMessage(err.message || "Error in sending the transaction");
     }
   };
@@ -132,7 +148,53 @@ const MintNft: React.FC = () => {
         )}
       </p>
 
-      <Button title="Mint NFT" isLoading={loading} onClickFunc={mintNft} />
+      <h3 className={classes.h3Title}>Available Fee options</h3>
+
+      {isLoadingFee && (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            margin: "0 0 40px 30px",
+          }}
+        >
+          <CircularProgress
+            color="secondary"
+            style={{ width: 25, height: 25, marginRight: 10, color: "#e6e6e6" }}
+          />{" "}
+          {" Loading Fee Options"}
+        </div>
+      )}
+      <ul
+        style={{
+          display: "flex",
+          alignItems: "start",
+          flexDirection: "column",
+          justifyContent: "start",
+          marginLeft: 0,
+          gap: 8,
+        }}
+      >
+        {payment.map((token, ind) => (
+          <div key={ind}>
+            <input
+              type="radio"
+              onChange={() => setQuote(token)}
+              style={{
+                color: "#FFB999",
+              }}
+              name={token.symbol}
+              id={token.symbol}
+              checked={quote === token}
+            />
+            <label htmlFor={token.symbol}>
+              {token.payment} {token.symbol}
+            </label>
+          </div>
+        ))}
+      </ul>
+
+      <Button title="Mint NFT" isLoading={isLoading} onClickFunc={mintNft} />
     </main>
   );
 };
