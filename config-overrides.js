@@ -15,6 +15,7 @@ module.exports = function override(config) {
         "path": require.resolve("path-browserify"),
         "c-kzg": require.resolve("c-kzg"),
         "process/browser": require.resolve("process/browser"),
+        "querystring": require.resolve("querystring-es3"),
     })
     config.resolve.fallback = fallback;
     config.plugins = (config.plugins || []).concat([
