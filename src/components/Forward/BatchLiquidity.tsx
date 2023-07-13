@@ -25,6 +25,7 @@ const BatchLiquidity: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingFee, setIsLoadingFee] = useState(false);
 
+  const [spender, setSpender] = useState("");
   const [feeQuotesArr, setFeeQuotesArr] = useState<PaymasterFeeQuote[]>([]);
   const [selectedQuote, setSelectedQuote] = useState<PaymasterFeeQuote>();
   const [estimatedUserOp, setEstimatedUserOp] = useState({});
@@ -83,6 +84,7 @@ const BatchLiquidity: React.FC = () => {
           // preferredToken is optional. If you want to pay in a specific token, you can pass its address here and get fee quotes for that token only
           // preferredToken: config.preferredToken,
         });
+      setSpender(feeQuotesResponse.tokenPaymasterAddress || "");
       const feeQuotes = feeQuotesResponse.feeQuotes as PaymasterFeeQuote[];
       setFeeQuotesArr(feeQuotes);
       console.log("getFeeQuotesForBatch", feeQuotes);
@@ -95,14 +97,26 @@ const BatchLiquidity: React.FC = () => {
 
   const makeTx = async () => {
     if (!smartAccount || !scwAddress || !web3Provider) return;
+    if (!selectedQuote) {
+      showErrorMessage("Please select a fee quote");
+      return;
+    }
     try {
       setIsLoading(true);
       console.log("selected quote", selectedQuote);
-      const finalUserOp = { ...estimatedUserOp } as any;
+      // const finalUserOp = { ...estimatedUserOp } as any;
+      const finalUserOp = await smartAccount.buildTokenPaymasterUserOp(
+        estimatedUserOp,
+        {
+          feeQuote: selectedQuote,
+          spender: spender,
+          maxApproval: false,
+        }
+      );
       const biconomyPaymaster =
         smartAccount.paymaster as IHybridPaymaster<SponsorUserOperationDto>;
       const paymasterAndDataWithLimits =
-        await biconomyPaymaster.getPaymasterAndData(estimatedUserOp, {
+        await biconomyPaymaster.getPaymasterAndData(finalUserOp, {
           mode: PaymasterMode.ERC20, // - mandatory // now we know chosen fee token and requesting paymaster and data for it
           feeTokenAddress: selectedQuote?.tokenAddress,
           // - optional by default false

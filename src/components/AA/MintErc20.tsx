@@ -105,7 +105,7 @@ const MintErc20: React.FC = () => {
         </span>
       </p>
       <p style={{ marginBottom: 30, marginTop: 30, fontSize: 24 }}>
-        Nft Balance in SCW:{" "}
+        ERC20 Balance in SCW:{" "}
         {balance === null ? (
           <p style={{ color: "#7E7E7E", display: "contents" }}>fetching...</p>
         ) : (

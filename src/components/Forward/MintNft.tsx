@@ -26,6 +26,7 @@ const MintNftForward: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingFee, setIsLoadingFee] = useState(false);
 
+  const [spender, setSpender] = useState("");
   const [feeQuotesArr, setFeeQuotesArr] = useState<PaymasterFeeQuote[]>([]);
   const [selectedQuote, setSelectedQuote] = useState<PaymasterFeeQuote>();
   const [estimatedUserOp, setEstimatedUserOp] = useState({});
@@ -77,6 +78,7 @@ const MintNftForward: React.FC = () => {
         // preferredToken is optional. If you want to pay in a specific token, you can pass its address here and get fee quotes for that token only
         // preferredToken: config.preferredToken,
       });
+    setSpender(feeQuotesResponse.tokenPaymasterAddress || "");
     const feeQuotes = feeQuotesResponse.feeQuotes as PaymasterFeeQuote[];
     setFeeQuotesArr(feeQuotes);
     console.log("getFeeQuotesForBatch", feeQuotes);
@@ -85,14 +87,26 @@ const MintNftForward: React.FC = () => {
 
   const makeTx = async () => {
     if (!smartAccount || !scwAddress || !web3Provider) return;
+    if (!selectedQuote) {
+      showErrorMessage("Please select a fee quote");
+      return;
+    }
     try {
       setIsLoading(true);
       console.log("selected quote", selectedQuote);
-      const finalUserOp = { ...estimatedUserOp } as any;
+      // const finalUserOp = { ...estimatedUserOp } as any;
+      const finalUserOp = await smartAccount.buildTokenPaymasterUserOp(
+        estimatedUserOp,
+        {
+          feeQuote: selectedQuote,
+          spender: spender,
+          maxApproval: false,
+        }
+      );
       const biconomyPaymaster =
         smartAccount.paymaster as IHybridPaymaster<SponsorUserOperationDto>;
       const paymasterAndDataWithLimits =
-        await biconomyPaymaster.getPaymasterAndData(estimatedUserOp, {
+        await biconomyPaymaster.getPaymasterAndData(finalUserOp, {
           mode: PaymasterMode.ERC20, // - mandatory // now we know chosen fee token and requesting paymaster and data for it
           feeTokenAddress: selectedQuote?.tokenAddress,
           // - optional by default false
@@ -100,7 +114,7 @@ const MintNftForward: React.FC = () => {
           // since at this point callData is updated callGasLimit may change and based on paymaster to be used verification gas limit may change
           calculateGasLimits: true,
         });
-
+      console.log("paymasterAndDataWithLimits", paymasterAndDataWithLimits);
       // below code is only needed if you sent the glaf calculateGasLimits = true
       if (
         paymasterAndDataWithLimits?.callGasLimit &&
@@ -120,6 +134,7 @@ const MintNftForward: React.FC = () => {
       // update finalUserOp with paymasterAndData and send it to smart account
       finalUserOp.paymasterAndData =
         paymasterAndDataWithLimits.paymasterAndData;
+      console.log("finalUserOp", finalUserOp);
 
       const userOpResponse = await smartAccount.sendUserOp(finalUserOp);
       console.log("userOpHash", userOpResponse);
