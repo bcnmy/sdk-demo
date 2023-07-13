@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from "react";
 import { makeStyles } from "@mui/styles";
 
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
-import { formatBalance, showErrorMessage } from "../../utils";
+import { formatBalance } from "../../utils";
 
 const Assets: React.FC = () => {
   const classes = useStyles();
@@ -11,8 +11,7 @@ const Assets: React.FC = () => {
   console.log("🚀 ~ file: index.tsx:10 ~ balance:", balance);
 
   const getSmartAccountBalanceFunc = useCallback(async () => {
-    const error = await getSmartAccountBalance();
-    if (error) showErrorMessage(error);
+    await getSmartAccountBalance();
   }, [getSmartAccountBalance]);
 
   useEffect(() => {

@@ -1,6 +1,11 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { ethers } from "ethers";
 import { makeStyles } from "@mui/styles";
+import {
+  IHybridPaymaster,
+  PaymasterMode,
+  SponsorUserOperationDto,
+} from "@biconomy/paymaster";
 
 import Button from "../Button";
 import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
@@ -14,18 +19,18 @@ import {
 const MintErc20: React.FC = () => {
   const classes = useStyles();
   const { web3Provider } = useWeb3AuthContext();
-  const { state: walletState, wallet } = useSmartAccountContext();
+  const { smartAccount, scwAddress } = useSmartAccountContext();
   const [balance, setBalance] = useState(0);
   const [loading, setLoading] = useState(false);
 
   const getBalance = useCallback(async () => {
-    if (!walletState?.address || !web3Provider) return;
+    if (!scwAddress || !web3Provider) return;
     const erc20Contract = new ethers.Contract(
       config.terc20.address,
       config.terc20.abi,
       web3Provider
     );
-    const count = await erc20Contract.balanceOf(walletState?.address);
+    const count = await erc20Contract.balanceOf(scwAddress);
     console.log("count", Number(count));
     setBalance(Number(count));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -36,10 +41,9 @@ const MintErc20: React.FC = () => {
   }, [getBalance, web3Provider]);
 
   const makeTx = async () => {
-    if (!wallet || !walletState || !web3Provider) return;
+    if (!scwAddress || !web3Provider || !smartAccount) return;
     try {
       setLoading(true);
-      let smartAccount = wallet;
       const erc20Contract = new ethers.Contract(
         config.terc20.address,
         config.terc20.abi,
@@ -47,22 +51,32 @@ const MintErc20: React.FC = () => {
       );
       const amountGwei = ethers.utils.parseEther("100");
       const data = erc20Contract.interface.encodeFunctionData("mint", [
-        smartAccount.address,
+        scwAddress,
         amountGwei,
       ]);
       const tx = {
         to: config.terc20.address,
         data: data,
       };
-      const txResponse = await smartAccount.sendTransaction({
-        transaction: tx,
-      });
-      console.log("userOpHash", txResponse);
-      const txHash = await txResponse.wait();
-      console.log("txHash", txHash);
+      let userOp = await smartAccount.buildUserOp([tx]);
+      const biconomyPaymaster =
+        smartAccount.paymaster as IHybridPaymaster<SponsorUserOperationDto>;
+      let paymasterServiceData: SponsorUserOperationDto = {
+        mode: PaymasterMode.SPONSORED,
+      };
+      const paymasterAndDataResponse =
+        await biconomyPaymaster.getPaymasterAndData(
+          userOp,
+          paymasterServiceData
+        );
+      userOp.paymasterAndData = paymasterAndDataResponse.paymasterAndData;
+      const userOpResponse = await smartAccount.sendUserOp(userOp);
+      console.log("userOpHash", userOpResponse);
+      const { receipt } = await userOpResponse.wait(1);
+      console.log("txHash", receipt.transactionHash);
       showSuccessMessage(
-        `Minted ERC20 ${txHash.transactionHash}`,
-        txHash.transactionHash
+        `Minted ERC20 ${receipt.transactionHash}`,
+        receipt.transactionHash
       );
       setLoading(false);
       await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -84,10 +98,11 @@ const MintErc20: React.FC = () => {
 
       <p>This is single transaction to mint an test ERC-20 contract.</p>
 
-      <p>Test ERC20 Token: {config.terc20.address} {" "}
-      <span style={{ fontSize: 13, color: "#FFB4B4" }}>
-        (same of goerli, mumbai, polygon)
-      </span>
+      <p>
+        Test ERC20 Token: {config.terc20.address}{" "}
+        <span style={{ fontSize: 13, color: "#FFB4B4" }}>
+          (same of goerli, mumbai, polygon)
+        </span>
       </p>
       <p style={{ marginBottom: 30, marginTop: 30, fontSize: 24 }}>
         Nft Balance in SCW:{" "}

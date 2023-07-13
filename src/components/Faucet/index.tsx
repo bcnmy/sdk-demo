@@ -11,45 +11,56 @@ import {
   showInfoMessage,
   showSuccessMessage,
 } from "../../utils";
+import {
+  IHybridPaymaster,
+  PaymasterMode,
+  SponsorUserOperationDto,
+} from "@biconomy/paymaster";
 
 const Faucet: React.FC = () => {
   const classes = useStyles();
   const { web3Provider } = useWeb3AuthContext();
-  const { selectedAccount, wallet } = useSmartAccountContext();
-  const [scwAddress, setScwAddress] = useState(
-    selectedAccount?.smartAccountAddress || ""
-  );
+  const { smartAccount, scwAddress } = useSmartAccountContext();
+  const [address, setAddress] = useState(scwAddress);
 
   const makeTx = async () => {
-    if (!selectedAccount?.smartAccountAddress || !web3Provider || !wallet) {
+    if (!smartAccount || !web3Provider || !scwAddress) {
       showErrorMessage("Please connect your wallet");
       return;
     }
     showInfoMessage("Initiating Faucet...");
     try {
-      let smartAccount = wallet;
       const faucetContract = new ethers.Contract(
         config.faucet.address,
         config.faucet.abi,
         web3Provider
       );
       const faucetTxData = await faucetContract.populateTransaction.drip(
-        scwAddress
+        address
       );
       const tx1 = {
         to: config.faucet.address,
         data: faucetTxData.data,
       };
-
-      const txResponse = await smartAccount.sendTransaction({
-        transaction: tx1,
-      });
-      console.log("userOpHash", txResponse);
-      const txHash = await txResponse.wait();
-      console.log("txHash", txHash);
+      let userOp = await smartAccount.buildUserOp([tx1]);
+      const biconomyPaymaster =
+        smartAccount.paymaster as IHybridPaymaster<SponsorUserOperationDto>;
+      let paymasterServiceData: SponsorUserOperationDto = {
+        mode: PaymasterMode.SPONSORED,
+      };
+      const paymasterAndDataResponse =
+        await biconomyPaymaster.getPaymasterAndData(
+          userOp,
+          paymasterServiceData
+        );
+      userOp.paymasterAndData = paymasterAndDataResponse.paymasterAndData;
+      const userOpResponse = await smartAccount.sendUserOp(userOp);
+      console.log("userOpHash", userOpResponse);
+      const { receipt } = await userOpResponse.wait(1);
+      console.log("txHash", receipt.transactionHash);
       showSuccessMessage(
-        `Tokens sent ${txHash.transactionHash}`,
-        txHash.transactionHash
+        `Tokens sent ${receipt.transactionHash}`,
+        receipt.transactionHash
       );
     } catch (error: any) {
       console.error(error);
@@ -72,7 +83,7 @@ const Faucet: React.FC = () => {
         type="text"
         placeholder="0x...."
         value={scwAddress}
-        onChange={(e) => setScwAddress(e.target.value)}
+        onChange={(e) => setAddress(e.target.value)}
         className={classes.input}
       />
 
@@ -91,7 +102,7 @@ const useStyles = makeStyles(() => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "start",
-    justifyContent: "center",
+    // justifyContent: "center",
   },
   subTitle: {
     color: "#FFB999",

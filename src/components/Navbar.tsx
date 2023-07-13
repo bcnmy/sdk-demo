@@ -40,8 +40,7 @@ const AppBar = styled(MuiAppBar, {
 const Navbar = ({ open, handleDrawerOpen }: INavBar) => {
   const classes = useStyles();
   const { disconnect } = useWeb3AuthContext();
-  const { loading, selectedAccount, smartAccountsArray, setSelectedAccount } =
-    useSmartAccountContext();
+  const { loading, scwAddress } = useSmartAccountContext();
 
   const [showModal, setShowModal] = useState(false);
   const toggleLogoutButton = () => {
@@ -69,49 +68,27 @@ const Navbar = ({ open, handleDrawerOpen }: INavBar) => {
           <LegendToggleIcon />
         </IconButton>
         <div className={classes.walletBtnContainer}>
-          {selectedAccount?.smartAccountAddress && (
+          {/* {scwAddress && (
             <p className={classes.btnTitle}>Smart Account Address</p>
-          )}
+          )} */}
           <Button
             title={
-              selectedAccount
-                ? ellipseAddress(selectedAccount.smartAccountAddress, 8)
-                : "Connect Wallet"
+              scwAddress ? ellipseAddress(scwAddress, 6) : "Connect Wallet"
             }
             onClickFunc={toggleLogoutButton}
             isLoading={loading}
           >
-            {showModal && (
-              <div className={classes.modal}>
-                {smartAccountsArray.length &&
-                  smartAccountsArray.map((smartAcc, index) => (
-                    <div className={classes.element} key={index}>
-                      {/* <p className={classes.elementText}>v{smartAcc.version}</p> */}
-                      <p
-                        className={classes.elementText}
-                        onClick={() => setSelectedAccount(smartAcc)}
-                      >
-                        {ellipseAddress(smartAcc.smartAccountAddress, 6)}
-                      </p>
-                      <p
-                        onClick={() =>
-                          copyToClipBoard(
-                            selectedAccount?.smartAccountAddress || ""
-                          )
-                        }
-                        className={classes.copyText}
-                      >
-                        <ContentCopyIcon
-                          className={classes.copyIcon}
-                          style={{
-                            textAlign: "center",
-                          }}
-                        />
-                      </p>
-                    </div>
-                  ))}
-              </div>
-            )}
+            <p
+              onClick={() => copyToClipBoard(scwAddress)}
+              className={classes.copyText}
+            >
+              <ContentCopyIcon
+                className={classes.copyIcon}
+                style={{
+                  textAlign: "center",
+                }}
+              />
+            </p>
           </Button>
           <Button title="Logout" onClickFunc={disconnectWallet} />
         </div>

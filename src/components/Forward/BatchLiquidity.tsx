@@ -2,6 +2,12 @@ import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { makeStyles } from "@mui/styles";
 import { CircularProgress } from "@mui/material";
+import {
+  IHybridPaymaster,
+  PaymasterFeeQuote,
+  PaymasterMode,
+  SponsorUserOperationDto,
+} from "@biconomy/paymaster";
 
 import Button from "../Button";
 import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
@@ -9,30 +15,27 @@ import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import {
   configInfo as config,
   showSuccessMessage,
-  showInfoMessage,
   showErrorMessage,
 } from "../../utils";
-import { FeeQuote } from "@biconomy/core-types";
 
 const BatchLiquidity: React.FC = () => {
   const classes = useStyles();
   const { provider, web3Provider } = useWeb3AuthContext();
-  const { state: walletState, wallet } = useSmartAccountContext();
-  const [payment, setPayment] = useState<FeeQuote[]>([]);
-  const [quote, setQuote] = useState<FeeQuote>();
-  console.log("🚀 ~ file: BatchLiquidity.tsx:23 ~ quote:", quote);
-  const [txnArray, setTxnArray] = useState<any[]>([]);
+  const { smartAccount, scwAddress } = useSmartAccountContext();
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingFee, setIsLoadingFee] = useState(false);
+
+  const [feeQuotesArr, setFeeQuotesArr] = useState<PaymasterFeeQuote[]>([]);
+  const [selectedQuote, setSelectedQuote] = useState<PaymasterFeeQuote>();
+  const [estimatedUserOp, setEstimatedUserOp] = useState({});
 
   // pre calculate the fee
   useEffect(() => {
     const fetchFeeOption = async () => {
       setIsLoading(true);
       setIsLoadingFee(true);
-      setPayment([]);
-      if (!wallet || !walletState || !web3Provider) return;
-      let smartAccount = wallet;
+      setFeeQuotesArr([]);
+      if (!smartAccount || !scwAddress || !web3Provider) return;
       const txs = [];
       const usdcContract = new ethers.Contract(
         config.usdc.address,
@@ -66,98 +69,76 @@ const BatchLiquidity: React.FC = () => {
       };
       txs.push(tx2);
       console.log("Tx array created", txs);
-      const feeQuotes = await smartAccount.getFeeQuotesForBatch({
-        transactions: txs,
-      });
+      let partialUserOp = await smartAccount.buildUserOp([tx1]);
+      setEstimatedUserOp(partialUserOp);
+
+      const biconomyPaymaster =
+        smartAccount.paymaster as IHybridPaymaster<SponsorUserOperationDto>;
+      const feeQuotesResponse =
+        await biconomyPaymaster.getPaymasterFeeQuotesOrData(partialUserOp, {
+          // here we are explicitly telling by mode ERC20 that we want to pay in ERC20 tokens and expect fee quotes
+          mode: PaymasterMode.ERC20,
+          // one can pass tokenList empty array. and it would return fee quotes for all tokens supported by the Biconomy paymaster
+          tokenList: [],
+          // preferredToken is optional. If you want to pay in a specific token, you can pass its address here and get fee quotes for that token only
+          // preferredToken: config.preferredToken,
+        });
+      const feeQuotes = feeQuotesResponse.feeQuotes as PaymasterFeeQuote[];
+      setFeeQuotesArr(feeQuotes);
       console.log("getFeeQuotesForBatch", feeQuotes);
-      setPayment(feeQuotes);
-      setTxnArray(txs);
-      setIsLoading(false);
       setIsLoadingFee(false);
+      setIsLoading(false);
     };
     fetchFeeOption();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [provider]);
 
   const makeTx = async () => {
-    if (!wallet || !walletState || !web3Provider || !txnArray) return;
+    if (!smartAccount || !scwAddress || !web3Provider) return;
     try {
       setIsLoading(true);
-      let smartAccount = wallet;
-      const txs = [];
-      const usdcContract = new ethers.Contract(
-        config.usdc.address,
-        config.usdc.abi,
-        web3Provider
-      );
-      const hyphenContract = new ethers.Contract(
-        config.hyphenLP.address,
-        config.hyphenLP.abi,
-        web3Provider
-      );
+      console.log("selected quote", selectedQuote);
+      const finalUserOp = { ...estimatedUserOp } as any;
+      const biconomyPaymaster =
+        smartAccount.paymaster as IHybridPaymaster<SponsorUserOperationDto>;
+      const paymasterAndDataWithLimits =
+        await biconomyPaymaster.getPaymasterAndData(estimatedUserOp, {
+          mode: PaymasterMode.ERC20, // - mandatory // now we know chosen fee token and requesting paymaster and data for it
+          feeTokenAddress: selectedQuote?.tokenAddress,
+          // - optional by default false
+          // This flag tells the paymaster service to calculate gas limits for the userOp
+          // since at this point callData is updated callGasLimit may change and based on paymaster to be used verification gas limit may change
+          calculateGasLimits: true,
+        });
 
-      const approveUSDCTx = await usdcContract.populateTransaction.approve(
-        config.hyphenLP.address,
-        ethers.BigNumber.from("1000000")
-      );
-      const tx1 = {
-        to: config.usdc.address,
-        data: approveUSDCTx.data,
-      };
-      txs.push(tx1);
+      // below code is only needed if you sent the glaf calculateGasLimits = true
+      if (
+        paymasterAndDataWithLimits?.callGasLimit &&
+        paymasterAndDataWithLimits?.verificationGasLimit &&
+        paymasterAndDataWithLimits?.preVerificationGas
+      ) {
+        // Returned gas limits must be replaced in your op as you update paymasterAndData.
+        // Because these are the limits paymaster service signed on to generate paymasterAndData
+        // If you receive AA34 error check here..
 
-      const hyphenLPTx =
-        await hyphenContract.populateTransaction.addTokenLiquidity(
-          config.usdc.address,
-          ethers.BigNumber.from("1000000")
-        );
-      const tx2 = {
-        to: config.hyphenLP.address,
-        data: hyphenLPTx.data,
-      };
-      // comment below line (if estimation fails) to double check reason is not hyophen LP
-      txs.push(tx2);
-
-      console.log("Tx array created", txs);
-
-      // Fee already calculated in useEffect getFeeQuotesForBatch
-      // stored in payment state
-      if(!quote){
-        // showErrorMessage("Please select a fee option");
-        throw new Error("Please select a fee option");
+        finalUserOp.callGasLimit = paymasterAndDataWithLimits.callGasLimit;
+        finalUserOp.verificationGasLimit =
+          paymasterAndDataWithLimits.verificationGasLimit;
+        finalUserOp.preVerificationGas =
+          paymasterAndDataWithLimits.preVerificationGas;
       }
-      // const feeQuotes = payment;
-      showInfoMessage("Batching transactions");
+      // update finalUserOp with paymasterAndData and send it to smart account
+      finalUserOp.paymasterAndData =
+        paymasterAndDataWithLimits.paymasterAndData;
 
-      // making transaction with version, set feeQuotes[1].tokenGasPrice = 6
-      const transaction = await smartAccount.createUserPaidTransactionBatch({
-        transactions: txs,
-        feeQuote: quote,
-      });
-      console.log("transaction", transaction);
-
-      // let gasLimit: GasLimit = {
-      //   hex: "0x1E8480",
-      //   type: "hex",
-      // };
-
-      // send transaction internally calls signTransaction and sends it to connected relayer
-      const txHash = await smartAccount.sendUserPaidTransaction({
-        tx: transaction
-        // gasLimit, // test and fix
-        /* Note: after changes : if you don’t provide custom gas limit it works but internal txn fails with BSA010 
-         require(gasleft() >= max((_tx.targetTxGas * 64) / 63,_tx.targetTxGas + 2500) + 500, "BSA010");
-         This is because of gasLimit calculated in relayer and targetTxGas estimated and sent! 
-         provide custom gas limit to fix above issue*/
-      });
-      console.log(txHash);
-
-      // check if tx is mined
-      web3Provider.once(txHash, (transaction: any) => {
-        // Emitted when the transaction has been mined
-        console.log("txn_mined:", transaction);
-        showSuccessMessage(`Transaction mined: ${txHash}`);
-      });
+      const userOpResponse = await smartAccount.sendUserOp(finalUserOp);
+      console.log("userOpHash", userOpResponse);
+      const { receipt } = await userOpResponse.wait(1);
+      console.log("txHash", receipt.transactionHash);
+      showSuccessMessage(
+        `Batch Add Hyphen Liq ${receipt.transactionHash}`,
+        receipt.transactionHash
+      );
       setIsLoading(false);
     } catch (err: any) {
       console.error(err);
@@ -214,29 +195,26 @@ const BatchLiquidity: React.FC = () => {
           gap: 8,
         }}
       >
-        {payment.map((token: FeeQuote, ind) => (
+        {feeQuotesArr.map((token, ind) => (
           // <li className={classes.listHover} key={ind}>
           //   {parseFloat(
           //     (token.payment / Math.pow(10, token.decimal)).toString()
           //   ).toFixed(8)}{" "}
           //   {token.symbol}
           // </li>
-          <div>
+          <div key={ind}>
             <input
               type="radio"
-              onChange={() => setQuote(token)}
+              onChange={() => setSelectedQuote(token)}
               style={{
                 color: "#FFB999",
               }}
               name={token.symbol}
               id={token.symbol}
-              checked={quote === token}
+              checked={selectedQuote === token}
             />
             <label htmlFor={token.symbol}>
-              {parseFloat(
-                (token.payment / Math.pow(10, token.decimal)).toString()
-              ).toFixed(8)}{" "}
-              {token.symbol}
+              {token?.maxGasFeeUSD?.toFixed(6)} {token.symbol}
             </label>
           </div>
         ))}

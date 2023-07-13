@@ -1,6 +1,11 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { makeStyles } from "@mui/styles";
+import {
+  IHybridPaymaster,
+  PaymasterMode,
+  SponsorUserOperationDto,
+} from "@biconomy/paymaster";
 
 import Button from "../Button";
 import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
@@ -14,18 +19,18 @@ import {
 const BatchMintNft: React.FC = () => {
   const classes = useStyles();
   const { web3Provider } = useWeb3AuthContext();
-  const { state: walletState, wallet } = useSmartAccountContext();
+  const { smartAccount, scwAddress } = useSmartAccountContext();
   const [nftCount, setNftCount] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
 
   const getNftCount = useCallback(async () => {
-    if (!walletState?.address || !web3Provider) return;
+    if (!scwAddress || !web3Provider) return;
     const nftContract = new ethers.Contract(
       config.nft.address,
       config.nft.abi,
       web3Provider
     );
-    const count = await nftContract.balanceOf(walletState?.address);
+    const count = await nftContract.balanceOf(scwAddress);
     console.log("count", Number(count));
     setNftCount(Number(count));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -36,40 +41,43 @@ const BatchMintNft: React.FC = () => {
   }, [getNftCount, web3Provider]);
 
   const mintNft = async () => {
-    if (!wallet || !walletState || !web3Provider) return;
+    if (!scwAddress || !smartAccount || !web3Provider) return;
     try {
       setLoading(true);
-      let smartAccount = wallet;
       const nftContract = new ethers.Contract(
         config.nft.address,
         config.nft.abi,
         web3Provider
       );
-      console.log("smartAccount.address ", smartAccount.address);
+      console.log("smartAccount.address ", scwAddress);
       const safeMintTx = await nftContract.populateTransaction.safeMint(
-        smartAccount.address
+        scwAddress
       );
       console.log(safeMintTx.data);
       const tx1 = {
         to: config.nft.address,
         data: safeMintTx.data,
       };
-      const tx2 = {
-        to: config.nft.address,
-        data: safeMintTx.data,
+
+      let userOp = await smartAccount.buildUserOp([tx1, tx1]);
+      const biconomyPaymaster =
+        smartAccount.paymaster as IHybridPaymaster<SponsorUserOperationDto>;
+      let paymasterServiceData: SponsorUserOperationDto = {
+        mode: PaymasterMode.SPONSORED,
       };
-
-      const txResponse = await smartAccount.sendTransactionBatch({
-        transactions: [tx1, tx2],
-      });
-
-      showSuccessMessage(`userOpHash: ${txResponse.hash}`);
-      console.log("waiting for tx hash...");
-      const txHash = await txResponse.wait();
-      console.log("txHash", txHash);
+      const paymasterAndDataResponse =
+        await biconomyPaymaster.getPaymasterAndData(
+          userOp,
+          paymasterServiceData
+        );
+      userOp.paymasterAndData = paymasterAndDataResponse.paymasterAndData;
+      const userOpResponse = await smartAccount.sendUserOp(userOp);
+      console.log("userOpHash", userOpResponse);
+      const { receipt } = await userOpResponse.wait(1);
+      console.log("txHash", receipt.transactionHash);
       showSuccessMessage(
-        `Minted Nft ${txHash.transactionHash}`,
-        txHash.transactionHash
+        `Minted Nft ${receipt.transactionHash}`,
+        receipt.transactionHash
       );
       setLoading(false);
       await new Promise((resolve) => setTimeout(resolve, 2000));

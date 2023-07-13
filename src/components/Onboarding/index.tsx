@@ -1,14 +1,9 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { makeStyles } from "@mui/styles";
-import { LocalRelayer } from "@biconomy/relayer";
 import Button from "../Button";
 // import { useWeb3Context } from "../../contexts/Web3Context";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
-import {
-  getEOAWallet,
-  showErrorMessage,
-  showInfoMessage,
-} from "../../utils";
+// import { showErrorMessage, showInfoMessage } from "../../utils";
 // import { activeChainId } from "../../utils/chainConfig";
 
 type OnboardingProps = {
@@ -17,69 +12,78 @@ type OnboardingProps = {
 
 const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
   const classes = useStyles();
-  const {
-    state,
-    wallet: smartAccount,
-    getSmartAccount,
-  } = useSmartAccountContext();
+  const { smartAccount, scwAddress } = useSmartAccountContext();
 
-  const [deployLoading1, setDeployLoading1] = useState(false);
-  const [deployLoading2, setDeployLoading2] = useState(false);
+  const [isScwDeployed, setisScwDeployed] = useState(false);
+  const [loading, setLoading] = useState(false);
+  // const [deployLoading1, setDeployLoading1] = useState(false);
+  // const [deployLoading2, setDeployLoading2] = useState(false);
 
-  const deploySmartAccount1 = async () => {
-    try {
-      if (!smartAccount || !state) {
-        showErrorMessage("Init Smart Account First");
-        return;
-      }
-      setDeployLoading1(true);
-      // you can create instance of local relayer with current signer or any other private key signer
-      const relayer = new LocalRelayer(
-        getEOAWallet(process.env.REACT_APP_PKEY || "", null)
-      );
+  // const deploySmartAccount1 = async () => {
+  //   try {
+  //     if (!smartAccount) {
+  //       showErrorMessage("Init Smart Account First");
+  //       return;
+  //     }
+  //     setDeployLoading1(true);
+  //     // you can create instance of local relayer with current signer or any other private key signer
+  //     // const relayer = new LocalRelayer(
+  //     //   getEOAWallet(process.env.REACT_APP_PKEY || "", null)
+  //     // );
 
-      console.log("relayer", relayer);
-      const context = smartAccount.getSmartAccountContext();
+  //     // console.log("relayer", relayer);
+  //     // const context = smartAccount.getSmartAccountContext();
 
-      const deployment = await relayer.deployWallet({
-        config: state,
-        context,
-        index: 0,
-      }); // index 0
+  //     // const deployment = await relayer.deployWallet({
+  //     //   config: state,
+  //     //   context,
+  //     //   index: 0,
+  //     // }); // index 0
 
-      const res = await deployment.wait(1);
-      console.log(res);
-      getSmartAccount();
-      showInfoMessage("Smart Account deployed");
-      setDeployLoading1(false);
-    } catch (err: any) {
-      setDeployLoading1(false);
-      showErrorMessage(err.message.slice(0, 60));
-      console.error("deploySmartAccount", err);
-    }
-  };
+  //     // const res = await deployment.wait(1);
+  //     // console.log(res);
+  //     getSmartAccount();
+  //     showInfoMessage("Smart Account deployed");
+  //     setDeployLoading1(false);
+  //   } catch (err: any) {
+  //     setDeployLoading1(false);
+  //     showErrorMessage(err.message.slice(0, 60));
+  //     console.error("deploySmartAccount", err);
+  //   }
+  // };
 
-  const deploySmartAccount2 = async () => {
-    try {
-      if (!smartAccount || !state) {
-        showErrorMessage("Init Smart Account First");
-        return;
-      }
-      setDeployLoading1(true);
+  // const deploySmartAccount2 = async () => {
+  //   try {
+  //     if (!smartAccount) {
+  //       showErrorMessage("Init Smart Account First");
+  //       return;
+  //     }
+  //     setDeployLoading1(true);
 
-      const tx = await smartAccount.deployWalletUsingPaymaster();
-      console.log(tx);
-      const res = await tx.wait(1);
-      console.log(res);
-      getSmartAccount();
-      showInfoMessage("Smart Account deployed");
-      setDeployLoading1(false);
-    } catch (err: any) {
-      setDeployLoading2(false);
-      showErrorMessage(err.message.slice(0, 60));
-      console.error("deploySmartAccount", err);
-    }
-  };
+  //     // const tx = await smartAccount.deployWalletUsingPaymaster();
+  //     // console.log(tx);
+  //     // const res = await tx.wait(1);
+  //     // console.log(res);
+  //     getSmartAccount();
+  //     showInfoMessage("Smart Account deployed");
+  //     setDeployLoading1(false);
+  //   } catch (err: any) {
+  //     setDeployLoading2(false);
+  //     showErrorMessage(err.message.slice(0, 60));
+  //     console.error("deploySmartAccount", err);
+  //   }
+  // };
+
+  useEffect(() => {
+    const isDeployed = async () => {
+      setLoading(true);
+      const dep = await smartAccount?.isAccountDeployed(scwAddress);
+      console.log("isDeployed", dep);
+      if (dep) setisScwDeployed(true);
+      setLoading(false);
+    };
+    if (smartAccount && scwAddress) isDeployed();
+  }, [scwAddress, smartAccount]);
 
   return (
     <main className={classes.main}>
@@ -89,14 +93,21 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
         deploy your smart account wallet to get started.
       </p>
       {/* <p>Wallet Deployment → </p> */}
-      {state?.isDeployed ? (
+      {loading ? (
         <div className={classes.container2}>
-          <p className={classes.text} style={{ color: "#47EB78" }}>
+          <p className={classes.text}>Fetching state...</p>
+        </div>
+      ) : isScwDeployed ? (
+        <div className={classes.container2}>
+          <p
+            className={classes.text}
+            style={{ color: "#47EB78", marginBottom: 30 }}
+          >
             Your Smart Account is already created.
           </p>
           <Button
             title="Go to Use Cases"
-            isLoading={deployLoading1}
+            // isLoading={deployLoading1}
             onClickFunc={() => setValue(3)}
           />
         </div>
@@ -109,10 +120,9 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
               gap: 20,
               width: "100%",
               height: "100%",
-              alignItems: "center",
             }}
           >
-            <div className={classes.element}>
+            {/* <div className={classes.element}>
               <p className={classes.text}>
                 Demo dapp pays for the wallet deployment cost.
               </p>
@@ -149,9 +159,12 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
                 isLoading={deployLoading2}
                 onClickFunc={deploySmartAccount2}
               />
-            </div>
+            </div> */}
 
-            <div className={classes.element}>
+            <div
+              className={classes.element}
+              style={{ minHeight: 300, maxWidth: 500 }}
+            >
               <p className={classes.text}>
                 Deploy Account along with first transaction.
               </p>
@@ -160,8 +173,8 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
                   User pay for deployment along with the first transaction.
                 </li>
                 <li style={{ marginBottom: 10 }}>
-                  Select bundled transaction which deploys the wallet and add
-                  liquidity to Hyphen bridge.
+                  Select any transaction from the provided list and it will
+                  deploy the account along with the transaction.
                 </li>
               </ul>
               <Button title="Go to Use Cases" onClickFunc={() => setValue(3)} />
@@ -183,7 +196,8 @@ const useStyles = makeStyles(() => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "start",
-    justifyContent: "center",
+    marginTop: 20,
+    // justifyContent: "center",
   },
   subTitle: {
     color: "#FFB999",

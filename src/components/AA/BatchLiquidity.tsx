@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import { ethers } from "ethers";
 import { makeStyles } from "@mui/styles";
-
+import {
+  IHybridPaymaster,
+  PaymasterMode,
+  SponsorUserOperationDto,
+} from "@biconomy/paymaster";
 import Button from "../Button";
 import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
@@ -16,14 +20,13 @@ const iFace = new ethers.utils.Interface(config.usdc.abi);
 const BatchLiquidity: React.FC = () => {
   const classes = useStyles();
   const { web3Provider } = useWeb3AuthContext();
-  const { state: walletState, wallet } = useSmartAccountContext();
+  const { smartAccount, scwAddress } = useSmartAccountContext();
   const [loading, setLoading] = useState(false);
 
   const makeTx = async () => {
-    if (!wallet || !walletState || !web3Provider) return;
+    if (!scwAddress || !smartAccount || !web3Provider) return;
     try {
       setLoading(true);
-      let smartAccount = wallet;
       const txs = [];
 
       const approveCallData = iFace.encodeFunctionData("approve", [
@@ -46,7 +49,7 @@ const BatchLiquidity: React.FC = () => {
           config.usdc.address,
           ethers.BigNumber.from("1000000"),
           {
-            from: smartAccount.address,
+            from: scwAddress,
           }
         );
       const tx2 = {
@@ -56,17 +59,25 @@ const BatchLiquidity: React.FC = () => {
       // todo check this for hyphen LP on Mumbai!
       txs.push(tx2);
 
-      const txResponse = await smartAccount.sendTransactionBatch({
-        transactions: txs,
-      });
-
-      showSuccessMessage(`Tx sent, userOpHash: ${txResponse.hash}`);
-      console.log("waiting for tx hash...");
-      const txHash = await txResponse.wait();
-      console.log("txHash", txHash);
+      let userOp = await smartAccount.buildUserOp(txs);
+      const biconomyPaymaster =
+        smartAccount.paymaster as IHybridPaymaster<SponsorUserOperationDto>;
+      let paymasterServiceData: SponsorUserOperationDto = {
+        mode: PaymasterMode.SPONSORED,
+      };
+      const paymasterAndDataResponse =
+        await biconomyPaymaster.getPaymasterAndData(
+          userOp,
+          paymasterServiceData
+        );
+      userOp.paymasterAndData = paymasterAndDataResponse.paymasterAndData;
+      const userOpResponse = await smartAccount.sendUserOp(userOp);
+      console.log("userOpHash", userOpResponse);
+      const { receipt } = await userOpResponse.wait(1);
+      console.log("txHash", receipt.transactionHash);
       showSuccessMessage(
-        `Minted Nft ${txHash.transactionHash}`,
-        txHash.transactionHash
+        `Added batch liquidity ${receipt.transactionHash}`,
+        receipt.transactionHash
       );
       setLoading(false);
     } catch (err: any) {

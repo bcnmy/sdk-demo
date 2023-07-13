@@ -2,6 +2,12 @@ import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { makeStyles } from "@mui/styles";
 import CircularProgress from "@mui/material/CircularProgress";
+import {
+  IHybridPaymaster,
+  PaymasterFeeQuote,
+  PaymasterMode,
+  SponsorUserOperationDto,
+} from "@biconomy/paymaster";
 
 import Button from "../Button";
 import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
@@ -9,109 +15,120 @@ import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import {
   configInfo as config,
   showErrorMessage,
-  showInfoMessage,
   showSuccessMessage,
 } from "../../utils";
-import { FeeQuote } from "@biconomy/core-types";
 
 const MintNftForward: React.FC = () => {
   const classes = useStyles();
   const { web3Provider } = useWeb3AuthContext();
-  const { state: walletState, wallet } = useSmartAccountContext();
-  const [quote, setQuote] = useState<FeeQuote>();
-  const [tx, setTx] = useState<any>();
+  const { scwAddress, smartAccount } = useSmartAccountContext();
   const [nftCount, setNftCount] = useState<number | null>(null);
-  const [payment, setPayment] = useState<
-  FeeQuote[]
-  >([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingFee, setIsLoadingFee] = useState(false);
 
+  const [feeQuotesArr, setFeeQuotesArr] = useState<PaymasterFeeQuote[]>([]);
+  const [selectedQuote, setSelectedQuote] = useState<PaymasterFeeQuote>();
+  const [estimatedUserOp, setEstimatedUserOp] = useState({});
+
   useEffect(() => {
     const getNftCount = async () => {
-      if (!walletState?.address || !web3Provider) return;
+      if (!scwAddress || !web3Provider) return;
       const nftContract = new ethers.Contract(
         config.nft.address,
         config.nft.abi,
         web3Provider
       );
-      const count = await nftContract.balanceOf(walletState?.address);
+      const count = await nftContract.balanceOf(scwAddress);
       console.log("count", Number(count));
       setNftCount(Number(count));
     };
     getNftCount();
     getFee();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [walletState?.address, web3Provider]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scwAddress, web3Provider]);
 
   const getFee = async () => {
-    if (!wallet || !walletState || !web3Provider) return;
+    if (!smartAccount || !scwAddress || !web3Provider) return;
     setIsLoadingFee(true);
-      let smartAccount = wallet;
-      const nftContract = new ethers.Contract(
-        config.nft.address,
-        config.nft.abi,
-        web3Provider
-      );
-      console.log("smartAccount.address ", smartAccount.address);
-      const safeMintTx = await nftContract.populateTransaction.safeMint(
-        smartAccount.address
-      );
-      console.log(safeMintTx.data);
-      const tx1 = {
-        to: config.nft.address,
-        data: safeMintTx.data,
-      };
-      setTx(tx1);
-      // prepare refund txn batch before so that we have accurate token gas price
-      const feeQuotes = await smartAccount.getFeeQuotes({
-        transaction: tx1,
+    const nftContract = new ethers.Contract(
+      config.nft.address,
+      config.nft.abi,
+      web3Provider
+    );
+    console.log("smartAccount.address ", scwAddress);
+    const safeMintTx = await nftContract.populateTransaction.safeMint(
+      scwAddress
+    );
+    console.log(safeMintTx.data);
+    const tx1 = {
+      to: config.nft.address,
+      data: safeMintTx.data,
+    };
+    let partialUserOp = await smartAccount.buildUserOp([tx1]);
+    setEstimatedUserOp(partialUserOp);
+    const biconomyPaymaster =
+      smartAccount.paymaster as IHybridPaymaster<SponsorUserOperationDto>;
+    const feeQuotesResponse =
+      await biconomyPaymaster.getPaymasterFeeQuotesOrData(partialUserOp, {
+        // here we are explicitly telling by mode ERC20 that we want to pay in ERC20 tokens and expect fee quotes
+        mode: PaymasterMode.ERC20,
+        // one can pass tokenList empty array. and it would return fee quotes for all tokens supported by the Biconomy paymaster
+        tokenList: [],
+        // preferredToken is optional. If you want to pay in a specific token, you can pass its address here and get fee quotes for that token only
+        // preferredToken: config.preferredToken,
       });
-      setPayment(feeQuotes);
-      console.log("getFeeQuotesForBatch", feeQuotes);
-      setIsLoadingFee(false);
-  }
+    const feeQuotes = feeQuotesResponse.feeQuotes as PaymasterFeeQuote[];
+    setFeeQuotesArr(feeQuotes);
+    console.log("getFeeQuotesForBatch", feeQuotes);
+    setIsLoadingFee(false);
+  };
 
   const makeTx = async () => {
-    if (!wallet || !walletState || !web3Provider) return;
+    if (!smartAccount || !scwAddress || !web3Provider) return;
     try {
-      let smartAccount = wallet;
       setIsLoading(true);
-      // const pmtArr: {
-      //   symbol: string;
-      //   value: string;
-      // }[] = [];
-      // for (let i = 0; i < feeQuotes.length; ++i) {
-      //   const pmnt = parseFloat(
-      //     (feeQuotes[i].payment / Math.pow(10, feeQuotes[i].decimal)).toString()
-      //   ).toFixed(8);
-      //   pmtArr.push({
-      //     symbol: feeQuotes[i].symbol,
-      //     value: pmnt,
-      //   });
-      // }
-      showInfoMessage("Batching transactions");
+      console.log("selected quote", selectedQuote);
+      const finalUserOp = { ...estimatedUserOp } as any;
+      const biconomyPaymaster =
+        smartAccount.paymaster as IHybridPaymaster<SponsorUserOperationDto>;
+      const paymasterAndDataWithLimits =
+        await biconomyPaymaster.getPaymasterAndData(estimatedUserOp, {
+          mode: PaymasterMode.ERC20, // - mandatory // now we know chosen fee token and requesting paymaster and data for it
+          feeTokenAddress: selectedQuote?.tokenAddress,
+          // - optional by default false
+          // This flag tells the paymaster service to calculate gas limits for the userOp
+          // since at this point callData is updated callGasLimit may change and based on paymaster to be used verification gas limit may change
+          calculateGasLimits: true,
+        });
 
-      // making transaction with version, set feeQuotes[1].tokenGasPrice = 6
-      if(!quote || !tx) throw new Error("Please select a fee option");
-      const transaction = await smartAccount.createUserPaidTransaction({
-        transaction: tx,
-        feeQuote: quote,
-      });
-      console.log("transaction", transaction);
+      // below code is only needed if you sent the glaf calculateGasLimits = true
+      if (
+        paymasterAndDataWithLimits?.callGasLimit &&
+        paymasterAndDataWithLimits?.verificationGasLimit &&
+        paymasterAndDataWithLimits?.preVerificationGas
+      ) {
+        // Returned gas limits must be replaced in your op as you update paymasterAndData.
+        // Because these are the limits paymaster service signed on to generate paymasterAndData
+        // If you receive AA34 error check here..
 
-      // send transaction internally calls signTransaction and sends it to connected relayer
-      const txHash = await smartAccount.sendUserPaidTransaction({
-        tx: transaction
-      });
-      console.log(txHash);
+        finalUserOp.callGasLimit = paymasterAndDataWithLimits.callGasLimit;
+        finalUserOp.verificationGasLimit =
+          paymasterAndDataWithLimits.verificationGasLimit;
+        finalUserOp.preVerificationGas =
+          paymasterAndDataWithLimits.preVerificationGas;
+      }
+      // update finalUserOp with paymasterAndData and send it to smart account
+      finalUserOp.paymasterAndData =
+        paymasterAndDataWithLimits.paymasterAndData;
 
-      // check if tx is mined
-      web3Provider.once(txHash, (transaction: any) => {
-        // Emitted when the transaction has been mined
-        console.log("txn_mined:", transaction);
-        showSuccessMessage(`Transaction mined: ${txHash}`);
-      });
+      const userOpResponse = await smartAccount.sendUserOp(finalUserOp);
+      console.log("userOpHash", userOpResponse);
+      const { receipt } = await userOpResponse.wait(1);
+      console.log("txHash", receipt.transactionHash);
+      showSuccessMessage(
+        `Minted Nft ${receipt.transactionHash}`,
+        receipt.transactionHash
+      );
       setIsLoading(false);
     } catch (err: any) {
       console.error(err);
@@ -167,29 +184,26 @@ const MintNftForward: React.FC = () => {
           gap: 8,
         }}
       >
-        {payment.map((token: FeeQuote, ind) => (
+        {feeQuotesArr.map((token, ind) => (
           // <li className={classes.listHover} key={ind}>
           //   {parseFloat(
           //     (token.payment / Math.pow(10, token.decimal)).toString()
           //   ).toFixed(8)}{" "}
           //   {token.symbol}
           // </li>
-          <div>
+          <div key={ind}>
             <input
               type="radio"
-              onChange={() => setQuote(token)}
+              onChange={() => setSelectedQuote(token)}
               style={{
                 color: "#FFB999",
               }}
               name={token.symbol}
               id={token.symbol}
-              checked={quote === token}
+              checked={selectedQuote === token}
             />
             <label htmlFor={token.symbol}>
-              {parseFloat(
-                (token.payment / Math.pow(10, token.decimal)).toString()
-              ).toFixed(8)}{" "}
-              {token.symbol}
+              {token?.maxGasFeeUSD?.toFixed(6)} {token.symbol}
             </label>
           </div>
         ))}

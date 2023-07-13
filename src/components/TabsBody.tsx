@@ -88,8 +88,8 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
   const [pageIndex, setPageIndex] = React.useState(0);
   const [useCase, setUseCase] = React.useState(0);
   const [open, setOpen] = React.useState(true);
-  const [isAAOpen, setIsAAOpen] = React.useState(false);
-  const [isForwardOpen, setIsForwardOpen] = React.useState(false);
+  const [isAAOpen, setIsAAOpen] = React.useState(true);
+  const [isForwardOpen, setIsForwardOpen] = React.useState(true);
 
   const handleChange = (event: any, newValue: any) => {
     if(newValue >= 4 && newValue <= 7) {
@@ -414,7 +414,7 @@ const Drawer = styled(MuiDrawer, {
 
 export default TabsBody;
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     flexGrow: 1,
     display: "flex",
