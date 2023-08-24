@@ -1,12 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { makeStyles } from "@mui/styles";
-import {
-  IHybridPaymaster,
-  PaymasterMode,
-  SponsorUserOperationDto,
-} from "@biconomy/paymaster";
-
+import { SessionKeyManagerModule } from "@biconomy-devx/modules";
 import Button from "../Button";
 import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
@@ -15,6 +10,8 @@ import {
   showErrorMessage,
   showSuccessMessage,
 } from "../../utils";
+import { activeChainId } from "../../utils/chainConfig";
+import { hexConcat, hexZeroPad } from "ethers/lib/utils";
 
 const MintNft: React.FC = () => {
   const classes = useStyles();
@@ -43,45 +40,59 @@ const MintNft: React.FC = () => {
   const mintNft = async () => {
     if (!scwAddress || !smartAccount || !web3Provider) return;
     try {
-      setLoading(true);
-      const nftContract = new ethers.Contract(
-        config.nft.address,
-        config.nft.abi,
-        web3Provider
-      );
-      console.log("smartAccount.address ", scwAddress);
-      const safeMintTx = await nftContract.populateTransaction.safeMint(
-        scwAddress
-      );
-      console.log(safeMintTx.data);
-      const tx1 = {
-        to: config.nft.address,
-        data: safeMintTx.data,
-      };
+      let biconomySmartAccount = smartAccount
+      // -----> setMerkle tree tx flow
 
-      let userOp = await smartAccount.buildUserOp([tx1]);
-      const biconomyPaymaster =
-        smartAccount.paymaster as IHybridPaymaster<SponsorUserOperationDto>;
-      let paymasterServiceData: SponsorUserOperationDto = {
-        mode: PaymasterMode.SPONSORED,
+      // create dapp side session key
+      const sessionSigner = ethers.Wallet.createRandom();
+      const sessionKeyEOA = await sessionSigner.getAddress();
+
+      // generate sessionModule
+      const sessionModule = await SessionKeyManagerModule.create({
+        moduleAddress: "0x000000456b395c4e107e0302553B90D1eF4a32e9",
+        chainId: activeChainId,
+        sessionPubKey: sessionKeyEOA,
+        smartAccountAddress: "0x1758f42Af7026fBbB559Dc60EcE0De3ef81f665e", // TODO: replace with your smart account address
+      });
+
+      // set active module to sessionModule
+      biconomySmartAccount = biconomySmartAccount.setActiveValidationModule(sessionModule);
+
+      // cretae session key data
+      const sessionKeyData = hexConcat([
+        hexZeroPad(sessionKeyEOA, 20),
+        hexZeroPad("0x43Eb7ebe789BC8a749Be41089a963D7e68759a6A", 20), // erc20TokenAddress
+        hexZeroPad("0x42138576848E839827585A3539305774D36B9602", 20), // random receiverAddress
+        hexZeroPad(ethers.utils.parseEther("100").toHexString(), 32), // maxAmountToTransfer
+      ]);
+      const sessionTxData = await sessionModule.createSessionData({
+        validUntil: 0,
+        validAfter: 0,
+        sessionValidationModule: "0x000000dB3D753A1da5A6074a9F74F39a0A779d33",
+        sessionPublicKey: sessionKeyEOA,
+        sessionKeyData: sessionKeyData,
+      });
+      console.log("sessionTxData", sessionTxData);
+
+      // tx to set session key
+      const tx1 = {
+        to: "0x000000456b395c4e107e0302553B90D1eF4a32e9", // session manager module address
+        data: sessionTxData,
       };
-      const paymasterAndDataResponse =
-        await biconomyPaymaster.getPaymasterAndData(
-          userOp,
-          paymasterServiceData
-        );
-      userOp.paymasterAndData = paymasterAndDataResponse.paymasterAndData;
-      const userOpResponse = await smartAccount.sendUserOp(userOp);
-      console.log("userOpHash", userOpResponse);
-      const { receipt } = await userOpResponse.wait(1);
-      console.log("txHash", receipt.transactionHash);
-      showSuccessMessage(
-        `Minted Nft ${receipt.transactionHash}`,
-        receipt.transactionHash
+      let partialUserOp = await biconomySmartAccount.buildUserOp([tx1]);
+
+      const userOpResponse = await biconomySmartAccount.sendUserOp(partialUserOp);
+      console.log(`userOp Hash: ${userOpResponse.userOpHash}`);
+      const transactionDetails = await userOpResponse.wait();
+      console.log(transactionDetails.receipt.transactionHash);
+
+      // update the session key
+      await sessionModule.updateSessionStatus(
+        {
+          sessionPublicKey: sessionKeyEOA,
+        },
+        "ACTIVE"
       );
-      setLoading(false);
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      getNftCount();
     } catch (err: any) {
       console.error(err);
       setLoading(false);

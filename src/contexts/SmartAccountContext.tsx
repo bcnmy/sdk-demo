@@ -1,10 +1,14 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { ethers } from "ethers";
-import { BiconomySmartAccount, DEFAULT_ENTRYPOINT_ADDRESS } from "@biconomy/account";
-import { BiconomyPaymaster } from "@biconomy/paymaster";
+import {
+  BiconomySmartAccountV2,
+  DEFAULT_ENTRYPOINT_ADDRESS,
+} from "@biconomy-devx/account";
+import { BiconomyPaymaster } from "@biconomy-devx/paymaster";
 import { activeChainId, bundlerUrl, paymasterApi } from "../utils/chainConfig";
 import { useWeb3AuthContext } from "./SocialLoginContext";
-import { Bundler } from "@biconomy/bundler";
+import { Bundler } from "@biconomy-devx/bundler";
+import { MultiChainValidationModule } from "@biconomy-devx/modules";
 // import { showSuccessMessage } from "../utils";
 
 // Types
@@ -13,7 +17,7 @@ type Balance = {
   alltokenBalances: any[];
 };
 type smartAccountContextType = {
-  smartAccount: BiconomySmartAccount | null;
+  smartAccount: BiconomySmartAccountV2 | null;
   scwAddress: string;
   balance: Balance;
   loading: boolean;
@@ -42,9 +46,8 @@ export const useSmartAccountContext = () => useContext(SmartAccountContext);
 // Provider
 export const SmartAccountProvider = ({ children }: any) => {
   const { provider, address } = useWeb3AuthContext();
-  const [smartAccount, setSmartAccount] = useState<BiconomySmartAccount | null>(
-    null
-  );
+  const [smartAccount, setSmartAccount] =
+    useState<BiconomySmartAccountV2 | null>(null);
   const [scwAddress, setScwAddress] = useState("");
   const [balance, setBalance] = useState<Balance>({
     totalBalanceInUsd: 0,
@@ -68,18 +71,22 @@ export const SmartAccountProvider = ({ children }: any) => {
       const paymaster = new BiconomyPaymaster({
         paymasterUrl: paymasterApi,
       });
-      let wallet = new BiconomySmartAccount({
+      // create multiChainModule
+      const multiChainModule = new MultiChainValidationModule({
         signer: walletProvider.getSigner(),
+        moduleAddress: "0x000000824dc138db84FD9109fc154bdad332Aa8E",
+      });
+      let wallet = new BiconomySmartAccountV2({
         chainId: activeChainId,
         paymaster: paymaster,
         bundler: bundler,
-        // nodeClientUrl: config.nodeClientUrl, // optional
+        entryPointAddress: DEFAULT_ENTRYPOINT_ADDRESS,
+        defaultValidationModule: multiChainModule,
+        activeValidationModule: multiChainModule,
       });
-      wallet = await wallet.init({
-        accountIndex: 0, // optional, default value is 0
-      });
+      wallet = await wallet.init();
       console.log("biconomyAccount", wallet);
-      const scw = await wallet.getSmartAccountAddress();
+      const scw = await wallet.getAccountAddress();
       setSmartAccount(wallet);
       setScwAddress(scw);
       setLoading(false);
@@ -99,7 +106,7 @@ export const SmartAccountProvider = ({ children }: any) => {
       // const bal = await smartAccount.ethersAdapter().getBalance(state.address);
       const balanceParams = {
         chainId: activeChainId,
-        eoaAddress: smartAccount.owner,
+        eoaAddress: await smartAccount.getAccountAddress(),
         tokenAddresses: [],
       };
       const balFromSdk = await smartAccount.getAllTokenBalances(balanceParams);
