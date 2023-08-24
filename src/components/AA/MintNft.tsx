@@ -50,7 +50,6 @@ const MintNft: React.FC = () => {
       // generate sessionModule
       const sessionModule = await SessionKeyManagerModule.create({
         moduleAddress: "0x000000456b395c4e107e0302553B90D1eF4a32e9",
-        chainId: activeChainId,
         sessionPubKey: sessionKeyEOA,
         smartAccountAddress: "0x1758f42Af7026fBbB559Dc60EcE0De3ef81f665e", // TODO: replace with your smart account address
       });
