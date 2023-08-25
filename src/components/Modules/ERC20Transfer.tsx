@@ -6,7 +6,11 @@ import { SessionKeyManagerModule } from "@biconomy-devx/modules";
 import Button from "../Button";
 import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
-import { showErrorMessage, showSuccessMessage } from "../../utils";
+import {
+  configInfo as config,
+  showSuccessMessage,
+  showErrorMessage,
+} from "../../utils";
 
 const ERC20Transfer: React.FC = () => {
   const classes = useStyles();
@@ -22,7 +26,8 @@ const ERC20Transfer: React.FC = () => {
       const managerModuleAddr = "0x000000456b395c4e107e0302553B90D1eF4a32e9";
 
       // get session key from local storage
-      const sessionKeyEOA = await window.localStorage.getItem("sessionPKey");
+      const sessionKeyEOA = window.localStorage.getItem("sessionPKey");
+
       console.log("sessionKeyEOA", sessionKeyEOA);
       if (!sessionKeyEOA) {
         showErrorMessage("Session key not found");
@@ -42,14 +47,26 @@ const ERC20Transfer: React.FC = () => {
       biconomySmartAccount =
         biconomySmartAccount.setActiveValidationModule(sessionModule);
 
+      const tokenContract = new ethers.Contract(config.usdc.address, config.usdc.abi, web3Provider)
+      let decimals = 18  
+
+      try {
+        decimals = await tokenContract.decimals()
+      } catch (error) {
+        throw new Error('invalid token address supplied')
+      }
+      const amountGwei = ethers.utils.parseUnits("5".toString(), decimals)
+      const data = (await tokenContract.populateTransaction.transfer("0x42138576848E839827585A3539305774D36B9602", amountGwei)).data
+
       // generate tx data to erc20 transfer
       const tx1 = {
-        to: "0x43Eb7ebe789BC8a749Be41089a963D7e68759a6A", //erc20 token address
-        data: "0x", // todo uodate
+        to: "0xdA5289fCAAF71d52a80A254da614a192b693e977", //erc20 token address
+        data: data, 
+        value: "0"
       };
 
       // build user op
-      let userOp = await biconomySmartAccount.buildUserOp([tx1]);
+      let userOp = await biconomySmartAccount.buildUserOp([tx1], undefined, true);
 
       // send user op
       const userOpResponse = await biconomySmartAccount.sendUserOp(userOp, {

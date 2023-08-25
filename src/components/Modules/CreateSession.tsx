@@ -44,9 +44,9 @@ const CreateSession: React.FC = () => {
       // cretae session key data
       const sessionKeyData = hexConcat([
         hexZeroPad(sessionKeyEOA, 20),
-        hexZeroPad("0x43Eb7ebe789BC8a749Be41089a963D7e68759a6A", 20), // erc20TokenAddress
+        hexZeroPad("0xdA5289fCAAF71d52a80A254da614a192b693e977", 20), // erc20TokenAddress
         hexZeroPad("0x42138576848E839827585A3539305774D36B9602", 20), // random receiverAddress
-        hexZeroPad(ethers.utils.parseEther("100").toHexString(), 32), // maxAmountToTransfer
+        hexZeroPad(ethers.utils.parseUnits("50".toString(), 6).toHexString(), 32), // maxAmountToTransfer
       ]);
       const sessionTxData = await sessionModule.createSessionData({
         validUntil: 0,
@@ -62,6 +62,7 @@ const CreateSession: React.FC = () => {
         to: managerModuleAddr, // session manager module address
         data: sessionTxData,
       };
+      // Remove tx2 once module has already been enabled..
       let partialUserOp = await biconomySmartAccount.buildUserOp(
         [tx1, tx2],
         {
