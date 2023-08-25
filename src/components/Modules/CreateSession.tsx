@@ -71,7 +71,7 @@ const CreateSession: React.FC = () => {
         to: managerModuleAddr, // session manager module address
         data: sessionTxData,
       };
-      // Remove tx2 once module has already been enabled..
+      // Remove tx1 once module has already been enabled..
       let partialUserOp = await biconomySmartAccount.buildUserOp(
         [tx1, tx2],
         {
