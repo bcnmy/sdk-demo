@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { makeStyles } from "@mui/styles";
 import { SessionKeyManagerModule } from "@biconomy-devx/modules";
@@ -14,6 +14,14 @@ const CreateSession: React.FC = () => {
   const { web3Provider } = useWeb3AuthContext();
   const { smartAccount, scwAddress } = useSmartAccountContext();
   const [loading, setLoading] = useState(false);
+  const [isSessionKeyModuleEnabled, setIsSessionKeyModuleEnabled] = useState(false);
+
+  useEffect(() => {
+    let checkSessionModuleEnabled = async () => {
+      setIsSessionKeyModuleEnabled(await _isSessionKeyModuleEnabled());
+    }
+    checkSessionModuleEnabled();
+  } ,[isSessionKeyModuleEnabled]);
 
   const createSession = async () => {
     if (!scwAddress || !smartAccount || !web3Provider) return;
@@ -96,6 +104,21 @@ const CreateSession: React.FC = () => {
     }
   };
 
+  const _isSessionKeyModuleEnabled = async (): Promise<boolean> => {
+    if (!scwAddress || !smartAccount || !web3Provider) return false;
+    try {
+      let biconomySmartAccount = smartAccount;
+      const managerModuleAddr = "0x000000456b395c4e107e0302553B90D1eF4a32e9";
+      const isEnabled = await biconomySmartAccount.isModuleEnabled(managerModuleAddr);
+      return isEnabled
+    } catch (err: any) {
+      console.error(err);
+      setLoading(false);
+      showErrorMessage(err.message || "Error in getting session key module status");
+      return false;
+    }
+  }
+
   return (
     <main className={classes.main}>
       <p style={{ color: "#7E7E7E" }}>
@@ -104,16 +127,25 @@ const CreateSession: React.FC = () => {
 
       <h3 className={classes.subTitle}>Create Session Flow</h3>
 
-      <p style={{ marginBottom: 20 }}>
-        This is single transaction to enable the sesion manager module and set
-        merkle root.
-      </p>
+      {isSessionKeyModuleEnabled ?
+          <div>
+            <p style={{ marginBottom: 20, color: "#47EB78" }}>
+              Session Manager Module is already enabled.
+            </p>
+          </div>
+        : <div>
+          <p style={{ marginBottom: 20 }}>
+            This is single transaction to enable the sesion manager module and set
+            merkle root.
+          </p>
 
-      <Button
-        title="Create Session"
-        isLoading={loading}
-        onClickFunc={createSession}
-      />
+          <Button
+            title="Create Session"
+            isLoading={loading}
+            onClickFunc={createSession}
+          />
+        </div>
+      }
     </main>
   );
 };
