@@ -5,8 +5,9 @@ import { SessionKeyManagerModule } from "@biconomy-devx/modules";
 import Button from "../Button";
 import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
-import { showErrorMessage } from "../../utils";
+import { showErrorMessage, showInfoMessage } from "../../utils";
 import { hexConcat, hexZeroPad } from "ethers/lib/utils";
+import { getActionForErrorMessage } from "../../utils/error-utils";
 
 const CreateSession: React.FC = () => {
   const classes = useStyles();
@@ -78,7 +79,7 @@ const CreateSession: React.FC = () => {
       console.log(`userOp Hash: ${userOpResponse.userOpHash}`);
       const transactionDetails = await userOpResponse.wait();
       console.log("txHash", transactionDetails.receipt.transactionHash);
-
+      showInfoMessage("Session Created Successfully");
       // update the session key //enableModule
       await sessionModule.updateSessionStatus(
         {
@@ -90,7 +91,8 @@ const CreateSession: React.FC = () => {
     } catch (err: any) {
       console.error(err);
       setLoading(false);
-      showErrorMessage(err.message || "Error in sending the transaction");
+      const errorAction = getActionForErrorMessage(err.message);
+      showErrorMessage(errorAction || err.message || "Error in sending the transaction");
     }
   };
 
