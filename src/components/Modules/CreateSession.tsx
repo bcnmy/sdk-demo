@@ -6,7 +6,7 @@ import Button from "../Button";
 import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import { showErrorMessage, showInfoMessage } from "../../utils";
-import { hexConcat, hexZeroPad } from "ethers/lib/utils";
+import { defaultAbiCoder, hexConcat, hexZeroPad } from "ethers/lib/utils";
 import { getActionForErrorMessage } from "../../utils/error-utils";
 
 const CreateSession: React.FC = () => {
@@ -23,17 +23,14 @@ const CreateSession: React.FC = () => {
     checkSessionModuleEnabled();
   } ,[isSessionKeyModuleEnabled]);
 
-  const createSession = async () => {
+  const createSession = async (enableSessionKeyModule: boolean) => {
     if (!scwAddress || !smartAccount || !web3Provider) return;
     try {
       let biconomySmartAccount = smartAccount;
       const managerModuleAddr = "0x000000456b395c4e107e0302553B90D1eF4a32e9";
       const erc20ModuleAddr = "0x000000dB3D753A1da5A6074a9F74F39a0A779d33";
 
-      // -----> enableModule session manager module
-      const tx1 = await biconomySmartAccount.getEnableModuleData(
-        managerModuleAddr
-      );
+      
 
       // -----> setMerkle tree tx flow
       // create dapp side session key
@@ -51,12 +48,16 @@ const CreateSession: React.FC = () => {
       });
 
       // cretae session key data
-      const sessionKeyData = hexConcat([
-        hexZeroPad(sessionKeyEOA, 20),
-        hexZeroPad("0xdA5289fCAAF71d52a80A254da614a192b693e977", 20), // erc20TokenAddress
-        hexZeroPad("0x42138576848E839827585A3539305774D36B9602", 20), // random receiverAddress
-        hexZeroPad(ethers.utils.parseUnits("50".toString(), 6).toHexString(), 32), // maxAmountToTransfer
-      ]);
+      const sessionKeyData = defaultAbiCoder.encode(
+        ["address", "address", "address", "uint256"],
+        [
+          sessionKeyEOA,
+          "0xdA5289fCAAF71d52a80A254da614a192b693e977",
+          "0x42138576848E839827585A3539305774D36B9602",
+          ethers.utils.parseUnits("50".toString(), 6).toHexString()
+        ]
+      );
+
       const sessionTxData = await sessionModule.createSessionData({
         validUntil: 0,
         validAfter: 0,
@@ -71,9 +72,18 @@ const CreateSession: React.FC = () => {
         to: managerModuleAddr, // session manager module address
         data: sessionTxData,
       };
-      // Remove tx1 once module has already been enabled..
+      
+      let transactionArray = [];
+      if(enableSessionKeyModule) {
+        // -----> enableModule session manager module
+        const tx1 = await biconomySmartAccount.getEnableModuleData(
+          managerModuleAddr
+        );
+        transactionArray.push(tx1);
+      }
+      transactionArray.push(tx2);
       let partialUserOp = await biconomySmartAccount.buildUserOp(
-        [tx1, tx2],
+        transactionArray,
         {
           callGasLimit: 2000000,
           verificationGasLimit: 500000,
@@ -129,9 +139,15 @@ const CreateSession: React.FC = () => {
 
       {isSessionKeyModuleEnabled ?
           <div>
-            <p style={{ marginBottom: 20, color: "#47EB78" }}>
-              Session Manager Module is already enabled.
+            <p style={{ marginBottom: 20 }}>
+              Session Key Manager Module is already enabled. Click on the button to create a new session.
             </p>
+
+            <Button
+              title="Create Session"
+              isLoading={loading}
+              onClickFunc={()=>{createSession(false)}}
+            />
           </div>
         : <div>
           <p style={{ marginBottom: 20 }}>
@@ -140,9 +156,9 @@ const CreateSession: React.FC = () => {
           </p>
 
           <Button
-            title="Create Session"
+            title="Enable And Create Session"
             isLoading={loading}
-            onClickFunc={createSession}
+            onClickFunc={()=>{createSession(true)}}
           />
         </div>
       }
