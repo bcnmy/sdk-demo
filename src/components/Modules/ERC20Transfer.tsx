@@ -49,7 +49,7 @@ const ERC20Transfer: React.FC = () => {
         biconomySmartAccount.setActiveValidationModule(sessionModule);
 
       const tokenContract = new ethers.Contract(config.usdc.address, config.usdc.abi, web3Provider)
-      let decimals = 18  
+      let decimals = 18
 
       try {
         decimals = await tokenContract.decimals()
@@ -67,7 +67,11 @@ const ERC20Transfer: React.FC = () => {
       };
 
       // build user op
-      let userOp = await biconomySmartAccount.buildUserOp([tx1], undefined, true);
+      let userOp = await biconomySmartAccount.buildUserOp([tx1], {
+        callGasLimit: 2000000,
+        verificationGasLimit: 2000000,
+      },
+      true);
 
       // send user op
       const userOpResponse = await biconomySmartAccount.sendUserOp(userOp, {
