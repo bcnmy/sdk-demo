@@ -68,8 +68,8 @@ const ERC20Transfer: React.FC = () => {
 
       // build user op
       let userOp = await biconomySmartAccount.buildUserOp([tx1], {
-        callGasLimit: 2000000,
-        verificationGasLimit: 2000000,
+        callGasLimit: 200000,
+        verificationGasLimit: 800000,
       },
       true);
 
