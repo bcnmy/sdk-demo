@@ -83,12 +83,7 @@ const CreateSession: React.FC = () => {
       }
       transactionArray.push(tx2);
       let partialUserOp = await biconomySmartAccount.buildUserOp(
-        transactionArray,
-        {
-          callGasLimit: 2000000,
-          verificationGasLimit: 500000,
-        },
-        true
+        transactionArray
       );
 
       const userOpResponse = await biconomySmartAccount.sendUserOp(
