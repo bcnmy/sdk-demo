@@ -319,9 +319,9 @@
     js-tokens "^4.0.0"
 
 "@babel/parser@^7.1.0", "@babel/parser@^7.14.7", "@babel/parser@^7.20.7", "@babel/parser@^7.22.15":
-  version "7.22.15"
-  resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.22.15.tgz#d34592bfe288a32e741aa0663dbc4829fcd55160"
-  integrity sha512-RWmQ/sklUN9BvGGpCDgSubhHWfAx24XDTDObup4ffvxaYsptOg2P3KG0j+1eWKLxpkX0j0uHxmpq2Z1SP/VhxA==
+  version "7.22.16"
+  resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.22.16.tgz#180aead7f247305cce6551bea2720934e2fa2c95"
+  integrity sha512-+gPfKv8UWeKKeJTUxe59+OobVcrYHETCsORl61EmSkmgymguYk/X5bp7GuUIXaFsc6y++v8ZxPsLSSuujqDphA==
 
 "@babel/plugin-bugfix-safari-id-destructuring-collision-in-function-expression@^7.22.15":
   version "7.22.15"
@@ -1214,26 +1214,26 @@
     source-map-support "^0.5.19"
     typescript "^4.3.5"
 
-"@biconomy-devx/account@2.0.11":
-  version "2.0.11"
-  resolved "https://registry.yarnpkg.com/@biconomy-devx/account/-/account-2.0.11.tgz#9808551725619c8a1fb73ed165f8376aea206b8e"
-  integrity sha512-ea0Rm2wXO5N3hiUdVq0asU9ZtYCrjnFPEE3cTYqtPpVWoaqIHDMRQYnk1qeMIzA2dh7B/reH5aQCFVk7Voab9g==
+"@biconomy-devx/account@2.0.14":
+  version "2.0.14"
+  resolved "https://registry.yarnpkg.com/@biconomy-devx/account/-/account-2.0.14.tgz#d6eab2343a34e38ee91accc4cf9c4c2464542a29"
+  integrity sha512-Ogh0oAS3S/wjSO5Y5pHAlBWzzGm9A3I4r2A2UVWVOiVqcXjU27HZ0Nua5jJfH1lBBTiB9rj13gXej2ZVNdTMNQ==
   dependencies:
     "@biconomy-devx/account-contracts-v2" "npm:@biconomy-devx/account-contracts-v2@^1.0.0"
 
-"@biconomy-devx/bundler@2.0.11":
-  version "2.0.11"
-  resolved "https://registry.yarnpkg.com/@biconomy-devx/bundler/-/bundler-2.0.11.tgz#06a25b980acb2fbf433aa8c84cfabf554de5dc26"
-  integrity sha512-n0mqYOYLWVESfmQ0KyjvUCBd6fAhVDdyTGKBMQXrajvKwzOSqxDE77Om1YwNgW6AfCQ8aIV79LZgpHRV6zKCtg==
+"@biconomy-devx/bundler@2.0.14":
+  version "2.0.14"
+  resolved "https://registry.yarnpkg.com/@biconomy-devx/bundler/-/bundler-2.0.14.tgz#df9f396871c31028f6263c721ad39aea9f71ad30"
+  integrity sha512-wTj71pwC524TkEkJzQkHNuiP5+f2BwgldCuLBdUKGCFuqbVDZmqmsKoBaXb9diOQ5s2lgLRdqdVS/5xb3ZwFIA==
 
-"@biconomy-devx/common@2.0.11":
-  version "2.0.11"
-  resolved "https://registry.yarnpkg.com/@biconomy-devx/common/-/common-2.0.11.tgz#48933c5e9c6701cfa32ab008fb4e8fa89a03a083"
-  integrity sha512-gahBoIIiVgO72uQCXqMxb0TNccRA3kkFqyXrdKX3yaE+pAszZMIak7uQWW/isJKu+lzS0wJHvvID6LZYKLdbqA==
+"@biconomy-devx/common@2.0.14":
+  version "2.0.14"
+  resolved "https://registry.yarnpkg.com/@biconomy-devx/common/-/common-2.0.14.tgz#6fe255446da2b03cb19b0eebbb4f5ba98c14ac6d"
+  integrity sha512-FdPA0xDflveCCkEAYsA2LuhFPxzklKUakVKkWNsDb2hiJmspML8m10yHh7yR1lhh64m0vrIaKtUml5sVCQn0xg==
   dependencies:
     "@account-abstraction/contracts" "^0.6.0"
-    "@biconomy-devx/core-types" "^2.0.11"
-    "@biconomy-devx/node-client" "^2.0.11"
+    "@biconomy-devx/core-types" "^2.0.14"
+    "@biconomy-devx/node-client" "^2.0.14"
     "@ethersproject/abi" "^5.7.0"
     "@ethersproject/bytes" "^5.7.0"
     "@ethersproject/providers" "^5.7.0"
@@ -1244,44 +1244,44 @@
     ethers "^5.7.0"
     typechain "^8.1.1"
 
-"@biconomy-devx/core-types@2.0.11", "@biconomy-devx/core-types@^2.0.11":
-  version "2.0.11"
-  resolved "https://registry.yarnpkg.com/@biconomy-devx/core-types/-/core-types-2.0.11.tgz#7eafb5dc12edd2f24caa2052db3d1a66279a103d"
-  integrity sha512-AzibdxW5tnxZilzrBk/aneIM+neq5MGlYJ1YxP281xxAW9dTXhRl6QGY85QXEN3X7m+gHvBNCtVHTJ694MWirw==
+"@biconomy-devx/core-types@2.0.14", "@biconomy-devx/core-types@^2.0.14":
+  version "2.0.14"
+  resolved "https://registry.yarnpkg.com/@biconomy-devx/core-types/-/core-types-2.0.14.tgz#de588bed154fd6b54ffa7daa83099d04d6d60fd6"
+  integrity sha512-oERT2mN+SYV3N2Hyq0XyQu7u2ws2f0PCgZP8VqlYpSA9viLQLW5aiKbNcVN3kkEdgH0A8QdO2keZWgphcQ27MQ==
   dependencies:
     "@ethersproject/bignumber" "^5.6.0"
     "@ethersproject/contracts" "^5.6.0"
     "@ethersproject/providers" "^5.7.0"
     web3-core "^1.7.1"
 
-"@biconomy-devx/modules@2.0.11":
-  version "2.0.11"
-  resolved "https://registry.yarnpkg.com/@biconomy-devx/modules/-/modules-2.0.11.tgz#3b72fcda46d54bb8b4e87c8115153ad8c71043bd"
-  integrity sha512-gz1zIon25FF5VUEdDeQMxxqO9+JnplK4Kdqy/CWpNKIANIzhi6kGd3lg+EwLALcZRgogOSJnwZcDkjrW91CxnQ==
+"@biconomy-devx/modules@2.0.14":
+  version "2.0.14"
+  resolved "https://registry.yarnpkg.com/@biconomy-devx/modules/-/modules-2.0.14.tgz#6a67404e96defa7181d0089fe83461d5272d7672"
+  integrity sha512-BU2EI6/gxl/NKvKQzcY+6kn/bqUqKJ5R2Hyq46QrNlpl3o+ToRTTnyMpBEszKhSs9FSDKkIjy+OqSMxxUMvWEA==
   dependencies:
     merkletreejs "^0.3.9"
 
-"@biconomy-devx/node-client@^2.0.11":
-  version "2.0.11"
-  resolved "https://registry.yarnpkg.com/@biconomy-devx/node-client/-/node-client-2.0.11.tgz#d57b26e9a36015548f73b4e46077889e1627b454"
-  integrity sha512-oxXfzTmeV0AokmakLOxUIgSBYfXR3J87e/mew6ngP7a15RVQxZUVq8Oa2QMh2qcjgZ7yN76M9vE7TPG+WvBUBg==
+"@biconomy-devx/node-client@^2.0.14":
+  version "2.0.14"
+  resolved "https://registry.yarnpkg.com/@biconomy-devx/node-client/-/node-client-2.0.14.tgz#74217b8a62807d4e86e47e2d357e14ede741b6be"
+  integrity sha512-IcFMKBjCZVoxVy24yp9Vdxvz273FxK2wfuuLxgjtD468HsrJ6qPKyYHu9eMJ20UQhX0YJ//vwFwOANZlZnCG/g==
   dependencies:
-    "@biconomy-devx/core-types" "^2.0.11"
+    "@biconomy-devx/core-types" "^2.0.14"
     "@ethersproject/abstract-signer" "^5.6.0"
     "@nomiclabs/hardhat-ethers" "^2.1.0"
     node-fetch "^2.6.6"
 
-"@biconomy-devx/paymaster@2.0.11":
-  version "2.0.11"
-  resolved "https://registry.yarnpkg.com/@biconomy-devx/paymaster/-/paymaster-2.0.11.tgz#d37301c665ceb5359b8dbe9ab126361b38f70ce6"
-  integrity sha512-fmGKZt3OkxWOEeBlb8mJk4jXIwxawrJq1nr6PmlN22h06In3aDt++X5oZX8Xm80ncnijEGqHiQWV1FenaIZiKg==
+"@biconomy-devx/paymaster@2.0.14":
+  version "2.0.14"
+  resolved "https://registry.yarnpkg.com/@biconomy-devx/paymaster/-/paymaster-2.0.14.tgz#99b8e38cb11dccfe5b4add1fc263349779aa4543"
+  integrity sha512-QGS19pL/fmbT7kp8MXxxT40VPUDIZXDx4DN9KP1U2Yu+1WRvC2kX4VCMpT8dO7loUZssn/za1fOKmdd4NCgWAw==
 
-"@biconomy-devx/web3-auth@2.0.11":
-  version "2.0.11"
-  resolved "https://registry.yarnpkg.com/@biconomy-devx/web3-auth/-/web3-auth-2.0.11.tgz#e35b8ac11522b75c8d26b1ac4591522b84ed545d"
-  integrity sha512-bx6Vwqq5hPLLs9Yx3fNehV4fUQ7kZa3AcqMIxcseAJSinlb/oZUXYdA9FL0o+OKjAgMegoXv9LWh0ZPRoY8aPg==
+"@biconomy-devx/web3-auth@2.0.14":
+  version "2.0.14"
+  resolved "https://registry.yarnpkg.com/@biconomy-devx/web3-auth/-/web3-auth-2.0.14.tgz#0692be2a6e168589ffe4a15c71668816a4236d2a"
+  integrity sha512-L6TUOhxh6PSBqlE6L7IuL98ZvKdhnXldSpKgMTUOl4/xbATIzQgxt+RtzDjwhIhXUfJ9430vyAOOi+Rtgx2B2Q==
   dependencies:
-    "@biconomy-devx/node-client" "^2.0.11"
+    "@biconomy-devx/node-client" "^2.0.14"
     "@walletconnect/qrcode-modal" "^1.8.0"
     "@web3auth/base" "^3.0.0"
     "@web3auth/core" "^3.0.0"
@@ -4733,13 +4733,13 @@ array.prototype.findlastindex@^1.2.2:
     get-intrinsic "^1.2.1"
 
 array.prototype.flat@^1.3.1:
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/array.prototype.flat/-/array.prototype.flat-1.3.1.tgz#ffc6576a7ca3efc2f46a143b9d1dda9b4b3cf5e2"
-  integrity sha512-roTU0KWIOmJ4DRLmwKd19Otg0/mT3qPNt0Qb3GWW8iObuZXxrjB/pzn0R3hqpRSWg4HCwqx+0vwOnWnvlOyeIA==
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/array.prototype.flat/-/array.prototype.flat-1.3.2.tgz#1476217df8cff17d72ee8f3ba06738db5b387d18"
+  integrity sha512-djYB+Zx2vLewY8RWlNCUdHjDXs2XOgm602S9E7P/UpHgfeHL00cRiIF+IN/G/aUJ7kGPb6yO/ErDI5V2s8iycA==
   dependencies:
     call-bind "^1.0.2"
-    define-properties "^1.1.4"
-    es-abstract "^1.20.4"
+    define-properties "^1.2.0"
+    es-abstract "^1.22.1"
     es-shim-unscopables "^1.0.0"
 
 array.prototype.flatmap@^1.3.1:
@@ -4775,13 +4775,14 @@ array.prototype.tosorted@^1.1.1:
     get-intrinsic "^1.1.3"
 
 arraybuffer.prototype.slice@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/arraybuffer.prototype.slice/-/arraybuffer.prototype.slice-1.0.1.tgz#9b5ea3868a6eebc30273da577eb888381c0044bb"
-  integrity sha512-09x0ZWFEjj4WD8PDbykUwo3t9arLn8NIzmmYEJFpYekOAQjpkGSyrQhNoRTcwwcFRu+ycWF78QZ63oWTqSjBcw==
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/arraybuffer.prototype.slice/-/arraybuffer.prototype.slice-1.0.2.tgz#98bd561953e3e74bb34938e77647179dfe6e9f12"
+  integrity sha512-yMBKppFur/fbHu9/6USUe03bZ4knMYiwFBcyiaXB8Go0qNehwX6inYPzK9U0NeQvGxKthcmHcaR8P5MStSRBAw==
   dependencies:
     array-buffer-byte-length "^1.0.0"
     call-bind "^1.0.2"
     define-properties "^1.2.0"
+    es-abstract "^1.22.1"
     get-intrinsic "^1.2.1"
     is-array-buffer "^3.0.2"
     is-shared-array-buffer "^1.0.2"
@@ -4921,9 +4922,9 @@ aws4@^1.8.0:
   integrity sha512-NmWvPnx0F1SfrQbYwOi7OeaNGokp9XhzNioJ/CSBs8Qa4vxug81mhJEAVZwxXuBmYB5KDRfMq/F3RR0BIU7sWg==
 
 axe-core@^4.6.2:
-  version "4.7.2"
-  resolved "https://registry.yarnpkg.com/axe-core/-/axe-core-4.7.2.tgz#040a7342b20765cb18bb50b628394c21bccc17a0"
-  integrity sha512-zIURGIS1E1Q4pcrMjp+nnEh+16G56eG/MUllJH8yEvw7asDo7Ac9uhC9KIH5jzpITueEZolfYglnCGIuSBz39g==
+  version "4.8.0"
+  resolved "https://registry.yarnpkg.com/axe-core/-/axe-core-4.8.0.tgz#038c9e586732c791c0d9cecf7ed6434c4e8d497b"
+  integrity sha512-ZtlVZobOeDQhb/y2lMK6mznDw7TJHDNcKx5/bbBkFvArIQ5CVFhSI6hWWQnMx9I8cNmNmZ30wpDyOC2E2nvgbQ==
 
 axios@^1.4.0:
   version "1.5.0"
@@ -13317,12 +13318,12 @@ rxjs@^7.0.0:
     tslib "^2.1.0"
 
 safe-array-concat@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/safe-array-concat/-/safe-array-concat-1.0.0.tgz#2064223cba3c08d2ee05148eedbc563cd6d84060"
-  integrity sha512-9dVEFruWIsnie89yym+xWTAYASdpw3CJV7Li/6zBewGf9z2i1j31rP6jnY0pHEO4QZh6N0K11bFjWmdR8UGdPQ==
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/safe-array-concat/-/safe-array-concat-1.0.1.tgz#91686a63ce3adbea14d61b14c99572a8ff84754c"
+  integrity sha512-6XbUAseYE2KtOuGueyeobCySj9L4+66Tn6KQMOPQJrAJEowYKW/YR/MGJZl7FdydUdaFu4LYyDZjxf4/Nmo23Q==
   dependencies:
     call-bind "^1.0.2"
-    get-intrinsic "^1.2.0"
+    get-intrinsic "^1.2.1"
     has-symbols "^1.0.3"
     isarray "^2.0.5"
 
@@ -15908,7 +15909,7 @@ ws@7.5.3:
   resolved "https://registry.yarnpkg.com/ws/-/ws-7.5.3.tgz#160835b63c7d97bfab418fc1b8a9fced2ac01a74"
   integrity sha512-kQ/dHIzuLrS6Je9+uv81ueZomEwH0qVYstcAQ4/Z93K8zeko9gtAbttJWzoC5ukqXY1PpoouV3+VSOqEAFt5wg==
 
-ws@8.13.0, ws@^8.13.0, ws@^8.5.0:
+ws@8.13.0:
   version "8.13.0"
   resolved "https://registry.yarnpkg.com/ws/-/ws-8.13.0.tgz#9a9fb92f93cf41512a0735c8f4dd09b8a1211cd0"
   integrity sha512-x9vcZYTrFPC7aSIbj7sRCYo7L/Xb8Iy+pW0ng0wt2vCJv7M9HOMy0UoN3rr+IFC7hb7vXoqS+P9ktyLLLhO+LA==
@@ -15933,6 +15934,11 @@ ws@^7.4.5, ws@^7.4.6:
   version "7.5.9"
   resolved "https://registry.yarnpkg.com/ws/-/ws-7.5.9.tgz#54fa7db29f4c7cec68b1ddd3a89de099942bb591"
   integrity sha512-F+P9Jil7UiSKSkppIiD94dN07AwvFixvLIj1Og1Rl9GGMuNipJnV9JzjD6XuqmAeiswGvUmNLjr5cFuXwNS77Q==
+
+ws@^8.13.0, ws@^8.5.0:
+  version "8.14.0"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-8.14.0.tgz#6c5792c5316dc9266ba8e780433fc45e6680aecd"
+  integrity sha512-WR0RJE9Ehsio6U4TuM+LmunEsjQ5ncHlw4sn9ihD6RoJKZrVyH9FWV3dmnwu8B2aNib1OvG2X6adUCyFpQyWcg==
 
 ws@~8.11.0:
   version "8.11.0"

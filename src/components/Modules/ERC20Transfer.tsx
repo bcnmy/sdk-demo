@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ethers } from "ethers";
 import { makeStyles } from "@mui/styles";
-import { SessionKeyManagerModule } from "@biconomy-devx/modules";
+import { BatchedSessionRouterModule, SessionKeyManagerModule } from "@biconomy-devx/modules";
 
 import Button from "../Button";
 import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
@@ -25,6 +25,8 @@ const ERC20Transfer: React.FC = () => {
       let biconomySmartAccount = smartAccount;
       const managerModuleAddr = "0x000000456b395c4e107e0302553B90D1eF4a32e9";
       const erc20ModuleAddr = "0x000000dB3D753A1da5A6074a9F74F39a0A779d33";
+      const mockModuleAddr = "0xf36A0FD9EAa51f360Cd0e46caf13c30e86def8c5";
+      const routerModuleAddr = "0x000008da71757c0e1d83ce56c823e25aa49bc058";
 
       // get session key from local storage
       const sessionKeyEOA = window.localStorage.getItem("sessionPKey");
@@ -40,13 +42,20 @@ const ERC20Transfer: React.FC = () => {
       // generate sessionModule
       const sessionModule = await SessionKeyManagerModule.create({
         moduleAddress: managerModuleAddr,
-        sessionPubKey: sessionKeyEOA,
+        // sessionPubKey: sessionKeyEOA,
+        smartAccountAddress: scwAddress,
+      });
+
+      const sessionRouterModule = await BatchedSessionRouterModule.create({
+        moduleAddress: routerModuleAddr,
+        // sessionPubKey: sessionKeyEOA,
+        // sessionKeyManagerModule: sessionModule,
         smartAccountAddress: scwAddress,
       });
 
       // set active module to sessionModule
       biconomySmartAccount =
-        biconomySmartAccount.setActiveValidationModule(sessionModule);
+        biconomySmartAccount.setActiveValidationModule(sessionRouterModule);
 
       const tokenContract = new ethers.Contract(config.usdc.address, config.usdc.abi, web3Provider)
       let decimals = 18
@@ -66,27 +75,45 @@ const ERC20Transfer: React.FC = () => {
         value: "0"
       };
 
+      const tx2 = {
+        to: "0xdA5289fCAAF71d52a80A254da614a192b693e977", //erc20 token address
+        data: data, 
+        value: "0"
+      };
+
+
+
     
       // build user op
-      let userOp = await biconomySmartAccount.buildUserOp([tx1] ,{
+      let userOp = await biconomySmartAccount.buildUserOp([tx1, tx2] ,{
         overrides: {
         // signature: "0x0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000456b395c4e107e0302553b90d1ef4a32e9000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000db3d753a1da5a6074a9f74f39a0a779d3300000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000016000000000000000000000000000000000000000000000000000000000000001800000000000000000000000000000000000000000000000000000000000000080000000000000000000000000bfe121a6dcf92c49f6c2ebd4f306ba0ba0ab6f1c000000000000000000000000da5289fcaaf71d52a80a254da614a192b693e97700000000000000000000000042138576848e839827585a3539305774d36b96020000000000000000000000000000000000000000000000000000000002faf08000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000041feefc797ef9e9d8a6a41266a85ddf5f85c8f2a3d2654b10b415d348b150dabe82d34002240162ed7f6b7ffbc40162b10e62c3e35175975e43659654697caebfe1c00000000000000000000000000000000000000000000000000000000000000"
         // callGasLimit: 2000000, // only if undeployed account
         // verificationGasLimit: 700000
       },
-      skipBundlerGasEstimation: false,
+      skipBundlerGasEstimation: true,
       params: {
+        batchSessionParams: [{
         sessionSigner: sessionSigner,
         sessionValidationModule: erc20ModuleAddr,
-      }});
+      },
+      {
+      sessionSigner: sessionSigner,
+      sessionValidationModule: mockModuleAddr,
+    }]}});
 
       console.log("userOp sig", userOp.signature);
 
       // send user op
       const userOpResponse = await biconomySmartAccount.sendUserOp(userOp, {
+        batchSessionParams: [{
         sessionSigner: sessionSigner,
         sessionValidationModule: erc20ModuleAddr,
-      });
+      },
+      {
+      sessionSigner: sessionSigner,
+      sessionValidationModule: mockModuleAddr,
+    }]});
 
       console.log("userOpHash", userOpResponse);
       const { receipt } = await userOpResponse.wait(1);

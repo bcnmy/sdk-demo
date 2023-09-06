@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { makeStyles } from "@mui/styles";
-import { SessionKeyManagerModule } from "@biconomy-devx/modules";
+import { BatchedSessionRouterModule, SessionKeyManagerModule } from "@biconomy-devx/modules";
 import Button from "../Button";
 import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
@@ -28,7 +28,9 @@ const CreateSession: React.FC = () => {
     try {
       let biconomySmartAccount = smartAccount;
       const managerModuleAddr = "0x000000456b395c4e107e0302553B90D1eF4a32e9";
+      const routerModuleAddr = "0x000008da71757c0e1d83ce56c823e25aa49bc058";
       const erc20ModuleAddr = "0x000000dB3D753A1da5A6074a9F74F39a0A779d33";
+      const mockModuleAddr = "0xf36A0FD9EAa51f360Cd0e46caf13c30e86def8c5";
 
       
 
@@ -43,9 +45,17 @@ const CreateSession: React.FC = () => {
       // generate sessionModule
       const sessionModule = await SessionKeyManagerModule.create({
         moduleAddress: managerModuleAddr,
-        sessionPubKey: sessionKeyEOA,
+        // sessionPubKey: sessionKeyEOA,
         smartAccountAddress: scwAddress,
       });
+
+      const sessionRouterModule = await BatchedSessionRouterModule.create({
+        moduleAddress: routerModuleAddr,
+        // sessionPubKey: sessionKeyEOA,
+        sessionKeyManagerModule: sessionModule,
+        smartAccountAddress: scwAddress,
+      });
+
 
       // cretae session key data
       const sessionKeyData = defaultAbiCoder.encode(
@@ -58,13 +68,23 @@ const CreateSession: React.FC = () => {
         ]
       );
 
-      const sessionTxData = await sessionModule.createSessionData({
+       const sessionKeyData2 = hexZeroPad(sessionKeyEOA, 20);
+      
+      const sessionTxData = await sessionRouterModule.createSessionData([{
         validUntil: 0,
         validAfter: 0,
         sessionValidationModule: erc20ModuleAddr,
         sessionPublicKey: sessionKeyEOA,
         sessionKeyData: sessionKeyData,
-      });
+      },
+      {
+        validUntil: 0,
+        validAfter: 0,
+        sessionValidationModule: mockModuleAddr,
+        sessionPublicKey: sessionKeyEOA,
+        sessionKeyData: sessionKeyData2,
+      }
+    ]);
       console.log("sessionTxData", sessionTxData);
 
       // tx to set session key
@@ -80,6 +100,11 @@ const CreateSession: React.FC = () => {
           managerModuleAddr
         );
         transactionArray.push(tx1);
+
+        const tx3 = await biconomySmartAccount.getEnableModuleData(
+          routerModuleAddr
+        );
+        transactionArray.push(tx3);
       }
       transactionArray.push(tx2);
       let partialUserOp = await biconomySmartAccount.buildUserOp(
@@ -94,13 +119,21 @@ const CreateSession: React.FC = () => {
       console.log("txHash", transactionDetails.receipt.transactionHash);
       showInfoMessage("Session Created Successfully");
       // update the session key //enableModule
-      await sessionModule.updateSessionStatus(
+      /*await sessionRouterModule.updateSessionStatus(
         {
           sessionPublicKey: sessionKeyEOA,
           sessionValidationModule: erc20ModuleAddr,
         },
         "ACTIVE"
       );
+
+      await sessionRouterModule.updateSessionStatus(
+        {
+          sessionPublicKey: sessionKeyEOA,
+          sessionValidationModule: mockModuleAddr,
+        },
+        "ACTIVE"
+      );*/
     } catch (err: any) {
       console.error(err);
       setLoading(false);
