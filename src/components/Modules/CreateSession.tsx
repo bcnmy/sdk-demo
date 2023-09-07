@@ -66,7 +66,8 @@ const CreateSession: React.FC = () => {
         ]
       );
 
-      /*const sessionKeyData2 = defaultAbiCoder.encode(
+      // just another similar sesison
+      const sessionKeyData2 = defaultAbiCoder.encode(
         ["address", "address", "address", "uint256"],
         [
           sessionKeyEOA,
@@ -74,9 +75,13 @@ const CreateSession: React.FC = () => {
           "0x5a86A87b3ea8080Ff0B99820159755a4422050e6",
           ethers.utils.parseUnits("100".toString(), 6).toHexString()
         ]
-      );*/
+      );
 
-      const sessionKeyData2 = hexZeroPad(sessionKeyEOA, 20);
+      // const sessionKeyData2 = hexZeroPad(sessionKeyEOA, 20);
+
+      // TODO
+      // Test using one mock SVM and one ERC20 SVM
+      // Test using ERC20 SVM and Mock Protocol SVM
       
       const sessionTxData = await sessionRouterModule.createSessionData([{
         validUntil: 0,
@@ -88,7 +93,7 @@ const CreateSession: React.FC = () => {
       {
         validUntil: 0,
         validAfter: 0,
-        sessionValidationModule: mockModuleAddr,
+        sessionValidationModule: erc20ModuleAddr,
         sessionPublicKey: sessionKeyEOA,
         sessionKeyData: sessionKeyData2,
       }
