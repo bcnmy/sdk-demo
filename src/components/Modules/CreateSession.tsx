@@ -28,9 +28,7 @@ const CreateSession: React.FC = () => {
     try {
       let biconomySmartAccount = smartAccount;
       const managerModuleAddr = "0x6E49e404BD70bcc4756F1057d2E2e6000cD38e1e";
-      const routerModuleAddr = "0x58464D89f5763FAea0eEc57AE6E28C9CdB03b41B";
       const erc20ModuleAddr = "0x3A25b00638fF5bDfD4f300beF39d236041C073c0";
-      const mockModuleAddr = "0x3cc90ADcBB94069c40630D409fBe5c64b2eC336B";
 
       // -----> setMerkle tree tx flow
       // create dapp side session key
@@ -43,17 +41,8 @@ const CreateSession: React.FC = () => {
       // generate sessionModule
       const sessionModule = await SessionKeyManagerModule.create({
         moduleAddress: managerModuleAddr,
-        // sessionPubKey: sessionKeyEOA,
         smartAccountAddress: scwAddress,
       });
-
-      const sessionRouterModule = await BatchedSessionRouterModule.create({
-        moduleAddress: routerModuleAddr,
-        // sessionPubKey: sessionKeyEOA,
-        sessionKeyManagerModule: sessionModule,
-        smartAccountAddress: scwAddress,
-      });
-
 
       // cretae session key data
       const sessionKeyData = defaultAbiCoder.encode(
@@ -65,33 +54,15 @@ const CreateSession: React.FC = () => {
           ethers.utils.parseUnits("50".toString(), 6).toHexString()
         ]
       );
-
-      /*const sessionKeyData2 = defaultAbiCoder.encode(
-        ["address", "address", "address", "uint256"],
-        [
-          sessionKeyEOA,
-          "0xdA5289fCAAF71d52a80A254da614a192b693e977",
-          "0x5a86A87b3ea8080Ff0B99820159755a4422050e6",
-          ethers.utils.parseUnits("100".toString(), 6).toHexString()
-        ]
-      );*/
-
-      const sessionKeyData2 = hexZeroPad(sessionKeyEOA, 20);
       
-      const sessionTxData = await sessionRouterModule.createSessionData([{
+      const sessionTxData = await sessionModule.createSessionData([{
         validUntil: 0,
         validAfter: 0,
         sessionValidationModule: erc20ModuleAddr,
         sessionPublicKey: sessionKeyEOA,
         sessionKeyData: sessionKeyData,
-      },
-      {
-        validUntil: 0,
-        validAfter: 0,
-        sessionValidationModule: mockModuleAddr,
-        sessionPublicKey: sessionKeyEOA,
-        sessionKeyData: sessionKeyData2,
       }
+      // can optionally enable multiple leaves(sessions) altogether
     ]);
       console.log("sessionTxData", sessionTxData);
 
@@ -108,11 +79,6 @@ const CreateSession: React.FC = () => {
           managerModuleAddr
         );
         transactionArray.push(tx1);
-
-        const tx3 = await biconomySmartAccount.getEnableModuleData(
-          routerModuleAddr
-        );
-        transactionArray.push(tx3);
       }
       transactionArray.push(tx2);
       let partialUserOp = await biconomySmartAccount.buildUserOp(
@@ -126,6 +92,7 @@ const CreateSession: React.FC = () => {
       const transactionDetails = await userOpResponse.wait();
       console.log("txHash", transactionDetails.receipt.transactionHash);
       showInfoMessage("Session Created Successfully");
+
       // update the session key //enableModule
       /*await sessionRouterModule.updateSessionStatus(
         {
@@ -133,15 +100,8 @@ const CreateSession: React.FC = () => {
           sessionValidationModule: erc20ModuleAddr,
         },
         "ACTIVE"
-      );
-
-      await sessionRouterModule.updateSessionStatus(
-        {
-          sessionPublicKey: sessionKeyEOA,
-          sessionValidationModule: mockModuleAddr,
-        },
-        "ACTIVE"
       );*/
+
     } catch (err: any) {
       console.error(err);
       setLoading(false);
@@ -154,9 +114,9 @@ const CreateSession: React.FC = () => {
     if (!scwAddress || !smartAccount || !web3Provider) return false;
     try {
       let biconomySmartAccount = smartAccount;
-      const managerModuleAddr = "0x000000456b395c4e107e0302553B90D1eF4a32e9";
+      const managerModuleAddr = "0x6E49e404BD70bcc4756F1057d2E2e6000cD38e1e";
       const isEnabled = await biconomySmartAccount.isModuleEnabled(managerModuleAddr);
-      return isEnabled
+      return isEnabled;
     } catch (err: any) {
       console.error(err);
       setLoading(false);
