@@ -27,9 +27,9 @@ const CreateSession: React.FC = () => {
     if (!scwAddress || !smartAccount || !web3Provider) return;
     try {
       let biconomySmartAccount = smartAccount;
-      const managerModuleAddr = "0x000000456b395c4e107e0302553B90D1eF4a32e9";
-      const routerModuleAddr = "0x000008da71757c0e1d83ce56c823e25aa49bc058";
-      const erc20ModuleAddr = "0x000000dB3D753A1da5A6074a9F74F39a0A779d33";
+      const managerModuleAddr = "0x6E49e404BD70bcc4756F1057d2E2e6000cD38e1e";
+      const routerModuleAddr = "0x58464D89f5763FAea0eEc57AE6E28C9CdB03b41B";
+      const erc20ModuleAddr = "0x3A25b00638fF5bDfD4f300beF39d236041C073c0";
       const mockModuleAddr = "0xf36A0FD9EAa51f360Cd0e46caf13c30e86def8c5";
 
       
@@ -89,7 +89,7 @@ const CreateSession: React.FC = () => {
 
       // tx to set session key
       const tx2 = {
-        to: managerModuleAddr, // session manager module address
+        to: routerModuleAddr, // session manager module address
         data: sessionTxData,
       };
       
