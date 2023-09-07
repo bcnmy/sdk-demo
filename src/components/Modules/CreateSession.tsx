@@ -30,9 +30,7 @@ const CreateSession: React.FC = () => {
       const managerModuleAddr = "0x6E49e404BD70bcc4756F1057d2E2e6000cD38e1e";
       const routerModuleAddr = "0x58464D89f5763FAea0eEc57AE6E28C9CdB03b41B";
       const erc20ModuleAddr = "0x3A25b00638fF5bDfD4f300beF39d236041C073c0";
-      const mockModuleAddr = "0xf36A0FD9EAa51f360Cd0e46caf13c30e86def8c5";
-
-      
+      const mockModuleAddr = "0x3cc90ADcBB94069c40630D409fBe5c64b2eC336B";
 
       // -----> setMerkle tree tx flow
       // create dapp side session key
@@ -68,7 +66,17 @@ const CreateSession: React.FC = () => {
         ]
       );
 
-       const sessionKeyData2 = hexZeroPad(sessionKeyEOA, 20);
+      /*const sessionKeyData2 = defaultAbiCoder.encode(
+        ["address", "address", "address", "uint256"],
+        [
+          sessionKeyEOA,
+          "0xdA5289fCAAF71d52a80A254da614a192b693e977",
+          "0x5a86A87b3ea8080Ff0B99820159755a4422050e6",
+          ethers.utils.parseUnits("100".toString(), 6).toHexString()
+        ]
+      );*/
+
+      const sessionKeyData2 = hexZeroPad(sessionKeyEOA, 20);
       
       const sessionTxData = await sessionRouterModule.createSessionData([{
         validUntil: 0,
@@ -89,7 +97,7 @@ const CreateSession: React.FC = () => {
 
       // tx to set session key
       const tx2 = {
-        to: routerModuleAddr, // session manager module address
+        to: managerModuleAddr, // session manager module address
         data: sessionTxData,
       };
       

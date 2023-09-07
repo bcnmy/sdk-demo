@@ -25,7 +25,7 @@ const ERC20Transfer: React.FC = () => {
       let biconomySmartAccount = smartAccount;
       const managerModuleAddr = "0x6E49e404BD70bcc4756F1057d2E2e6000cD38e1e";
       const erc20ModuleAddr = "0x3A25b00638fF5bDfD4f300beF39d236041C073c0";
-      const mockModuleAddr = "0xf36A0FD9EAa51f360Cd0e46caf13c30e86def8c5";
+      const mockModuleAddr = "0x3cc90ADcBB94069c40630D409fBe5c64b2eC336B";
       const routerModuleAddr = "0x58464D89f5763FAea0eEc57AE6E28C9CdB03b41B";
 
       // get session key from local storage
@@ -49,7 +49,7 @@ const ERC20Transfer: React.FC = () => {
       const sessionRouterModule = await BatchedSessionRouterModule.create({
         moduleAddress: routerModuleAddr,
         // sessionPubKey: sessionKeyEOA,
-        // sessionKeyManagerModule: sessionModule,
+        sessionKeyManagerModule: sessionModule,
         smartAccountAddress: scwAddress,
       });
 
@@ -67,6 +67,7 @@ const ERC20Transfer: React.FC = () => {
       }
       const amountGwei = ethers.utils.parseUnits("5".toString(), decimals)
       const data = (await tokenContract.populateTransaction.transfer("0x42138576848E839827585A3539305774D36B9602", amountGwei)).data
+      const data2 = (await tokenContract.populateTransaction.transfer("0x5a86A87b3ea8080Ff0B99820159755a4422050e6", amountGwei)).data
 
       // generate tx data to erc20 transfer
       const tx1 = {
@@ -77,7 +78,7 @@ const ERC20Transfer: React.FC = () => {
 
       const tx2 = {
         to: "0xdA5289fCAAF71d52a80A254da614a192b693e977", //erc20 token address
-        data: data, 
+        data: data2, 
         value: "0"
       };
 
@@ -85,20 +86,22 @@ const ERC20Transfer: React.FC = () => {
 
     
       // build user op
-      let userOp = await biconomySmartAccount.buildUserOp([tx1, tx2] ,{
+      let userOp = await biconomySmartAccount.buildUserOp([tx1, tx1] ,{
         overrides: {
         // signature: "0x0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000456b395c4e107e0302553b90d1ef4a32e9000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000db3d753a1da5a6074a9f74f39a0a779d3300000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000016000000000000000000000000000000000000000000000000000000000000001800000000000000000000000000000000000000000000000000000000000000080000000000000000000000000bfe121a6dcf92c49f6c2ebd4f306ba0ba0ab6f1c000000000000000000000000da5289fcaaf71d52a80a254da614a192b693e97700000000000000000000000042138576848e839827585a3539305774d36b96020000000000000000000000000000000000000000000000000000000002faf08000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000041feefc797ef9e9d8a6a41266a85ddf5f85c8f2a3d2654b10b415d348b150dabe82d34002240162ed7f6b7ffbc40162b10e62c3e35175975e43659654697caebfe1c00000000000000000000000000000000000000000000000000000000000000"
-        // callGasLimit: 2000000, // only if undeployed account
-        // verificationGasLimit: 700000
+        callGasLimit: 400000, // only if undeployed account
+        verificationGasLimit: 900000
       },
       skipBundlerGasEstimation: true,
       params: {
         batchSessionParams: [{
         sessionSigner: sessionSigner,
+        // sessionID: "7dae106e0e",
         sessionValidationModule: erc20ModuleAddr,
       },
       {
       sessionSigner: sessionSigner,
+      // sessionID: "9900285f4c",
       sessionValidationModule: mockModuleAddr,
     }]}});
 
@@ -108,10 +111,12 @@ const ERC20Transfer: React.FC = () => {
       const userOpResponse = await biconomySmartAccount.sendUserOp(userOp, {
         batchSessionParams: [{
         sessionSigner: sessionSigner,
+        // sessionID: "7dae106e0e",
         sessionValidationModule: erc20ModuleAddr,
       },
       {
       sessionSigner: sessionSigner,
+      // sessionID: "9900285f4c",
       sessionValidationModule: mockModuleAddr,
     }]});
 
