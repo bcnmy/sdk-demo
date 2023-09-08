@@ -6,7 +6,7 @@ import Button from "../Button";
 import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import { showErrorMessage, showInfoMessage } from "../../utils";
-import { defaultAbiCoder, hexConcat, hexZeroPad } from "ethers/lib/utils";
+import { defaultAbiCoder } from "ethers/lib/utils";
 import { getActionForErrorMessage } from "../../utils/error-utils";
 
 const CreateSession: React.FC = () => {
@@ -14,36 +14,59 @@ const CreateSession: React.FC = () => {
   const { web3Provider } = useWeb3AuthContext();
   const { smartAccount, scwAddress } = useSmartAccountContext();
   const [loading, setLoading] = useState(false);
-  const [isSessionKeyModuleEnabled, setIsSessionKeyModuleEnabled] = useState(false);
+  const [isSessionKeyModuleEnabled, setIsSessionKeyModuleEnabled] =
+    useState(false);
 
   useEffect(() => {
     let checkSessionModuleEnabled = async () => {
-      setIsSessionKeyModuleEnabled(await _isSessionKeyModuleEnabled());
-    }
+      if (!scwAddress || !smartAccount || !web3Provider) {
+        setIsSessionKeyModuleEnabled(false);
+        return;
+      }
+      try {
+        let biconomySmartAccount = smartAccount;
+        const managerModuleAddr = "0x000000456b395c4e107e0302553B90D1eF4a32e9";
+        const isEnabled = await biconomySmartAccount.isModuleEnabled(
+          managerModuleAddr
+        );
+        console.log("isSessionKeyModuleEnabled", isEnabled);
+        setIsSessionKeyModuleEnabled(isEnabled);
+        return;
+      } catch (err: any) {
+        console.error(err);
+        setLoading(false);
+        showErrorMessage(
+          err.message || "Error in getting session key module status"
+        );
+        setIsSessionKeyModuleEnabled(false);
+        return;
+      }
+    };
     checkSessionModuleEnabled();
-  } ,[isSessionKeyModuleEnabled]);
+  }, [isSessionKeyModuleEnabled, scwAddress, smartAccount, web3Provider]);
 
   const createSession = async (enableSessionKeyModule: boolean) => {
-    if (!scwAddress || !smartAccount || !web3Provider) return;
+    if (!scwAddress || !smartAccount || !web3Provider) {
+      showErrorMessage("Please connect wallet first");
+      return;
+    }
     try {
       let biconomySmartAccount = smartAccount;
       const managerModuleAddr = "0x000000456b395c4e107e0302553B90D1eF4a32e9";
       const erc20ModuleAddr = "0x000000dB3D753A1da5A6074a9F74F39a0A779d33";
 
-      
-
       // -----> setMerkle tree tx flow
       // create dapp side session key
       const sessionSigner = ethers.Wallet.createRandom();
       const sessionKeyEOA = await sessionSigner.getAddress();
-      console.log("sessionKeyEOA", sessionKeyEOA)
+      console.log("sessionKeyEOA", sessionKeyEOA);
       // BREWARE JUST FOR DEMO: update local storage with session key
       window.localStorage.setItem("sessionPKey", sessionSigner.privateKey);
 
       // generate sessionModule
       const sessionModule = await SessionKeyManagerModule.create({
         moduleAddress: managerModuleAddr,
-        sessionPubKey: sessionKeyEOA,
+        // sessionPubKey: sessionKeyEOA,
         smartAccountAddress: scwAddress,
       });
 
@@ -52,19 +75,21 @@ const CreateSession: React.FC = () => {
         ["address", "address", "address", "uint256"],
         [
           sessionKeyEOA,
-          "0xdA5289fCAAF71d52a80A254da614a192b693e977",
-          "0x42138576848E839827585A3539305774D36B9602",
-          ethers.utils.parseUnits("50".toString(), 6).toHexString()
+          "0xdA5289fCAAF71d52a80A254da614a192b693e977", // erc20 token address
+          "0x42138576848E839827585A3539305774D36B9602", // receiver address
+          ethers.utils.parseUnits("50".toString(), 6).toHexString(), // 50 usdc amount
         ]
       );
 
-      const sessionTxData = await sessionModule.createSessionData({
-        validUntil: 0,
-        validAfter: 0,
-        sessionValidationModule: erc20ModuleAddr,
-        sessionPublicKey: sessionKeyEOA,
-        sessionKeyData: sessionKeyData,
-      });
+      const sessionTxData = await sessionModule.createSessionData([
+        {
+          validUntil: 0,
+          validAfter: 0,
+          sessionValidationModule: erc20ModuleAddr,
+          sessionPublicKey: sessionKeyEOA,
+          sessionKeyData: sessionKeyData,
+        },
+      ]);
       console.log("sessionTxData", sessionTxData);
 
       // tx to set session key
@@ -72,9 +97,9 @@ const CreateSession: React.FC = () => {
         to: managerModuleAddr, // session manager module address
         data: sessionTxData,
       };
-      
+
       let transactionArray = [];
-      if(enableSessionKeyModule) {
+      if (enableSessionKeyModule) {
         // -----> enableModule session manager module
         const tx1 = await biconomySmartAccount.getEnableModuleData(
           managerModuleAddr
@@ -105,24 +130,11 @@ const CreateSession: React.FC = () => {
       console.error(err);
       setLoading(false);
       const errorAction = getActionForErrorMessage(err.message);
-      showErrorMessage(errorAction || err.message || "Error in sending the transaction");
+      showErrorMessage(
+        errorAction || err.message || "Error in sending the transaction"
+      );
     }
   };
-
-  const _isSessionKeyModuleEnabled = async (): Promise<boolean> => {
-    if (!scwAddress || !smartAccount || !web3Provider) return false;
-    try {
-      let biconomySmartAccount = smartAccount;
-      const managerModuleAddr = "0x000000456b395c4e107e0302553B90D1eF4a32e9";
-      const isEnabled = await biconomySmartAccount.isModuleEnabled(managerModuleAddr);
-      return isEnabled
-    } catch (err: any) {
-      console.error(err);
-      setLoading(false);
-      showErrorMessage(err.message || "Error in getting session key module status");
-      return false;
-    }
-  }
 
   return (
     <main className={classes.main}>
@@ -132,31 +144,37 @@ const CreateSession: React.FC = () => {
 
       <h3 className={classes.subTitle}>Create Session Flow</h3>
 
-      {isSessionKeyModuleEnabled ?
-          <div>
-            <p style={{ marginBottom: 20 }}>
-              Session Key Manager Module is already enabled. Click on the button to create a new session.
-            </p>
-
-            <Button
-              title="Create Session"
-              isLoading={loading}
-              onClickFunc={()=>{createSession(false)}}
-            />
-          </div>
-        : <div>
+      {isSessionKeyModuleEnabled ? (
+        <div>
           <p style={{ marginBottom: 20 }}>
-            This is single transaction to enable the sesion manager module and set
-            merkle root.
+            Session Key Manager Module is already enabled. Click on the button
+            to create a new session.
+          </p>
+
+          <Button
+            title="Create Session"
+            isLoading={loading}
+            onClickFunc={() => {
+              createSession(false);
+            }}
+          />
+        </div>
+      ) : (
+        <div>
+          <p style={{ marginBottom: 20 }}>
+            This is single transaction to enable the sesion manager module and
+            set merkle root.
           </p>
 
           <Button
             title="Enable And Create Session"
             isLoading={loading}
-            onClickFunc={()=>{createSession(true)}}
+            onClickFunc={() => {
+              createSession(true);
+            }}
           />
         </div>
-      }
+      )}
     </main>
   );
 };

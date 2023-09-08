@@ -92,7 +92,7 @@ const SessionList = [
     icon: <GamesIcon />,
   },
   {
-    name: "Mint Nft using Session",
+    name: "ERC20 Transfer via sessionKey",
     icon: <InsertPhotoIcon />,
   },
 ];
