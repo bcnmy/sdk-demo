@@ -318,7 +318,7 @@
     chalk "^2.4.2"
     js-tokens "^4.0.0"
 
-"@babel/parser@^7.1.0", "@babel/parser@^7.14.7", "@babel/parser@^7.20.7", "@babel/parser@^7.22.15":
+"@babel/parser@^7.1.0", "@babel/parser@^7.14.7", "@babel/parser@^7.20.7", "@babel/parser@^7.22.15", "@babel/parser@^7.22.16":
   version "7.22.16"
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.22.16.tgz#180aead7f247305cce6551bea2720934e2fa2c95"
   integrity sha512-+gPfKv8UWeKKeJTUxe59+OobVcrYHETCsORl61EmSkmgymguYk/X5bp7GuUIXaFsc6y++v8ZxPsLSSuujqDphA==
@@ -1214,26 +1214,26 @@
     source-map-support "^0.5.19"
     typescript "^4.3.5"
 
-"@biconomy-devx/account@2.0.18":
-  version "2.0.18"
-  resolved "https://registry.yarnpkg.com/@biconomy-devx/account/-/account-2.0.18.tgz#8661be32072264d7e6b5154dd0a8a58c5d77eca7"
-  integrity sha512-r7UTOQvUTSalTgepVPWpALnN7xIFja4Pdagq+5yhQ+oQiQfe6rAwzzwWZMx8WJNCk3tzsiuWCqx3FHr0YGMSQA==
+"@biconomy-devx/account@2.0.20":
+  version "2.0.20"
+  resolved "https://registry.yarnpkg.com/@biconomy-devx/account/-/account-2.0.20.tgz#9234297077ddde952f13a9f165aad8cf140ae8d2"
+  integrity sha512-JroXW4ROjziGeG37HlpZoCEJGXhinok0HzsbBmZ099Iox5k8WyEUe/wg6vtUCOvhPvhK5g2dwbzotO0l6Ggpew==
   dependencies:
     "@biconomy-devx/account-contracts-v2" "npm:@biconomy-devx/account-contracts-v2@^1.0.0"
 
-"@biconomy-devx/bundler@2.0.18":
-  version "2.0.18"
-  resolved "https://registry.yarnpkg.com/@biconomy-devx/bundler/-/bundler-2.0.18.tgz#64649dadddffb470b5cce3af518082708e48d8e8"
-  integrity sha512-KJHIIAK6WAg2IPt68IFYuRT23I+KqODElEHFbQZxMSuo1Nw76s7zp/YxpLgKR/+VSQQmqGdvKhx0WbI1yrtcyg==
+"@biconomy-devx/bundler@2.0.20":
+  version "2.0.20"
+  resolved "https://registry.yarnpkg.com/@biconomy-devx/bundler/-/bundler-2.0.20.tgz#3df462ce74a7d603988e10a1fd3928fb6299df0f"
+  integrity sha512-OhQFoAC7hxRjTrWWc7pWREmVx+xC9oiUKIBiSPu6WPYdxsFYQdcYiX0EjSG15jMg8wOE7Lfl/fJ2FwDb865G/Q==
 
-"@biconomy-devx/common@2.0.18":
-  version "2.0.18"
-  resolved "https://registry.yarnpkg.com/@biconomy-devx/common/-/common-2.0.18.tgz#e14e8ec270b3aff50baed5bb69003d77a6ae030a"
-  integrity sha512-Mw6yeZWtHm6qwgj65fnLk+VMDyKIg5Yw90K6oBMXItl2vZs+xOJ83jM+87sq9vfstATzmg8qcFX+DgTAT9lvGQ==
+"@biconomy-devx/common@2.0.20":
+  version "2.0.20"
+  resolved "https://registry.yarnpkg.com/@biconomy-devx/common/-/common-2.0.20.tgz#7a88da827c7c0e64263b7b0e23b7234efc851427"
+  integrity sha512-R4+F5dCi9aOYg5ABSn3PiQwat5tbucLHz1s5LMTEmCPmK6PYL2Qkl2MwX0oD1JdvtPd+vcKHvaL6yGq0KU8R6A==
   dependencies:
     "@account-abstraction/contracts" "^0.6.0"
-    "@biconomy-devx/core-types" "^2.0.18"
-    "@biconomy-devx/node-client" "^2.0.18"
+    "@biconomy-devx/core-types" "^2.0.20"
+    "@biconomy-devx/node-client" "^2.0.20"
     "@ethersproject/abi" "^5.7.0"
     "@ethersproject/bytes" "^5.7.0"
     "@ethersproject/providers" "^5.7.0"
@@ -1244,44 +1244,44 @@
     ethers "^5.7.0"
     typechain "^8.1.1"
 
-"@biconomy-devx/core-types@2.0.18", "@biconomy-devx/core-types@^2.0.18":
-  version "2.0.18"
-  resolved "https://registry.yarnpkg.com/@biconomy-devx/core-types/-/core-types-2.0.18.tgz#1c1826bdde449c924fa41dbd9f8002191ebeeb61"
-  integrity sha512-D9PZpHZXqocNbvFHMSyKVeOnmhITy0VF7E1UuYWSAKwNaerZLPGoLSfTcMW5EtJj7EdppNNl2TeycUxvYN5wxQ==
+"@biconomy-devx/core-types@2.0.20", "@biconomy-devx/core-types@^2.0.20":
+  version "2.0.20"
+  resolved "https://registry.yarnpkg.com/@biconomy-devx/core-types/-/core-types-2.0.20.tgz#2a45c6c6706fa34b3973df7b2edb0fd3dba0e46c"
+  integrity sha512-j34T4Ayy7FL9jbiMRhdY6iC7mQNcfwSpreZjzEYLxQT2OGtZUiSgtRYXdEjWz3YKokL/8fiuCcEDzx28YLeHQQ==
   dependencies:
     "@ethersproject/bignumber" "^5.6.0"
     "@ethersproject/contracts" "^5.6.0"
     "@ethersproject/providers" "^5.7.0"
     web3-core "^1.7.1"
 
-"@biconomy-devx/modules@2.0.18":
-  version "2.0.18"
-  resolved "https://registry.yarnpkg.com/@biconomy-devx/modules/-/modules-2.0.18.tgz#4d56dbda2c60967c76947f7c26dd8e2ef95de24e"
-  integrity sha512-vo0PXbkh9eTk70FV2u1DZGEcspGRfXJ4p/AaMoTr/3uaR+vQm70bBo+S7TU3BFubLYU6a4TOwKMT634CJKuxPA==
+"@biconomy-devx/modules@2.0.20":
+  version "2.0.20"
+  resolved "https://registry.yarnpkg.com/@biconomy-devx/modules/-/modules-2.0.20.tgz#4e6d5d9b9023f14c63bb57e4cc6a84c5a8bc119f"
+  integrity sha512-CIEFfwwa80pLftrWwtUq89yW9KIlCeNJAS5jcr0pfO0A8pk3IcajVBAw72otaPALMPuQ9+u0m3o8cpl6KKU2rg==
   dependencies:
     merkletreejs "^0.3.9"
 
-"@biconomy-devx/node-client@^2.0.18":
-  version "2.0.18"
-  resolved "https://registry.yarnpkg.com/@biconomy-devx/node-client/-/node-client-2.0.18.tgz#75e8292903ec53c08ee666e51949942028c26cb9"
-  integrity sha512-uEv94vZE2yfovTGyVtUfK2KIA3E1GdUwj70fy0XRfqI7yQ2nJwhJbVQRIlai46qAl2LP4cclIdQZTUTszegQsw==
+"@biconomy-devx/node-client@^2.0.20":
+  version "2.0.20"
+  resolved "https://registry.yarnpkg.com/@biconomy-devx/node-client/-/node-client-2.0.20.tgz#bc1f87490b87917e8b237173cbf2cb4657dd35f0"
+  integrity sha512-+PHl0n16USYQnUDMaxwqOTKNh/t7EnQcxP0+Ysfe/GKhAlH261Bdkrj9uWZs3gEhYRjYmhwvDY0nY+yLbImOMA==
   dependencies:
-    "@biconomy-devx/core-types" "^2.0.18"
+    "@biconomy-devx/core-types" "^2.0.20"
     "@ethersproject/abstract-signer" "^5.6.0"
     "@nomiclabs/hardhat-ethers" "^2.1.0"
     node-fetch "^2.6.6"
 
-"@biconomy-devx/paymaster@2.0.18":
-  version "2.0.18"
-  resolved "https://registry.yarnpkg.com/@biconomy-devx/paymaster/-/paymaster-2.0.18.tgz#6a911b5519af9731149308d87f41c115562f17f8"
-  integrity sha512-KZr60tNb1Yi4L9n+DGBHsczEx2hQ5jQOtot8Y3J19tqJNLyD2KtjPuIJkdGz64u9Q/7D07FnW3fy5nEnyhLeIg==
+"@biconomy-devx/paymaster@2.0.20":
+  version "2.0.20"
+  resolved "https://registry.yarnpkg.com/@biconomy-devx/paymaster/-/paymaster-2.0.20.tgz#83650235bd98232794a46ead09a5fa965a487521"
+  integrity sha512-gzlk+++F08ueYA9w3mKK5dx01CkjT4udD0sO+UcTbznU8DMteLsamL3LeqJBFp4sa4txJvK9ZpIY5t5a9ZUUQg==
 
-"@biconomy-devx/web3-auth@2.0.18":
-  version "2.0.18"
-  resolved "https://registry.yarnpkg.com/@biconomy-devx/web3-auth/-/web3-auth-2.0.18.tgz#5319dd03e0198de85dcd51e2093e79baf1ca1ec4"
-  integrity sha512-31B2w7np+ZFLCxoEQgaRPYhx8cytjguXpOGTF6cjJQA2XvbQwNqyEVGpdAX4f0fA5MTl08Qs7dasBTUOm675/Q==
+"@biconomy-devx/web3-auth@2.0.20":
+  version "2.0.20"
+  resolved "https://registry.yarnpkg.com/@biconomy-devx/web3-auth/-/web3-auth-2.0.20.tgz#4b01dfc02e8f9d913df0c41923c9636ed5a5e9f7"
+  integrity sha512-w6lnaxluS1IbeaqPpjnomqE93gejKNdG/fIkARLknf/qWw8Mc8NLUv1XDzBj4urPosKOAgcsZmidpYu5h67Vtg==
   dependencies:
-    "@biconomy-devx/node-client" "^2.0.18"
+    "@biconomy-devx/node-client" "^2.0.20"
     "@walletconnect/qrcode-modal" "^1.8.0"
     "@web3auth/base" "^3.0.0"
     "@web3auth/core" "^3.0.0"

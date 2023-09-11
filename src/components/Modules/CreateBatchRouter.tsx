@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { makeStyles } from "@mui/styles";
-import { SessionKeyManagerModule } from "@biconomy-devx/modules";
+import {
+  BatchedSessionRouterModule,
+  SessionKeyManagerModule,
+} from "@biconomy-devx/modules";
 import Button from "../Button";
 import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
@@ -9,7 +12,7 @@ import { showErrorMessage, showInfoMessage } from "../../utils";
 import { defaultAbiCoder } from "ethers/lib/utils";
 import { getActionForErrorMessage } from "../../utils/error-utils";
 
-const CreateSession: React.FC = () => {
+const CreateBatchRouter: React.FC = () => {
   const classes = useStyles();
   const { web3Provider } = useWeb3AuthContext();
   const { smartAccount, scwAddress } = useSmartAccountContext();
@@ -51,7 +54,8 @@ const CreateSession: React.FC = () => {
     try {
       let biconomySmartAccount = smartAccount;
       const managerModuleAddr = "0x000002FbFfedd9B33F4E7156F2DE8D48945E7489";
-      const erc20ModuleAddr = "0x000000D50C68705bd6897B2d17c7de32FB519fDA";
+      const routerModuleAddr = "0x58464D89f5763FAea0eEc57AE6E28C9CdB03b41B";
+      const erc20ModuleAddr = "0x3A25b00638fF5bDfD4f300beF39d236041C073c0";
 
       // -----> setMerkle tree tx flow
       // create dapp side session key
@@ -67,6 +71,12 @@ const CreateSession: React.FC = () => {
         smartAccountAddress: scwAddress,
       });
 
+      const sessionRouterModule = await BatchedSessionRouterModule.create({
+        moduleAddress: routerModuleAddr,
+        sessionKeyManagerModule: sessionModule,
+        smartAccountAddress: scwAddress,
+      });
+
       // cretae session key data
       const sessionKeyData = defaultAbiCoder.encode(
         ["address", "address", "address", "uint256"],
@@ -77,8 +87,17 @@ const CreateSession: React.FC = () => {
           ethers.utils.parseUnits("50".toString(), 6).toHexString(), // 50 usdc amount
         ]
       );
+      const sessionKeyData2 = defaultAbiCoder.encode(
+        ["address", "address", "address", "uint256"],
+        [
+          sessionKeyEOA,
+          "0xdA5289fCAAF71d52a80A254da614a192b693e977", // erc20 token address
+          "0x5a86A87b3ea8080Ff0B99820159755a4422050e6", // receiver address 2
+          ethers.utils.parseUnits("100".toString(), 6).toHexString(),
+        ]
+      );
 
-      const sessionTxData = await sessionModule.createSessionData([
+      const sessionTxData = await sessionRouterModule.createSessionData([
         {
           validUntil: 0,
           validAfter: 0,
@@ -86,7 +105,13 @@ const CreateSession: React.FC = () => {
           sessionPublicKey: sessionKeyEOA,
           sessionKeyData: sessionKeyData,
         },
-        // can optionally enable multiple leaves(sessions) altogether
+        {
+          validUntil: 0,
+          validAfter: 0,
+          sessionValidationModule: erc20ModuleAddr,
+          sessionPublicKey: sessionKeyEOA,
+          sessionKeyData: sessionKeyData2,
+        },
       ]);
       console.log("sessionTxData", sessionTxData);
 
@@ -146,7 +171,7 @@ const CreateSession: React.FC = () => {
       {isSessionKeyModuleEnabled ? (
         <div>
           <p style={{ marginBottom: 20 }}>
-            Session Key Manager Module is already enabled  ✅. Click on the button
+            Session Key Manager Module is already enabled ✅. Click on the button
             to create a new session.
           </p>
 
@@ -193,4 +218,4 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default CreateSession;
+export default CreateBatchRouter;
