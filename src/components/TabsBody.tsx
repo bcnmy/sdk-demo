@@ -39,6 +39,7 @@ import BatchLiquidityForward from "./Forward/BatchLiquidity";
 import CreateSession from "./Modules/CreateSession";
 import SessionFlow from "./Modules";
 import ERC20Transfer from "./Modules/ERC20Transfer";
+import ERC20BatchRouter from "./Modules/ERC20BatchRouter";
 
 const drawerWidth = 260;
 const onboardingList = [
@@ -92,7 +93,11 @@ const SessionList = [
     icon: <GamesIcon />,
   },
   {
-    name: "ERC20 Transfer via sessionKey",
+    name: "ERC20 Transfer Session",
+    icon: <InsertPhotoIcon />,
+  },
+  {
+    name: "ERC20 Transfer Router",
     icon: <InsertPhotoIcon />,
   },
 ];
@@ -135,6 +140,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
             background: "rgba(0,0,0,0)",
             color: "#e6e6e6",
             border: 0,
+            borderRight: `1.5px solid rgba(255,255,255,0.1)`,
           },
           "& .MuiTypography-root": {
             fontSize: 14,
@@ -430,6 +436,9 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
       </TabPanel>
       <TabPanel value={pageIndex} index={13}>
         <ERC20Transfer />
+      </TabPanel>
+      <TabPanel value={pageIndex} index={14}>
+        <ERC20BatchRouter />
       </TabPanel>
     </Box>
   );
