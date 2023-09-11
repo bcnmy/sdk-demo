@@ -27,8 +27,8 @@ const CreateSession: React.FC = () => {
     if (!scwAddress || !smartAccount || !web3Provider) return;
     try {
       let biconomySmartAccount = smartAccount;
-      const managerModuleAddr = "0x6E49e404BD70bcc4756F1057d2E2e6000cD38e1e";
-      const erc20ModuleAddr = "0x3A25b00638fF5bDfD4f300beF39d236041C073c0";
+      const managerModuleAddr = "0x000002FbFfedd9B33F4E7156F2DE8D48945E7489";
+      const erc20ModuleAddr = "0x000000D50C68705bd6897B2d17c7de32FB519fDA";
 
       // -----> setMerkle tree tx flow
       // create dapp side session key
@@ -114,7 +114,7 @@ const CreateSession: React.FC = () => {
     if (!scwAddress || !smartAccount || !web3Provider) return false;
     try {
       let biconomySmartAccount = smartAccount;
-      const managerModuleAddr = "0x6E49e404BD70bcc4756F1057d2E2e6000cD38e1e";
+      const managerModuleAddr = "0x000002FbFfedd9B33F4E7156F2DE8D48945E7489";
       const isEnabled = await biconomySmartAccount.isModuleEnabled(managerModuleAddr);
       return isEnabled;
     } catch (err: any) {

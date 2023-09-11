@@ -23,8 +23,8 @@ const ERC20Transfer: React.FC = () => {
     try {
       setLoading(true);
       let biconomySmartAccount = smartAccount;
-      const managerModuleAddr = "0x6E49e404BD70bcc4756F1057d2E2e6000cD38e1e";
-      const erc20ModuleAddr = "0x3A25b00638fF5bDfD4f300beF39d236041C073c0";
+      const managerModuleAddr = "0x000002FbFfedd9B33F4E7156F2DE8D48945E7489";
+      const erc20ModuleAddr = "0x000000D50C68705bd6897B2d17c7de32FB519fDA";
 
       // get session key from local storage
       const sessionKeyEOA = window.localStorage.getItem("sessionPKey");
