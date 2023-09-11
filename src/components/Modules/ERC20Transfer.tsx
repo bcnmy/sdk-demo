@@ -26,8 +26,8 @@ const ERC20Transfer: React.FC = () => {
     try {
       setLoading(true);
       let biconomySmartAccount = smartAccount;
-      const managerModuleAddr = "0x000000456b395c4e107e0302553B90D1eF4a32e9";
-      const erc20ModuleAddr = "0x000000dB3D753A1da5A6074a9F74F39a0A779d33";
+      const managerModuleAddr = "0x000002FbFfedd9B33F4E7156F2DE8D48945E7489";
+      const erc20ModuleAddr = "0x000000D50C68705bd6897B2d17c7de32FB519fDA";
 
       // get session key from local storage
       const sessionKeyPrivKey = window.localStorage.getItem("sessionPKey");
@@ -68,6 +68,7 @@ const ERC20Transfer: React.FC = () => {
         ethers.utils.parseUnits("5".toString(), decimals)
       );
 
+      // TODO // get these from config
       // generate tx data to erc20 transfer
       const tx1 = {
         to: "0xdA5289fCAAF71d52a80A254da614a192b693e977", //erc20 token address
@@ -88,8 +89,6 @@ const ERC20Transfer: React.FC = () => {
           sessionValidationModule: erc20ModuleAddr,
         },
       });
-
-      console.log("userOp sig", userOp.signature);
 
       // send user op
       const userOpResponse = await biconomySmartAccount.sendUserOp(userOp, {

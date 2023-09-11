@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { makeStyles } from "@mui/styles";
-import { SessionKeyManagerModule } from "@biconomy-devx/modules";
+import { BatchedSessionRouterModule, SessionKeyManagerModule } from "@biconomy-devx/modules";
 import Button from "../Button";
 import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
@@ -52,8 +52,8 @@ const CreateSession: React.FC = () => {
     }
     try {
       let biconomySmartAccount = smartAccount;
-      const managerModuleAddr = "0x000000456b395c4e107e0302553B90D1eF4a32e9";
-      const erc20ModuleAddr = "0x000000dB3D753A1da5A6074a9F74F39a0A779d33";
+      const managerModuleAddr = "0x000002FbFfedd9B33F4E7156F2DE8D48945E7489";
+      const erc20ModuleAddr = "0x000000D50C68705bd6897B2d17c7de32FB519fDA";
 
       // -----> setMerkle tree tx flow
       // create dapp side session key
@@ -66,7 +66,6 @@ const CreateSession: React.FC = () => {
       // generate sessionModule
       const sessionModule = await SessionKeyManagerModule.create({
         moduleAddress: managerModuleAddr,
-        // sessionPubKey: sessionKeyEOA,
         smartAccountAddress: scwAddress,
       });
 
@@ -80,16 +79,16 @@ const CreateSession: React.FC = () => {
           ethers.utils.parseUnits("50".toString(), 6).toHexString(), // 50 usdc amount
         ]
       );
-
-      const sessionTxData = await sessionModule.createSessionData([
-        {
-          validUntil: 0,
-          validAfter: 0,
-          sessionValidationModule: erc20ModuleAddr,
-          sessionPublicKey: sessionKeyEOA,
-          sessionKeyData: sessionKeyData,
-        },
-      ]);
+      
+      const sessionTxData = await sessionModule.createSessionData([{
+        validUntil: 0,
+        validAfter: 0,
+        sessionValidationModule: erc20ModuleAddr,
+        sessionPublicKey: sessionKeyEOA,
+        sessionKeyData: sessionKeyData,
+      }
+      // can optionally enable multiple leaves(sessions) altogether
+    ]);
       console.log("sessionTxData", sessionTxData);
 
       // tx to set session key
@@ -118,14 +117,16 @@ const CreateSession: React.FC = () => {
       const transactionDetails = await userOpResponse.wait();
       console.log("txHash", transactionDetails.receipt.transactionHash);
       showInfoMessage("Session Created Successfully");
+
       // update the session key //enableModule
-      await sessionModule.updateSessionStatus(
+      /*await sessionRouterModule.updateSessionStatus(
         {
           sessionPublicKey: sessionKeyEOA,
           sessionValidationModule: erc20ModuleAddr,
         },
         "ACTIVE"
-      );
+      );*/
+
     } catch (err: any) {
       console.error(err);
       setLoading(false);
@@ -135,6 +136,21 @@ const CreateSession: React.FC = () => {
       );
     }
   };
+
+  const _isSessionKeyModuleEnabled = async (): Promise<boolean> => {
+    if (!scwAddress || !smartAccount || !web3Provider) return false;
+    try {
+      let biconomySmartAccount = smartAccount;
+      const managerModuleAddr = "0x000002FbFfedd9B33F4E7156F2DE8D48945E7489";
+      const isEnabled = await biconomySmartAccount.isModuleEnabled(managerModuleAddr);
+      return isEnabled;
+    } catch (err: any) {
+      console.error(err);
+      setLoading(false);
+      showErrorMessage(err.message || "Error in getting session key module status");
+      return false;
+    }
+  }
 
   return (
     <main className={classes.main}>
