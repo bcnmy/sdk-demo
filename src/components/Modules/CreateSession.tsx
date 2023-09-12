@@ -8,6 +8,7 @@ import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import { showErrorMessage, showInfoMessage } from "../../utils";
 import { defaultAbiCoder } from "ethers/lib/utils";
 import { getActionForErrorMessage } from "../../utils/error-utils";
+import { DEFAULT_SESSION_KEY_MANAGER_MODULE  } from "@biconomy-devx/modules";
 
 const CreateSession: React.FC = () => {
   const classes = useStyles();
@@ -25,7 +26,7 @@ const CreateSession: React.FC = () => {
       }
       try {
         let biconomySmartAccount = smartAccount;
-        const managerModuleAddr = "0x000002FbFfedd9B33F4E7156F2DE8D48945E7489";
+        const managerModuleAddr = DEFAULT_SESSION_KEY_MANAGER_MODULE;
         const isEnabled = await biconomySmartAccount.isModuleEnabled(
           managerModuleAddr
         );
@@ -50,9 +51,8 @@ const CreateSession: React.FC = () => {
     }
     try {
       let biconomySmartAccount = smartAccount;
-      const managerModuleAddr = "0x000002FbFfedd9B33F4E7156F2DE8D48945E7489";
+      const managerModuleAddr = DEFAULT_SESSION_KEY_MANAGER_MODULE;
       const erc20ModuleAddr = "0x000000D50C68705bd6897B2d17c7de32FB519fDA";
-      // const mockSessionModuleAddr = "0x7Ba4a7338D7A90dfA465cF975Cc6691812C3772E";
 
       // -----> setMerkle tree tx flow
       // create dapp side session key
@@ -78,8 +78,6 @@ const CreateSession: React.FC = () => {
           ethers.utils.parseUnits("50".toString(), 6).toHexString(), // 50 usdc amount
         ]
       );
-
-      // const sessionKeyData2 = defaultAbiCoder.encode(["address"], [sessionKeyEOA]);
 
       const sessionTxData = await sessionModule.createSessionData([
         {

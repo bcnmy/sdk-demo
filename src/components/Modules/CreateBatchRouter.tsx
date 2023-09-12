@@ -11,6 +11,7 @@ import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import { showErrorMessage, showInfoMessage } from "../../utils";
 import { defaultAbiCoder } from "ethers/lib/utils";
 import { getActionForErrorMessage } from "../../utils/error-utils";
+import { DEFAULT_BATCHED_SESSION_ROUTER_MODULE, DEFAULT_SESSION_KEY_MANAGER_MODULE  } from "@biconomy-devx/modules";
 
 const CreateBatchRouter: React.FC = () => {
   const classes = useStyles();
@@ -28,7 +29,7 @@ const CreateBatchRouter: React.FC = () => {
       }
       try {
         let biconomySmartAccount = smartAccount;
-        const managerModuleAddr = "0x000002FbFfedd9B33F4E7156F2DE8D48945E7489";
+        const managerModuleAddr = DEFAULT_SESSION_KEY_MANAGER_MODULE;
         const isEnabled = await biconomySmartAccount.isModuleEnabled(
           managerModuleAddr
         );
@@ -53,9 +54,10 @@ const CreateBatchRouter: React.FC = () => {
     }
     try {
       let biconomySmartAccount = smartAccount;
-      const managerModuleAddr = "0x000002FbFfedd9B33F4E7156F2DE8D48945E7489";
-      const routerModuleAddr = "0x58464D89f5763FAea0eEc57AE6E28C9CdB03b41B";
-      const erc20ModuleAddr = "0x3A25b00638fF5bDfD4f300beF39d236041C073c0";
+      const managerModuleAddr = DEFAULT_SESSION_KEY_MANAGER_MODULE;
+      const routerModuleAddr = DEFAULT_BATCHED_SESSION_ROUTER_MODULE;
+      const erc20ModuleAddr = "0x000000D50C68705bd6897B2d17c7de32FB519fDA";
+      const mockSessionModuleAddr = "0x7Ba4a7338D7A90dfA465cF975Cc6691812C3772E";
 
       // -----> setMerkle tree tx flow
       // create dapp side session key
@@ -87,7 +89,7 @@ const CreateBatchRouter: React.FC = () => {
           ethers.utils.parseUnits("50".toString(), 6).toHexString(), // 50 usdc amount
         ]
       );
-      const sessionKeyData2 = defaultAbiCoder.encode(
+      /*const sessionKeyData2 = defaultAbiCoder.encode(
         ["address", "address", "address", "uint256"],
         [
           sessionKeyEOA,
@@ -95,7 +97,9 @@ const CreateBatchRouter: React.FC = () => {
           "0x5a86A87b3ea8080Ff0B99820159755a4422050e6", // receiver address 2
           ethers.utils.parseUnits("100".toString(), 6).toHexString(),
         ]
-      );
+      );*/
+
+      const sessionKeyData2 = defaultAbiCoder.encode(["address"], [sessionKeyEOA]);
 
       const sessionTxData = await sessionRouterModule.createSessionData([
         {
@@ -108,7 +112,7 @@ const CreateBatchRouter: React.FC = () => {
         {
           validUntil: 0,
           validAfter: 0,
-          sessionValidationModule: erc20ModuleAddr,
+          sessionValidationModule: mockSessionModuleAddr,
           sessionPublicKey: sessionKeyEOA,
           sessionKeyData: sessionKeyData2,
         },

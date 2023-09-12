@@ -14,6 +14,7 @@ import {
   showSuccessMessage,
   showErrorMessage,
 } from "../../utils";
+import { DEFAULT_BATCHED_SESSION_ROUTER_MODULE, DEFAULT_SESSION_KEY_MANAGER_MODULE  } from "@biconomy-devx/modules";
 
 const ERC20RouterTransfer: React.FC = () => {
   const classes = useStyles();
@@ -29,9 +30,10 @@ const ERC20RouterTransfer: React.FC = () => {
     try {
       setLoading(true);
       let biconomySmartAccount = smartAccount;
-      const managerModuleAddr = "0x000002FbFfedd9B33F4E7156F2DE8D48945E7489";
-      const erc20ModuleAddr = "0x3A25b00638fF5bDfD4f300beF39d236041C073c0";
-      const routerModuleAddr = "0x58464D89f5763FAea0eEc57AE6E28C9CdB03b41B";
+      const managerModuleAddr = DEFAULT_SESSION_KEY_MANAGER_MODULE;
+      const erc20ModuleAddr = "0x000000D50C68705bd6897B2d17c7de32FB519fDA";
+      const routerModuleAddr = DEFAULT_BATCHED_SESSION_ROUTER_MODULE;
+      const mockSessionModuleAddr = "0x7Ba4a7338D7A90dfA465cF975Cc6691812C3772E";
 
       // get session key from local storage
       const sessionKeyPrivKey = window.localStorage.getItem("sessionPKey");
@@ -114,8 +116,7 @@ const ERC20RouterTransfer: React.FC = () => {
             },
             {
               sessionSigner: sessionSigner,
-              // sessionID: "7aecb3a45c",
-              sessionValidationModule: erc20ModuleAddr,
+              sessionValidationModule: mockSessionModuleAddr,
             },
           ],
         },
@@ -126,13 +127,11 @@ const ERC20RouterTransfer: React.FC = () => {
         batchSessionParams: [
           {
             sessionSigner: sessionSigner,
-            // sessionID: "67e910ef2c",
             sessionValidationModule: erc20ModuleAddr,
           },
           {
             sessionSigner: sessionSigner,
-            // sessionID: "7aecb3a45c",
-            sessionValidationModule: erc20ModuleAddr,
+            sessionValidationModule: mockSessionModuleAddr,
           },
         ],
       });
