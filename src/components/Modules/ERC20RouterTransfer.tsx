@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import { ethers } from "ethers";
 import { makeStyles } from "@mui/styles";
-import { SessionKeyManagerModule } from "@biconomy-devx/modules";
+import {
+  BatchedSessionRouterModule,
+  SessionKeyManagerModule,
+} from "@biconomy-devx/modules";
 
 import Button from "../Button";
 import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
@@ -12,7 +15,7 @@ import {
   showErrorMessage,
 } from "../../utils";
 
-const ERC20Transfer: React.FC = () => {
+const ERC20RouterTransfer: React.FC = () => {
   const classes = useStyles();
   const { web3Provider } = useWeb3AuthContext();
   const { smartAccount, scwAddress } = useSmartAccountContext();
@@ -27,7 +30,8 @@ const ERC20Transfer: React.FC = () => {
       setLoading(true);
       let biconomySmartAccount = smartAccount;
       const managerModuleAddr = "0x000002FbFfedd9B33F4E7156F2DE8D48945E7489";
-      const erc20ModuleAddr = "0x000000D50C68705bd6897B2d17c7de32FB519fDA";
+      const erc20ModuleAddr = "0x3A25b00638fF5bDfD4f300beF39d236041C073c0";
+      const routerModuleAddr = "0x58464D89f5763FAea0eEc57AE6E28C9CdB03b41B";
 
       // get session key from local storage
       const sessionKeyPrivKey = window.localStorage.getItem("sessionPKey");
@@ -45,55 +49,92 @@ const ERC20Transfer: React.FC = () => {
         moduleAddress: managerModuleAddr,
         smartAccountAddress: scwAddress,
       });
+      const sessionRouterModule = await BatchedSessionRouterModule.create({
+        moduleAddress: routerModuleAddr,
+        sessionKeyManagerModule: sessionModule,
+        smartAccountAddress: scwAddress,
+      });
 
-      // set active module to sessionModule
+      // set active module to sessionRouterModule
       biconomySmartAccount =
-        biconomySmartAccount.setActiveValidationModule(sessionModule);
+        biconomySmartAccount.setActiveValidationModule(sessionRouterModule);
 
+      // er20 transfer data generation
       const tokenContract = new ethers.Contract(
         config.usdc.address,
         config.usdc.abi,
         web3Provider
       );
       let decimals = 18;
-
       try {
         decimals = await tokenContract.decimals();
       } catch (error) {
         throw new Error("invalid token address supplied");
       }
-
-      const { data } = await tokenContract.populateTransaction.transfer(
-        "0x42138576848E839827585A3539305774D36B9602", // receiver address
-        ethers.utils.parseUnits("5".toString(), decimals)
-      );
-
-      // TODO // get these from config
+      const amountGwei = ethers.utils.parseUnits("5".toString(), decimals);
+      const data = (
+        await tokenContract.populateTransaction.transfer(
+          "0x42138576848E839827585A3539305774D36B9602", // receiver address
+          amountGwei
+        )
+      ).data;
+      const data2 = (
+        await tokenContract.populateTransaction.transfer(
+          "0x5a86A87b3ea8080Ff0B99820159755a4422050e6", // receiver address 2
+          amountGwei
+        )
+      ).data;
       // generate tx data to erc20 transfer
       const tx1 = {
         to: "0xdA5289fCAAF71d52a80A254da614a192b693e977", //erc20 token address
         data: data,
         value: "0",
       };
+      const tx2 = {
+        to: "0xdA5289fCAAF71d52a80A254da614a192b693e977", //erc20 token address
+        data: data2,
+        value: "0",
+      };
 
       // build user op
-      let userOp = await biconomySmartAccount.buildUserOp([tx1], {
+      // build user op
+      let userOp = await biconomySmartAccount.buildUserOp([tx1, tx2], {
         overrides: {
           // signature: "0x0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000456b395c4e107e0302553b90d1ef4a32e9000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000db3d753a1da5a6074a9f74f39a0a779d3300000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000016000000000000000000000000000000000000000000000000000000000000001800000000000000000000000000000000000000000000000000000000000000080000000000000000000000000bfe121a6dcf92c49f6c2ebd4f306ba0ba0ab6f1c000000000000000000000000da5289fcaaf71d52a80a254da614a192b693e97700000000000000000000000042138576848e839827585a3539305774d36b96020000000000000000000000000000000000000000000000000000000002faf08000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000041feefc797ef9e9d8a6a41266a85ddf5f85c8f2a3d2654b10b415d348b150dabe82d34002240162ed7f6b7ffbc40162b10e62c3e35175975e43659654697caebfe1c00000000000000000000000000000000000000000000000000000000000000"
-          // callGasLimit: 2000000, // only if undeployed account
-          // verificationGasLimit: 700000
+          callGasLimit: 400000, // only if undeployed account
+          verificationGasLimit: 900000,
         },
-        skipBundlerGasEstimation: false,
+        skipBundlerGasEstimation: true,
         params: {
-          sessionSigner: sessionSigner,
-          sessionValidationModule: erc20ModuleAddr,
+          batchSessionParams: [
+            {
+              sessionSigner: sessionSigner,
+              // sessionID: "67e910ef2c", // only require session id filter when multiple leafs have same SVM
+              sessionValidationModule: erc20ModuleAddr,
+            },
+            {
+              sessionSigner: sessionSigner,
+              // sessionID: "7aecb3a45c",
+              sessionValidationModule: erc20ModuleAddr,
+            },
+          ],
         },
       });
 
       // send user op
       const userOpResponse = await biconomySmartAccount.sendUserOp(userOp, {
-        sessionSigner: sessionSigner,
-        sessionValidationModule: erc20ModuleAddr,
+        batchSessionParams: [
+          {
+            sessionSigner: sessionSigner,
+            // sessionID: "67e910ef2c",
+            sessionValidationModule: erc20ModuleAddr,
+          },
+          {
+            sessionSigner: sessionSigner,
+            // sessionID: "7aecb3a45c",
+            sessionValidationModule: erc20ModuleAddr,
+          },
+        ],
       });
 
       console.log("userOpHash", userOpResponse);
@@ -147,4 +188,4 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default ERC20Transfer;
+export default ERC20RouterTransfer;

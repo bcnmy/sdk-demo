@@ -16,6 +16,8 @@ import SavingsIcon from "@mui/icons-material/Savings";
 import TokenIcon from "@mui/icons-material/Token";
 import EvStationIcon from "@mui/icons-material/EvStation";
 import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
+import CookieIcon from '@mui/icons-material/Cookie';
+import FiberNewIcon from '@mui/icons-material/FiberNew';
 import BurstModeIcon from "@mui/icons-material/BurstMode";
 import GamesIcon from "@mui/icons-material/Games";
 import ContactlessIcon from "@mui/icons-material/Contactless";
@@ -39,6 +41,8 @@ import BatchLiquidityForward from "./Forward/BatchLiquidity";
 import CreateSession from "./Modules/CreateSession";
 import SessionFlow from "./Modules";
 import ERC20Transfer from "./Modules/ERC20Transfer";
+import CreateBatchRouter from "./Modules/CreateBatchRouter";
+import ERC20RouterTransfer from "./Modules/ERC20RouterTransfer";
 
 const drawerWidth = 260;
 const onboardingList = [
@@ -92,9 +96,17 @@ const SessionList = [
     icon: <GamesIcon />,
   },
   {
-    name: "Mint Nft using Session",
-    icon: <InsertPhotoIcon />,
+    name: "Create Batch Router",
+    icon: <GamesIcon />,
   },
+  {
+    name: "ERC20 Transfer Session",
+    icon: <CookieIcon />,
+  },
+  {
+    name: "ERC20 Batch Router",
+    icon: <CookieIcon />,
+  }
 ];
 
 const TabsBody = ({ loading }: { loading: boolean }) => {
@@ -135,6 +147,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
             background: "rgba(0,0,0,0)",
             color: "#e6e6e6",
             border: 0,
+            borderRight: `1.5px solid rgba(255,255,255,0.1)`,
           },
           "& .MuiTypography-root": {
             fontSize: 14,
@@ -328,7 +341,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
                 color: pageIndex === 11 ? "#FFB999" : "#e6e6e6",
               }}
             >
-              <ContactlessIcon />
+              <FiberNewIcon />
             </ListItemIcon>
             <ListItemText
               primary="Session Module Demo"
@@ -429,7 +442,13 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
         <CreateSession />
       </TabPanel>
       <TabPanel value={pageIndex} index={13}>
+        <CreateBatchRouter />
+      </TabPanel>
+      <TabPanel value={pageIndex} index={14}>
         <ERC20Transfer />
+      </TabPanel>
+      <TabPanel value={pageIndex} index={15}>
+        <ERC20RouterTransfer />
       </TabPanel>
     </Box>
   );
