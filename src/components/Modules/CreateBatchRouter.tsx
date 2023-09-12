@@ -20,6 +20,7 @@ const CreateBatchRouter: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [isSessionKeyModuleEnabled, setIsSessionKeyModuleEnabled] =
     useState(false);
+  const [isBRMenabled, setIsBRMenabled] = useState(false);
 
   useEffect(() => {
     let checkSessionModuleEnabled = async () => {
@@ -29,12 +30,15 @@ const CreateBatchRouter: React.FC = () => {
       }
       try {
         let biconomySmartAccount = smartAccount;
-        const managerModuleAddr = DEFAULT_SESSION_KEY_MANAGER_MODULE;
-        const isEnabled = await biconomySmartAccount.isModuleEnabled(
-          managerModuleAddr
+        const isEnabled1 = await biconomySmartAccount.isModuleEnabled(
+          DEFAULT_SESSION_KEY_MANAGER_MODULE
         );
-        console.log("isSessionKeyModuleEnabled", isEnabled);
-        setIsSessionKeyModuleEnabled(isEnabled);
+        setIsSessionKeyModuleEnabled(isEnabled1);
+        const isEnabled2 = await biconomySmartAccount.isModuleEnabled(
+          DEFAULT_BATCHED_SESSION_ROUTER_MODULE
+        );
+        setIsBRMenabled(isEnabled2);
+        console.log("isSessionKeyModuleEnabled, setIsBRMenabled", isEnabled1, isEnabled2);
         return;
       } catch (err: any) {
         console.error(err);
@@ -47,7 +51,7 @@ const CreateBatchRouter: React.FC = () => {
     checkSessionModuleEnabled();
   }, [isSessionKeyModuleEnabled, scwAddress, smartAccount, web3Provider]);
 
-  const createSession = async (enableSessionKeyModule: boolean) => {
+  const createSession = async (enableModule: boolean) => {
     if (!scwAddress || !smartAccount || !web3Provider) {
       showErrorMessage("Please connect wallet first");
       return;
@@ -120,20 +124,27 @@ const CreateBatchRouter: React.FC = () => {
       console.log("sessionTxData", sessionTxData);
 
       // tx to set session key
-      const tx2 = {
+      const tx3 = {
         to: managerModuleAddr, // session manager module address
         data: sessionTxData,
       };
 
       let transactionArray = [];
-      if (enableSessionKeyModule) {
+      if (!isSessionKeyModuleEnabled) {
         // -----> enableModule session manager module
         const tx1 = await biconomySmartAccount.getEnableModuleData(
           managerModuleAddr
         );
         transactionArray.push(tx1);
       }
-      transactionArray.push(tx2);
+      if(!isBRMenabled) {
+        // -----> enableModule batched session router module
+        const tx2 = await biconomySmartAccount.getEnableModuleData(
+          routerModuleAddr
+        );
+        transactionArray.push(tx2);
+      }
+      transactionArray.push(tx3);
       let partialUserOp = await biconomySmartAccount.buildUserOp(
         transactionArray
       );
@@ -172,7 +183,7 @@ const CreateBatchRouter: React.FC = () => {
 
       <h3 className={classes.subTitle}>Create Session Flow</h3>
 
-      {isSessionKeyModuleEnabled ? (
+      {isSessionKeyModuleEnabled && isBRMenabled ? (
         <div>
           <p style={{ marginBottom: 20 }}>
             Session Key Manager Module is already enabled ✅. Click on the button
