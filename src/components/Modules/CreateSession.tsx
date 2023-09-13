@@ -94,7 +94,7 @@ const CreateSession: React.FC = () => {
       // tx to set session key
       const tx2 = {
         to: managerModuleAddr, // session manager module address
-        data: sessionTxData,
+        data: sessionTxData.data,
       };
 
       let transactionArray = [];

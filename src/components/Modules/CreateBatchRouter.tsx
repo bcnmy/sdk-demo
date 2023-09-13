@@ -126,7 +126,7 @@ const CreateBatchRouter: React.FC = () => {
       // tx to set session key
       const tx3 = {
         to: managerModuleAddr, // session manager module address
-        data: sessionTxData,
+        data: sessionTxData.data,
       };
 
       let transactionArray = [];
