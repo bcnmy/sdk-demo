@@ -72,11 +72,11 @@ export const SmartAccountProvider = ({ children }: any) => {
         paymasterUrl: paymasterApi,
       });
       // create multiChainModule
-      const multiChainModule = new MultiChainValidationModule({
+      const multiChainModule = await MultiChainValidationModule.create({
         signer: walletProvider.getSigner(),
         moduleAddress: "0x000000824dc138db84FD9109fc154bdad332Aa8E",
       });
-      let wallet = new BiconomySmartAccountV2({
+      let wallet = await BiconomySmartAccountV2.create({
         chainId: activeChainId,
         paymaster: paymaster,
         bundler: bundler,
