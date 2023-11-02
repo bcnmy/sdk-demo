@@ -4,18 +4,21 @@ import { makeStyles } from "@mui/styles";
 import {
   BatchedSessionRouterModule,
   SessionKeyManagerModule,
-} from "@biconomy-devx/modules";
+} from "@biconomy/modules";
+import { useAccount } from "wagmi";
 import Button from "../Button";
-import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import { showErrorMessage, showInfoMessage } from "../../utils";
 import { defaultAbiCoder } from "ethers/lib/utils";
 import { getActionForErrorMessage } from "../../utils/error-utils";
-import { DEFAULT_BATCHED_SESSION_ROUTER_MODULE, DEFAULT_SESSION_KEY_MANAGER_MODULE  } from "@biconomy-devx/modules";
+import {
+  DEFAULT_BATCHED_SESSION_ROUTER_MODULE,
+  DEFAULT_SESSION_KEY_MANAGER_MODULE,
+} from "@biconomy/modules";
 
 const CreateBatchRouter: React.FC = () => {
   const classes = useStyles();
-  const { web3Provider } = useWeb3AuthContext();
+  const { address } = useAccount();
   const { smartAccount, scwAddress } = useSmartAccountContext();
   const [loading, setLoading] = useState(false);
   const [isSessionKeyModuleEnabled, setIsSessionKeyModuleEnabled] =
@@ -24,7 +27,7 @@ const CreateBatchRouter: React.FC = () => {
 
   useEffect(() => {
     let checkSessionModuleEnabled = async () => {
-      if (!scwAddress || !smartAccount || !web3Provider) {
+      if (!scwAddress || !smartAccount || !address) {
         setIsSessionKeyModuleEnabled(false);
         return;
       }
@@ -38,7 +41,11 @@ const CreateBatchRouter: React.FC = () => {
           DEFAULT_BATCHED_SESSION_ROUTER_MODULE
         );
         setIsBRMenabled(isEnabled2);
-        console.log("isSessionKeyModuleEnabled, setIsBRMenabled", isEnabled1, isEnabled2);
+        console.log(
+          "isSessionKeyModuleEnabled, setIsBRMenabled",
+          isEnabled1,
+          isEnabled2
+        );
         return;
       } catch (err: any) {
         console.error(err);
@@ -49,10 +56,10 @@ const CreateBatchRouter: React.FC = () => {
       }
     };
     checkSessionModuleEnabled();
-  }, [isSessionKeyModuleEnabled, scwAddress, smartAccount, web3Provider]);
+  }, [isSessionKeyModuleEnabled, scwAddress, smartAccount, address]);
 
   const createSession = async (enableModule: boolean) => {
-    if (!scwAddress || !smartAccount || !web3Provider) {
+    if (!scwAddress || !smartAccount || !address) {
       showErrorMessage("Please connect wallet first");
       return;
     }
@@ -61,7 +68,8 @@ const CreateBatchRouter: React.FC = () => {
       const managerModuleAddr = DEFAULT_SESSION_KEY_MANAGER_MODULE;
       const routerModuleAddr = DEFAULT_BATCHED_SESSION_ROUTER_MODULE;
       const erc20ModuleAddr = "0x000000D50C68705bd6897B2d17c7de32FB519fDA";
-      const mockSessionModuleAddr = "0x7Ba4a7338D7A90dfA465cF975Cc6691812C3772E";
+      const mockSessionModuleAddr =
+        "0x7Ba4a7338D7A90dfA465cF975Cc6691812C3772E";
 
       // -----> setMerkle tree tx flow
       // create dapp side session key
@@ -103,7 +111,10 @@ const CreateBatchRouter: React.FC = () => {
         ]
       );*/
 
-      const sessionKeyData2 = defaultAbiCoder.encode(["address"], [sessionKeyEOA]);
+      const sessionKeyData2 = defaultAbiCoder.encode(
+        ["address"],
+        [sessionKeyEOA]
+      );
 
       const sessionTxData = await sessionRouterModule.createSessionData([
         {
@@ -137,7 +148,7 @@ const CreateBatchRouter: React.FC = () => {
         );
         transactionArray.push(tx1);
       }
-      if(!isBRMenabled) {
+      if (!isBRMenabled) {
         // -----> enableModule batched session router module
         const tx2 = await biconomySmartAccount.getEnableModuleData(
           routerModuleAddr
@@ -186,8 +197,8 @@ const CreateBatchRouter: React.FC = () => {
       {isSessionKeyModuleEnabled && isBRMenabled ? (
         <div>
           <p style={{ marginBottom: 20 }}>
-            Session Key Manager Module is already enabled ✅. Click on the button
-            to create a new session.
+            Session Key Manager Module is already enabled ✅. Click on the
+            button to create a new session.
           </p>
 
           <Button

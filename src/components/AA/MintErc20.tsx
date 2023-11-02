@@ -5,10 +5,10 @@ import {
   IHybridPaymaster,
   PaymasterMode,
   SponsorUserOperationDto,
-} from "@biconomy-devx/paymaster";
+} from "@biconomy/paymaster";
 
 import Button from "../Button";
-import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
+import { useEthersSigner } from "../../contexts/ethers";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import {
   configInfo as config,
@@ -18,17 +18,17 @@ import {
 
 const MintErc20: React.FC = () => {
   const classes = useStyles();
-  const { web3Provider } = useWeb3AuthContext();
+  const signer = useEthersSigner();
   const { smartAccount, scwAddress } = useSmartAccountContext();
   const [balance, setBalance] = useState(0);
   const [loading, setLoading] = useState(false);
 
   const getBalance = useCallback(async () => {
-    if (!scwAddress || !web3Provider) return;
+    if (!scwAddress || !signer) return;
     const erc20Contract = new ethers.Contract(
       config.terc20.address,
       config.terc20.abi,
-      web3Provider
+      signer
     );
     const count = await erc20Contract.balanceOf(scwAddress);
     console.log("count", Number(count));
@@ -38,16 +38,16 @@ const MintErc20: React.FC = () => {
 
   useEffect(() => {
     getBalance();
-  }, [getBalance, web3Provider]);
+  }, [getBalance, signer]);
 
   const makeTx = async () => {
-    if (!scwAddress || !web3Provider || !smartAccount) return;
+    if (!scwAddress || !signer || !smartAccount) return;
     try {
       setLoading(true);
       const erc20Contract = new ethers.Contract(
         config.terc20.address,
         config.terc20.abi,
-        web3Provider
+        signer
       );
       const amountGwei = ethers.utils.parseEther("100");
       const data = erc20Contract.interface.encodeFunctionData("mint", [

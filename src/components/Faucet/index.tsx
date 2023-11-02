@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import { makeStyles } from "@mui/styles";
 
 import Button from "../Button";
-import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
+import { useEthersSigner } from "../../contexts/ethers";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import {
   configInfo as config,
@@ -15,16 +15,16 @@ import {
   IHybridPaymaster,
   PaymasterMode,
   SponsorUserOperationDto,
-} from "@biconomy-devx/paymaster";
+} from "@biconomy/paymaster";
 
 const Faucet: React.FC = () => {
   const classes = useStyles();
-  const { web3Provider } = useWeb3AuthContext();
+  const signer = useEthersSigner();
   const { smartAccount, scwAddress } = useSmartAccountContext();
   const [address, setAddress] = useState(scwAddress);
 
   const makeTx = async () => {
-    if (!smartAccount || !web3Provider || !scwAddress) {
+    if (!smartAccount || !signer || !scwAddress) {
       showErrorMessage("Please connect your wallet");
       return;
     }
@@ -33,7 +33,7 @@ const Faucet: React.FC = () => {
       const faucetContract = new ethers.Contract(
         config.faucet.address,
         config.faucet.abi,
-        web3Provider
+        signer
       );
       const faucetTxData = await faucetContract.populateTransaction.drip(
         address

@@ -1,14 +1,14 @@
 import React from "react";
 import { makeStyles } from "@mui/styles";
 import { ToastContainer } from "react-toastify";
+import { useAccount } from 'wagmi'
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import TabsBody from "./components/TabsBody";
 import { useSmartAccountContext } from "./contexts/SmartAccountContext";
-import { useWeb3AuthContext } from "./contexts/SocialLoginContext";
-import Button from "./components/Button";
 
 const App: React.FC = () => {
   const classes = useStyles();
-  const { connect, address, loading: eoaWalletLoading } = useWeb3AuthContext();
+  const { address } = useAccount()
   const { loading } = useSmartAccountContext();
 
   if (!address) {
@@ -26,11 +26,7 @@ const App: React.FC = () => {
             Solve complex UX challenges with customisable SDK modules in
             minutes.
           </p>
-          <Button
-            title="Get Started"
-            onClickFunc={connect}
-            isLoading={eoaWalletLoading}
-          />
+          <ConnectButton />
         </div>
       </div>
     );

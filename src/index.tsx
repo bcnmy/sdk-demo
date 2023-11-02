@@ -1,8 +1,11 @@
 import { createRoot } from "react-dom/client";
 import { ThemeProvider } from "@mui/styles";
 import "react-toastify/dist/ReactToastify.css";
-import "@biconomy-devx/web3-auth/dist/src/style.css";
-import { Web3AuthProvider } from "./contexts/SocialLoginContext";
+import "@rainbow-me/rainbowkit/styles.css";
+import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import { configureChains, createConfig, WagmiConfig } from "wagmi";
+import { polygonMumbai, polygon, goerli, optimismGoerli } from "wagmi/chains";
+import { publicProvider } from "wagmi/providers/public";
 import { SmartAccountProvider } from "./contexts/SmartAccountContext";
 import App from "./App";
 import "./index.css";
@@ -11,15 +14,36 @@ import theme from "./utils/theme";
 const element = document.getElementById("root");
 const root = createRoot(element!);
 
+const { chains, publicClient } = configureChains(
+  [polygonMumbai, polygon, goerli, optimismGoerli],
+  [publicProvider()]
+);
+const { connectors } = getDefaultWallets({
+  appName: "Biconomy SDK Demo",
+  projectId: "YOUR_PROJECT_ID",
+  chains,
+});
+const wagmiConfig = createConfig({
+  autoConnect: true,
+  connectors,
+  publicClient,
+});
+
 const Index = () => {
   return (
-    <Web3AuthProvider>
-      <ThemeProvider theme={theme}>
-        <SmartAccountProvider>
-          <App />
-        </SmartAccountProvider>
-      </ThemeProvider>
-    </Web3AuthProvider>
+    <WagmiConfig config={wagmiConfig}>
+      <RainbowKitProvider
+        chains={chains}
+        showRecentTransactions={true}
+        coolMode={true}
+      >
+        <ThemeProvider theme={theme}>
+          <SmartAccountProvider>
+            <App />
+          </SmartAccountProvider>
+        </ThemeProvider>
+      </RainbowKitProvider>
+    </WagmiConfig>
   );
 };
 

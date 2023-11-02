@@ -7,10 +7,10 @@ import {
   PaymasterFeeQuote,
   PaymasterMode,
   SponsorUserOperationDto,
-} from "@biconomy-devx/paymaster";
+} from "@biconomy/paymaster";
 
 import Button from "../Button";
-import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
+import { useEthersSigner } from "../../contexts/ethers";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import {
   configInfo as config,
@@ -20,7 +20,7 @@ import {
 
 const MintNftForward: React.FC = () => {
   const classes = useStyles();
-  const { web3Provider } = useWeb3AuthContext();
+  const signer = useEthersSigner();
   const { scwAddress, smartAccount } = useSmartAccountContext();
   const [nftCount, setNftCount] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -33,11 +33,11 @@ const MintNftForward: React.FC = () => {
 
   useEffect(() => {
     const getNftCount = async () => {
-      if (!scwAddress || !web3Provider) return;
+      if (!scwAddress || !signer) return;
       const nftContract = new ethers.Contract(
         config.nft.address,
         config.nft.abi,
-        web3Provider
+        signer
       );
       const count = await nftContract.balanceOf(scwAddress);
       console.log("count", Number(count));
@@ -46,15 +46,15 @@ const MintNftForward: React.FC = () => {
     getNftCount();
     getFee();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scwAddress, web3Provider]);
+  }, [scwAddress, signer]);
 
   const getFee = async () => {
-    if (!smartAccount || !scwAddress || !web3Provider) return;
+    if (!smartAccount || !scwAddress || !signer) return;
     setIsLoadingFee(true);
     const nftContract = new ethers.Contract(
       config.nft.address,
       config.nft.abi,
-      web3Provider
+      signer
     );
     console.log("smartAccount.address ", scwAddress);
     const safeMintTx = await nftContract.populateTransaction.safeMint(
@@ -86,7 +86,7 @@ const MintNftForward: React.FC = () => {
   };
 
   const makeTx = async () => {
-    if (!smartAccount || !scwAddress || !web3Provider) return;
+    if (!smartAccount || !scwAddress || !signer) return;
     if (!selectedQuote) {
       showErrorMessage("Please select a fee quote");
       return;

@@ -5,9 +5,9 @@ import {
   IHybridPaymaster,
   PaymasterMode,
   SponsorUserOperationDto,
-} from "@biconomy-devx/paymaster";
+} from "@biconomy/paymaster";
 import Button from "../Button";
-import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
+import { useEthersSigner } from "../../contexts/ethers";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import {
   configInfo as config,
@@ -19,12 +19,12 @@ const iFace = new ethers.utils.Interface(config.usdc.abi);
 
 const BatchLiquidity: React.FC = () => {
   const classes = useStyles();
-  const { web3Provider } = useWeb3AuthContext();
+  const signer = useEthersSigner();
   const { smartAccount, scwAddress } = useSmartAccountContext();
   const [loading, setLoading] = useState(false);
 
   const makeTx = async () => {
-    if (!scwAddress || !smartAccount || !web3Provider) return;
+    if (!scwAddress || !smartAccount || !signer) return;
     try {
       setLoading(true);
       const txs = [];
@@ -42,7 +42,7 @@ const BatchLiquidity: React.FC = () => {
       const hyphenContract = new ethers.Contract(
         config.hyphenLP.address,
         config.hyphenLP.abi,
-        web3Provider
+        signer
       );
       const hyphenLPTx =
         await hyphenContract.populateTransaction.addTokenLiquidity(

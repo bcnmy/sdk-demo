@@ -7,10 +7,10 @@ import {
   PaymasterFeeQuote,
   PaymasterMode,
   SponsorUserOperationDto,
-} from "@biconomy-devx/paymaster";
+} from "@biconomy/paymaster";
 
 import Button from "../Button";
-import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
+import { useEthersSigner } from "../../contexts/ethers";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import {
   configInfo as config,
@@ -20,7 +20,7 @@ import {
 
 const BatchLiquidity: React.FC = () => {
   const classes = useStyles();
-  const { provider, web3Provider } = useWeb3AuthContext();
+  const signer = useEthersSigner();
   const { smartAccount, scwAddress } = useSmartAccountContext();
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingFee, setIsLoadingFee] = useState(false);
@@ -36,17 +36,17 @@ const BatchLiquidity: React.FC = () => {
       setIsLoading(true);
       setIsLoadingFee(true);
       setFeeQuotesArr([]);
-      if (!smartAccount || !scwAddress || !web3Provider) return;
+      if (!smartAccount || !scwAddress || !signer) return;
       const txs = [];
       const usdcContract = new ethers.Contract(
         config.usdc.address,
         config.usdc.abi,
-        web3Provider
+        signer
       );
       const hyphenContract = new ethers.Contract(
         config.hyphenLP.address,
         config.hyphenLP.abi,
-        web3Provider
+        signer
       );
       const approveUSDCTx = await usdcContract.populateTransaction.approve(
         config.hyphenLP.address,
@@ -93,10 +93,10 @@ const BatchLiquidity: React.FC = () => {
     };
     fetchFeeOption();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [provider]);
+  }, [signer]);
 
   const makeTx = async () => {
-    if (!smartAccount || !scwAddress || !web3Provider) return;
+    if (!smartAccount || !scwAddress || !signer) return;
     if (!selectedQuote) {
       showErrorMessage("Please select a fee quote");
       return;

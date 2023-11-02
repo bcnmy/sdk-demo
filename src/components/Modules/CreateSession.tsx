@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { makeStyles } from "@mui/styles";
-import { SessionKeyManagerModule } from "@biconomy-devx/modules";
+import { SessionKeyManagerModule } from "@biconomy/modules";
 import Button from "../Button";
-import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
+import { useAccount } from "wagmi";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import { showErrorMessage, showInfoMessage } from "../../utils";
 import { defaultAbiCoder } from "ethers/lib/utils";
 import { getActionForErrorMessage } from "../../utils/error-utils";
-import { DEFAULT_SESSION_KEY_MANAGER_MODULE  } from "@biconomy-devx/modules";
+import { DEFAULT_SESSION_KEY_MANAGER_MODULE } from "@biconomy/modules";
 
 const CreateSession: React.FC = () => {
   const classes = useStyles();
-  const { web3Provider } = useWeb3AuthContext();
+  const { address } = useAccount();
   const { smartAccount, scwAddress } = useSmartAccountContext();
   const [loading, setLoading] = useState(false);
   const [isSessionKeyModuleEnabled, setIsSessionKeyModuleEnabled] =
@@ -20,7 +20,7 @@ const CreateSession: React.FC = () => {
 
   useEffect(() => {
     let checkSessionModuleEnabled = async () => {
-      if (!scwAddress || !smartAccount || !web3Provider) {
+      if (!scwAddress || !smartAccount || !address) {
         setIsSessionKeyModuleEnabled(false);
         return;
       }
@@ -42,10 +42,10 @@ const CreateSession: React.FC = () => {
       }
     };
     checkSessionModuleEnabled();
-  }, [isSessionKeyModuleEnabled, scwAddress, smartAccount, web3Provider]);
+  }, [isSessionKeyModuleEnabled, scwAddress, smartAccount, address]);
 
   const createSession = async (enableSessionKeyModule: boolean) => {
-    if (!scwAddress || !smartAccount || !web3Provider) {
+    if (!scwAddress || !smartAccount || !address) {
       showErrorMessage("Please connect wallet first");
       return;
     }
@@ -147,8 +147,8 @@ const CreateSession: React.FC = () => {
       {isSessionKeyModuleEnabled ? (
         <div>
           <p style={{ marginBottom: 20 }}>
-            Session Key Manager Module is already enabled  ✅. Click on the button
-            to create a new session.
+            Session Key Manager Module is already enabled ✅. Click on the
+            button to create a new session.
           </p>
 
           <Button

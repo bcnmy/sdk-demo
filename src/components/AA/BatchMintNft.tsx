@@ -5,10 +5,10 @@ import {
   IHybridPaymaster,
   PaymasterMode,
   SponsorUserOperationDto,
-} from "@biconomy-devx/paymaster";
+} from "@biconomy/paymaster";
 
 import Button from "../Button";
-import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
+import { useEthersSigner } from "../../contexts/ethers";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import {
   configInfo as config,
@@ -18,17 +18,17 @@ import {
 
 const BatchMintNft: React.FC = () => {
   const classes = useStyles();
-  const { web3Provider } = useWeb3AuthContext();
+  const signer = useEthersSigner();
   const { smartAccount, scwAddress } = useSmartAccountContext();
   const [nftCount, setNftCount] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
 
   const getNftCount = useCallback(async () => {
-    if (!scwAddress || !web3Provider) return;
+    if (!scwAddress || !signer) return;
     const nftContract = new ethers.Contract(
       config.nft.address,
       config.nft.abi,
-      web3Provider
+      signer
     );
     const count = await nftContract.balanceOf(scwAddress);
     console.log("count", Number(count));
@@ -38,16 +38,16 @@ const BatchMintNft: React.FC = () => {
 
   useEffect(() => {
     getNftCount();
-  }, [getNftCount, web3Provider]);
+  }, [getNftCount, signer]);
 
   const mintNft = async () => {
-    if (!scwAddress || !smartAccount || !web3Provider) return;
+    if (!scwAddress || !smartAccount || !signer) return;
     try {
       setLoading(true);
       const nftContract = new ethers.Contract(
         config.nft.address,
         config.nft.abi,
-        web3Provider
+        signer
       );
       console.log("smartAccount.address ", scwAddress);
       const safeMintTx = await nftContract.populateTransaction.safeMint(

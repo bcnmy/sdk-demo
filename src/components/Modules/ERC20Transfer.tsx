@@ -1,26 +1,26 @@
 import React, { useState } from "react";
 import { ethers } from "ethers";
 import { makeStyles } from "@mui/styles";
-import { SessionKeyManagerModule } from "@biconomy-devx/modules";
+import { SessionKeyManagerModule } from "@biconomy/modules";
 
 import Button from "../Button";
-import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
+import { useEthersSigner } from "../../contexts/ethers";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import {
   configInfo as config,
   showSuccessMessage,
   showErrorMessage,
 } from "../../utils";
-import { DEFAULT_SESSION_KEY_MANAGER_MODULE  } from "@biconomy-devx/modules";
+import { DEFAULT_SESSION_KEY_MANAGER_MODULE  } from "@biconomy/modules";
 
 const ERC20Transfer: React.FC = () => {
   const classes = useStyles();
-  const { web3Provider } = useWeb3AuthContext();
+  const signer = useEthersSigner();
   const { smartAccount, scwAddress } = useSmartAccountContext();
   const [loading, setLoading] = useState(false);
 
   const erc20Transfer = async () => {
-    if (!scwAddress || !smartAccount || !web3Provider) {
+    if (!scwAddress || !smartAccount || !signer) {
       showErrorMessage("Please connect wallet first");
       return;
     }
@@ -54,7 +54,7 @@ const ERC20Transfer: React.FC = () => {
       const tokenContract = new ethers.Contract(
         config.usdc.address,
         config.usdc.abi,
-        web3Provider
+        signer
       );
       let decimals = 18;
 

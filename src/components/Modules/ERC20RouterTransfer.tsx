@@ -4,26 +4,30 @@ import { makeStyles } from "@mui/styles";
 import {
   BatchedSessionRouterModule,
   SessionKeyManagerModule,
-} from "@biconomy-devx/modules";
-
+} from "@biconomy/modules";
 import Button from "../Button";
-import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
+import { useAccount } from "wagmi";
+import { useEthersSigner } from "../../contexts/ethers";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import {
   configInfo as config,
   showSuccessMessage,
   showErrorMessage,
 } from "../../utils";
-import { DEFAULT_BATCHED_SESSION_ROUTER_MODULE, DEFAULT_SESSION_KEY_MANAGER_MODULE  } from "@biconomy-devx/modules";
+import {
+  DEFAULT_BATCHED_SESSION_ROUTER_MODULE,
+  DEFAULT_SESSION_KEY_MANAGER_MODULE,
+} from "@biconomy/modules";
 
 const ERC20RouterTransfer: React.FC = () => {
   const classes = useStyles();
-  const { web3Provider } = useWeb3AuthContext();
+  const { address } = useAccount();
+  const signer = useEthersSigner();
   const { smartAccount, scwAddress } = useSmartAccountContext();
   const [loading, setLoading] = useState(false);
 
   const erc20Transfer = async () => {
-    if (!scwAddress || !smartAccount || !web3Provider) {
+    if (!scwAddress || !smartAccount || !address) {
       showErrorMessage("Please connect wallet first");
       return;
     }
@@ -33,7 +37,8 @@ const ERC20RouterTransfer: React.FC = () => {
       const managerModuleAddr = DEFAULT_SESSION_KEY_MANAGER_MODULE;
       const erc20ModuleAddr = "0x000000D50C68705bd6897B2d17c7de32FB519fDA";
       const routerModuleAddr = DEFAULT_BATCHED_SESSION_ROUTER_MODULE;
-      const mockSessionModuleAddr = "0x7Ba4a7338D7A90dfA465cF975Cc6691812C3772E";
+      const mockSessionModuleAddr =
+        "0x7Ba4a7338D7A90dfA465cF975Cc6691812C3772E";
 
       // get session key from local storage
       const sessionKeyPrivKey = window.localStorage.getItem("sessionPKey");
@@ -65,7 +70,7 @@ const ERC20RouterTransfer: React.FC = () => {
       const tokenContract = new ethers.Contract(
         config.usdc.address,
         config.usdc.abi,
-        web3Provider
+        signer
       );
       let decimals = 18;
       try {
