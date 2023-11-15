@@ -3,12 +3,12 @@ import { ethers } from "ethers";
 import {
   BiconomySmartAccountV2,
   DEFAULT_ENTRYPOINT_ADDRESS,
-} from "@biconomy-devx/account";
-import { BiconomyPaymaster } from "@biconomy-devx/paymaster";
+} from "@biconomy/account";
+import { BiconomyPaymaster } from "@biconomy/paymaster";
 import { activeChainId, bundlerUrl, paymasterApi } from "../utils/chainConfig";
 import { useWeb3AuthContext } from "./SocialLoginContext";
-import { Bundler } from "@biconomy-devx/bundler";
-import { MultiChainValidationModule } from "@biconomy-devx/modules";
+import { Bundler } from "@biconomy/bundler";
+import { MultiChainValidationModule } from "@biconomy/modules";
 // import { showSuccessMessage } from "../utils";
 
 // Types
@@ -106,7 +106,7 @@ export const SmartAccountProvider = ({ children }: any) => {
       // const bal = await smartAccount.ethersAdapter().getBalance(state.address);
       const balanceParams = {
         chainId: activeChainId,
-        eoaAddress: await smartAccount.getAccountAddress(),
+        address: await smartAccount.getAccountAddress(),
         tokenAddresses: [],
       };
       const balFromSdk = await smartAccount.getAllTokenBalances(balanceParams);

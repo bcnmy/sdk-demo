@@ -4,14 +4,14 @@ import { makeStyles } from "@mui/styles";
 import {
   BatchedSessionRouterModule,
   SessionKeyManagerModule,
-} from "@biconomy-devx/modules";
+} from "@biconomy/modules";
 import Button from "../Button";
 import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import { showErrorMessage, showInfoMessage } from "../../utils";
 import { defaultAbiCoder } from "ethers/lib/utils";
 import { getActionForErrorMessage } from "../../utils/error-utils";
-import { DEFAULT_BATCHED_SESSION_ROUTER_MODULE, DEFAULT_SESSION_KEY_MANAGER_MODULE  } from "@biconomy-devx/modules";
+import { DEFAULT_BATCHED_SESSION_ROUTER_MODULE, DEFAULT_SESSION_KEY_MANAGER_MODULE  } from "@biconomy/modules";
 
 const CreateBatchRouter: React.FC = () => {
   const classes = useStyles();

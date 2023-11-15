@@ -15,7 +15,7 @@ import {
   IHybridPaymaster,
   PaymasterMode,
   SponsorUserOperationDto,
-} from "@biconomy-devx/paymaster";
+} from "@biconomy/paymaster";
 
 const Faucet: React.FC = () => {
   const classes = useStyles();

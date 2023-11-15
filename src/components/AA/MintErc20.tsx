@@ -5,7 +5,7 @@ import {
   IHybridPaymaster,
   PaymasterMode,
   SponsorUserOperationDto,
-} from "@biconomy-devx/paymaster";
+} from "@biconomy/paymaster";
 
 import Button from "../Button";
 import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";

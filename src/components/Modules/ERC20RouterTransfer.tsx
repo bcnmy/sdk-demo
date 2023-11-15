@@ -4,7 +4,7 @@ import { makeStyles } from "@mui/styles";
 import {
   BatchedSessionRouterModule,
   SessionKeyManagerModule,
-} from "@biconomy-devx/modules";
+} from "@biconomy/modules";
 
 import Button from "../Button";
 import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
@@ -14,7 +14,7 @@ import {
   showSuccessMessage,
   showErrorMessage,
 } from "../../utils";
-import { DEFAULT_BATCHED_SESSION_ROUTER_MODULE, DEFAULT_SESSION_KEY_MANAGER_MODULE  } from "@biconomy-devx/modules";
+import { DEFAULT_BATCHED_SESSION_ROUTER_MODULE, DEFAULT_SESSION_KEY_MANAGER_MODULE  } from "@biconomy/modules";
 
 const ERC20RouterTransfer: React.FC = () => {
   const classes = useStyles();

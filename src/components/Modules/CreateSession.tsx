@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { makeStyles } from "@mui/styles";
-import { SessionKeyManagerModule } from "@biconomy-devx/modules";
+import { SessionKeyManagerModule } from "@biconomy/modules";
 import Button from "../Button";
 import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import { showErrorMessage, showInfoMessage } from "../../utils";
 import { defaultAbiCoder } from "ethers/lib/utils";
 import { getActionForErrorMessage } from "../../utils/error-utils";
-import { DEFAULT_SESSION_KEY_MANAGER_MODULE  } from "@biconomy-devx/modules";
+import { DEFAULT_SESSION_KEY_MANAGER_MODULE  } from "@biconomy/modules";
 
 const CreateSession: React.FC = () => {
   const classes = useStyles();
