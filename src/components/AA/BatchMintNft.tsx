@@ -63,12 +63,9 @@ const BatchMintNft: React.FC = () => {
 
       const userOpResponse = await smartAccount.sendUserOp(userOp);
       console.log("userOpHash", userOpResponse);
-      const { receipt } = await userOpResponse.wait(1);
-      console.log("txHash", receipt.transactionHash);
-      showSuccessMessage(
-        `Minted Nft ${receipt.transactionHash}`,
-        receipt.transactionHash
-      );
+      const { transactionHash } = await userOpResponse.waitForTxHash();
+      console.log("txHash", transactionHash);
+      showSuccessMessage(`Minted Nft ${transactionHash}`, transactionHash);
       setLoading(false);
       await new Promise((resolve) => setTimeout(resolve, 2000));
       getNftCount();
