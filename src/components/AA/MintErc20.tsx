@@ -1,14 +1,10 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { ethers } from "ethers";
 import { makeStyles } from "@mui/styles";
-import {
-  IHybridPaymaster,
-  PaymasterMode,
-  SponsorUserOperationDto,
-} from "@biconomy/paymaster";
+import { PaymasterMode } from "@biconomy/paymaster";
 
 import Button from "../Button";
-import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
+import { useEthersSigner } from "../../contexts/ethers";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import {
   configInfo as config,
@@ -18,17 +14,17 @@ import {
 
 const MintErc20: React.FC = () => {
   const classes = useStyles();
-  const { web3Provider } = useWeb3AuthContext();
+  const signer = useEthersSigner();
   const { smartAccount, scwAddress } = useSmartAccountContext();
   const [balance, setBalance] = useState(0);
   const [loading, setLoading] = useState(false);
 
   const getBalance = useCallback(async () => {
-    if (!scwAddress || !web3Provider) return;
+    if (!scwAddress || !signer) return;
     const erc20Contract = new ethers.Contract(
       config.terc20.address,
       config.terc20.abi,
-      web3Provider
+      signer
     );
     const count = await erc20Contract.balanceOf(scwAddress);
     console.log("count", Number(count));
@@ -38,16 +34,16 @@ const MintErc20: React.FC = () => {
 
   useEffect(() => {
     getBalance();
-  }, [getBalance, web3Provider]);
+  }, [getBalance, signer]);
 
   const makeTx = async () => {
-    if (!scwAddress || !web3Provider || !smartAccount) return;
+    if (!scwAddress || !signer || !smartAccount) return;
     try {
       setLoading(true);
       const erc20Contract = new ethers.Contract(
         config.terc20.address,
         config.terc20.abi,
-        web3Provider
+        signer
       );
       const amountGwei = ethers.utils.parseEther("100");
       const data = erc20Contract.interface.encodeFunctionData("mint", [
@@ -58,26 +54,17 @@ const MintErc20: React.FC = () => {
         to: config.terc20.address,
         data: data,
       };
-      let userOp = await smartAccount.buildUserOp([tx]);
-      const biconomyPaymaster =
-        smartAccount.paymaster as IHybridPaymaster<SponsorUserOperationDto>;
-      let paymasterServiceData: SponsorUserOperationDto = {
-        mode: PaymasterMode.SPONSORED,
-      };
-      const paymasterAndDataResponse =
-        await biconomyPaymaster.getPaymasterAndData(
-          userOp,
-          paymasterServiceData
-        );
-      userOp.paymasterAndData = paymasterAndDataResponse.paymasterAndData;
+      let userOp = await smartAccount.buildUserOp([tx], {
+        paymasterServiceData: {
+          mode: PaymasterMode.SPONSORED,
+        },
+      });
+
       const userOpResponse = await smartAccount.sendUserOp(userOp);
       console.log("userOpHash", userOpResponse);
-      const { receipt } = await userOpResponse.wait(1);
-      console.log("txHash", receipt.transactionHash);
-      showSuccessMessage(
-        `Minted ERC20 ${receipt.transactionHash}`,
-        receipt.transactionHash
-      );
+      const { transactionHash } = await userOpResponse.waitForTxHash();
+      console.log("txHash", transactionHash);
+      showSuccessMessage(`Minted ERC20 ${transactionHash}`, transactionHash);
       setLoading(false);
       await new Promise((resolve) => setTimeout(resolve, 2000));
       getBalance();

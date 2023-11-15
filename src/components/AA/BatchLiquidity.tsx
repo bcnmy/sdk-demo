@@ -1,13 +1,9 @@
 import React, { useState } from "react";
 import { ethers } from "ethers";
 import { makeStyles } from "@mui/styles";
-import {
-  IHybridPaymaster,
-  PaymasterMode,
-  SponsorUserOperationDto,
-} from "@biconomy/paymaster";
+import { PaymasterMode } from "@biconomy/paymaster";
 import Button from "../Button";
-import { useWeb3AuthContext } from "../../contexts/SocialLoginContext";
+import { useEthersSigner } from "../../contexts/ethers";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import {
   configInfo as config,
@@ -19,12 +15,12 @@ const iFace = new ethers.utils.Interface(config.usdc.abi);
 
 const BatchLiquidity: React.FC = () => {
   const classes = useStyles();
-  const { web3Provider } = useWeb3AuthContext();
+  const signer = useEthersSigner();
   const { smartAccount, scwAddress } = useSmartAccountContext();
   const [loading, setLoading] = useState(false);
 
   const makeTx = async () => {
-    if (!scwAddress || !smartAccount || !web3Provider) return;
+    if (!scwAddress || !smartAccount || !signer) return;
     try {
       setLoading(true);
       const txs = [];
@@ -42,7 +38,7 @@ const BatchLiquidity: React.FC = () => {
       const hyphenContract = new ethers.Contract(
         config.hyphenLP.address,
         config.hyphenLP.abi,
-        web3Provider
+        signer
       );
       const hyphenLPTx =
         await hyphenContract.populateTransaction.addTokenLiquidity(
@@ -59,26 +55,16 @@ const BatchLiquidity: React.FC = () => {
       // todo check this for hyphen LP on Mumbai!
       txs.push(tx2);
 
-      let userOp = await smartAccount.buildUserOp(txs);
-      const biconomyPaymaster =
-        smartAccount.paymaster as IHybridPaymaster<SponsorUserOperationDto>;
-      let paymasterServiceData: SponsorUserOperationDto = {
-        mode: PaymasterMode.SPONSORED,
-      };
-      const paymasterAndDataResponse =
-        await biconomyPaymaster.getPaymasterAndData(
-          userOp,
-          paymasterServiceData
-        );
-      userOp.paymasterAndData = paymasterAndDataResponse.paymasterAndData;
+      let userOp = await smartAccount.buildUserOp(txs, {
+        paymasterServiceData: {
+          mode: PaymasterMode.SPONSORED,
+        },
+      });
       const userOpResponse = await smartAccount.sendUserOp(userOp);
       console.log("userOpHash", userOpResponse);
-      const { receipt } = await userOpResponse.wait(1);
-      console.log("txHash", receipt.transactionHash);
-      showSuccessMessage(
-        `Added batch liquidity ${receipt.transactionHash}`,
-        receipt.transactionHash
-      );
+      const { transactionHash } = await userOpResponse.waitForTxHash();
+      console.log("txHash", transactionHash);
+      showSuccessMessage(`Added batch liquidity ${transactionHash}`, transactionHash);
       setLoading(false);
     } catch (err: any) {
       console.error(err);

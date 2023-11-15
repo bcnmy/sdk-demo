@@ -3,8 +3,8 @@ import { makeStyles } from "@mui/styles";
 import { styled } from "@mui/material/styles";
 import LegendToggleIcon from "@mui/icons-material/LegendToggle";
 import IconButton from "@mui/material/IconButton";
+import { useAccountModal } from "@rainbow-me/rainbowkit";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
-import { useWeb3AuthContext } from "../contexts/SocialLoginContext";
 import { useSmartAccountContext } from "../contexts/SmartAccountContext";
 import Button from "./Button";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
@@ -39,8 +39,8 @@ const AppBar = styled(MuiAppBar, {
 
 const Navbar = ({ open, handleDrawerOpen }: INavBar) => {
   const classes = useStyles();
-  const { disconnect } = useWeb3AuthContext();
   const { loading, scwAddress } = useSmartAccountContext();
+  const { openAccountModal } = useAccountModal();
 
   const [showModal, setShowModal] = useState(false);
   const toggleLogoutButton = () => {
@@ -48,7 +48,9 @@ const Navbar = ({ open, handleDrawerOpen }: INavBar) => {
   };
 
   const disconnectWallet = () => {
-    disconnect();
+    if(openAccountModal) {
+      openAccountModal();
+    }
     setShowModal(false);
   };
 
