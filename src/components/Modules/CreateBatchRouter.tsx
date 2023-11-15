@@ -8,7 +8,7 @@ import {
 import { useAccount } from "wagmi";
 import Button from "../Button";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
-import { showErrorMessage, showInfoMessage } from "../../utils";
+import { showErrorMessage, showSuccessMessage } from "../../utils";
 import { defaultAbiCoder } from "ethers/lib/utils";
 import { getActionForErrorMessage } from "../../utils/error-utils";
 import {
@@ -157,16 +157,20 @@ const CreateBatchRouter: React.FC = () => {
       }
       transactionArray.push(tx3);
       let partialUserOp = await biconomySmartAccount.buildUserOp(
-        transactionArray
+        transactionArray,
+        {
+          skipBundlerGasEstimation: false,
+        }
       );
 
-      const userOpResponse = await biconomySmartAccount.sendUserOp(
-        partialUserOp
+      const userOpResponse = await smartAccount.sendUserOp(partialUserOp);
+      console.log("userOpHash", userOpResponse);
+      const { transactionHash } = await userOpResponse.waitForTxHash();
+      console.log("txHash", transactionHash);
+      showSuccessMessage(
+        `Session Created Successfully ${transactionHash}`,
+        transactionHash
       );
-      console.log(`userOp Hash: ${userOpResponse.userOpHash}`);
-      const transactionDetails = await userOpResponse.wait();
-      console.log("txHash", transactionDetails.receipt.transactionHash);
-      showInfoMessage("Session Created Successfully");
 
       // update the session key //enableModule
       /*await sessionRouterModule.updateSessionStatus(

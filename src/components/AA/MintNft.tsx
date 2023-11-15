@@ -1,11 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { makeStyles } from "@mui/styles";
-import {
-  IHybridPaymaster,
-  PaymasterMode,
-  SponsorUserOperationDto,
-} from "@biconomy/paymaster";
+import { PaymasterMode } from "@biconomy/paymaster";
 
 import Button from "../Button";
 import { useEthersSigner } from "../../contexts/ethers";
@@ -59,26 +55,17 @@ const MintNft: React.FC = () => {
         data: safeMintTx.data,
       };
 
-      let userOp = await smartAccount.buildUserOp([tx1]);
-      const biconomyPaymaster =
-        smartAccount.paymaster as IHybridPaymaster<SponsorUserOperationDto>;
-      let paymasterServiceData: SponsorUserOperationDto = {
-        mode: PaymasterMode.SPONSORED,
-      };
-      const paymasterAndDataResponse =
-        await biconomyPaymaster.getPaymasterAndData(
-          userOp,
-          paymasterServiceData
-        );
-      userOp.paymasterAndData = paymasterAndDataResponse.paymasterAndData;
+      let userOp = await smartAccount.buildUserOp([tx1], {
+        paymasterServiceData: {
+          mode: PaymasterMode.SPONSORED,
+        },
+      });
+
       const userOpResponse = await smartAccount.sendUserOp(userOp);
       console.log("userOpHash", userOpResponse);
-      const { receipt } = await userOpResponse.wait(1);
-      console.log("txHash", receipt.transactionHash);
-      showSuccessMessage(
-        `Minted Nft ${receipt.transactionHash}`,
-        receipt.transactionHash
-      );
+      const { transactionHash } = await userOpResponse.waitForTxHash();
+      console.log("txHash", transactionHash);
+      showSuccessMessage(`Minted Nft ${transactionHash}`, transactionHash);
       setLoading(false);
       await new Promise((resolve) => setTimeout(resolve, 2000));
       getNftCount();

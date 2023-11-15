@@ -105,7 +105,7 @@ export const SmartAccountProvider = ({ children }: any) => {
       // const bal = await smartAccount.ethersAdapter().getBalance(state.address);
       const balanceParams = {
         chainId: activeChainId,
-        eoaAddress: await smartAccount.getAccountAddress(),
+        address: await smartAccount.getAccountAddress(),
         tokenAddresses: [],
       };
       const balFromSdk = await smartAccount.getAllTokenBalances(balanceParams);

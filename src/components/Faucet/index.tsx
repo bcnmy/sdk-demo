@@ -11,11 +11,7 @@ import {
   showInfoMessage,
   showSuccessMessage,
 } from "../../utils";
-import {
-  IHybridPaymaster,
-  PaymasterMode,
-  SponsorUserOperationDto,
-} from "@biconomy/paymaster";
+import { PaymasterMode } from "@biconomy/paymaster";
 
 const Faucet: React.FC = () => {
   const classes = useStyles();
@@ -42,26 +38,17 @@ const Faucet: React.FC = () => {
         to: config.faucet.address,
         data: faucetTxData.data,
       };
-      let userOp = await smartAccount.buildUserOp([tx1]);
-      const biconomyPaymaster =
-        smartAccount.paymaster as IHybridPaymaster<SponsorUserOperationDto>;
-      let paymasterServiceData: SponsorUserOperationDto = {
-        mode: PaymasterMode.SPONSORED,
-      };
-      const paymasterAndDataResponse =
-        await biconomyPaymaster.getPaymasterAndData(
-          userOp,
-          paymasterServiceData
-        );
-      userOp.paymasterAndData = paymasterAndDataResponse.paymasterAndData;
+      let userOp = await smartAccount.buildUserOp([tx1], {
+        paymasterServiceData: {
+          mode: PaymasterMode.SPONSORED,
+        },
+      });
+
       const userOpResponse = await smartAccount.sendUserOp(userOp);
       console.log("userOpHash", userOpResponse);
-      const { receipt } = await userOpResponse.wait(1);
-      console.log("txHash", receipt.transactionHash);
-      showSuccessMessage(
-        `Tokens sent ${receipt.transactionHash}`,
-        receipt.transactionHash
-      );
+      const { transactionHash } = await userOpResponse.waitForTxHash();
+      console.log("txHash", transactionHash);
+      showSuccessMessage(`Tokens sent ${transactionHash}`, transactionHash);
     } catch (error: any) {
       console.error(error);
       showErrorMessage(error.message);

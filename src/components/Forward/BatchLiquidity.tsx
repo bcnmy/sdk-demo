@@ -70,7 +70,11 @@ const BatchLiquidity: React.FC = () => {
       };
       txs.push(tx2);
       console.log("Tx array created", txs);
-      let partialUserOp = await smartAccount.buildUserOp([tx1]);
+      let partialUserOp = await smartAccount.buildUserOp([tx1], {
+        paymasterServiceData: {
+          mode: PaymasterMode.ERC20,
+        },
+      });
       setEstimatedUserOp(partialUserOp);
 
       const biconomyPaymaster =
@@ -147,11 +151,11 @@ const BatchLiquidity: React.FC = () => {
 
       const userOpResponse = await smartAccount.sendUserOp(finalUserOp);
       console.log("userOpHash", userOpResponse);
-      const { receipt } = await userOpResponse.wait(1);
-      console.log("txHash", receipt.transactionHash);
+      const { transactionHash } = await userOpResponse.waitForTxHash();
+      console.log("txHash", transactionHash);
       showSuccessMessage(
-        `Batch Add Hyphen Liq ${receipt.transactionHash}`,
-        receipt.transactionHash
+        `Batch Add Hyphen Liq ${transactionHash}`,
+        transactionHash
       );
       setIsLoading(false);
     } catch (err: any) {

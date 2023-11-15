@@ -142,12 +142,9 @@ const ERC20RouterTransfer: React.FC = () => {
       });
 
       console.log("userOpHash", userOpResponse);
-      const { receipt } = await userOpResponse.wait(1);
-      console.log("txHash", receipt.transactionHash);
-      showSuccessMessage(
-        `ERC20 Transfer ${receipt.transactionHash}`,
-        receipt.transactionHash
-      );
+      const { transactionHash } = await userOpResponse.waitForTxHash();
+      console.log("txHash", transactionHash);
+      showSuccessMessage(`ERC20 Transfer ${transactionHash}`, transactionHash);
       setLoading(false);
     } catch (err: any) {
       console.error(err);

@@ -65,7 +65,11 @@ const MintNftForward: React.FC = () => {
       to: config.nft.address,
       data: safeMintTx.data,
     };
-    let partialUserOp = await smartAccount.buildUserOp([tx1]);
+    let partialUserOp = await smartAccount.buildUserOp([tx1], {
+      paymasterServiceData: {
+        mode: PaymasterMode.ERC20,
+      },
+    });
     setEstimatedUserOp(partialUserOp);
     const biconomyPaymaster =
       smartAccount.paymaster as IHybridPaymaster<SponsorUserOperationDto>;
@@ -138,12 +142,9 @@ const MintNftForward: React.FC = () => {
 
       const userOpResponse = await smartAccount.sendUserOp(finalUserOp);
       console.log("userOpHash", userOpResponse);
-      const { receipt } = await userOpResponse.wait(1);
-      console.log("txHash", receipt.transactionHash);
-      showSuccessMessage(
-        `Minted Nft ${receipt.transactionHash}`,
-        receipt.transactionHash
-      );
+      const { transactionHash } = await userOpResponse.waitForTxHash();
+      console.log("txHash", transactionHash);
+      showSuccessMessage(`Minted Nft ${transactionHash}`, transactionHash);
       setIsLoading(false);
     } catch (err: any) {
       console.error(err);

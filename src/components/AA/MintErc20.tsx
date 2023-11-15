@@ -1,11 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { ethers } from "ethers";
 import { makeStyles } from "@mui/styles";
-import {
-  IHybridPaymaster,
-  PaymasterMode,
-  SponsorUserOperationDto,
-} from "@biconomy/paymaster";
+import { PaymasterMode } from "@biconomy/paymaster";
 
 import Button from "../Button";
 import { useEthersSigner } from "../../contexts/ethers";
@@ -58,26 +54,17 @@ const MintErc20: React.FC = () => {
         to: config.terc20.address,
         data: data,
       };
-      let userOp = await smartAccount.buildUserOp([tx]);
-      const biconomyPaymaster =
-        smartAccount.paymaster as IHybridPaymaster<SponsorUserOperationDto>;
-      let paymasterServiceData: SponsorUserOperationDto = {
-        mode: PaymasterMode.SPONSORED,
-      };
-      const paymasterAndDataResponse =
-        await biconomyPaymaster.getPaymasterAndData(
-          userOp,
-          paymasterServiceData
-        );
-      userOp.paymasterAndData = paymasterAndDataResponse.paymasterAndData;
+      let userOp = await smartAccount.buildUserOp([tx], {
+        paymasterServiceData: {
+          mode: PaymasterMode.SPONSORED,
+        },
+      });
+
       const userOpResponse = await smartAccount.sendUserOp(userOp);
       console.log("userOpHash", userOpResponse);
-      const { receipt } = await userOpResponse.wait(1);
-      console.log("txHash", receipt.transactionHash);
-      showSuccessMessage(
-        `Minted ERC20 ${receipt.transactionHash}`,
-        receipt.transactionHash
-      );
+      const { transactionHash } = await userOpResponse.waitForTxHash();
+      console.log("txHash", transactionHash);
+      showSuccessMessage(`Minted ERC20 ${transactionHash}`, transactionHash);
       setLoading(false);
       await new Promise((resolve) => setTimeout(resolve, 2000));
       getBalance();

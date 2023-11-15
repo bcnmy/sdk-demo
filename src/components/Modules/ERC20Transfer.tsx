@@ -11,7 +11,7 @@ import {
   showSuccessMessage,
   showErrorMessage,
 } from "../../utils";
-import { DEFAULT_SESSION_KEY_MANAGER_MODULE  } from "@biconomy/modules";
+import { DEFAULT_SESSION_KEY_MANAGER_MODULE } from "@biconomy/modules";
 
 const ERC20Transfer: React.FC = () => {
   const classes = useStyles();
@@ -98,12 +98,9 @@ const ERC20Transfer: React.FC = () => {
       });
 
       console.log("userOpHash", userOpResponse);
-      const { receipt } = await userOpResponse.wait(1);
-      console.log("txHash", receipt.transactionHash);
-      showSuccessMessage(
-        `ERC20 Transfer ${receipt.transactionHash}`,
-        receipt.transactionHash
-      );
+      const { transactionHash } = await userOpResponse.waitForTxHash();
+      console.log("txHash", transactionHash);
+      showSuccessMessage(`ERC20 Transfer ${transactionHash}`, transactionHash);
       setLoading(false);
     } catch (err: any) {
       console.error(err);
