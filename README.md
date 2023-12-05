@@ -2,7 +2,7 @@
 
 Example codes for integrating biconomy sdk in your repo.
 
-- [https://sdk-staging.biconomy.io](https://sdk-staging.biconomy.io)
+- [https://sdk-dev.biconomy.io](https://sdk-dev.biconomy.io)
 
 #### Run locally
 

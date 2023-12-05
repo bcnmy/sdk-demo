@@ -1,15 +1,14 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { ethers } from "ethers";
 import {
   BiconomySmartAccountV2,
   DEFAULT_ENTRYPOINT_ADDRESS,
 } from "@biconomy/account";
 import { BiconomyPaymaster } from "@biconomy/paymaster";
+import { useAccount } from 'wagmi'
 import { activeChainId, bundlerUrl, paymasterApi } from "../utils/chainConfig";
-import { useWeb3AuthContext } from "./SocialLoginContext";
 import { Bundler } from "@biconomy/bundler";
 import { MultiChainValidationModule } from "@biconomy/modules";
-// import { showSuccessMessage } from "../utils";
+import { useEthersSigner } from './ethers'
 
 // Types
 type Balance = {
@@ -45,7 +44,8 @@ export const useSmartAccountContext = () => useContext(SmartAccountContext);
 
 // Provider
 export const SmartAccountProvider = ({ children }: any) => {
-  const { provider, address } = useWeb3AuthContext();
+  const { address } = useAccount()
+  const signer = useEthersSigner()
   const [smartAccount, setSmartAccount] =
     useState<BiconomySmartAccountV2 | null>(null);
   const [scwAddress, setScwAddress] = useState("");
@@ -57,11 +57,10 @@ export const SmartAccountProvider = ({ children }: any) => {
   const [loading, setLoading] = useState(false);
 
   const getSmartAccount = useCallback(async () => {
-    if (!provider || !address) return "Wallet not connected";
+    if (!signer || !address) return "Wallet not connected";
 
     try {
       setLoading(true);
-      const walletProvider = new ethers.providers.Web3Provider(provider);
       // create bundler and paymaster instances
       const bundler = new Bundler({
         bundlerUrl: bundlerUrl,
@@ -73,7 +72,7 @@ export const SmartAccountProvider = ({ children }: any) => {
       });
       // create multiChainModule
       const multiChainModule = await MultiChainValidationModule.create({
-        signer: walletProvider.getSigner(),
+        signer: signer,
         moduleAddress: "0x000000824dc138db84FD9109fc154bdad332Aa8E",
       });
       let wallet = await BiconomySmartAccountV2.create({
@@ -94,10 +93,10 @@ export const SmartAccountProvider = ({ children }: any) => {
       setLoading(false);
       console.error(error);
     }
-  }, [provider, address]);
+  }, [signer, address]);
 
   const getSmartAccountBalance = async () => {
-    if (!provider || !address) return "Wallet not connected";
+    if (!signer || !address) return "Wallet not connected";
     if (!smartAccount) return "Smart Account not initialized";
 
     try {
