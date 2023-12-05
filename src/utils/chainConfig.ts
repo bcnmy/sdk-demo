@@ -17,6 +17,11 @@ export const supportedChains = [
   ChainId.ARBITRUM_GOERLI
 ];
 
+export const ERC20_SESSION_VALIDATION_MODULE = "0x000000D50C68705bd6897B2d17c7de32FB519fDA"
+
+// Do not use this in production
+export const MOCK_SESSION_VALIDATION_MODULE = ""
+
 export const getRPCProvider = (chainId: number) => {
   switch (chainId) {
     case 1:

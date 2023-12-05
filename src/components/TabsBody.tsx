@@ -44,7 +44,7 @@ import ERC20Transfer from "./Modules/ERC20Transfer";
 import CreateBatchRouter from "./Modules/CreateBatchRouter";
 import ERC20RouterTransfer from "./Modules/ERC20RouterTransfer";
 
-const drawerWidth = 260;
+const drawerWidth = 350;
 const onboardingList = [
   {
     name: "Home",
@@ -92,19 +92,19 @@ const ForwardList = [
 
 const SessionList = [
   {
-    name: "Create Session Module",
+    name: "Create ERC20 transfer Session",
     icon: <GamesIcon />,
   },
   {
-    name: "Create Batch Router",
+    name: "Create Sessions (using Batch Router)",
     icon: <GamesIcon />,
   },
   {
-    name: "ERC20 Transfer Session",
+    name: "ERC20 Transfer using Session",
     icon: <CookieIcon />,
   },
   {
-    name: "ERC20 Batch Router",
+    name: "Use different Sessions in a batch call",
     icon: <CookieIcon />,
   }
 ];
@@ -344,7 +344,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
               <FiberNewIcon />
             </ListItemIcon>
             <ListItemText
-              primary="Session Module Demo"
+              primary="Session Keys Demo"
               sx={{ opacity: open ? 1 : 0 }}
             />
             {isSessionOpen ? <ExpandLess /> : <ExpandMore />}

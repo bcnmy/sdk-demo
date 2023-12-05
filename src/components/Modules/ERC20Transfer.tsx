@@ -33,7 +33,6 @@ const ERC20Transfer: React.FC = () => {
       // get session key from local storage
       const sessionKeyPrivKey = window.localStorage.getItem("sessionPKey");
 
-      console.log("sessionKeyPrivKey", sessionKeyPrivKey);
       if (!sessionKeyPrivKey) {
         showErrorMessage("Session key not found");
         return;

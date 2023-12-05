@@ -23,20 +23,7 @@ const cardItems = [
         }}
       />
     ),
-  },
-  {
-    title: "Mint NFT using Session",
-    description: "",
-    index: 13,
-    icon: (
-      <ImageIcon
-        style={{
-          color: "#FFB999",
-          fontSize: 72,
-        }}
-      />
-    ),
-  },
+  }
 ];
 
 const SessionFlow: React.FC<Props> = ({
