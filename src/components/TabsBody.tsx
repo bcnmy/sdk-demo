@@ -40,9 +40,9 @@ import MintNftForward from "./Forward/MintNft";
 import BatchLiquidityForward from "./Forward/BatchLiquidity";
 import CreateSession from "./Modules/CreateSession";
 import SessionFlow from "./Modules";
-import ERC20Transfer from "./Modules/ERC20Transfer";
-import CreateBatchRouter from "./Modules/CreateBatchRouter";
-import ERC20RouterTransfer from "./Modules/ERC20RouterTransfer";
+import ERC20Transfer from "./Modules/ERC20TransferUsingSession";
+import CreateBatchRouter from "./Modules/CreateSessionsWithBatchRouter";
+import ERC20RouterTransfer from "./Modules/UseSessionsBatch";
 
 const drawerWidth = 350;
 const onboardingList = [

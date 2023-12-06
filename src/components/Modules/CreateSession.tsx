@@ -69,7 +69,7 @@ const CreateSession: React.FC = () => {
       // If you have session key-pair on the client side you can keep using those without making part of any storage
       window.localStorage.setItem("sessionPKey", sessionSigner.privateKey);
 
-      // Create an instanbce of Session Key Manager module from modules package
+      // Create an instance of Session Key Manager module from modules package
       // This module is responsible for below tasks/helpers:
       // a. Maintain session leaf storage in defined storage client (Biconomy by default using browser local storage which works for front-end apps)
       // b. Generate dummy signature for userOp estimations
