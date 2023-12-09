@@ -39,8 +39,10 @@ import ForwardFlow from "./Forward";
 import MintNftForward from "./Forward/MintNft";
 import BatchLiquidityForward from "./Forward/BatchLiquidity";
 import CreateSession from "./Modules/CreateSession";
+import CreateCustomSession from "./Modules/CreateSessionForCustomSVM";
 import SessionFlow from "./Modules";
-import ERC20Transfer from "./Modules/ERC20TransferUsingSession";
+// import ERC20Transfer from "./Modules/ERC20TransferUsingSession";
+import HyphenLpUsingSession from "./Modules/HyphenLpUsingSession";
 import CreateBatchRouter from "./Modules/CreateSessionsWithBatchRouter";
 import ERC20RouterTransfer from "./Modules/UseSessionsBatch";
 
@@ -92,7 +94,7 @@ const ForwardList = [
 
 const SessionList = [
   {
-    name: "Create ERC20 transfer Session",
+    name: "Create Custom Destination func Session",
     icon: <GamesIcon />,
   },
   {
@@ -100,7 +102,7 @@ const SessionList = [
     icon: <GamesIcon />,
   },
   {
-    name: "ERC20 Transfer using Session",
+    name: "LP into Pool using Session",
     icon: <CookieIcon />,
   },
   {
@@ -439,13 +441,13 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
         />
       </TabPanel>
       <TabPanel value={pageIndex} index={12}>
-        <CreateSession />
+        <CreateCustomSession />
       </TabPanel>
       <TabPanel value={pageIndex} index={13}>
         <CreateBatchRouter />
       </TabPanel>
       <TabPanel value={pageIndex} index={14}>
-        <ERC20Transfer />
+        <HyphenLpUsingSession />
       </TabPanel>
       <TabPanel value={pageIndex} index={15}>
         <ERC20RouterTransfer />
