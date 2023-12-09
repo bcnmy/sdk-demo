@@ -98,17 +98,9 @@ const SessionList = [
     icon: <GamesIcon />,
   },
   {
-    name: "Create Sessions (using Batch Router)",
-    icon: <GamesIcon />,
-  },
-  {
     name: "LP into Pool using Session",
     icon: <CookieIcon />,
   },
-  {
-    name: "Use different Sessions in a batch call",
-    icon: <CookieIcon />,
-  }
 ];
 
 const TabsBody = ({ loading }: { loading: boolean }) => {
@@ -443,15 +435,10 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
       <TabPanel value={pageIndex} index={12}>
         <CreateCustomSession />
       </TabPanel>
-      <TabPanel value={pageIndex} index={13}>
-        <CreateBatchRouter />
-      </TabPanel>
       <TabPanel value={pageIndex} index={14}>
         <HyphenLpUsingSession />
       </TabPanel>
-      <TabPanel value={pageIndex} index={15}>
-        <ERC20RouterTransfer />
-      </TabPanel>
+
     </Box>
   );
 };
