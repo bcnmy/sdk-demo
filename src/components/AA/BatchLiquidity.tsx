@@ -40,19 +40,12 @@ const BatchLiquidity: React.FC = () => {
         config.hyphenLP.abi,
         signer
       );
-      const hyphenLPTx =
-        await hyphenContract.populateTransaction.addTokenLiquidity(
-          config.usdc.address,
-          ethers.BigNumber.from("1000000"),
-          {
-            from: scwAddress,
-          }
-        );
+      const addLiquidityData = hyphenContract.interface.encodeFunctionData("addTokenLiquidity", [config.usdc.address,
+        ethers.BigNumber.from("1000000")])
       const tx2 = {
         to: config.hyphenLP.address,
-        data: hyphenLPTx.data,
+        data: addLiquidityData,
       };
-      // todo check this for hyphen LP on Mumbai!
       txs.push(tx2);
 
       let userOp = await smartAccount.buildUserOp(txs, {

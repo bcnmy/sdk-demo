@@ -4,7 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "@rainbow-me/rainbowkit/styles.css";
 import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
-import { polygonMumbai, polygon, goerli, optimismGoerli } from "wagmi/chains";
+import { polygonMumbai, polygon } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { SmartAccountProvider } from "./contexts/SmartAccountContext";
 import App from "./App";
@@ -15,7 +15,7 @@ const element = document.getElementById("root");
 const root = createRoot(element!);
 
 const { chains, publicClient } = configureChains(
-  [polygonMumbai, polygon, goerli, optimismGoerli],
+  [polygonMumbai, polygon],
   [publicProvider()]
 );
 const { connectors } = getDefaultWallets({

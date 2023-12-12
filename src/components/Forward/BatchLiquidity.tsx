@@ -58,19 +58,16 @@ const BatchLiquidity: React.FC = () => {
       };
       txs.push(tx1);
 
-      const hyphenLPTx =
-        await hyphenContract.populateTransaction.addTokenLiquidity(
-          config.usdc.address,
-          ethers.BigNumber.from("1000000")
-        );
-
+      const addLiquidityData = hyphenContract.interface.encodeFunctionData("addTokenLiquidity", [config.usdc.address,
+        ethers.BigNumber.from("1000000")]) // 1 USDC (mumbai USDC has 6 decimals)
       const tx2 = {
         to: config.hyphenLP.address,
-        data: hyphenLPTx.data,
+        data: addLiquidityData,
       };
+
       txs.push(tx2);
       console.log("Tx array created", txs);
-      let partialUserOp = await smartAccount.buildUserOp([tx1], {
+      let partialUserOp = await smartAccount.buildUserOp(txs, {
         paymasterServiceData: {
           mode: PaymasterMode.ERC20,
         },
@@ -84,7 +81,7 @@ const BatchLiquidity: React.FC = () => {
           // here we are explicitly telling by mode ERC20 that we want to pay in ERC20 tokens and expect fee quotes
           mode: PaymasterMode.ERC20,
           // one can pass tokenList empty array. and it would return fee quotes for all tokens supported by the Biconomy paymaster
-          tokenList: [],
+          tokenList: [config.usdc.address, config.usdt.address],
           // preferredToken is optional. If you want to pay in a specific token, you can pass its address here and get fee quotes for that token only
           // preferredToken: config.preferredToken,
         });

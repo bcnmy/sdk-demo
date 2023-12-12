@@ -1,7 +1,7 @@
 import React from "react";
 import { makeStyles } from "@mui/styles";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
-import ImageIcon from "@mui/icons-material/Image";
+// import ImageIcon from "@mui/icons-material/Image";
 
 interface Props {
   useCase: number;
@@ -11,10 +11,10 @@ interface Props {
 
 const cardItems = [
   {
-    title: "Create Session",
+    title: "Create Custom Destination func Session",
     description:
       "This is single transaction to enable the sesion manager module and create session",
-    index: 12,
+    index: 9,
     icon: (
       <ControlPointIcon
         style={{
@@ -23,7 +23,21 @@ const cardItems = [
         }}
       />
     ),
-  }
+  },
+  {
+    title: "LP into Pool using Session",
+    description:
+      "This is single transaction to enable the sesion manager module and create session",
+    index: 10,
+    icon: (
+      <ControlPointIcon
+        style={{
+          color: "#FFB999",
+          fontSize: 72,
+        }}
+      />
+    ),
+  },
 ];
 
 const SessionFlow: React.FC<Props> = ({

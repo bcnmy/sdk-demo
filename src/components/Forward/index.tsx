@@ -11,12 +11,12 @@ interface Props {
 
 const cardItems = [
   {
-    title: "Batch Liquidity",
+    title: "Batch NFT",
     description:
-      "This magic bundle will approve USDC then provide the USDC liquidity to Hyphen Pool.",
-    index: 9,
+      "This magic bundle will batch two single safeMint into one transaction.",
+    index: 6,
     icon: (
-      <ControlPointDuplicateIcon
+      <CollectionsIcon
         style={{
           color: "#FFB999",
           fontSize: 72,
@@ -25,12 +25,12 @@ const cardItems = [
     ),
   },
   {
-    title: "Batch NFT",
+    title: "Batch Liquidity",
     description:
-      "This magic bundle will batch two single safeMint into one transaction.",
-    index: 10,
+      "This magic bundle will approve USDC then provide the USDC liquidity to Hyphen Pool.",
+    index: 7,
     icon: (
-      <CollectionsIcon
+      <ControlPointDuplicateIcon
         style={{
           color: "#FFB999",
           fontSize: 72,
