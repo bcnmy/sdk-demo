@@ -12,7 +12,7 @@ import {
   showErrorMessage,
 } from "../../utils";
 import { DEFAULT_SESSION_KEY_MANAGER_MODULE } from "@biconomy/modules";
-import { CONTRACT_CALL_SESSION_VALIDATION_MODULE, ERC20_SESSION_VALIDATION_MODULE } from "../../utils/chainConfig";
+import { CONTRACT_CALL_SESSION_VALIDATION_MODULE } from "../../utils/chainConfig";
 
 const HyphenLpUsingSession: React.FC = () => {
   const classes = useStyles();
@@ -29,7 +29,8 @@ const HyphenLpUsingSession: React.FC = () => {
       setLoading(true);
       let biconomySmartAccount = smartAccount;
       const sessionKeyManagerModuleAddr = DEFAULT_SESSION_KEY_MANAGER_MODULE;
-      const ccSessionValidationModuleAddr = CONTRACT_CALL_SESSION_VALIDATION_MODULE;
+      const ccSessionValidationModuleAddr =
+        CONTRACT_CALL_SESSION_VALIDATION_MODULE;
 
       // get session key from local storage
       const sessionKeyPrivKey = window.localStorage.getItem("sessionPKey");
@@ -53,33 +54,16 @@ const HyphenLpUsingSession: React.FC = () => {
       biconomySmartAccount =
         biconomySmartAccount.setActiveValidationModule(sessionManagerModule);
 
-      const tokenContract = new ethers.Contract(
-        config.usdc.address,
-        config.usdc.abi,
-        signer
-      );
-
       const hyphenContract = new ethers.Contract(
         config.hyphenLP.address,
         config.hyphenLP.abi,
         signer
       );
 
-      let decimals = 18;
-
-      try {
-        decimals = await tokenContract.decimals();
-      } catch (error) {
-        throw new Error("invalid token address supplied");
-      }
-
-      const { data } = await tokenContract.populateTransaction.transfer(
-        "0x42138576848E839827585A3539305774D36B9602", // receiver address // Has to be the same receiver for which session permissions are set
-        ethers.utils.parseUnits("5".toString(), decimals)
-      );
-
-      const addLiquidityData = hyphenContract.interface.encodeFunctionData("addTokenLiquidity", [config.usdc.address,
-        ethers.BigNumber.from("1000000")]) // 1 USDC (mumbai USDC has 6 decimals)
+      const addLiquidityData = hyphenContract.interface.encodeFunctionData(
+        "addTokenLiquidity",
+        [config.usdc.address, ethers.BigNumber.from("1000000")]
+      ); // 1 USDC (mumbai USDC has 6 decimals)
       const tx1 = {
         to: config.hyphenLP.address,
         data: addLiquidityData,
@@ -98,14 +82,16 @@ const HyphenLpUsingSession: React.FC = () => {
       });
 
       // send user operation
-      const userOpResponse = await biconomySmartAccount.sendUserOp(userOp, 
+      const userOpResponse = await biconomySmartAccount.sendUserOp(
+        userOp,
         // below params are required for passing on this information to session key manager module to create padded signature
         {
-        sessionSigner: sessionSigner,
-        sessionValidationModule: ccSessionValidationModuleAddr,
-        // optionally can also provide simulationType
-        simulationType: 'validation_and_execution'
-      });
+          sessionSigner: sessionSigner,
+          sessionValidationModule: ccSessionValidationModuleAddr,
+          // optionally can also provide simulationType
+          simulationType: "validation_and_execution",
+        }
+      );
 
       console.log("userOpHash", userOpResponse);
       const { transactionHash } = await userOpResponse.waitForTxHash();
@@ -122,13 +108,17 @@ const HyphenLpUsingSession: React.FC = () => {
   return (
     <main className={classes.main}>
       <p style={{ color: "#7E7E7E" }}>
-        Use Cases {"->"} Gasless {"->"} Deposit into Hyphen Pool using session key
+        Use Cases {"->"} Gasless {"->"} Deposit into Hyphen Pool using session
+        key
       </p>
 
-      <h3 className={classes.subTitle}>Deposit into Hyphen Pool via Session Key</h3>
+      <h3 className={classes.subTitle}>
+        Deposit into Hyphen Pool via Session Key
+      </h3>
 
       <p style={{ marginBottom: 20 }}>
-        This is an example to Deposit into Hyphen Pool making use of enabled session. Requires prior approval from smart account
+        This is an example to Deposit into Hyphen Pool making use of enabled
+        session. Requires prior approval from smart account
       </p>
 
       <Button

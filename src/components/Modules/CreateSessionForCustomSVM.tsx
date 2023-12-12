@@ -5,11 +5,15 @@ import { SessionKeyManagerModule } from "@biconomy/modules";
 import Button from "../Button";
 import { useAccount } from "wagmi";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
-import {   configInfo as config, showErrorMessage, showInfoMessage } from "../../utils";
+import {
+  configInfo as config,
+  showErrorMessage,
+  showInfoMessage,
+} from "../../utils";
 import { defaultAbiCoder } from "ethers/lib/utils";
 import { getActionForErrorMessage } from "../../utils/error-utils";
 import { DEFAULT_SESSION_KEY_MANAGER_MODULE } from "@biconomy/modules";
-import { CONTRACT_CALL_SESSION_VALIDATION_MODULE, ERC20_SESSION_VALIDATION_MODULE } from "../../utils/chainConfig";
+import { CONTRACT_CALL_SESSION_VALIDATION_MODULE } from "../../utils/chainConfig";
 import { useEthersSigner } from "../../contexts/ethers";
 
 const CreateCustomSession: React.FC = () => {
@@ -57,7 +61,8 @@ const CreateCustomSession: React.FC = () => {
     try {
       let biconomySmartAccount = smartAccount;
       const sessionKeyManagerModuleAddr = DEFAULT_SESSION_KEY_MANAGER_MODULE;
-      const ccSessionValidationModuleAddr = CONTRACT_CALL_SESSION_VALIDATION_MODULE;
+      const ccSessionValidationModuleAddr =
+        CONTRACT_CALL_SESSION_VALIDATION_MODULE;
 
       // -----> setMerkle tree tx flow
       // create dapp side session key
@@ -73,24 +78,11 @@ const CreateCustomSession: React.FC = () => {
       // This module is responsible for below tasks/helpers:
       // a. Maintain session leaf storage in defined storage client (Biconomy by default using browser local storage which works for front-end apps)
       // b. Generate dummy signature for userOp estimations
-      // c. Provides helpers to sign userOpHash with session key in the right format and generate proof for particular leaf 
+      // c. Provides helpers to sign userOpHash with session key in the right format and generate proof for particular leaf
       const sessionManagerModule = await SessionKeyManagerModule.create({
         moduleAddress: sessionKeyManagerModuleAddr,
         smartAccountAddress: scwAddress,
       });
-
-      const tokenContract = new ethers.Contract(
-        config.usdc.address,
-        config.usdc.abi,
-        signer
-      );
-      let decimals = 18;
-
-      try {
-        decimals = await tokenContract.decimals();
-      } catch (error) {
-        throw new Error("invalid token address supplied");
-      }
 
       // Cretae session key data
       // Session key data is always corrsponding to the Session Validation Module being used
@@ -115,8 +107,8 @@ const CreateCustomSession: React.FC = () => {
       // This transaction needs a user signature and for gas sponsorship or ERC20 paymaster can be used.
       const sessionTxData = await sessionManagerModule.createSessionData([
         {
-          validUntil: 0, // 0 value means extremes 
-          validAfter: 0, // 0 value means extremes 
+          validUntil: 0, // 0 value means extremes
+          validAfter: 0, // 0 value means extremes
           sessionValidationModule: ccSessionValidationModuleAddr,
           sessionPublicKey: sessionKeyEOA,
           sessionKeyData: sessionKeyData,
@@ -141,7 +133,6 @@ const CreateCustomSession: React.FC = () => {
       }
       transactionArray.push(tx2);
 
-
       const usdcContract = new ethers.Contract(
         config.usdc.address,
         config.usdc.abi,
@@ -158,8 +149,6 @@ const CreateCustomSession: React.FC = () => {
       };
 
       transactionArray.push(tx3);
-
-
 
       // Building the user operation
       // If you're going to use sponsorship paymaster details can be provided at this step
@@ -215,8 +204,9 @@ const CreateCustomSession: React.FC = () => {
       ) : (
         <div>
           <p style={{ marginBottom: 20 }}>
-            This is a single transaction to enable the sesion key manager module and
-            make a session active on-chain using Contract call (ABI) session validation module.
+            This is a single transaction to enable the sesion key manager module
+            and make a session active on-chain using Contract call (ABI) session
+            validation module.
           </p>
 
           <Button

@@ -13,40 +13,40 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import HomeIcon from "@mui/icons-material/Home";
 import SavingsIcon from "@mui/icons-material/Savings";
-import TokenIcon from "@mui/icons-material/Token";
+// import TokenIcon from "@mui/icons-material/Token";
 import EvStationIcon from "@mui/icons-material/EvStation";
 import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
-import CookieIcon from '@mui/icons-material/Cookie';
-import FiberNewIcon from '@mui/icons-material/FiberNew';
-import BurstModeIcon from "@mui/icons-material/BurstMode";
+import CookieIcon from "@mui/icons-material/Cookie";
+import FiberNewIcon from "@mui/icons-material/FiberNew";
+// import BurstModeIcon from "@mui/icons-material/BurstMode";
 import GamesIcon from "@mui/icons-material/Games";
 import ContactlessIcon from "@mui/icons-material/Contactless";
-import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+// import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import Onboarding from "./Onboarding/index";
 import Navbar from "./Navbar";
-import Assets from "./Balance";
+// import Assets from "./Balance";
 import Collapse from "@mui/material/Collapse/Collapse";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import Faucet from "./Faucet";
 // Account Abstraction
 import AccountAbstraction from "./AA";
 import MintNft from "./AA/MintNft";
-import BatchMintNft from "./AA/BatchMintNft";
-import MintErc20 from "./AA/MintErc20";
+// import BatchMintNft from "./AA/BatchMintNft";
+// import MintErc20 from "./AA/MintErc20";
 import BatchLiquidity from "./AA/BatchLiquidity";
 // Forward
 import ForwardFlow from "./Forward";
 import MintNftForward from "./Forward/MintNft";
 import BatchLiquidityForward from "./Forward/BatchLiquidity";
-import CreateSession from "./Modules/CreateSession";
+// import CreateSession from "./Modules/CreateSession";
 import CreateCustomSession from "./Modules/CreateSessionForCustomSVM";
 import SessionFlow from "./Modules";
 // import ERC20Transfer from "./Modules/ERC20TransferUsingSession";
 import HyphenLpUsingSession from "./Modules/HyphenLpUsingSession";
-import CreateBatchRouter from "./Modules/CreateSessionsWithBatchRouter";
-import ERC20RouterTransfer from "./Modules/UseSessionsBatch";
+// import CreateBatchRouter from "./Modules/CreateSessionsWithBatchRouter";
+// import ERC20RouterTransfer from "./Modules/UseSessionsBatch";
 
-const drawerWidth = 350;
+const drawerWidth = 280;
 const onboardingList = [
   {
     name: "Home",
@@ -56,17 +56,17 @@ const onboardingList = [
     name: "Faucet",
     icon: <SavingsIcon />,
   },
-  {
-    name: "Balance",
-    icon: <AccountBalanceWalletIcon />,
-  },
+  // {
+  //   name: "Balance",
+  //   icon: <AccountBalanceWalletIcon />,
+  // },
 ];
 
 const AAList = [
-  {
-    name: "Mint ERC20 Token",
-    icon: <TokenIcon />,
-  },
+  // {
+  //   name: "Mint ERC20 Token",
+  //   icon: <TokenIcon />,
+  // },
   {
     name: "Mint NFT",
     icon: <InsertPhotoIcon />,
@@ -75,20 +75,20 @@ const AAList = [
     name: "Batch Add Liquidity",
     icon: <GamesIcon />,
   },
-  {
-    name: "Batch Mint NFT",
-    icon: <BurstModeIcon />,
-  },
+  // {
+  //   name: "Batch Mint NFT",
+  //   icon: <BurstModeIcon />,
+  // },
 ];
 
 const ForwardList = [
   {
-    name: "Batch Add Liquidity",
-    icon: <GamesIcon />,
-  },
-  {
     name: "Mint NFT",
     icon: <InsertPhotoIcon />,
+  },
+  {
+    name: "Batch Add Liquidity",
+    icon: <GamesIcon />,
   },
 ];
 
@@ -108,9 +108,9 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
   const [pageIndex, setPageIndex] = React.useState(0);
   const [useCase, setUseCase] = React.useState(0);
   const [open, setOpen] = React.useState(true);
-  const [isAAOpen, setIsAAOpen] = React.useState(false);
-  const [isForwardOpen, setIsForwardOpen] = React.useState(false);
-  const [isSessionOpen, setIsSessionOpen] = React.useState(false);
+  const [isAAOpen, setIsAAOpen] = React.useState(true);
+  const [isForwardOpen, setIsForwardOpen] = React.useState(true);
+  const [isSessionOpen, setIsSessionOpen] = React.useState(true);
 
   const handleChange = (event: any, newValue: any) => {
     if (newValue >= 4 && newValue <= 7) {
@@ -195,7 +195,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
           <ListItemButton
             onClick={(e: any) => {
               setIsAAOpen(!isAAOpen);
-              handleChange(e, 3);
+              handleChange(e, 2);
             }}
           >
             <ListItemIcon
@@ -203,7 +203,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
                 minWidth: 0,
                 mr: open ? 3 : "auto",
                 justifyContent: "center",
-                color: pageIndex === 3 ? "#FFB999" : "#e6e6e6",
+                color: pageIndex === 2 ? "#FFB999" : "#e6e6e6",
               }}
             >
               <EvStationIcon />
@@ -228,14 +228,14 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
                       justifyContent: open ? "initial" : "center",
                       px: 2.5,
                     }}
-                    onClick={(e: any) => handleChange(e, index + 4)}
+                    onClick={(e: any) => handleChange(e, index + 3)}
                   >
                     <ListItemIcon
                       sx={{
                         minWidth: 0,
                         mr: open ? 3 : "auto",
                         justifyContent: "center",
-                        color: pageIndex === index + 4 ? "#FFB999" : "#e6e6e6",
+                        color: pageIndex === index + 3 ? "#FFB999" : "#e6e6e6",
                       }}
                     >
                       {ele.icon}
@@ -259,7 +259,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
           <ListItemButton
             onClick={(e: any) => {
               setIsForwardOpen(!isForwardOpen);
-              handleChange(e, 8);
+              handleChange(e, 5);
             }}
           >
             <ListItemIcon
@@ -267,7 +267,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
                 minWidth: 0,
                 mr: open ? 3 : "auto",
                 justifyContent: "center",
-                color: pageIndex === 8 ? "#FFB999" : "#e6e6e6",
+                color: pageIndex === 5 ? "#FFB999" : "#e6e6e6",
               }}
             >
               <ContactlessIcon />
@@ -281,6 +281,71 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
           <Collapse in={isForwardOpen} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
               {ForwardList.map((ele, index) => (
+                <ListItem
+                  key={ele.name}
+                  disablePadding
+                  sx={{ display: "block" }}
+                >
+                  <ListItemButton
+                    sx={{
+                      minHeight: 48,
+                      justifyContent: open ? "initial" : "center",
+                      px: 2.5,
+                    }}
+                    onClick={(e: any) => handleChange(e, index + 6)}
+                  >
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: open ? 3 : "auto",
+                        justifyContent: "center",
+                        color: pageIndex === index + 6 ? "#FFB999" : "#e6e6e6",
+                      }}
+                    >
+                      {ele.icon}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={ele.name}
+                      sx={{ opacity: open ? 1 : 0 }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              ))}
+            </List>
+          </Collapse>
+        </List>
+
+        {/* Session Left Panel */}
+        <List
+          sx={{
+            display: "block",
+          }}
+        >
+          <ListItemButton
+            onClick={(e: any) => {
+              setIsSessionOpen(!isSessionOpen);
+              handleChange(e, 8);
+            }}
+          >
+            <ListItemIcon
+              sx={{
+                minWidth: 0,
+                mr: open ? 3 : "auto",
+                justifyContent: "center",
+                color: pageIndex === 8 ? "#FFB999" : "#e6e6e6",
+              }}
+            >
+              <FiberNewIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary="Session Keys Demo"
+              sx={{ opacity: open ? 1 : 0 }}
+            />
+            {isSessionOpen ? <ExpandLess /> : <ExpandMore />}
+          </ListItemButton>
+          <Collapse in={isSessionOpen} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              {SessionList.map((ele, index) => (
                 <ListItem
                   key={ele.name}
                   disablePadding
@@ -314,71 +379,6 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
             </List>
           </Collapse>
         </List>
-
-        {/* Session Left Panel */}
-        <List
-          sx={{
-            display: "block",
-          }}
-        >
-          <ListItemButton
-            onClick={(e: any) => {
-              setIsSessionOpen(!isSessionOpen);
-              handleChange(e, 11);
-            }}
-          >
-            <ListItemIcon
-              sx={{
-                minWidth: 0,
-                mr: open ? 3 : "auto",
-                justifyContent: "center",
-                color: pageIndex === 11 ? "#FFB999" : "#e6e6e6",
-              }}
-            >
-              <FiberNewIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary="Session Keys Demo"
-              sx={{ opacity: open ? 1 : 0 }}
-            />
-            {isSessionOpen ? <ExpandLess /> : <ExpandMore />}
-          </ListItemButton>
-          <Collapse in={isSessionOpen} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              {SessionList.map((ele, index) => (
-                <ListItem
-                  key={ele.name}
-                  disablePadding
-                  sx={{ display: "block" }}
-                >
-                  <ListItemButton
-                    sx={{
-                      minHeight: 48,
-                      justifyContent: open ? "initial" : "center",
-                      px: 2.5,
-                    }}
-                    onClick={(e: any) => handleChange(e, index + 12)}
-                  >
-                    <ListItemIcon
-                      sx={{
-                        minWidth: 0,
-                        mr: open ? 3 : "auto",
-                        justifyContent: "center",
-                        color: pageIndex === index + 12 ? "#FFB999" : "#e6e6e6",
-                      }}
-                    >
-                      {ele.icon}
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={ele.name}
-                      sx={{ opacity: open ? 1 : 0 }}
-                    />
-                  </ListItemButton>
-                </ListItem>
-              ))}
-            </List>
-          </Collapse>
-        </List>
       </Drawer>
 
       {/* content menu */}
@@ -388,57 +388,56 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
       <TabPanel value={pageIndex} index={1}>
         <Faucet />
       </TabPanel>
-      <TabPanel value={pageIndex} index={2}>
+      {/* <TabPanel value={pageIndex} index={2}>
         <Assets />
-      </TabPanel>
-      <TabPanel value={pageIndex} index={3}>
+      </TabPanel> */}
+      <TabPanel value={pageIndex} index={2}>
         <AccountAbstraction
           pageIndexChange={handleChange}
           setUseCase={setUseCase}
           useCase={useCase}
         />
       </TabPanel>
-      <TabPanel value={pageIndex} index={4}>
+      {/* <TabPanel value={pageIndex} index={4}>
         <MintErc20 />
-      </TabPanel>
-      <TabPanel value={pageIndex} index={5}>
+      </TabPanel> */}
+      <TabPanel value={pageIndex} index={3}>
         <MintNft />
       </TabPanel>
-      <TabPanel value={pageIndex} index={6}>
+      <TabPanel value={pageIndex} index={4}>
         <BatchLiquidity />
       </TabPanel>
-      <TabPanel value={pageIndex} index={7}>
+      {/* <TabPanel value={pageIndex} index={7}>
         <BatchMintNft />
-      </TabPanel>
+      </TabPanel> */}
 
-      <TabPanel value={pageIndex} index={8}>
+      <TabPanel value={pageIndex} index={5}>
         <ForwardFlow
           pageIndexChange={handleChange}
           setUseCase={setUseCase}
           useCase={useCase}
         />
       </TabPanel>
-      <TabPanel value={pageIndex} index={9}>
-        <BatchLiquidityForward />
-      </TabPanel>
-      <TabPanel value={pageIndex} index={10}>
+      <TabPanel value={pageIndex} index={6}>
         <MintNftForward />
       </TabPanel>
+      <TabPanel value={pageIndex} index={7}>
+        <BatchLiquidityForward />
+      </TabPanel>
 
-      <TabPanel value={pageIndex} index={11}>
+      <TabPanel value={pageIndex} index={8}>
         <SessionFlow
           pageIndexChange={handleChange}
           setUseCase={setUseCase}
           useCase={useCase}
         />
       </TabPanel>
-      <TabPanel value={pageIndex} index={12}>
+      <TabPanel value={pageIndex} index={9}>
         <CreateCustomSession />
       </TabPanel>
-      <TabPanel value={pageIndex} index={14}>
+      <TabPanel value={pageIndex} index={10}>
         <HyphenLpUsingSession />
       </TabPanel>
-
     </Box>
   );
 };
