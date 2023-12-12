@@ -46,7 +46,7 @@ import HyphenLpUsingSession from "./Modules/HyphenLpUsingSession";
 // import CreateBatchRouter from "./Modules/CreateSessionsWithBatchRouter";
 // import ERC20RouterTransfer from "./Modules/UseSessionsBatch";
 
-const drawerWidth = 280;
+const drawerWidth = 320;
 const onboardingList = [
   {
     name: "Home",
@@ -94,7 +94,7 @@ const ForwardList = [
 
 const SessionList = [
   {
-    name: "Create Custom Destination func Session",
+    name: "Create Custom Destination Session",
     icon: <GamesIcon />,
   },
   {
