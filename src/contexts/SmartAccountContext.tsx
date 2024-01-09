@@ -1,63 +1,52 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import {
+  BiconomyAccountProvider,
   BiconomySmartAccountV2,
   DEFAULT_ENTRYPOINT_ADDRESS,
-} from "@biconomy/account";
-import { BiconomyPaymaster } from "@biconomy/paymaster";
-import { useAccount } from 'wagmi'
+} from "@biconomy-devx/account";
+import { BiconomyPaymaster } from "@biconomy-devx/paymaster";
+import { useAccount, useWalletClient } from "wagmi";
 import { activeChainId, bundlerUrl, paymasterApi } from "../utils/chainConfig";
-import { Bundler } from "@biconomy/bundler";
-import { MultiChainValidationModule } from "@biconomy/modules";
-import { useEthersSigner } from './ethers'
+import { Bundler } from "@biconomy-devx/bundler";
+import { MultiChainValidationModule } from "@biconomy-devx/modules";
+import { WalletClientSigner } from "@alchemy/aa-core";
+import { polygonMumbai } from "viem/chains";
+// import { useEthersSigner } from './ethers'
 
 // Types
-type Balance = {
-  totalBalanceInUsd: number;
-  alltokenBalances: any[];
-};
 type smartAccountContextType = {
   smartAccount: BiconomySmartAccountV2 | null;
+  accountProvider: BiconomyAccountProvider | null;
   scwAddress: string;
-  balance: Balance;
   loading: boolean;
-  isFetchingBalance: boolean;
   getSmartAccount: () => void;
-  getSmartAccountBalance: () => void;
 };
 
 // Context
 export const SmartAccountContext = React.createContext<smartAccountContextType>(
   {
     smartAccount: null,
+    accountProvider: null,
     scwAddress: "",
-    balance: {
-      totalBalanceInUsd: 0,
-      alltokenBalances: [],
-    },
     loading: false,
-    isFetchingBalance: false,
     getSmartAccount: () => 0,
-    getSmartAccountBalance: () => 0,
   }
 );
 export const useSmartAccountContext = () => useContext(SmartAccountContext);
 
 // Provider
 export const SmartAccountProvider = ({ children }: any) => {
-  const { address } = useAccount()
-  const signer = useEthersSigner()
+  const { address } = useAccount();
+  const { data: walletClient } = useWalletClient();
   const [smartAccount, setSmartAccount] =
     useState<BiconomySmartAccountV2 | null>(null);
+  const [accountProvider, setAccountProvider] =
+    useState<BiconomyAccountProvider | null>(null);
   const [scwAddress, setScwAddress] = useState("");
-  const [balance, setBalance] = useState<Balance>({
-    totalBalanceInUsd: 0,
-    alltokenBalances: [],
-  });
-  const [isFetchingBalance, setIsFetchingBalance] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const getSmartAccount = useCallback(async () => {
-    if (!signer || !address) return "Wallet not connected";
+    if (!walletClient || !address) return "Wallet not connected";
 
     try {
       setLoading(true);
@@ -70,6 +59,7 @@ export const SmartAccountProvider = ({ children }: any) => {
       const paymaster = new BiconomyPaymaster({
         paymasterUrl: paymasterApi,
       });
+      let signer = new WalletClientSigner(walletClient, "json-rpc");
       // create multiChainModule
       const multiChainModule = await MultiChainValidationModule.create({
         signer: signer,
@@ -83,50 +73,23 @@ export const SmartAccountProvider = ({ children }: any) => {
         defaultValidationModule: multiChainModule,
         activeValidationModule: multiChainModule,
       });
-      wallet = await wallet.init();
-      console.log("biconomyAccount", wallet);
-      const scw = await wallet.getAccountAddress();
       setSmartAccount(wallet);
+
+      const scw = await wallet.getAccountAddress();
       setScwAddress(scw);
+
+      const smartAccountProvider = new BiconomyAccountProvider({
+        rpcProvider: polygonMumbai.rpcUrls.default.http[0],
+        chain: polygonMumbai,
+      }).connect((_rpcClient: any) => wallet);
+      setAccountProvider(smartAccountProvider);
+
       setLoading(false);
     } catch (error: any) {
       setLoading(false);
       console.error(error);
     }
-  }, [signer, address]);
-
-  const getSmartAccountBalance = async () => {
-    if (!signer || !address) return "Wallet not connected";
-    if (!smartAccount) return "Smart Account not initialized";
-
-    try {
-      setIsFetchingBalance(true);
-      // ethAdapter could be used like this
-      // const bal = await smartAccount.ethersAdapter().getBalance(state.address);
-      const balanceParams = {
-        chainId: activeChainId,
-        address: await smartAccount.getAccountAddress(),
-        tokenAddresses: [],
-      };
-      const balFromSdk = await smartAccount.getAllTokenBalances(balanceParams);
-      console.info("getAlltokenBalances", balFromSdk);
-
-      const usdBalFromSdk = await smartAccount.getTotalBalanceInUsd(
-        balanceParams
-      );
-      console.info("getTotalBalanceInUsd", usdBalFromSdk);
-      setBalance({
-        totalBalanceInUsd: usdBalFromSdk.data.totalBalance,
-        alltokenBalances: balFromSdk.data,
-      });
-      setIsFetchingBalance(false);
-      return "";
-    } catch (error: any) {
-      setIsFetchingBalance(false);
-      console.error(error);
-      return error.message;
-    }
-  };
+  }, [walletClient, address]);
 
   useEffect(() => {
     getSmartAccount();
@@ -137,11 +100,9 @@ export const SmartAccountProvider = ({ children }: any) => {
       value={{
         scwAddress,
         smartAccount,
-        balance,
         loading,
-        isFetchingBalance,
         getSmartAccount,
-        getSmartAccountBalance,
+        accountProvider,
       }}
     >
       {children}

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { ethers } from "ethers";
 import { makeStyles } from "@mui/styles";
 import { CircularProgress } from "@mui/material";
 import {
@@ -7,20 +6,19 @@ import {
   PaymasterFeeQuote,
   PaymasterMode,
   SponsorUserOperationDto,
-} from "@biconomy/paymaster";
+} from "@biconomy-devx/paymaster";
 
 import Button from "../Button";
-import { useEthersSigner } from "../../contexts/ethers";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import {
   configInfo as config,
   showSuccessMessage,
   showErrorMessage,
 } from "../../utils";
+import { Hex, encodeFunctionData, parseEther } from "viem";
 
 const BatchLiquidity: React.FC = () => {
   const classes = useStyles();
-  const signer = useEthersSigner();
   const { smartAccount, scwAddress } = useSmartAccountContext();
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingFee, setIsLoadingFee] = useState(false);
@@ -36,42 +34,31 @@ const BatchLiquidity: React.FC = () => {
       setIsLoading(true);
       setIsLoadingFee(true);
       setFeeQuotesArr([]);
-      if (!smartAccount || !scwAddress || !signer) return;
-      const txs = [];
-      const usdcContract = new ethers.Contract(
-        config.usdc.address,
-        config.usdc.abi,
-        signer
-      );
-      const hyphenContract = new ethers.Contract(
-        config.hyphenLP.address,
-        config.hyphenLP.abi,
-        signer
-      );
-      const approveUSDCTx = await usdcContract.populateTransaction.approve(
-        config.hyphenLP.address,
-        ethers.BigNumber.from("1000000")
-      );
+      if (!smartAccount || !scwAddress) return;
+      const approveCallData = encodeFunctionData({
+        abi: config.usdc.abi,
+        functionName: "approve",
+        args: [config.hyphenLP.address, parseEther("0.001", "gwei")],
+      });
       const tx1 = {
-        to: config.usdc.address,
-        data: approveUSDCTx.data,
+        to: config.usdc.address as Hex,
+        value: BigInt(0),
+        data: approveCallData,
       };
-      txs.push(tx1);
 
-      const addLiquidityData = hyphenContract.interface.encodeFunctionData("addTokenLiquidity", [config.usdc.address,
-        ethers.BigNumber.from("1000000")]) // 1 USDC (mumbai USDC has 6 decimals)
+      const addLiquidityData = encodeFunctionData({
+        abi: config.hyphenLP.abi,
+        functionName: "addTokenLiquidity",
+        args: [config.usdc.address, parseEther("0.001", "gwei")],
+      });
       const tx2 = {
-        to: config.hyphenLP.address,
+        to: config.hyphenLP.address as Hex,
+        value: BigInt(0),
         data: addLiquidityData,
       };
 
-      txs.push(tx2);
-      console.log("Tx array created", txs);
-      let partialUserOp = await smartAccount.buildUserOp(txs, {
-        paymasterServiceData: {
-          mode: PaymasterMode.ERC20,
-        },
-      });
+      console.log("Tx array created", [tx1, tx2]);
+      let partialUserOp = await smartAccount.buildUserOp([tx1, tx2]);
       setEstimatedUserOp(partialUserOp);
 
       const biconomyPaymaster =
@@ -94,10 +81,10 @@ const BatchLiquidity: React.FC = () => {
     };
     fetchFeeOption();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [signer]);
+  }, [scwAddress]);
 
   const makeTx = async () => {
-    if (!smartAccount || !scwAddress || !signer) return;
+    if (!smartAccount || !scwAddress) return;
     if (!selectedQuote) {
       showErrorMessage("Please select a fee quote");
       return;
@@ -110,7 +97,7 @@ const BatchLiquidity: React.FC = () => {
         estimatedUserOp,
         {
           feeQuote: selectedQuote,
-          spender: spender,
+          spender: spender as Hex,
           maxApproval: false,
         }
       );

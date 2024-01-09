@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { ethers } from "ethers";
 import { makeStyles } from "@mui/styles";
+import { Hex, encodeFunctionData } from "viem";
 
 import Button from "../Button";
-import { useEthersSigner } from "../../contexts/ethers";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import {
   configInfo as config,
@@ -11,40 +10,30 @@ import {
   showInfoMessage,
   showSuccessMessage,
 } from "../../utils";
-import { PaymasterMode } from "@biconomy/paymaster";
 
 const Faucet: React.FC = () => {
   const classes = useStyles();
-  const signer = useEthersSigner();
-  const { smartAccount, scwAddress } = useSmartAccountContext();
+  const { accountProvider, scwAddress } = useSmartAccountContext();
   const [address, setAddress] = useState(scwAddress);
 
   const makeTx = async () => {
-    if (!smartAccount || !signer || !scwAddress) {
+    if (!accountProvider || !scwAddress) {
       showErrorMessage("Please connect your wallet");
       return;
     }
     showInfoMessage("Initiating Faucet...");
     try {
-      const faucetContract = new ethers.Contract(
-        config.faucet.address,
-        config.faucet.abi,
-        signer
-      );
-      const faucetTxData = await faucetContract.populateTransaction.drip(
-        address
-      );
-      const tx1 = {
-        to: config.faucet.address,
-        data: faucetTxData.data,
-      };
-      let userOp = await smartAccount.buildUserOp([tx1], {
-        paymasterServiceData: {
-          mode: PaymasterMode.SPONSORED,
-        },
+      const faucetTxData = encodeFunctionData({
+        abi: config.faucet.abi,
+        functionName: "drip",
+        args: [address as Hex],
       });
-
-      const userOpResponse = await smartAccount.sendUserOp(userOp);
+      const tx1 = {
+        target: config.faucet.address as Hex,
+        value: BigInt(0),
+        data: faucetTxData,
+      };
+      let userOpResponse = await accountProvider.sendUserOperations(tx1);
       console.log("userOpHash", userOpResponse);
       const { transactionHash } = await userOpResponse.waitForTxHash();
       console.log("txHash", transactionHash);

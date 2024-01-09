@@ -39,10 +39,10 @@ import ForwardFlow from "./Forward";
 import MintNftForward from "./Forward/MintNft";
 import BatchLiquidityForward from "./Forward/BatchLiquidity";
 // import CreateSession from "./Modules/CreateSession";
-import CreateCustomSession from "./Modules/CreateSessionForCustomSVM";
-import SessionFlow from "./Modules";
+// import CreateCustomSession from "./Modules/CreateSessionForCustomSVM";
+// import SessionFlow from "./Modules";
 // import ERC20Transfer from "./Modules/ERC20TransferUsingSession";
-import HyphenLpUsingSession from "./Modules/HyphenLpUsingSession";
+// import HyphenLpUsingSession from "./Modules/HyphenLpUsingSession";
 // import CreateBatchRouter from "./Modules/CreateSessionsWithBatchRouter";
 // import ERC20RouterTransfer from "./Modules/UseSessionsBatch";
 
@@ -426,17 +426,17 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
       </TabPanel>
 
       <TabPanel value={pageIndex} index={8}>
-        <SessionFlow
+        {/* <SessionFlow
           pageIndexChange={handleChange}
           setUseCase={setUseCase}
           useCase={useCase}
-        />
+        /> */}
       </TabPanel>
       <TabPanel value={pageIndex} index={9}>
-        <CreateCustomSession />
+        {/* <CreateCustomSession /> */}
       </TabPanel>
       <TabPanel value={pageIndex} index={10}>
-        <HyphenLpUsingSession />
+        {/* <HyphenLpUsingSession /> */}
       </TabPanel>
     </Box>
   );

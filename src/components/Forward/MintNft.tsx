@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { ethers } from "ethers";
 import { makeStyles } from "@mui/styles";
 import CircularProgress from "@mui/material/CircularProgress";
 import {
@@ -7,21 +6,22 @@ import {
   PaymasterFeeQuote,
   PaymasterMode,
   SponsorUserOperationDto,
-} from "@biconomy/paymaster";
+} from "@biconomy-devx/paymaster";
 
 import Button from "../Button";
-import { useEthersSigner } from "../../contexts/ethers";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import {
   configInfo as config,
   showErrorMessage,
   showSuccessMessage,
 } from "../../utils";
+import { Hex, encodeFunctionData, getContract } from "viem";
+import { usePublicClient } from "wagmi";
 
 const MintNftForward: React.FC = () => {
   const classes = useStyles();
-  const signer = useEthersSigner();
-  const { scwAddress, smartAccount } = useSmartAccountContext();
+  const publicClient = usePublicClient();
+  const { smartAccount, scwAddress } = useSmartAccountContext();
   const [nftCount, setNftCount] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingFee, setIsLoadingFee] = useState(false);
@@ -33,43 +33,35 @@ const MintNftForward: React.FC = () => {
 
   useEffect(() => {
     const getNftCount = async () => {
-      if (!scwAddress || !signer) return;
-      const nftContract = new ethers.Contract(
-        config.nft.address,
-        config.nft.abi,
-        signer
-      );
-      const count = await nftContract.balanceOf(scwAddress);
+      if (!scwAddress || !publicClient) return;
+      const nftContract = getContract({
+        address: config.nft.address as Hex,
+        abi: config.nft.abi,
+        publicClient,
+      });
+      const count = await nftContract.read.balanceOf([scwAddress as Hex]);
       console.log("count", Number(count));
       setNftCount(Number(count));
     };
     getNftCount();
     getFee();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scwAddress, signer]);
+  }, [scwAddress, publicClient]);
 
   const getFee = async () => {
-    if (!smartAccount || !scwAddress || !signer) return;
+    if (!smartAccount || !scwAddress || !publicClient) return;
     setIsLoadingFee(true);
-    const nftContract = new ethers.Contract(
-      config.nft.address,
-      config.nft.abi,
-      signer
-    );
-    console.log("smartAccount.address ", scwAddress);
-    const safeMintTx = await nftContract.populateTransaction.safeMint(
-      scwAddress
-    );
-    console.log(safeMintTx.data);
+    const mintData = encodeFunctionData({
+      abi: config.nft.abi,
+      functionName: "safeMint",
+      args: [scwAddress as Hex],
+    });
     const tx1 = {
       to: config.nft.address,
-      data: safeMintTx.data,
+      value: 0,
+      data: mintData,
     };
-    let partialUserOp = await smartAccount.buildUserOp([tx1], {
-      paymasterServiceData: {
-        mode: PaymasterMode.ERC20,
-      },
-    });
+    let partialUserOp = await smartAccount.buildUserOp([tx1]);
     setEstimatedUserOp(partialUserOp);
     const biconomyPaymaster =
       smartAccount.paymaster as IHybridPaymaster<SponsorUserOperationDto>;
@@ -90,7 +82,7 @@ const MintNftForward: React.FC = () => {
   };
 
   const makeTx = async () => {
-    if (!smartAccount || !scwAddress || !signer) return;
+    if (!smartAccount || !scwAddress || !publicClient) return;
     if (!selectedQuote) {
       showErrorMessage("Please select a fee quote");
       return;
@@ -103,7 +95,7 @@ const MintNftForward: React.FC = () => {
         estimatedUserOp,
         {
           feeQuote: selectedQuote,
-          spender: spender,
+          spender: spender as Hex,
           maxApproval: false,
         }
       );

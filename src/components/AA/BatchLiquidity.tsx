@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import { ethers } from "ethers";
 import { makeStyles } from "@mui/styles";
-import { PaymasterMode } from "@biconomy/paymaster";
+import { Hex, encodeFunctionData, parseEther } from "viem";
 import Button from "../Button";
-import { useEthersSigner } from "../../contexts/ethers";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import {
   configInfo as config,
@@ -11,53 +9,46 @@ import {
   showErrorMessage,
 } from "../../utils";
 
-const iFace = new ethers.utils.Interface(config.usdc.abi);
-
 const BatchLiquidity: React.FC = () => {
   const classes = useStyles();
-  const signer = useEthersSigner();
-  const { smartAccount, scwAddress } = useSmartAccountContext();
+  const { accountProvider, scwAddress } = useSmartAccountContext();
   const [loading, setLoading] = useState(false);
 
   const makeTx = async () => {
-    if (!scwAddress || !smartAccount || !signer) return;
+    if (!scwAddress || !accountProvider) return;
     try {
       setLoading(true);
-      const txs = [];
 
-      const approveCallData = iFace.encodeFunctionData("approve", [
-        config.hyphenLP.address,
-        ethers.BigNumber.from("1000000"),
-      ]);
+      const approveCallData = encodeFunctionData({
+        abi: config.usdc.abi,
+        functionName: "approve",
+        args: [config.hyphenLP.address, parseEther("0.001", "gwei")],
+      });
       const tx1 = {
-        to: config.usdc.address,
+        target: config.usdc.address as Hex,
+        value: BigInt(0),
         data: approveCallData,
       };
-      txs.push(tx1);
 
-      const hyphenContract = new ethers.Contract(
-        config.hyphenLP.address,
-        config.hyphenLP.abi,
-        signer
-      );
-      const addLiquidityData = hyphenContract.interface.encodeFunctionData("addTokenLiquidity", [config.usdc.address,
-        ethers.BigNumber.from("1000000")])
+      const addLiquidityData = encodeFunctionData({
+        abi: config.hyphenLP.abi,
+        functionName: "addTokenLiquidity",
+        args: [config.usdc.address, parseEther("0.001", "gwei")],
+      });
       const tx2 = {
-        to: config.hyphenLP.address,
+        target: config.hyphenLP.address as Hex,
+        value: BigInt(0),
         data: addLiquidityData,
       };
-      txs.push(tx2);
 
-      let userOp = await smartAccount.buildUserOp(txs, {
-        paymasterServiceData: {
-          mode: PaymasterMode.SPONSORED,
-        },
-      });
-      const userOpResponse = await smartAccount.sendUserOp(userOp);
+      let userOpResponse = await accountProvider.sendUserOperations([tx1, tx2]);
       console.log("userOpHash", userOpResponse);
       const { transactionHash } = await userOpResponse.waitForTxHash();
       console.log("txHash", transactionHash);
-      showSuccessMessage(`Added batch liquidity ${transactionHash}`, transactionHash);
+      showSuccessMessage(
+        `Added batch liquidity ${transactionHash}`,
+        transactionHash
+      );
       setLoading(false);
     } catch (err: any) {
       console.error(err);
