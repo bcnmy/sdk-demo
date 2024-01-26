@@ -29,8 +29,7 @@ import {
 const CreateCustomSession: React.FC = () => {
   const classes = useStyles();
   const { address } = useAccount();
-  const { accountProvider, scwAddress, smartAccount } =
-    useSmartAccountContext();
+  const { scwAddress, smartAccount } = useSmartAccountContext();
   const [loading, setLoading] = useState(false);
   const [isSessionKeyModuleEnabled, setIsSessionKeyModuleEnabled] =
     useState(false);
@@ -64,7 +63,7 @@ const CreateCustomSession: React.FC = () => {
   }, [isSessionKeyModuleEnabled, scwAddress, smartAccount, address]);
 
   const createSession = async (enableSessionKeyModule: boolean) => {
-    if (!scwAddress || !smartAccount || !address || !accountProvider) {
+    if (!scwAddress || !smartAccount || !address) {
       showErrorMessage("Please connect wallet first");
       return;
     }
@@ -125,7 +124,7 @@ const CreateCustomSession: React.FC = () => {
 
       // tx to set session key
       const tx2 = {
-        target: sessionKeyManagerModuleAddr as Hex, // session manager module address
+        to: sessionKeyManagerModuleAddr as Hex, // session manager module address
         value: BigInt(0),
         data: sessionTxData.data as Hex,
       };
@@ -137,7 +136,7 @@ const CreateCustomSession: React.FC = () => {
           sessionKeyManagerModuleAddr
         );
         transactionArray.push({
-          target: tx1.to as Hex,
+          to: tx1.to as Hex,
           value: BigInt(0),
           data: tx1.data as Hex,
         });
@@ -150,7 +149,7 @@ const CreateCustomSession: React.FC = () => {
         args: [config.hyphenLP.address, parseEther("100", "gwei")],
       });
       const tx3 = {
-        target: config.usdc.address as Hex,
+        to: config.usdc.address as Hex,
         value: BigInt(0),
         data: approveCallData,
       };
@@ -158,9 +157,7 @@ const CreateCustomSession: React.FC = () => {
 
       // Building the user operation
       // If you're going to use sponsorship paymaster details can be provided at this step
-      let userOpResponse = await accountProvider.sendUserOperations(
-        transactionArray
-      );
+      let userOpResponse = await smartAccount.sendTransaction(transactionArray);
       console.log("userOpHash", userOpResponse);
       const { transactionHash } = await userOpResponse.waitForTxHash();
       console.log("txHash", transactionHash);

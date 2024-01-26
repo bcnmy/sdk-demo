@@ -18,8 +18,7 @@ import {
 const CreateSession: React.FC = () => {
   const classes = useStyles();
   const { address } = useAccount();
-  const { accountProvider, scwAddress, smartAccount } =
-    useSmartAccountContext();
+  const { scwAddress, smartAccount } = useSmartAccountContext();
   const [loading, setLoading] = useState(false);
   const [isSessionKeyModuleEnabled, setIsSessionKeyModuleEnabled] =
     useState(false);
@@ -53,7 +52,7 @@ const CreateSession: React.FC = () => {
   }, [isSessionKeyModuleEnabled, scwAddress, smartAccount, address]);
 
   const createSession = async (enableSessionKeyModule: boolean) => {
-    if (!scwAddress || !smartAccount || !address || !accountProvider) {
+    if (!scwAddress || !smartAccount || !address) {
       showErrorMessage("Please connect wallet first");
       return;
     }
@@ -115,7 +114,7 @@ const CreateSession: React.FC = () => {
 
       // tx to set session key
       const tx2 = {
-        target: sessionKeyManagerModuleAddr as Hex, // session manager module address
+        to: sessionKeyManagerModuleAddr as Hex, // session manager module address
         value: BigInt(0),
         data: sessionTxData.data as Hex,
       };
@@ -127,14 +126,14 @@ const CreateSession: React.FC = () => {
           sessionKeyManagerModuleAddr
         );
         transactionArray.push({
-          target: tx1.to as Hex,
+          to: tx1.to as Hex,
           value: BigInt(0),
           data: tx1.data as Hex,
         });
       }
       transactionArray.push(tx2);
 
-      let userOpResponse = await accountProvider.sendUserOperations(
+      let userOpResponse = await smartAccount.sendTransaction(
         transactionArray
       );
       console.log("userOpHash", userOpResponse);

@@ -11,11 +11,11 @@ import {
 
 const BatchLiquidity: React.FC = () => {
   const classes = useStyles();
-  const { accountProvider, scwAddress } = useSmartAccountContext();
+  const { smartAccount, scwAddress } = useSmartAccountContext();
   const [loading, setLoading] = useState(false);
 
   const makeTx = async () => {
-    if (!scwAddress || !accountProvider) return;
+    if (!scwAddress || !smartAccount) return;
     try {
       setLoading(true);
 
@@ -25,7 +25,7 @@ const BatchLiquidity: React.FC = () => {
         args: [config.hyphenLP.address, parseEther("0.001", "gwei")],
       });
       const tx1 = {
-        target: config.usdc.address as Hex,
+        to: config.usdc.address as Hex,
         value: BigInt(0),
         data: approveCallData,
       };
@@ -36,14 +36,13 @@ const BatchLiquidity: React.FC = () => {
         args: [config.usdc.address, parseEther("0.001", "gwei")],
       });
       const tx2 = {
-        target: config.hyphenLP.address as Hex,
+        to: config.hyphenLP.address as Hex,
         value: BigInt(0),
         data: addLiquidityData,
       };
 
-      let userOpResponse = await accountProvider.sendUserOperations([tx1, tx2]);
-      console.log("userOpHash", userOpResponse);
-      const { transactionHash } = await userOpResponse.waitForTxHash();
+      let { waitForTxHash } = await smartAccount.sendTransaction([tx1, tx2]);
+      const { transactionHash } = await waitForTxHash();
       console.log("txHash", transactionHash);
       showSuccessMessage(
         `Added batch liquidity ${transactionHash}`,

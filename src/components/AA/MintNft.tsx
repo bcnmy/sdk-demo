@@ -13,7 +13,7 @@ import {
 const MintNft: React.FC = () => {
   const classes = useStyles();
   const publicClient = usePublicClient();
-  const { accountProvider, scwAddress } = useSmartAccountContext();
+  const { smartAccount, scwAddress } = useSmartAccountContext();
   const [nftCount, setNftCount] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -34,7 +34,7 @@ const MintNft: React.FC = () => {
   }, [getNftCount, publicClient]);
 
   const mintNft = async () => {
-    if (!scwAddress || !accountProvider || !publicClient) return;
+    if (!scwAddress || !smartAccount || !publicClient) return;
     try {
       setLoading(true);
       const mintData = encodeFunctionData({
@@ -43,14 +43,13 @@ const MintNft: React.FC = () => {
         args: [scwAddress as Hex],
       });
       const tx1 = {
-        target: config.nft.address as Hex,
+        to: config.nft.address as Hex,
         value: BigInt(0),
         data: mintData,
       };
 
-      let userOpResponse = await accountProvider.sendUserOperations(tx1);
-      console.log("userOpHash", userOpResponse);
-      const { transactionHash } = await userOpResponse.waitForTxHash();
+      let { waitForTxHash } = await smartAccount.sendTransaction([tx1]);
+      const { transactionHash } = await waitForTxHash();
       console.log("txHash", transactionHash);
       showSuccessMessage(`Minted Nft ${transactionHash}`, transactionHash);
       setLoading(false);

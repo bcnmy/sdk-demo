@@ -13,11 +13,11 @@ import {
 
 const Faucet: React.FC = () => {
   const classes = useStyles();
-  const { accountProvider, scwAddress } = useSmartAccountContext();
+  const { smartAccount, scwAddress } = useSmartAccountContext();
   const [address, setAddress] = useState(scwAddress);
 
   const makeTx = async () => {
-    if (!accountProvider || !scwAddress) {
+    if (!smartAccount || !scwAddress) {
       showErrorMessage("Please connect your wallet");
       return;
     }
@@ -29,11 +29,11 @@ const Faucet: React.FC = () => {
         args: [address as Hex],
       });
       const tx1 = {
-        target: config.faucet.address as Hex,
+        to: config.faucet.address as Hex,
         value: BigInt(0),
         data: faucetTxData,
       };
-      let userOpResponse = await accountProvider.sendUserOperations(tx1);
+      let userOpResponse = await smartAccount.sendTransaction(tx1);
       console.log("userOpHash", userOpResponse);
       const { transactionHash } = await userOpResponse.waitForTxHash();
       console.log("txHash", transactionHash);
