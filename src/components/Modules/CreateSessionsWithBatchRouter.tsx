@@ -5,7 +5,7 @@ export {};
 // import {
 //   BatchedSessionRouterModule,
 //   SessionKeyManagerModule,
-// } from "@biconomy-devx/modules";
+// } from "@biconomy/modules";
 // import { useAccount } from "wagmi";
 // import Button from "../Button";
 // import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
@@ -15,7 +15,7 @@ export {};
 // import {
 //   DEFAULT_BATCHED_SESSION_ROUTER_MODULE,
 //   DEFAULT_SESSION_KEY_MANAGER_MODULE,
-// } from "@biconomy-devx/modules";
+// } from "@biconomy/modules";
 
 // const CreateBatchRouter: React.FC = () => {
 //   const classes = useStyles();

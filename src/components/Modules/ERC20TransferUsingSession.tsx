@@ -2,7 +2,7 @@ export {};
 // import React, { useState } from "react";
 // import { ethers } from "ethers";
 // import { makeStyles } from "@mui/styles";
-// import { SessionKeyManagerModule } from "@biconomy-devx/modules";
+// import { SessionKeyManagerModule } from "@biconomy/modules";
 
 // import Button from "../Button";
 // import { useEthersSigner } from "../../contexts/ethers";
@@ -12,7 +12,7 @@ export {};
 //   showSuccessMessage,
 //   showErrorMessage,
 // } from "../../utils";
-// import { DEFAULT_SESSION_KEY_MANAGER_MODULE } from "@biconomy-devx/modules";
+// import { DEFAULT_SESSION_KEY_MANAGER_MODULE } from "@biconomy/modules";
 // import { ERC20_SESSION_VALIDATION_MODULE } from "../../utils/chainConfig";
 
 // const ERC20Transfer: React.FC = () => {
