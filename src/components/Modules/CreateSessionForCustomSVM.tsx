@@ -11,8 +11,8 @@ import {
   slice,
 } from "viem";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
-import { SessionKeyManagerModule } from "@biconomy/modules";
-import { DEFAULT_SESSION_KEY_MANAGER_MODULE } from "@biconomy/modules";
+import { SessionKeyManagerModule } from "@biconomy-devx/modules";
+import { DEFAULT_SESSION_KEY_MANAGER_MODULE } from "@biconomy-devx/modules";
 import Button from "../Button";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import {
@@ -84,6 +84,8 @@ const CreateCustomSession: React.FC = () => {
       // If you have session key-pair on the client side you can keep using those without making part of any storage
       window.localStorage.setItem("sessionPKey", sessionPKey);
 
+      console.log("here it works ");
+
       // Create an instance of Session Key Manager module from modules package
       // This module is responsible for below tasks/helpers:
       // a. Maintain session leaf storage in defined storage client (Biconomy by default using browser local storage which works for front-end apps)
@@ -93,6 +95,8 @@ const CreateCustomSession: React.FC = () => {
         moduleAddress: sessionKeyManagerModuleAddr,
         smartAccountAddress: scwAddress,
       });
+
+      console.log("ever here? ");
 
       // Cretae session key data
       // Session key data is always corrsponding to the Session Validation Module being used

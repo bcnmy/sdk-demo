@@ -9,6 +9,7 @@ import {
   showErrorMessage,
   showSuccessMessage,
 } from "../../utils";
+import { PaymasterMode } from "@biconomy-devx/paymaster";
 
 const MintNft: React.FC = () => {
   const classes = useStyles();
@@ -48,7 +49,7 @@ const MintNft: React.FC = () => {
         data: mintData,
       };
 
-      let { waitForTxHash } = await smartAccount.sendTransaction([tx1]);
+      let { waitForTxHash } = await smartAccount.sendTransaction([tx1], { paymasterServiceData: { mode: PaymasterMode.SPONSORED } });
       const { transactionHash } = await waitForTxHash();
       console.log("txHash", transactionHash);
       showSuccessMessage(`Minted Nft ${transactionHash}`, transactionHash);

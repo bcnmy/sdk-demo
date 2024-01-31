@@ -1,8 +1,8 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { BiconomySmartAccountV2, createSmartAccountClient } from "@biconomy/account";
+import { BiconomySmartAccountV2, createSmartAccountClient } from "@biconomy-devx/account";
 import { useAccount, useWalletClient } from "wagmi";
-import { activeChainId, bundlerUrl, paymasterApi } from "../utils/chainConfig";
-import { MultiChainValidationModule } from "@biconomy/modules";
+import { activeChainId, bundlerUrl, paymasterApiKey } from "../utils/chainConfig";
+// import { MultiChainValidationModule } from "@biconomy-devx/modules";
 
 // Types
 type smartAccountContextType = {
@@ -38,16 +38,15 @@ export const SmartAccountProvider = ({ children }: any) => {
     try {
       setLoading(true);
       // create multiChainModule
-      const multiChainModule = await MultiChainValidationModule.create({
+      /*const multiChainModule = await MultiChainValidationModule.create({
         signer: walletClient,
         moduleAddress: "0x000000824dc138db84FD9109fc154bdad332Aa8E",
-      });
+      });*/
       let wallet = await createSmartAccountClient({
         chainId: activeChainId,
-        biconomyPaymasterApiKey: paymasterApi,
+        biconomyPaymasterApiKey: paymasterApiKey, 
         bundlerUrl: bundlerUrl,
-        defaultValidationModule: multiChainModule, // TODO: need multichain or ecdsa module?
-        activeValidationModule: multiChainModule,
+        signer: walletClient
       });
       setSmartAccount(wallet);
 

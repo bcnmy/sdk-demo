@@ -8,6 +8,7 @@ import {
   showSuccessMessage,
   showErrorMessage,
 } from "../../utils";
+import { PaymasterMode } from "@biconomy-devx/paymaster";
 
 const BatchLiquidity: React.FC = () => {
   const classes = useStyles();
@@ -41,7 +42,7 @@ const BatchLiquidity: React.FC = () => {
         data: addLiquidityData,
       };
 
-      let { waitForTxHash } = await smartAccount.sendTransaction([tx1, tx2]);
+      let { waitForTxHash } = await smartAccount.sendTransaction([tx1, tx2], { paymasterServiceData: { mode: PaymasterMode.SPONSORED } });
       const { transactionHash } = await waitForTxHash();
       console.log("txHash", transactionHash);
       showSuccessMessage(
