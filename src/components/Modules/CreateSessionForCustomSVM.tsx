@@ -11,8 +11,8 @@ import {
   slice,
 } from "viem";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
-import { SessionKeyManagerModule } from "@biconomy-devx/modules";
-import { DEFAULT_SESSION_KEY_MANAGER_MODULE } from "@biconomy-devx/modules";
+import { SessionKeyManagerModule } from "@biconomy/modules";
+import { DEFAULT_SESSION_KEY_MANAGER_MODULE } from "@biconomy/modules";
 import Button from "../Button";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import {
@@ -107,9 +107,13 @@ const CreateCustomSession: React.FC = () => {
         config.hyphenLP.address,
         slice(getFunctionSelector("addTokenLiquidity(address,uint256)"), 0, 4),
       ];
+
       const sessionKeyData = encodeAbiParameters(
-        parseAbiParameters("address, tuple(address, bytes4)"),
-        [sessionKeyEOA, permission]
+        [{ type: "address" }, { type: "tuple(address, bytes4)" }],
+        [
+          sessionKeyEOA,
+          permission
+        ],
       );
 
       // Below helper gives you tx data to be used to make a call from Smart Account to enable session on-chain

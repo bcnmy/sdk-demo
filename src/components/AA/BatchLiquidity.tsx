@@ -8,7 +8,7 @@ import {
   showSuccessMessage,
   showErrorMessage,
 } from "../../utils";
-import { PaymasterMode } from "@biconomy-devx/paymaster";
+import { PaymasterMode } from "@biconomy/paymaster";
 
 const BatchLiquidity: React.FC = () => {
   const classes = useStyles();
