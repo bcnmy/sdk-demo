@@ -6,7 +6,6 @@ import {
   encodeAbiParameters,
   encodeFunctionData,
   getFunctionSelector,
-  parseAbiParameters,
   parseEther,
   slice,
 } from "viem";
@@ -15,10 +14,7 @@ import { SessionKeyManagerModule } from "@biconomy/modules";
 import { DEFAULT_SESSION_KEY_MANAGER_MODULE } from "@biconomy/modules";
 import Button from "../Button";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
-import {
-  CONTRACT_CALL_SESSION_VALIDATION_MODULE,
-  // ERC20_SESSION_VALIDATION_MODULE,
-} from "../../utils/chainConfig";
+import { CONTRACT_CALL_SESSION_VALIDATION_MODULE } from "../../utils/chainConfig";
 import { getActionForErrorMessage } from "../../utils/error-utils";
 import {
   configInfo as config,
@@ -109,11 +105,14 @@ const CreateCustomSession: React.FC = () => {
       ];
 
       const sessionKeyData = encodeAbiParameters(
-        [{ type: "address" }, { type: "tuple(address, bytes4)" }],
         [
-          sessionKeyEOA,
-          permission
+          { type: "address" },
+          {
+            type: "tuple",
+            components: [{ type: "address" }, { type: "bytes4" }],
+          },
         ],
+        [sessionKeyEOA, [permission[0] as Hex, permission[1] as Hex]]
       );
 
       // Below helper gives you tx data to be used to make a call from Smart Account to enable session on-chain
