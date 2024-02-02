@@ -5,7 +5,7 @@ export {};
 // import {
 //   BatchedSessionRouterModule,
 //   SessionKeyManagerModule,
-// } from "@biconomy/modules";
+// } from "@biconomy-devx/modules";
 // import Button from "../Button";
 // import { useAccount } from "wagmi";
 // import { useEthersSigner } from "../../contexts/ethers";
@@ -18,7 +18,7 @@ export {};
 // import {
 //   DEFAULT_BATCHED_SESSION_ROUTER_MODULE,
 //   DEFAULT_SESSION_KEY_MANAGER_MODULE,
-// } from "@biconomy/modules";
+// } from "@biconomy-devx/modules";
 
 // const ERC20RouterTransfer: React.FC = () => {
 //   const classes = useStyles();

@@ -6,7 +6,7 @@ import {
   PaymasterFeeQuote,
   PaymasterMode,
   SponsorUserOperationDto,
-} from "@biconomy/paymaster";
+} from "@biconomy-devx/paymaster";
 
 import Button from "../Button";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";

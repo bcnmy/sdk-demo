@@ -9,7 +9,7 @@ import {
   showErrorMessage,
   showSuccessMessage,
 } from "../../utils";
-import { PaymasterMode } from "@biconomy/paymaster";
+import { PaymasterMode } from "@biconomy-devx/paymaster";
 
 const MintNft: React.FC = () => {
   const classes = useStyles();
