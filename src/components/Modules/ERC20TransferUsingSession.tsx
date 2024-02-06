@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { ethers } from "ethers";
 import { makeStyles } from "@mui/styles";
-import { SessionKeyManagerModule } from "@biconomy-devx/modules";
 
 import Button from "../Button";
 import { useEthersSigner } from "../../contexts/ethers";
@@ -11,7 +10,7 @@ import {
   showSuccessMessage,
   showErrorMessage,
 } from "../../utils";
-import { DEFAULT_SESSION_KEY_MANAGER_MODULE } from "@biconomy-devx/modules";
+import { DEFAULT_SESSION_KEY_MANAGER_MODULE, createSessionKeyManagerModule } from "@biconomy-devx/modules";
 import { ERC20_SESSION_VALIDATION_MODULE } from "../../utils/chainConfig";
 import { EthersSigner } from "@biconomy-devx/account";
 
@@ -45,7 +44,7 @@ const ERC20Transfer: React.FC = () => {
       const newSigner = new EthersSigner(sessionSigner, 'ethers')
 
       // generate sessionManagerModule
-      const sessionManagerModule = await SessionKeyManagerModule.create({
+      const sessionManagerModule = await createSessionKeyManagerModule({
         moduleAddress: sessionKeyManagerModuleAddr,
         smartAccountAddress: scwAddress,
       });
@@ -86,7 +85,6 @@ const ERC20Transfer: React.FC = () => {
       // build user op
       // with calldata to transfer ERC20 tokens
       let userOp = await biconomySmartAccount.buildUserOp([tx1], {
-        skipBundlerGasEstimation: false, // can skip this if paymasterServiceData is being provided for sponsorship mode
         // These are required (as query params in session storage) to be able to find the leaf and generate proof for the dummy signature (which is in turn used for estimating gas values)
         params: {
           sessionSigner: newSigner,

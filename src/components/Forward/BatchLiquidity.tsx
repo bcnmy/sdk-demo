@@ -2,11 +2,9 @@ import React, { useEffect, useState } from "react";
 import { makeStyles } from "@mui/styles";
 import { CircularProgress } from "@mui/material";
 import {
-  IHybridPaymaster,
   PaymasterFeeQuote,
   PaymasterMode,
-  SponsorUserOperationDto,
-} from "@biconomy-devx/paymaster";
+} from "@biconomy-devx/account";
 
 import Button from "../Button";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
@@ -26,7 +24,7 @@ const BatchLiquidity: React.FC = () => {
   const [spender, setSpender] = useState("");
   const [feeQuotesArr, setFeeQuotesArr] = useState<PaymasterFeeQuote[]>([]);
   const [selectedQuote, setSelectedQuote] = useState<PaymasterFeeQuote>();
-  const [estimatedUserOp, setEstimatedUserOp] = useState({});
+  const [tx, setTx] = useState<any[]>([]);
 
   // pre calculate the fee
   useEffect(() => {
@@ -49,7 +47,7 @@ const BatchLiquidity: React.FC = () => {
       const addLiquidityData = encodeFunctionData({
         abi: config.hyphenLP.abi,
         functionName: "addTokenLiquidity",
-        args: [config.usdc.address, parseEther("0.001", "gwei")],
+        args: [config.usdc.address, parseEther("0.001", "gwei")], 
       });
       const tx2 = {
         to: config.hyphenLP.address as Hex,
@@ -58,20 +56,8 @@ const BatchLiquidity: React.FC = () => {
       };
 
       console.log("Tx array created", [tx1, tx2]);
-      let partialUserOp = await smartAccount.buildUserOp([tx1, tx2]);
-      setEstimatedUserOp(partialUserOp);
-
-      const biconomyPaymaster =
-        smartAccount.paymaster as IHybridPaymaster<SponsorUserOperationDto>;
-      const feeQuotesResponse =
-        await biconomyPaymaster.getPaymasterFeeQuotesOrData(partialUserOp, {
-          // here we are explicitly telling by mode ERC20 that we want to pay in ERC20 tokens and expect fee quotes
-          mode: PaymasterMode.ERC20,
-          // one can pass tokenList empty array. and it would return fee quotes for all tokens supported by the Biconomy paymaster
-          tokenList: [config.usdc.address, config.usdt.address],
-          // preferredToken is optional. If you want to pay in a specific token, you can pass its address here and get fee quotes for that token only
-          // preferredToken: config.preferredToken,
-        });
+      setTx([tx1, tx2]);
+      const feeQuotesResponse = await smartAccount.getTokenFees([tx1, tx2], {paymasterServiceData: {mode: PaymasterMode.ERC20}});
       setSpender(feeQuotesResponse.tokenPaymasterAddress || "");
       const feeQuotes = feeQuotesResponse.feeQuotes as PaymasterFeeQuote[];
       setFeeQuotesArr(feeQuotes);
@@ -93,47 +79,18 @@ const BatchLiquidity: React.FC = () => {
       setIsLoading(true);
       console.log("selected quote", selectedQuote);
       // const finalUserOp = { ...estimatedUserOp } as any;
-      const finalUserOp = await smartAccount.buildTokenPaymasterUserOp(
-        estimatedUserOp,
+      const userOpResponse = await smartAccount.sendTransaction(
+        tx,
         {
-          feeQuote: selectedQuote,
-          spender: spender as Hex,
-          maxApproval: false,
+          paymasterServiceData: {
+            feeQuote: selectedQuote,
+            spender: spender as Hex,
+            mode: PaymasterMode.ERC20,
+            maxApproval: false,
+          }
         }
       );
-      const biconomyPaymaster =
-        smartAccount.paymaster as IHybridPaymaster<SponsorUserOperationDto>;
-      const paymasterAndDataWithLimits =
-        await biconomyPaymaster.getPaymasterAndData(finalUserOp, {
-          mode: PaymasterMode.ERC20, // - mandatory // now we know chosen fee token and requesting paymaster and data for it
-          feeTokenAddress: selectedQuote?.tokenAddress,
-          // - optional by default false
-          // This flag tells the paymaster service to calculate gas limits for the userOp
-          // since at this point callData is updated callGasLimit may change and based on paymaster to be used verification gas limit may change
-          calculateGasLimits: true,
-        });
 
-      // below code is only needed if you sent the glaf calculateGasLimits = true
-      if (
-        paymasterAndDataWithLimits?.callGasLimit &&
-        paymasterAndDataWithLimits?.verificationGasLimit &&
-        paymasterAndDataWithLimits?.preVerificationGas
-      ) {
-        // Returned gas limits must be replaced in your op as you update paymasterAndData.
-        // Because these are the limits paymaster service signed on to generate paymasterAndData
-        // If you receive AA34 error check here..
-
-        finalUserOp.callGasLimit = paymasterAndDataWithLimits.callGasLimit;
-        finalUserOp.verificationGasLimit =
-          paymasterAndDataWithLimits.verificationGasLimit;
-        finalUserOp.preVerificationGas =
-          paymasterAndDataWithLimits.preVerificationGas;
-      }
-      // update finalUserOp with paymasterAndData and send it to smart account
-      finalUserOp.paymasterAndData =
-        paymasterAndDataWithLimits.paymasterAndData;
-
-      const userOpResponse = await smartAccount.sendUserOp(finalUserOp);
       console.log("userOpHash", userOpResponse);
       const { transactionHash } = await userOpResponse.waitForTxHash();
       console.log("txHash", transactionHash);

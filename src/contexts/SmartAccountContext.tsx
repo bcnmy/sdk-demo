@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { BiconomySmartAccountV2, createSmartAccountClient } from "@biconomy-devx/account";
 import { useAccount, useWalletClient } from "wagmi";
-import { activeChainId, bundlerUrl, paymasterApiKey } from "../utils/chainConfig";
+import { bundlerUrl, paymasterApiKey } from "../utils/chainConfig";
 // import { MultiChainValidationModule } from "@biconomy-devx/modules";
 
 // Types
@@ -43,10 +43,9 @@ export const SmartAccountProvider = ({ children }: any) => {
         moduleAddress: "0x000000824dc138db84FD9109fc154bdad332Aa8E",
       });*/
       let wallet = await createSmartAccountClient({
-        chainId: activeChainId,
         biconomyPaymasterApiKey: paymasterApiKey, 
         bundlerUrl: bundlerUrl,
-        signer: walletClient
+        signer: walletClient as any, // type issue
       });
       setSmartAccount(wallet);
 

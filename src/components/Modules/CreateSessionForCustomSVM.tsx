@@ -10,8 +10,7 @@ import {
   slice,
 } from "viem";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
-import { SessionKeyManagerModule } from "@biconomy-devx/modules";
-import { DEFAULT_SESSION_KEY_MANAGER_MODULE } from "@biconomy-devx/modules";
+import { createSessionKeyManagerModule, DEFAULT_SESSION_KEY_MANAGER_MODULE } from "@biconomy-devx/account";
 import Button from "../Button";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import { CONTRACT_CALL_SESSION_VALIDATION_MODULE } from "../../utils/chainConfig";
@@ -87,7 +86,7 @@ const CreateCustomSession: React.FC = () => {
       // a. Maintain session leaf storage in defined storage client (Biconomy by default using browser local storage which works for front-end apps)
       // b. Generate dummy signature for userOp estimations
       // c. Provides helpers to sign userOpHash with session key in the right format and generate proof for particular leaf
-      const sessionManagerModule = await SessionKeyManagerModule.create({
+      const sessionManagerModule = await createSessionKeyManagerModule({
         moduleAddress: sessionKeyManagerModuleAddr,
         smartAccountAddress: scwAddress,
       });

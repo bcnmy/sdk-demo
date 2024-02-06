@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { makeStyles } from "@mui/styles";
-import { Hex, encodeFunctionData, parseEther } from "viem";
+import { Hex, encodeFunctionData, parseEther, parseUnits } from "viem";
 import Button from "../Button";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import {
@@ -8,7 +8,7 @@ import {
   showSuccessMessage,
   showErrorMessage,
 } from "../../utils";
-import { PaymasterMode } from "@biconomy-devx/paymaster";
+import { PaymasterMode } from "@biconomy-devx/account";
 
 const BatchLiquidity: React.FC = () => {
   const classes = useStyles();
