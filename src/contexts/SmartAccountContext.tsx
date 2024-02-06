@@ -46,7 +46,7 @@ export const SmartAccountProvider = ({ children }: any) => {
         chainId: activeChainId,
         biconomyPaymasterApiKey: paymasterApiKey, 
         bundlerUrl: bundlerUrl,
-        signer: walletClient
+        signer: walletClient as any
       });
       setSmartAccount(wallet);
 
