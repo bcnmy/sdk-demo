@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { ethers } from "ethers";
 import { makeStyles } from "@mui/styles";
-import { SessionKeyManagerModule } from "@biconomy/modules";
 
 import Button from "../Button";
 import { useEthersSigner } from "../../contexts/ethers";
@@ -11,8 +10,10 @@ import {
   showSuccessMessage,
   showErrorMessage,
 } from "../../utils";
-import { DEFAULT_SESSION_KEY_MANAGER_MODULE } from "@biconomy/modules";
+import { DEFAULT_SESSION_KEY_MANAGER_MODULE, createSessionKeyManagerModule } from "@biconomy-devx/account";
 import { CONTRACT_CALL_SESSION_VALIDATION_MODULE } from "../../utils/chainConfig";
+import { EthersSigner } from "@biconomy-devx/account";
+import { parseUnits } from "viem";
 
 const HyphenLpUsingSession: React.FC = () => {
   const classes = useStyles();
@@ -42,8 +43,10 @@ const HyphenLpUsingSession: React.FC = () => {
       const sessionSigner = new ethers.Wallet(sessionKeyPrivKey);
       console.log("sessionSigner", sessionSigner);
 
+      const newSigner = new EthersSigner(sessionSigner, 'ethers')
+
       // generate sessionManagerModule
-      const sessionManagerModule = await SessionKeyManagerModule.create({
+      const sessionManagerModule = await createSessionKeyManagerModule({
         moduleAddress: sessionKeyManagerModuleAddr,
         smartAccountAddress: scwAddress,
       });
@@ -67,31 +70,18 @@ const HyphenLpUsingSession: React.FC = () => {
       const tx1 = {
         to: config.hyphenLP.address,
         data: addLiquidityData,
-        value: "0",
+        value: 0,
       };
 
       // build user op
       // with calldata to provide LP
-      let userOp = await biconomySmartAccount.buildUserOp([tx1], {
-        skipBundlerGasEstimation: false, // can skip this if paymasterServiceData is being provided for sponsorship mode
-        // These are required (as query params in session storage) to be able to find the leaf and generate proof for the dummy signature (which is in turn used for estimating gas values)
+      let userOpResponse = await biconomySmartAccount.sendTransaction(tx1, {
         params: {
-          sessionSigner: sessionSigner,
+          sessionSigner: newSigner,
           sessionValidationModule: ccSessionValidationModuleAddr,
         },
+        simulationType: "validation_and_execution",
       });
-
-      // send user operation
-      const userOpResponse = await biconomySmartAccount.sendUserOp(
-        userOp,
-        // below params are required for passing on this information to session key manager module to create padded signature
-        {
-          sessionSigner: sessionSigner,
-          sessionValidationModule: ccSessionValidationModuleAddr,
-          // optionally can also provide simulationType
-          simulationType: "validation_and_execution",
-        }
-      );
 
       console.log("userOpHash", userOpResponse);
       const { transactionHash } = await userOpResponse.waitForTxHash();

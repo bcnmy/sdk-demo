@@ -77,7 +77,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
   useEffect(() => {
     const isDeployed = async () => {
       setLoading(true);
-      const dep = await smartAccount?.isAccountDeployed(scwAddress);
+      const dep = await smartAccount?.isAccountDeployed();
       console.log("isDeployed", dep);
       if (dep) setisScwDeployed(true);
       setLoading(false);
