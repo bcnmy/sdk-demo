@@ -10,10 +10,9 @@ import {
   showSuccessMessage,
   showErrorMessage,
 } from "../../utils";
-import { DEFAULT_SESSION_KEY_MANAGER_MODULE, createSessionKeyManagerModule } from "@biconomy-devx/account";
+import { DEFAULT_SESSION_KEY_MANAGER_MODULE, createSessionKeyManagerModule } from "@biconomy/account";
 import { CONTRACT_CALL_SESSION_VALIDATION_MODULE } from "../../utils/chainConfig";
-import { EthersSigner } from "@biconomy-devx/account";
-import { parseUnits } from "viem";
+import { EthersSigner } from "@biconomy/account";
 
 const HyphenLpUsingSession: React.FC = () => {
   const classes = useStyles();

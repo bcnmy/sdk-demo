@@ -10,9 +10,9 @@ import {
   showSuccessMessage,
   showErrorMessage,
 } from "../../utils";
-import { DEFAULT_SESSION_KEY_MANAGER_MODULE, createSessionKeyManagerModule } from "@biconomy-devx/modules";
+import { DEFAULT_SESSION_KEY_MANAGER_MODULE, createSessionKeyManagerModule } from "@biconomy/account";
 import { ERC20_SESSION_VALIDATION_MODULE } from "../../utils/chainConfig";
-import { EthersSigner } from "@biconomy-devx/account";
+import { EthersSigner } from "@biconomy/account";
 
 const ERC20Transfer: React.FC = () => {
   const classes = useStyles();

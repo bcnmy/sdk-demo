@@ -39,12 +39,9 @@ import ForwardFlow from "./Forward";
 import MintNftForward from "./Forward/MintNft";
 import BatchLiquidityForward from "./Forward/BatchLiquidity";
 import HyphenLpUsingSession from "./Modules/HyphenLpUsingSession";
-import CreateSession from "./Modules/CreateSession";
 import CreateCustomSession from "./Modules/CreateSessionForCustomSVM";
-import SessionFlow from "./Modules";
-import ERC20Transfer from "./Modules/ERC20TransferUsingSession";
-// import CreateBatchRouter from "./Modules/CreateSessionsWithBatchRouter";
-// import ERC20RouterTransfer from "./Modules/UseSessionsBatch";
+import CreateBatchRouter from "./Modules/CreateSessionsWithBatchRouter";
+import ERC20RouterTransfer from "./Modules/UseSessionsBatch";
 
 const drawerWidth = 320;
 const onboardingList = [
@@ -103,6 +100,17 @@ const SessionList = [
   },
 ];
 
+const SessionRouterList = [
+  {
+    name: "Create Custom Router Session",
+    icon: <GamesIcon />,
+  },
+  {
+    name: "ERC20 Transfer using session router",
+    icon: <CookieIcon />,
+  },
+];
+
 const TabsBody = ({ loading }: { loading: boolean }) => {
   const classes = useStyles();
   const [pageIndex, setPageIndex] = React.useState(0);
@@ -111,6 +119,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
   const [isAAOpen, setIsAAOpen] = React.useState(true);
   const [isForwardOpen, setIsForwardOpen] = React.useState(true);
   const [isSessionOpen, setIsSessionOpen] = React.useState(true);
+  const [isSessionRouterOpen, setIsSessionRouterOpen] = React.useState(true);
 
   const handleChange = (event: any, newValue: any) => {
     if (newValue >= 4 && newValue <= 7) {
@@ -378,6 +387,66 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
               ))}
             </List>
           </Collapse>
+
+            <List sx={{display: "block"}}>
+              <ListItemButton
+                onClick={(e: any) => {
+                  setIsSessionRouterOpen(!isSessionRouterOpen);
+                  handleChange(e, 8);
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : "auto",
+                    justifyContent: "center",
+                    color: pageIndex === 8 ? "#FFB999" : "#e6e6e6",
+                  }}
+                >
+                  <FiberNewIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Batched Session Router Demo"
+                  sx={{ opacity: open ? 1 : 0 }}
+                />
+                {isSessionRouterOpen ? <ExpandLess /> : <ExpandMore />}
+              </ListItemButton>
+              <Collapse in={isSessionRouterOpen} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                  {SessionRouterList.map((ele, index) => (
+                    <ListItem
+                      key={ele.name}
+                      disablePadding
+                      sx={{ display: "block" }}
+                    >
+                      <ListItemButton
+                        sx={{
+                          minHeight: 48,
+                          justifyContent: open ? "initial" : "center",
+                          px: 2.5,
+                        }}
+                        onClick={(e: any) => handleChange(e, index + 11)}
+                      >
+                        <ListItemIcon
+                          sx={{
+                            minWidth: 0,
+                            mr: open ? 3 : "auto",
+                            justifyContent: "center",
+                            color: pageIndex === index + 9 ? "#FFB999" : "#e6e6e6",
+                          }}
+                        >
+                          {ele.icon}
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={ele.name}
+                          sx={{ opacity: open ? 1 : 0 }}
+                        />
+                      </ListItemButton>
+                    </ListItem>
+                  ))}
+                </List>
+              </Collapse>
+            </List>
         </List>
       </Drawer>
 
@@ -437,6 +506,12 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
       </TabPanel>
       <TabPanel value={pageIndex} index={10}>
         <HyphenLpUsingSession />
+      </TabPanel>
+      <TabPanel value={pageIndex} index={11}>
+        <CreateBatchRouter />
+      </TabPanel>
+      <TabPanel value={pageIndex} index={12}>
+        <ERC20RouterTransfer />
       </TabPanel>
     </Box>
   );

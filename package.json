@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "@biconomy-devx/account": "2.2.12",
+    "@biconomy/account": "4.0.0",
     "@alchemy/aa-core": "1.2.2",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",

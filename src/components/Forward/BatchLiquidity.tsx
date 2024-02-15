@@ -4,7 +4,7 @@ import { CircularProgress } from "@mui/material";
 import {
   PaymasterFeeQuote,
   PaymasterMode,
-} from "@biconomy-devx/account";
+} from "@biconomy/account";
 
 import Button from "../Button";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
