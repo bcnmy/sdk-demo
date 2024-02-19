@@ -16,6 +16,7 @@ import {
   DEFAULT_SESSION_KEY_MANAGER_MODULE,
 } from "@biconomy/modules";
 import { Hex } from "viem";
+import { PaymasterMode } from "@biconomy/account";
 
 const CreateBatchRouter: React.FC = () => {
   const classes = useStyles();

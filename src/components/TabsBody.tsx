@@ -42,6 +42,7 @@ import HyphenLpUsingSession from "./Modules/HyphenLpUsingSession";
 import CreateCustomSession from "./Modules/CreateSessionForCustomSVM";
 import CreateBatchRouter from "./Modules/CreateSessionsWithBatchRouter";
 import ERC20RouterTransfer from "./Modules/UseSessionsBatch";
+import ABISVM from "./Modules/ABI_SVM";
 
 const drawerWidth = 320;
 const onboardingList = [
@@ -98,6 +99,10 @@ const SessionList = [
     name: "LP into Pool using Session",
     icon: <CookieIcon />,
   },
+  {
+    name: "Mint NFT using ABI SVM",
+    icon: <CookieIcon />,
+  },
 ];
 
 const SessionRouterList = [
@@ -106,7 +111,7 @@ const SessionRouterList = [
     icon: <GamesIcon />,
   },
   {
-    name: "ERC20 Transfer using session router",
+    name: "ERC20 Transfer & Mint NFT",
     icon: <CookieIcon />,
   },
 ];
@@ -387,7 +392,6 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
               ))}
             </List>
           </Collapse>
-
             <List sx={{display: "block"}}>
               <ListItemButton
                 onClick={(e: any) => {
@@ -400,7 +404,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
                     minWidth: 0,
                     mr: open ? 3 : "auto",
                     justifyContent: "center",
-                    color: pageIndex === 8 ? "#FFB999" : "#e6e6e6",
+                    color: pageIndex === 12 ? "#FFB999" : "#e6e6e6",
                   }}
                 >
                   <FiberNewIcon />
@@ -425,14 +429,14 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
                           justifyContent: open ? "initial" : "center",
                           px: 2.5,
                         }}
-                        onClick={(e: any) => handleChange(e, index + 11)}
+                        onClick={(e: any) => handleChange(e, index + 12)}
                       >
                         <ListItemIcon
                           sx={{
                             minWidth: 0,
                             mr: open ? 3 : "auto",
                             justifyContent: "center",
-                            color: pageIndex === index + 9 ? "#FFB999" : "#e6e6e6",
+                            color: pageIndex === index + 12 ? "#FFB999" : "#e6e6e6",
                           }}
                         >
                           {ele.icon}
@@ -508,9 +512,12 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
         <HyphenLpUsingSession />
       </TabPanel>
       <TabPanel value={pageIndex} index={11}>
-        <CreateBatchRouter />
+        <ABISVM />
       </TabPanel>
       <TabPanel value={pageIndex} index={12}>
+        <CreateBatchRouter />
+      </TabPanel>
+      <TabPanel value={pageIndex} index={13}>
         <ERC20RouterTransfer />
       </TabPanel>
     </Box>

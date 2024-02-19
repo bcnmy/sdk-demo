@@ -3,7 +3,6 @@ import { ethers } from "ethers";
 import { makeStyles } from "@mui/styles";
 
 import Button from "../Button";
-import { useEthersSigner } from "../../contexts/ethers";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import {
   configInfo as config,
@@ -13,15 +12,16 @@ import {
 import { DEFAULT_SESSION_KEY_MANAGER_MODULE, createSessionKeyManagerModule } from "@biconomy/account";
 import { ERC20_SESSION_VALIDATION_MODULE } from "../../utils/chainConfig";
 import { EthersSigner } from "@biconomy/account";
+import { useAccount } from "wagmi";
 
 const ERC20Transfer: React.FC = () => {
   const classes = useStyles();
-  const signer = useEthersSigner();
   const { smartAccount, scwAddress } = useSmartAccountContext();
+  const { address } = useAccount();
   const [loading, setLoading] = useState(false);
 
   const erc20Transfer = async () => {
-    if (!scwAddress || !smartAccount || !signer) {
+    if (!scwAddress || !smartAccount || !address) {
       showErrorMessage("Please connect wallet first");
       return;
     }
@@ -58,7 +58,7 @@ const ERC20Transfer: React.FC = () => {
       const tokenContract = new ethers.Contract(
         config.usdc.address,
         config.usdc.abi,
-        signer
+        sessionSigner
       );
       let decimals = 18;
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@mui/styles";
 import { useAccount } from "wagmi";
-import { Hex, encodeAbiParameters, parseAbiParameters, parseEther } from "viem";
+import { Hex, encodeAbiParameters, parseAbiParameters, parseEther, parseUnits } from "viem";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 import { createSessionKeyManagerModule, DEFAULT_SESSION_KEY_MANAGER_MODULE } from "@biconomy/account";
 import Button from "../Button";
@@ -93,7 +93,7 @@ const CreateSession: React.FC = () => {
           sessionKeyEOA,
           config.usdc.address as Hex, // erc20 token address
           "0x42138576848E839827585A3539305774D36B9602", // receiver address // You must send to same receiver when making use of the session
-          parseEther("50", "gwei"), // 50 usdc amount
+          parseUnits("50", 6), // 50 usdc amount
         ]
       );
 

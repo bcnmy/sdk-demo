@@ -35,7 +35,7 @@ const MintNftForward: React.FC = () => {
       const nftContract = getContract({
         address: config.nft.address as Hex,
         abi: config.nft.abi,
-        publicClient,
+        client: publicClient,
       });
       const count = await nftContract.read.balanceOf([scwAddress as Hex]);
       console.log("count", Number(count));

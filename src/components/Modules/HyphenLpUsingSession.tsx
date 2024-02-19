@@ -3,7 +3,6 @@ import { ethers } from "ethers";
 import { makeStyles } from "@mui/styles";
 
 import Button from "../Button";
-import { useEthersSigner } from "../../contexts/ethers";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import {
   configInfo as config,
@@ -13,15 +12,16 @@ import {
 import { DEFAULT_SESSION_KEY_MANAGER_MODULE, createSessionKeyManagerModule } from "@biconomy/account";
 import { CONTRACT_CALL_SESSION_VALIDATION_MODULE } from "../../utils/chainConfig";
 import { EthersSigner } from "@biconomy/account";
+import { useAccount } from "wagmi";
 
 const HyphenLpUsingSession: React.FC = () => {
   const classes = useStyles();
-  const signer = useEthersSigner();
+  const { address } = useAccount();
   const { smartAccount, scwAddress } = useSmartAccountContext();
   const [loading, setLoading] = useState(false);
 
   const hyphenLpUsingSession = async () => {
-    if (!scwAddress || !smartAccount || !signer) {
+    if (!scwAddress || !smartAccount || !address) {
       showErrorMessage("Please connect wallet first");
       return;
     }
@@ -59,7 +59,7 @@ const HyphenLpUsingSession: React.FC = () => {
       const hyphenContract = new ethers.Contract(
         config.hyphenLP.address,
         config.hyphenLP.abi,
-        signer
+        sessionSigner
       );
 
       const addLiquidityData = hyphenContract.interface.encodeFunctionData(

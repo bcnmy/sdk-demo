@@ -7,7 +7,6 @@ import {
 } from "@biconomy/modules";
 import Button from "../Button";
 import { useAccount } from "wagmi";
-import { useEthersSigner } from "../../contexts/ethers";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import {
   configInfo as config,
@@ -18,12 +17,10 @@ import {
   DEFAULT_BATCHED_SESSION_ROUTER_MODULE,
   DEFAULT_SESSION_KEY_MANAGER_MODULE,
 } from "@biconomy/modules";
-import { polygonMumbai } from "viem/chains";
 
 const ERC20RouterTransfer: React.FC = () => {
   const classes = useStyles();
   const { address } = useAccount();
-  const signer = useEthersSigner();
   const { smartAccount, scwAddress } = useSmartAccountContext();
   const [loading, setLoading] = useState(false);
 
@@ -49,7 +46,7 @@ const ERC20RouterTransfer: React.FC = () => {
         return;
       }
 
-      const provider = new ethers.providers.JsonRpcProvider(polygonMumbai.rpcUrls.public.http[0]);
+      const provider = new ethers.providers.JsonRpcProvider("https://endpoints.omniatech.io/v1/matic/mumbai/public");
       const sessionSigner = new ethers.Wallet(sessionKeyPrivKey, provider);
       console.log("sessionSigner", sessionSigner);
 
@@ -68,41 +65,42 @@ const ERC20RouterTransfer: React.FC = () => {
       biconomySmartAccount =
         biconomySmartAccount.setActiveValidationModule(sessionRouterModule);
 
+      const nftContract = new ethers.Contract(
+        config.nft.address,
+        config.nft.abi,
+        provider
+      );
+
       // er20 transfer data generation
       const tokenContract = new ethers.Contract(
         config.usdc.address,
         config.usdc.abi,
-        signer
+        sessionSigner
       );
-      let decimals = 18;
-      try {
-        decimals = await tokenContract.decimals();
-      } catch (error) {
-        throw new Error("invalid token address supplied");
-      }
-      const amountGwei = ethers.utils.parseUnits("0.1".toString(), decimals); // MAKE SURE SCW HAS ENOUGH USDC, otherwise user op will fail
-      const data = (
+
+    
+      const amountGwei = ethers.utils.parseUnits("0.1".toString(), 6); // MAKE SURE SCW HAS ENOUGH USDC, otherwise user op will fail
+      const erc20TransferData = (
         await tokenContract.populateTransaction.transfer(
           "0x42138576848E839827585A3539305774D36B9602", // receiver address
           amountGwei
         )
       ).data;
-      const data2 = (
-        await tokenContract.populateTransaction.transfer(
+      const nftMintData = (
+        await nftContract.populateTransaction.safeMint(
           "0x5a86A87b3ea8080Ff0B99820159755a4422050e6", // receiver address 2
-          amountGwei
         )
       ).data;
+
       // generate tx data to erc20 transfer
       const tx1 = {
-        to: "0xdA5289fCAAF71d52a80A254da614a192b693e977", //erc20 token address
-        data: data,
-        value: "0",
+        to: config.usdc.address, //erc20 token address
+        data: erc20TransferData!,
       };
+      // generate tx data to nft mint
       const tx2 = {
-        to: "0xdA5289fCAAF71d52a80A254da614a192b693e977", //erc20 token address
-        data: data2,
-        value: "0",
+        to: config.nft.address, //erc20 token address
+        data: nftMintData!,
       };
 
       let userOpResponse = await biconomySmartAccount.sendTransaction([tx1, tx2], {
@@ -148,13 +146,13 @@ const ERC20RouterTransfer: React.FC = () => {
       <h3 className={classes.subTitle}>ERC20 Transfer via Batched Session Key Module</h3>
 
       <p style={{ marginBottom: 20 }}>
-        This is an example gasless transaction to transfer ERC20 tokens using the Batched Session Key Router Module.
+        This is an example gasless transaction to transfer ERC20 tokens and mint NFT using the Batched Session Key Router Module.
       </p>
 
-      This transaction will transfer 0.1 USDC two times, make sure your SCW has enough USDC.
+      This transaction will transfer 0.1 USDC and also mint an NFT.
 
       <Button
-        title="Send Tokens"
+        title="Transfer ERC20 & Mint"
         isLoading={loading}
         onClickFunc={erc20Transfer}
       />

@@ -23,7 +23,7 @@ const BatchLiquidity: React.FC = () => {
       const approveCallData = encodeFunctionData({
         abi: config.usdc.abi,
         functionName: "approve",
-        args: [config.hyphenLP.address, parseEther("0.001", "gwei")],
+        args: [config.hyphenLP.address, parseEther("1")],
       });
       const tx1 = {
         to: config.usdc.address as Hex,
@@ -34,7 +34,7 @@ const BatchLiquidity: React.FC = () => {
       const addLiquidityData = encodeFunctionData({
         abi: config.hyphenLP.abi,
         functionName: "addTokenLiquidity",
-        args: [config.usdc.address, parseEther("0.001", "gwei")],
+        args: [config.usdc.address, parseUnits("0.001", 6)],
       });
       const tx2 = {
         to: config.hyphenLP.address as Hex,
