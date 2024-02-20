@@ -5,6 +5,7 @@ import abis from "../../utils/configs/contractsInfo.json";
 import { useSmartAccountContext } from '../../contexts/SmartAccountContext';
 import { useAccount } from 'wagmi';
 import CreateABISVM from './CreateABISVM';
+import { ABI_SVM } from '../../utils/constants';
 
 
 export default function ABISVM() {
@@ -15,8 +16,6 @@ export default function ABISVM() {
 
   const [mockStake, setMockStake] = useState<Contract>();
   
-  const [abiSVMAddress, setAbiSVMAddress] = useState<string>("0x1431610824308bCDfA7b6F9cCB451d370f2a2F01");
-
   const connect = async () => {
     // @ts-ignore
     const { ethereum } = window;
@@ -55,7 +54,7 @@ export default function ABISVM() {
                 abis.nft.abi,
                 provider!
               )!}
-              abiSVMAddress={abiSVMAddress}
+              abiSVMAddress={ABI_SVM}
             />
           )
         }

@@ -9,10 +9,12 @@ import {
   showSuccessMessage,
   showErrorMessage,
 } from "../../utils";
-import { DEFAULT_SESSION_KEY_MANAGER_MODULE, createSessionKeyManagerModule } from "@biconomy/account";
+import { createSessionKeyManagerModule } from "@biconomy/account";
 import { CONTRACT_CALL_SESSION_VALIDATION_MODULE } from "../../utils/chainConfig";
 import { EthersSigner } from "@biconomy/account";
 import { useAccount } from "wagmi";
+import { managerModuleAddr } from "../../utils/constants";
+import { parseUnits } from "viem";
 
 const HyphenLpUsingSession: React.FC = () => {
   const classes = useStyles();
@@ -28,7 +30,7 @@ const HyphenLpUsingSession: React.FC = () => {
     try {
       setLoading(true);
       let biconomySmartAccount = smartAccount;
-      const sessionKeyManagerModuleAddr = DEFAULT_SESSION_KEY_MANAGER_MODULE;
+      const sessionKeyManagerModuleAddr = managerModuleAddr;
       const ccSessionValidationModuleAddr =
         CONTRACT_CALL_SESSION_VALIDATION_MODULE;
 
@@ -64,7 +66,7 @@ const HyphenLpUsingSession: React.FC = () => {
 
       const addLiquidityData = hyphenContract.interface.encodeFunctionData(
         "addTokenLiquidity",
-        [config.usdc.address, ethers.BigNumber.from("1000000")]
+        [config.usdc.address, parseUnits("0.01", 6)]
       ); // 1 USDC (mumbai USDC has 6 decimals)
       const tx1 = {
         to: config.hyphenLP.address,

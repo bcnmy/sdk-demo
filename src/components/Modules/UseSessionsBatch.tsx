@@ -13,10 +13,7 @@ import {
   showSuccessMessage,
   showErrorMessage,
 } from "../../utils";
-import {
-  DEFAULT_BATCHED_SESSION_ROUTER_MODULE,
-  DEFAULT_SESSION_KEY_MANAGER_MODULE,
-} from "@biconomy/modules";
+import { erc20ModuleAddr, managerModuleAddr, mockSessionModuleAddr, routerModuleAddr } from "../../utils/constants";
 
 const ERC20RouterTransfer: React.FC = () => {
   const classes = useStyles();
@@ -32,11 +29,6 @@ const ERC20RouterTransfer: React.FC = () => {
     try {
       setLoading(true);
       let biconomySmartAccount = smartAccount;
-      const managerModuleAddr = DEFAULT_SESSION_KEY_MANAGER_MODULE;
-      const erc20ModuleAddr = "0x000000D50C68705bd6897B2d17c7de32FB519fDA";
-      const routerModuleAddr = DEFAULT_BATCHED_SESSION_ROUTER_MODULE;
-      const mockSessionModuleAddr =
-        "0x7Ba4a7338D7A90dfA465cF975Cc6691812C3772E";
 
       // get session key from local storage
       const sessionKeyPrivKey = window.localStorage.getItem("sessionPKey");

@@ -10,7 +10,7 @@ import {
   slice,
 } from "viem";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
-import { createSessionKeyManagerModule, DEFAULT_SESSION_KEY_MANAGER_MODULE } from "@biconomy/account";
+import { createSessionKeyManagerModule } from "@biconomy/account";
 import Button from "../Button";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import { CONTRACT_CALL_SESSION_VALIDATION_MODULE } from "../../utils/chainConfig";
@@ -20,6 +20,7 @@ import {
   showErrorMessage,
   showSuccessMessage,
 } from "../../utils";
+import { managerModuleAddr } from "../../utils/constants";
 
 const CreateCustomSession: React.FC = () => {
   const classes = useStyles();
@@ -37,7 +38,7 @@ const CreateCustomSession: React.FC = () => {
       }
       try {
         let biconomySmartAccount = smartAccount;
-        const sessionKeyManagerModuleAddr = DEFAULT_SESSION_KEY_MANAGER_MODULE;
+        const sessionKeyManagerModuleAddr = managerModuleAddr;
         // Checks if Session Key Manager module is enabled on the smart account.
         // Before using session keys this module must be enabled.
         // If not, createSession transaction will also enable this module along with storing session info on-chain.
@@ -64,7 +65,7 @@ const CreateCustomSession: React.FC = () => {
     }
     try {
       let biconomySmartAccount = smartAccount;
-      const sessionKeyManagerModuleAddr = DEFAULT_SESSION_KEY_MANAGER_MODULE;
+      const sessionKeyManagerModuleAddr = managerModuleAddr;
       const ccSessionValidationModuleAddr =
         CONTRACT_CALL_SESSION_VALIDATION_MODULE;
 

@@ -9,10 +9,11 @@ import {
   showSuccessMessage,
   showErrorMessage,
 } from "../../utils";
-import { DEFAULT_SESSION_KEY_MANAGER_MODULE, createSessionKeyManagerModule } from "@biconomy/account";
+import { createSessionKeyManagerModule } from "@biconomy/account";
 import { ERC20_SESSION_VALIDATION_MODULE } from "../../utils/chainConfig";
 import { EthersSigner } from "@biconomy/account";
 import { useAccount } from "wagmi";
+import { managerModuleAddr } from "../../utils/constants";
 
 const ERC20Transfer: React.FC = () => {
   const classes = useStyles();
@@ -28,7 +29,7 @@ const ERC20Transfer: React.FC = () => {
     try {
       setLoading(true);
       let biconomySmartAccount = smartAccount;
-      const sessionKeyManagerModuleAddr = DEFAULT_SESSION_KEY_MANAGER_MODULE;
+      const sessionKeyManagerModuleAddr = managerModuleAddr;
       const erc20SessionValidationModuleAddr = ERC20_SESSION_VALIDATION_MODULE;
 
       // get session key from local storage
@@ -82,24 +83,15 @@ const ERC20Transfer: React.FC = () => {
         value: 0,
       };
 
-      // build user op
-      // with calldata to transfer ERC20 tokens
-      let userOp = await biconomySmartAccount.buildUserOp([tx1], {
-        // These are required (as query params in session storage) to be able to find the leaf and generate proof for the dummy signature (which is in turn used for estimating gas values)
-        params: {
-          sessionSigner: newSigner,
-          sessionValidationModule: erc20SessionValidationModuleAddr,
-        },
-      });
-
       // send user operation
-      const userOpResponse = await biconomySmartAccount.sendUserOp(userOp, 
+      const userOpResponse = await biconomySmartAccount.sendTransaction(tx1, 
         // below params are required for passing on this information to session key manager module to create padded signature
         {
-        sessionSigner: newSigner,
-        sessionValidationModule: erc20SessionValidationModuleAddr,
-        // optionally can also provide simulationType
-        simulationType: 'validation_and_execution'
+          params:{
+            sessionSigner: newSigner,
+            sessionValidationModule: erc20SessionValidationModuleAddr,
+          },
+          simulationType: 'validation_and_execution'
       });
 
       console.log("userOpHash", userOpResponse);

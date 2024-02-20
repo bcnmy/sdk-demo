@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { BigNumber, ethers } from "ethers";
-import { DEFAULT_SESSION_KEY_MANAGER_MODULE  } from "@biconomy/modules";
+import { ethers } from "ethers";
 import { BiconomySmartAccountV2, createSessionKeyManagerModule } from "@biconomy/account"
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {getABISVMSessionKeyData} from "../../utils/index";
-import { hexDataSlice, hexZeroPad, hexlify, id, parseEther } from "ethers/lib/utils";
-import { Hex, parseUnits } from "viem";
+import { hexDataSlice, id, parseEther } from "ethers/lib/utils";
+import { Hex } from "viem";
 import UseABISVM from "./UseABISVM";
 import Button from "../Button";
 import { useAccount } from "wagmi";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
+import { ABI_SVM, managerModuleAddr } from "../../utils/constants";
 
 interface props {
   smartAccount: BiconomySmartAccountV2;
@@ -28,10 +28,7 @@ const CreateABISVM: React.FC<props> = () => {
 
     const { address } = useAccount();
     const { smartAccount, scwAddress } = useSmartAccountContext();
-    const [loading, setLoading] = useState<boolean>(false);
   
-    const [abiSVMAddress, setAbiSVMAddress] = useState<string>("0x1431610824308bCDfA7b6F9cCB451d370f2a2F01");
-
     useEffect(() => {
         let checkSessionModuleEnabled = async () => {
           if(!address || !smartAccount) {
@@ -39,7 +36,7 @@ const CreateABISVM: React.FC<props> = () => {
             return
           }
           try {
-            const isEnabled = await smartAccount.isModuleEnabled(DEFAULT_SESSION_KEY_MANAGER_MODULE)
+            const isEnabled = await smartAccount.isModuleEnabled(managerModuleAddr)
             console.log("isSessionKeyModuleEnabled", isEnabled);
             setIsSessionKeyModuleEnabled(isEnabled);
             return;
@@ -78,7 +75,7 @@ const CreateABISVM: React.FC<props> = () => {
     
           // generate sessionModule
           const sessionModule = await createSessionKeyManagerModule({
-            moduleAddress: DEFAULT_SESSION_KEY_MANAGER_MODULE,
+            moduleAddress: managerModuleAddr,
             smartAccountAddress: address as Hex,
           });
     
@@ -112,7 +109,7 @@ const CreateABISVM: React.FC<props> = () => {
             {
                 validUntil: 0,
                 validAfter: 0,
-                sessionValidationModule: "0x1431610824308bCDfA7b6F9cCB451d370f2a2F01",
+                sessionValidationModule: ABI_SVM,
                 sessionPublicKey: sessionKeyEOA as Hex,
                 sessionKeyData: sessionKeyData as Hex,
             }
@@ -122,7 +119,7 @@ const CreateABISVM: React.FC<props> = () => {
     
           // tx to set session key
           const setSessionTrx = {
-            to: DEFAULT_SESSION_KEY_MANAGER_MODULE, // session manager module address
+            to: managerModuleAddr, // session manager module address
             data: sessionTxData.data,
           };
     
@@ -131,7 +128,7 @@ const CreateABISVM: React.FC<props> = () => {
           if (enableSessionKeyModule) {
             // -----> enableModule session manager module
             const enableModuleTrx = await smartAccount!.getEnableModuleData(
-              DEFAULT_SESSION_KEY_MANAGER_MODULE
+              managerModuleAddr
             );
             transactionArray.push(enableModuleTrx);
           }
@@ -190,7 +187,7 @@ const CreateABISVM: React.FC<props> = () => {
           <UseABISVM
             smartAccount={smartAccount!}
             address={address!}
-            abiSVMAddress={abiSVMAddress}
+            abiSVMAddress={ABI_SVM}
             sessionIDs={sessionIDs}
           />
         )

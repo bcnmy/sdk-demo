@@ -1,17 +1,13 @@
 import React from "react";
 import { ethers } from "ethers";
-import { SessionKeyManagerModule } from "@biconomy/modules";
 import { BiconomySmartAccountV2, createSessionKeyManagerModule } from "@biconomy/account"
-import { DEFAULT_SESSION_KEY_MANAGER_MODULE  } from "@biconomy/modules";
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Hex, createWalletClient, encodeFunctionData, http, parseAbi } from "viem";
+import { Hex, encodeFunctionData, parseAbi } from "viem";
 import Button from "../Button";
-import { config } from "process";
 import { configInfo } from "../../utils";
-import { privateKeyToAccount } from "viem/accounts";
 import { polygonMumbai } from "viem/chains";
-import { error } from "console";
+import { managerModuleAddr } from "../../utils/constants";
 
 interface props {
   smartAccount: BiconomySmartAccountV2;
@@ -67,7 +63,7 @@ const UseABISVM: React.FC<props> = ({
 
       // generate sessionModule
       const sessionModule = await createSessionKeyManagerModule({
-        moduleAddress: DEFAULT_SESSION_KEY_MANAGER_MODULE,
+        moduleAddress: managerModuleAddr,
         smartAccountAddress: address,
       });
       
