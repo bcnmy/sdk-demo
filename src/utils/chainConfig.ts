@@ -22,9 +22,6 @@ export const ERC20_SESSION_VALIDATION_MODULE = "0x000000D50C68705bd6897B2d17c7de
 // Basic Abi session Validation Module
 export const CONTRACT_CALL_SESSION_VALIDATION_MODULE = "0x61b5F31bdb68eE54D6319cEc5b53Fac764E2d309"
 
-// Do not use this in production
-export const MOCK_SESSION_VALIDATION_MODULE = ""
-
 export const getRPCProvider = (chainId: number) => {
   switch (chainId) {
     case 1:

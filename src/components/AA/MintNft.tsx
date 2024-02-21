@@ -9,7 +9,7 @@ import {
   showErrorMessage,
   showSuccessMessage,
 } from "../../utils";
-import { PaymasterMode } from "@biconomy-devx/account";
+import { PaymasterMode } from "@biconomy/account";
 
 const MintNft: React.FC = () => {
   const classes = useStyles();
@@ -23,7 +23,7 @@ const MintNft: React.FC = () => {
     const nftContract = getContract({
       address: config.nft.address as Hex,
       abi: config.nft.abi,
-      publicClient,
+      client: publicClient,
     });
     const count = await nftContract.read.balanceOf([scwAddress]);
     console.log("count", count);

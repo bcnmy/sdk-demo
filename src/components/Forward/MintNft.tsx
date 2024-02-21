@@ -4,7 +4,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import {
   PaymasterFeeQuote,
   PaymasterMode,
-} from "@biconomy-devx/account";
+} from "@biconomy/account";
 
 import Button from "../Button";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
@@ -35,7 +35,7 @@ const MintNftForward: React.FC = () => {
       const nftContract = getContract({
         address: config.nft.address as Hex,
         abi: config.nft.abi,
-        publicClient,
+        client: publicClient,
       });
       const count = await nftContract.read.balanceOf([scwAddress as Hex]);
       console.log("count", Number(count));
