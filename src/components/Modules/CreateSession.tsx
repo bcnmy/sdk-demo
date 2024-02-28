@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@mui/styles";
 import { useAccount } from "wagmi";
-import { Hex, encodeAbiParameters, parseAbiParameters, parseEther } from "viem";
+import { Hex, encodeAbiParameters, parseAbiParameters, parseUnits } from "viem";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
-import { createSessionKeyManagerModule, DEFAULT_SESSION_KEY_MANAGER_MODULE } from "@biconomy-devx/account";
+import { createSessionKeyManagerModule } from "@biconomy/account";
 import Button from "../Button";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import { ERC20_SESSION_VALIDATION_MODULE } from "../../utils/chainConfig";
@@ -13,6 +13,7 @@ import {
   showErrorMessage,
   showInfoMessage,
 } from "../../utils";
+import { managerModuleAddr } from "../../utils/constants";
 
 const CreateSession: React.FC = () => {
   const classes = useStyles();
@@ -30,7 +31,7 @@ const CreateSession: React.FC = () => {
       }
       try {
         let biconomySmartAccount = smartAccount;
-        const sessionKeyManagerModuleAddr = DEFAULT_SESSION_KEY_MANAGER_MODULE;
+        const sessionKeyManagerModuleAddr = managerModuleAddr;
         // Checks if Session Key Manager module is enabled on the smart account.
         // Before using session keys this module must be enabled.
         // If not, createSession transaction will also enable this module along with storing session info on-chain.
@@ -57,7 +58,7 @@ const CreateSession: React.FC = () => {
     }
     try {
       let biconomySmartAccount = smartAccount;
-      const sessionKeyManagerModuleAddr = DEFAULT_SESSION_KEY_MANAGER_MODULE;
+      const sessionKeyManagerModuleAddr = managerModuleAddr;
       const erc20SessionValidationModuleAddr = ERC20_SESSION_VALIDATION_MODULE;
 
       // -----> setMerkle tree tx flow
@@ -93,7 +94,7 @@ const CreateSession: React.FC = () => {
           sessionKeyEOA,
           config.usdc.address as Hex, // erc20 token address
           "0x42138576848E839827585A3539305774D36B9602", // receiver address // You must send to same receiver when making use of the session
-          parseEther("50", "gwei"), // 50 usdc amount
+          parseUnits("50", 6), // 50 usdc amount
         ]
       );
 

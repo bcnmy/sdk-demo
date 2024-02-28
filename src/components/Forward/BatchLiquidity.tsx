@@ -4,7 +4,7 @@ import { CircularProgress } from "@mui/material";
 import {
   PaymasterFeeQuote,
   PaymasterMode,
-} from "@biconomy-devx/account";
+} from "@biconomy/account";
 
 import Button from "../Button";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
@@ -13,7 +13,7 @@ import {
   showSuccessMessage,
   showErrorMessage,
 } from "../../utils";
-import { Hex, encodeFunctionData, parseEther } from "viem";
+import { Hex, encodeFunctionData, parseEther, parseUnits } from "viem";
 
 const BatchLiquidity: React.FC = () => {
   const classes = useStyles();
@@ -36,22 +36,20 @@ const BatchLiquidity: React.FC = () => {
       const approveCallData = encodeFunctionData({
         abi: config.usdc.abi,
         functionName: "approve",
-        args: [config.hyphenLP.address, parseEther("0.001", "gwei")],
+        args: [config.hyphenLP.address, parseEther("1")],
       });
       const tx1 = {
         to: config.usdc.address as Hex,
-        value: BigInt(0),
         data: approveCallData,
       };
 
       const addLiquidityData = encodeFunctionData({
         abi: config.hyphenLP.abi,
         functionName: "addTokenLiquidity",
-        args: [config.usdc.address, parseEther("0.001", "gwei")], 
+        args: [config.usdc.address, parseUnits("0.001", 6)], 
       });
       const tx2 = {
         to: config.hyphenLP.address as Hex,
-        value: BigInt(0),
         data: addLiquidityData,
       };
 

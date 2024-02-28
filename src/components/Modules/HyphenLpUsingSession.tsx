@@ -3,33 +3,34 @@ import { ethers } from "ethers";
 import { makeStyles } from "@mui/styles";
 
 import Button from "../Button";
-import { useEthersSigner } from "../../contexts/ethers";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import {
   configInfo as config,
   showSuccessMessage,
   showErrorMessage,
 } from "../../utils";
-import { DEFAULT_SESSION_KEY_MANAGER_MODULE, createSessionKeyManagerModule } from "@biconomy-devx/account";
+import { createSessionKeyManagerModule } from "@biconomy/account";
 import { CONTRACT_CALL_SESSION_VALIDATION_MODULE } from "../../utils/chainConfig";
-import { EthersSigner } from "@biconomy-devx/account";
+import { EthersSigner } from "@biconomy/account";
+import { useAccount } from "wagmi";
+import { managerModuleAddr } from "../../utils/constants";
 import { parseUnits } from "viem";
 
 const HyphenLpUsingSession: React.FC = () => {
   const classes = useStyles();
-  const signer = useEthersSigner();
+  const { address } = useAccount();
   const { smartAccount, scwAddress } = useSmartAccountContext();
   const [loading, setLoading] = useState(false);
 
   const hyphenLpUsingSession = async () => {
-    if (!scwAddress || !smartAccount || !signer) {
+    if (!scwAddress || !smartAccount || !address) {
       showErrorMessage("Please connect wallet first");
       return;
     }
     try {
       setLoading(true);
       let biconomySmartAccount = smartAccount;
-      const sessionKeyManagerModuleAddr = DEFAULT_SESSION_KEY_MANAGER_MODULE;
+      const sessionKeyManagerModuleAddr = managerModuleAddr;
       const ccSessionValidationModuleAddr =
         CONTRACT_CALL_SESSION_VALIDATION_MODULE;
 
@@ -60,12 +61,12 @@ const HyphenLpUsingSession: React.FC = () => {
       const hyphenContract = new ethers.Contract(
         config.hyphenLP.address,
         config.hyphenLP.abi,
-        signer
+        sessionSigner
       );
 
       const addLiquidityData = hyphenContract.interface.encodeFunctionData(
         "addTokenLiquidity",
-        [config.usdc.address, ethers.BigNumber.from("1000000")]
+        [config.usdc.address, parseUnits("0.01", 6)]
       ); // 1 USDC (mumbai USDC has 6 decimals)
       const tx1 = {
         to: config.hyphenLP.address,
