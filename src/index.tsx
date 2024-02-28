@@ -3,47 +3,41 @@ import { ThemeProvider } from "@mui/styles";
 import "react-toastify/dist/ReactToastify.css";
 import "@rainbow-me/rainbowkit/styles.css";
 import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
-import { configureChains, createConfig, WagmiConfig } from "wagmi";
+import { createConfig, http, WagmiProvider } from 'wagmi';
 import { polygonMumbai, polygon } from "wagmi/chains";
-import { publicProvider } from "wagmi/providers/public";
 import { SmartAccountProvider } from "./contexts/SmartAccountContext";
 import App from "./App";
 import "./index.css";
 import theme from "./utils/theme";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const element = document.getElementById("root");
 const root = createRoot(element!);
 
-const { chains, publicClient } = configureChains(
-  [polygonMumbai, polygon],
-  [publicProvider()]
-);
-const { connectors } = getDefaultWallets({
-  appName: "Biconomy SDK Demo",
-  projectId: "YOUR_PROJECT_ID",
-  chains,
-});
 const wagmiConfig = createConfig({
-  autoConnect: true,
-  connectors,
-  publicClient,
+  chains: [polygonMumbai, polygon],
+  transports: {[polygonMumbai.id]: http(), [polygon.id]: http()}
 });
+
+const queryClient = new QueryClient() 
+
 
 const Index = () => {
   return (
-    <WagmiConfig config={wagmiConfig}>
-      <RainbowKitProvider
-        chains={chains}
-        showRecentTransactions={true}
-        coolMode={true}
-      >
-        <ThemeProvider theme={theme}>
-          <SmartAccountProvider>
-            <App />
-          </SmartAccountProvider>
-        </ThemeProvider>
-      </RainbowKitProvider>
-    </WagmiConfig>
+    <WagmiProvider config={wagmiConfig}>
+      <QueryClientProvider client={queryClient}>
+        <RainbowKitProvider
+          showRecentTransactions={true}
+          coolMode={true}
+        >
+          <ThemeProvider theme={theme}>
+            <SmartAccountProvider>
+              <App />
+            </SmartAccountProvider>
+          </ThemeProvider>
+        </RainbowKitProvider>
+      </QueryClientProvider> 
+    </WagmiProvider>
   );
 };
 

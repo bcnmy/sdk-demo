@@ -8,13 +8,11 @@ import {
 import { useAccount } from "wagmi";
 import Button from "../Button";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
-import { showErrorMessage, showSuccessMessage } from "../../utils";
+import { configInfo, showErrorMessage, showSuccessMessage } from "../../utils";
 import { defaultAbiCoder } from "ethers/lib/utils";
 import { getActionForErrorMessage } from "../../utils/error-utils";
-import {
-  DEFAULT_BATCHED_SESSION_ROUTER_MODULE,
-  DEFAULT_SESSION_KEY_MANAGER_MODULE,
-} from "@biconomy/modules";
+import { Hex } from "viem";
+import { managerModuleAddr, mockSessionModuleAddr, routerModuleAddr } from "../../utils/constants";
 
 const CreateBatchRouter: React.FC = () => {
   const classes = useStyles();
@@ -34,11 +32,11 @@ const CreateBatchRouter: React.FC = () => {
       try {
         let biconomySmartAccount = smartAccount;
         const isEnabled1 = await biconomySmartAccount.isModuleEnabled(
-          DEFAULT_SESSION_KEY_MANAGER_MODULE
+          managerModuleAddr
         );
         setIsSessionKeyModuleEnabled(isEnabled1);
         const isEnabled2 = await biconomySmartAccount.isModuleEnabled(
-          DEFAULT_BATCHED_SESSION_ROUTER_MODULE
+          routerModuleAddr
         );
         setIsBRMenabled(isEnabled2);
         console.log(
@@ -65,11 +63,7 @@ const CreateBatchRouter: React.FC = () => {
     }
     try {
       let biconomySmartAccount = smartAccount;
-      const managerModuleAddr = DEFAULT_SESSION_KEY_MANAGER_MODULE;
-      const routerModuleAddr = DEFAULT_BATCHED_SESSION_ROUTER_MODULE;
       const erc20ModuleAddr = "0x000000D50C68705bd6897B2d17c7de32FB519fDA";
-      const mockSessionModuleAddr =
-        "0x7Ba4a7338D7A90dfA465cF975Cc6691812C3772E";
 
       // -----> setMerkle tree tx flow
       // create dapp side session key
@@ -96,21 +90,11 @@ const CreateBatchRouter: React.FC = () => {
         ["address", "address", "address", "uint256"],
         [
           sessionKeyEOA,
-          "0xdA5289fCAAF71d52a80A254da614a192b693e977", // erc20 token address
+          configInfo.usdc.address, // erc20 token address
           "0x42138576848E839827585A3539305774D36B9602", // receiver address
           ethers.utils.parseUnits("50".toString(), 6).toHexString(), // 50 usdc amount
         ]
       );
-      /*const sessionKeyData2 = defaultAbiCoder.encode(
-        ["address", "address", "address", "uint256"],
-        [
-          sessionKeyEOA,
-          "0xdA5289fCAAF71d52a80A254da614a192b693e977", // erc20 token address
-          "0x5a86A87b3ea8080Ff0B99820159755a4422050e6", // receiver address 2
-          ethers.utils.parseUnits("100".toString(), 6).toHexString(),
-        ]
-      );*/
-
       const sessionKeyData2 = defaultAbiCoder.encode(
         ["address"],
         [sessionKeyEOA]
@@ -121,18 +105,17 @@ const CreateBatchRouter: React.FC = () => {
           validUntil: 0,
           validAfter: 0,
           sessionValidationModule: erc20ModuleAddr,
-          sessionPublicKey: sessionKeyEOA,
-          sessionKeyData: sessionKeyData,
+          sessionPublicKey: sessionKeyEOA as Hex,
+          sessionKeyData: sessionKeyData as Hex,
         },
         {
           validUntil: 0,
           validAfter: 0,
           sessionValidationModule: mockSessionModuleAddr,
-          sessionPublicKey: sessionKeyEOA,
-          sessionKeyData: sessionKeyData2,
+          sessionPublicKey: sessionKeyEOA as Hex,
+          sessionKeyData: sessionKeyData2 as Hex,
         },
       ]);
-      console.log("sessionTxData", sessionTxData);
 
       // tx to set session key
       const tx3 = {
@@ -156,14 +139,8 @@ const CreateBatchRouter: React.FC = () => {
         transactionArray.push(tx2);
       }
       transactionArray.push(tx3);
-      let partialUserOp = await biconomySmartAccount.buildUserOp(
-        transactionArray,
-        {
-          skipBundlerGasEstimation: false,
-        }
-      );
 
-      const userOpResponse = await smartAccount.sendUserOp(partialUserOp);
+      const userOpResponse = await smartAccount.sendTransaction(transactionArray);
       console.log("userOpHash", userOpResponse);
       const { transactionHash } = await userOpResponse.waitForTxHash();
       console.log("txHash", transactionHash);
@@ -249,3 +226,4 @@ const useStyles = makeStyles(() => ({
 }));
 
 export default CreateBatchRouter;
+

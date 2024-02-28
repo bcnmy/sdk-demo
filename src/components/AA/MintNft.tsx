@@ -1,69 +1,56 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { ethers } from "ethers";
 import { makeStyles } from "@mui/styles";
-import { PaymasterMode } from "@biconomy/paymaster";
-
+import { usePublicClient } from "wagmi";
+import { Hex, encodeFunctionData, getContract } from "viem";
 import Button from "../Button";
-import { useEthersSigner } from "../../contexts/ethers";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import {
   configInfo as config,
   showErrorMessage,
   showSuccessMessage,
 } from "../../utils";
+import { PaymasterMode } from "@biconomy/account";
 
 const MintNft: React.FC = () => {
   const classes = useStyles();
-  const signer = useEthersSigner();
+  const publicClient = usePublicClient();
   const { smartAccount, scwAddress } = useSmartAccountContext();
   const [nftCount, setNftCount] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
 
   const getNftCount = useCallback(async () => {
-    if (!scwAddress || !signer) return;
-    const nftContract = new ethers.Contract(
-      config.nft.address,
-      config.nft.abi,
-      signer
-    );
-    const count = await nftContract.balanceOf(scwAddress);
-    console.log("count", Number(count));
+    if (!scwAddress || !publicClient) return;
+    const nftContract = getContract({
+      address: config.nft.address as Hex,
+      abi: config.nft.abi,
+      client: publicClient,
+    });
+    const count = await nftContract.read.balanceOf([scwAddress]);
+    console.log("count", count);
     setNftCount(Number(count));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [publicClient, scwAddress]);
 
   useEffect(() => {
     getNftCount();
-  }, [getNftCount, signer]);
+  }, [getNftCount, publicClient]);
 
   const mintNft = async () => {
-    if (!scwAddress || !smartAccount || !signer) return;
+    if (!scwAddress || !smartAccount || !publicClient) return;
     try {
       setLoading(true);
-      const nftContract = new ethers.Contract(
-        config.nft.address,
-        config.nft.abi,
-        signer
-      );
-      console.log("smartAccount.address ", scwAddress);
-      const safeMintTx = await nftContract.populateTransaction.safeMint(
-        scwAddress
-      );
-      console.log(safeMintTx.data);
+      const mintData = encodeFunctionData({
+        abi: config.nft.abi,
+        functionName: "safeMint",
+        args: [scwAddress as Hex],
+      });
       const tx1 = {
-        to: config.nft.address,
-        data: safeMintTx.data,
+        to: config.nft.address as Hex,
+        value: BigInt(0),
+        data: mintData,
       };
 
-      let userOp = await smartAccount.buildUserOp([tx1], {
-        paymasterServiceData: {
-          mode: PaymasterMode.SPONSORED,
-        },
-      });
-
-      const userOpResponse = await smartAccount.sendUserOp(userOp);
-      console.log("userOpHash", userOpResponse);
-      const { transactionHash } = await userOpResponse.waitForTxHash();
+      let { waitForTxHash } = await smartAccount.sendTransaction([tx1], { paymasterServiceData: { mode: PaymasterMode.SPONSORED } });
+      const { transactionHash } = await waitForTxHash();
       console.log("txHash", transactionHash);
       showSuccessMessage(`Minted Nft ${transactionHash}`, transactionHash);
       setLoading(false);

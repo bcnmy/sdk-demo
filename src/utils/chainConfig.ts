@@ -7,7 +7,7 @@ export const ChainId = {
 };
 
 export let activeChainId = ChainId.POLYGON_MUMBAI;
-export const paymasterApi = "https://paymaster.biconomy.io/api/v1/80001/WEX9LXdFW.13107308-4631-4ba5-9e23-2a8bf8270948";
+export const paymasterApiKey = "WEX9LXdFW.13107308-4631-4ba5-9e23-2a8bf8270948";
 export const bundlerUrl = "https://bundler.biconomy.io/api/v2/80001/WEX9LXdFW.13107308-4631-4ba5-9e23-2a8bf8270948";
 
 export const supportedChains = [
@@ -21,9 +21,6 @@ export const ERC20_SESSION_VALIDATION_MODULE = "0x000000D50C68705bd6897B2d17c7de
 
 // Basic Abi session Validation Module
 export const CONTRACT_CALL_SESSION_VALIDATION_MODULE = "0x61b5F31bdb68eE54D6319cEc5b53Fac764E2d309"
-
-// Do not use this in production
-export const MOCK_SESSION_VALIDATION_MODULE = ""
 
 export const getRPCProvider = (chainId: number) => {
   switch (chainId) {
