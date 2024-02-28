@@ -5,4 +5,4 @@ export const erc20ModuleAddr = ERC20_SESSION_VALIDATION_MODULE;
 export const managerModuleAddr = DEFAULT_SESSION_KEY_MANAGER_MODULE;
 export const routerModuleAddr = DEFAULT_BATCHED_SESSION_ROUTER_MODULE;
 export const mockSessionModuleAddr = "0x7Ba4a7338D7A90dfA465cF975Cc6691812C3772E";
-export const ABI_SVM = "0x1431610824308bCDfA7b6F9cCB451d370f2a2F01";
+export const ABI_SVM = "0x000006bC2eCdAe38113929293d241Cf252D91861";
