@@ -3,8 +3,45 @@ import { JsonRpcProvider } from "@ethersproject/providers";
 import configInfo from "./configs/contractsInfo.json";
 import { toast } from "react-toastify";
 import { activeChainId, getExplorer, getRPCProvider } from "./chainConfig";
+import { BytesLike, hexConcat, hexZeroPad, hexlify } from "ethers/lib/utils";
 
 export { configInfo };
+
+export interface Rule {
+  offset: number;
+  condition: number;
+  referenceValue: string | BytesLike;
+}
+
+export interface Permission {
+  destContract: string;
+  functionSelector: string;
+  valueLimit: BigNumber;
+  rules: Rule[];
+}
+
+export async function getABISVMSessionKeyData(
+  sessionKey: string,
+  permission: Permission,
+): Promise<string> {
+  let sessionKeyData = hexConcat([
+    sessionKey,
+    permission.destContract,
+    permission.functionSelector,
+    hexZeroPad(permission.valueLimit.toHexString(), 16),
+    hexZeroPad(hexlify(permission.rules.length), 2), // this can't be more 2**11 (see below), so uint16 (2 bytes) is enough
+  ]);
+
+  for (let i = 0; i < permission.rules.length; i++) {
+    sessionKeyData = hexConcat([
+      sessionKeyData,
+      hexZeroPad(hexlify(permission.rules[i].offset), 2), // offset is uint16, so there can't be more than 2**16/32 args = 2**11
+      hexZeroPad(hexlify(permission.rules[i].condition), 1), // uint8
+      permission.rules[i].referenceValue,
+    ]);
+  }
+  return sessionKeyData;
+}
 
 export function ellipseAddress(address = "", width = 10): string {
   if (!address) {
@@ -31,7 +68,7 @@ export const getEOAWallet = (privateKey: string, provider: any) => {
 
 export const showErrorMessage = (message: string) => {
   toast.error(message, {
-    position: "top-right",
+    position: "bottom-left",
     autoClose: 5000,
     hideProgressBar: false,
     closeOnClick: false,
@@ -43,7 +80,7 @@ export const showErrorMessage = (message: string) => {
 
 export const showInfoMessage = (message: string) => {
   toast.info(message, {
-    position: "top-right",
+    position: "bottom-left",
     autoClose: 5000,
     hideProgressBar: false,
     closeOnClick: true,
@@ -58,7 +95,7 @@ export const showSuccessMessage = (message: string, txHash?: string) => {
     onClick: () => {
       window.open(`${getExplorer(activeChainId)}/tx/${txHash}`, "_blank");
     },
-    position: "top-right",
+    position: "bottom-left",
     autoClose: 5000,
     hideProgressBar: false,
     closeOnClick: false,
@@ -73,7 +110,7 @@ export const copyToClipBoard = (copyMe: string) => {
   if (!copyMe) return;
   try {
     navigator.clipboard.writeText(copyMe).then(() => {
-      showSuccessMessage("Copied!");
+      showSuccessMessage("SmartAccount address copied!");
     });
   } catch (err) {
     showErrorMessage("Failed to copy!");

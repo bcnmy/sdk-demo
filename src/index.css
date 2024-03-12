@@ -1,11 +1,18 @@
 body {
   margin: 0;
-  font-family: rubik, sans-serif;
+  font-family: 'Satoshi Variable', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: "linear-gradient(120.85deg, #3F2E27 23.78%, #0E1117 68.7%)";
+  overflow: hidden;
 }
 
-code, pre {
+:root{
+  --toastify-color-dark: #151520;
+}
+
+code,
+pre {
   font-size: 14px;
   font-family: Inconsolata, Monaco, Consolas, "Courier New", Courier, monospace;
 }
@@ -16,4 +23,8 @@ p {
 
 .Toastify__toast-body {
   word-break: break-all;
+}
+
+.MuiTab-textColorInherit {
+  text-transform: inherit !important;
 }

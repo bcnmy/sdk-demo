@@ -1,108 +1,77 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@mui/styles";
 import { ToastContainer } from "react-toastify";
-import Navbar from "./components/Navbar";
+import { useAccount } from 'wagmi'
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import TabsBody from "./components/TabsBody";
 import { useSmartAccountContext } from "./contexts/SmartAccountContext";
-import { useWeb3AuthContext } from "./contexts/SocialLoginContext";
-import Button from "./components/Button";
 
 const App: React.FC = () => {
   const classes = useStyles();
-  const { connect, address, loading: eoaWalletLoading } = useWeb3AuthContext();
+  const { address } = useAccount()
   const { loading } = useSmartAccountContext();
 
   if (!address) {
     return (
-      <div
-        className={classes.bgCover}
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          paddingTop: "30vh",
-        }}
-      >
-        <h1 className={classes.title}>Biconomy SDK Demo</h1>
-        <Button
-          title="Get Started"
-          onClickFunc={connect}
-          isLoading={eoaWalletLoading}
-          style={{
-            fontSize: 20,
-            padding: "30px 20px",
-            border: 0,
-            background:
-              "linear-gradient(90deg, #0063FF -2.21%, #9100FF 89.35%)",
-          }}
-        />
-        <ToastContainer />
+      <div className={classes.bgCover}>
+        <div className={classes.container}>
+          <h1 className={classes.title}>
+          <img width={35} style={
+            {
+              marginRight: 20,
+            }
+          } src="/logo.svg" alt="" />
+            Biconomy SDK</h1>
+          <p className={classes.subTitle}>
+            Solve complex UX challenges with customisable SDK modules in
+            minutes.
+          </p>
+          <ConnectButton />
+        </div>
       </div>
     );
   }
 
   return (
     <div className={classes.bgCover}>
-      <Navbar />
-      {loading ? (
-        <div className={classes.container}>
-          <img src="/logo.svg" className={classes.animateBlink} alt="" />
-        </div>
-      ) : (
-        <TabsBody />
-      )}
-      <ToastContainer />
+      <TabsBody loading={loading} />
+      <ToastContainer position="bottom-left" newestOnTop theme="dark" />
     </div>
   );
 };
 
 const useStyles = makeStyles(() => ({
   bgCover: {
-    backgroundColor: "#1a1e23",
-    // backgroundImage: `url(/img/northern-lights-bg.png)`,
-    backgroundSize: "cover",
-    width: "100%",
-    minHeight: "100vh",
-    color: "#fff",
-    fontStyle: "italic",
+    width: "100vw",
+    height: "100vh",
+    background: "linear-gradient(120.85deg, #3F2E27 23.78%, #0E1117 68.7%)",
+    display: "flex",
+    color: "#e6e6e6",
+    justifyContent: "start",
+    alignItems: "center",
+    padding: "0px 20px",
   },
   container: {
+    width: "60vw",
+    height: "60vh",
+    backgroundColor: "#151520",
+    border: "1px solid #5B3320",
+    padding: "32px",
+    borderRadius: 20,
     display: "flex",
     flexDirection: "column",
-    width: "100%",
-    height: "80vh",
+    alignItems: "start",
     justifyContent: "center",
-    alignItems: "center",
+    gap: 20,
   },
   title: {
-    marginBottom: 50,
-    fontSize: 60,
-    background: "linear-gradient(90deg, #12ECB8 -2.21%, #00B4ED 92.02%)",
-    "-webkit-background-clip": "text",
-    "-webkit-text-fill-color": "transparent",
+    margin: 0,
+    fontSize: 50,
+    color: "#ffb999",
   },
-  animateBlink: {
-    animation: "$bottom_up 2s linear infinite",
-    "&:hover": {
-      transform: "scale(1.2)",
-    },
-  },
-  "@keyframes bottom_up": {
-    "0%": {
-      transform: "translateY(0px)",
-    },
-    "25%": {
-      transform: "translateY(20px)",
-    },
-    "50%": {
-      transform: "translateY(0px)",
-    },
-    "75%": {
-      transform: "translateY(-20px)",
-    },
-    "100%": {
-      transform: "translateY(0px)",
-    },
+  subTitle: {
+    fontSize: 22,
+    margin: 0,
   },
 }));
 

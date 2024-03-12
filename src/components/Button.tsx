@@ -1,6 +1,6 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { CircularProgress } from "@material-ui/core";
+import { makeStyles } from "@mui/styles";
+import { CircularProgress } from "@mui/material";
 
 type ButtonProp = {
   title: string;
@@ -29,7 +29,7 @@ const Button: React.FC<ButtonProp> = ({
       {isLoading ? (
         <>
           <CircularProgress
-            style={{ width: 25, height: 25, marginRight: 10, color: "#fff" }}
+            style={{ width: 25, height: 25, marginRight: 10, color: "#e6e6e6" }}
           />{" "}
           {" Loading"}
         </>
@@ -44,31 +44,33 @@ const Button: React.FC<ButtonProp> = ({
 const useStyles = makeStyles((theme: any) => ({
   btn: {
     width: "max-content",
-    background: "#21325E",
+    background: "#884c30",
     position: "relative",
     cursor: "pointer",
-    borderRadius: 5,
-    outline: "none",
     border: 0,
-    boxShadow: "2px 2px #3E497A",
+    borderRadius: "6px",
     height: 40,
     lineHeight: "36px",
     padding: "0px 12px",
     display: "flex",
     alignItems: "center",
-    color: "#CDF0EA",
+    color: "#E6E6E6",
     transition: "0.3s",
     fontWeight: "bold",
     fontSize: 15,
 
     "@media (max-width:599px)": {
-      padding: 0,
+      padding: "0 5px",
     },
 
     "&:hover": {
-      // backgroundColor: "#FFC4C4",
-      boxShadow: "1px 1px 0px #3E497A",
-      // transform: "translate(5px, 5px)",
+      backgroundColor: "#5B3320",
+    },
+
+    // disable button
+    "&:disabled": {
+      cursor: "not-allowed",
+      opacity: 0.5,
     },
 
     "& div": {

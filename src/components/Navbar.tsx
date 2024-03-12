@@ -1,105 +1,97 @@
 import { useState } from "react";
-import { AppBar } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import { useWeb3AuthContext } from "../contexts/SocialLoginContext";
+import { makeStyles } from "@mui/styles";
+import { styled } from "@mui/material/styles";
+import LegendToggleIcon from "@mui/icons-material/LegendToggle";
+import IconButton from "@mui/material/IconButton";
+import { useAccountModal } from "@rainbow-me/rainbowkit";
+import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import { useSmartAccountContext } from "../contexts/SmartAccountContext";
 import Button from "./Button";
-import {
-  copyToClipBoard,
-  ellipseAddress,
-  // showErrorMessage,
-  // showSuccessMessage,
-} from "../utils";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import { copyToClipBoard, ellipseAddress } from "../utils";
 
-const Navbar = () => {
+type INavBar = {
+  open: boolean;
+  handleDrawerOpen: () => void;
+};
+
+const drawerWidth = 260;
+interface AppBarProps extends MuiAppBarProps {
+  open?: boolean;
+}
+const AppBar = styled(MuiAppBar, {
+  shouldForwardProp: (prop) => prop !== "open",
+})<AppBarProps>(({ theme, open }) => ({
+  zIndex: theme.zIndex.drawer + 1,
+  transition: theme.transitions.create(["width", "margin"], {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  ...(open && {
+    marginLeft: drawerWidth,
+    width: `calc(100% - ${drawerWidth}px)`,
+    transition: theme.transitions.create(["width", "margin"], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  }),
+}));
+
+const Navbar = ({ open, handleDrawerOpen }: INavBar) => {
   const classes = useStyles();
-  const { disconnect } = useWeb3AuthContext();
-  const {
-    // getSmartAccount,
-    loading,
-    selectedAccount,
-    smartAccountsArray,
-    setSelectedAccount,
-  } = useSmartAccountContext();
+  const { loading, scwAddress } = useSmartAccountContext();
+  const { openAccountModal } = useAccountModal();
 
   const [showModal, setShowModal] = useState(false);
   const toggleLogoutButton = () => {
     showModal ? setShowModal(false) : setShowModal(true);
   };
 
-  // const getSmartAccountFunc = async () => {
-  //   const error = await getSmartAccount();
-  //   if (error) showErrorMessage(error);
-  //   else showSuccessMessage("Fetched smart account state");
-  // };
-
   const disconnectWallet = () => {
-    disconnect();
+    if(openAccountModal) {
+      openAccountModal();
+    }
     setShowModal(false);
   };
 
   return (
-    <AppBar position="static" classes={{ root: classes.nav }}>
+    <AppBar position="fixed" open={open} classes={{ root: classes.nav }}>
       <div className={classes.flexContainer}>
-        <img src="img/logo.svg" alt="logo" className={classes.logo} />
+        <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          onClick={handleDrawerOpen}
+          edge="start"
+          sx={{
+            marginRight: 5,
+            ...(open && { display: "none" }),
+          }}
+        >
+          <LegendToggleIcon />
+        </IconButton>
         <div className={classes.walletBtnContainer}>
-          {selectedAccount?.smartAccountAddress && (
+          {/* {scwAddress && (
             <p className={classes.btnTitle}>Smart Account Address</p>
-          )}
+          )} */}
           <Button
             title={
-              selectedAccount
-                ? ellipseAddress(selectedAccount.smartAccountAddress, 8)
-                : "Connect Wallet"
+              scwAddress ? ellipseAddress(scwAddress, 6) : "Connect Wallet"
             }
             onClickFunc={toggleLogoutButton}
             isLoading={loading}
-            // style={{ marginTop: 6 }}
           >
-            {showModal && (
-              <div className={classes.modal}>
-                {smartAccountsArray.length &&
-                  smartAccountsArray.map((smartAcc, index) => (
-                    <div className={classes.element} key={index}>
-                      {/* <p className={classes.elementText}>v{smartAcc.version}</p> */}
-                      <p
-                        className={classes.elementText}
-                        onClick={() => setSelectedAccount(smartAcc)}
-                      >
-                        {ellipseAddress(smartAcc.smartAccountAddress, 6)}
-                      </p>
-                      <p
-                        onClick={() =>
-                          copyToClipBoard(
-                            selectedAccount?.smartAccountAddress || ""
-                          )
-                        }
-                        className={classes.copyText}
-                      >
-                        📁
-                      </p>
-                    </div>
-                  ))}
-              </div>
-            )}
-          </Button>
-          {/* <FormControl className={classes.formControl}>
-            <InputLabel id="demo-simple-select-label">Version</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={version}
-              onChange={(event) => setVersion(event.target.value as string)}
+            <p
+              onClick={() => copyToClipBoard(scwAddress)}
+              className={classes.copyText}
             >
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
-
-              {versions.map((ver) => (
-                <MenuItem value={ver}>{ver}</MenuItem>
-              ))}
-            </Select>
-          </FormControl> */}
+              <ContentCopyIcon
+                className={classes.copyIcon}
+                style={{
+                  textAlign: "center",
+                }}
+              />
+            </p>
+          </Button>
           <Button title="Logout" onClickFunc={disconnectWallet} />
         </div>
       </div>
@@ -109,28 +101,22 @@ const Navbar = () => {
 
 const useStyles = makeStyles((theme: any) => ({
   nav: {
-    height: "70px",
-    boxShadow: "none",
-    background: "inherit",
-    // marginBottom: "40px",
-    borderBottom: "2px solid #393E46",
+    height: "80px",
+    width: "100%",
+    boxShadow: "none !important",
+    background: "rgba(0,0,0,0) !important",
     "@media (max-width:1100px)": {
       padding: "0 20px",
     },
   },
   flexContainer: {
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent: "end",
     alignItems: "center",
     margin: "auto",
-    maxWidth: 1250,
+    // maxWidth: 1400,
     padding: "0 10px",
-    // maxWidth: 1080,
-    width: "90%",
-  },
-  logo: {
-    height: "25px",
-    marginTop: 2,
+    width: "100%",
   },
   walletBtnContainer: {
     display: "flex",
@@ -138,28 +124,26 @@ const useStyles = makeStyles((theme: any) => ({
     gap: 20,
   },
   btnTitle: {
-    opacity: 0.56,
-    fontSize: 12,
+    opacity: 0.75,
+    fontSize: 10,
+    margin: 0,
     position: "absolute",
-    top: -10,
+    top: 4,
   },
   modal: {
     position: "absolute",
     top: 24,
-    right: 10,
-    backgroundColor: "#21325E",
-    borderLeft: "2px solid #3E497A",
-    borderRight: "2px solid #3E497A",
-    boxShadow: "4px 5px #3E497A",
+    right: 0,
+    backgroundColor: "#151520",
+    border: "1px solid #5B3320",
     width: "100%",
-    // height: "36px",
     lineHeight: "36px",
     padding: "2 8px",
-    borderRadius: 10,
+    borderRadius: 12,
     cursor: "pointer",
     textAlign: "center",
     fontWeight: 600,
-    transform: "translate(10%, 35%)",
+    transform: "translate(0%, 35%)",
 
     [theme.breakpoints.down("xs")]: {
       width: "auto",
@@ -167,14 +151,11 @@ const useStyles = makeStyles((theme: any) => ({
   },
   element: {
     padding: "0 5px",
+    color: "#e6e6e6",
     display: "flex",
     // border: "1px solid #F5E8E4",
     justifyContent: "space-between",
     borderRadius: 10,
-
-    "&:hover": {
-      backgroundColor: "#191F2A",
-    },
   },
   elementText: {
     fontSize: 14,
@@ -185,13 +166,19 @@ const useStyles = makeStyles((theme: any) => ({
     margin: "auto",
     fontSize: 14,
     padding: "0 5px",
-    "&:hover": {
-      backgroundColor: "#2C3333",
-    },
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   formControl: {
     margin: theme.spacing(1),
     width: 72,
+  },
+  copyIcon: {
+    color: "#e6e6e6",
+    "&:hover": {
+      color: "#ffb999",
+    },
   },
 }));
 

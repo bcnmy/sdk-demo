@@ -1,9 +1,9 @@
-name: staging Sdk Deployment
+name: Sdk Dev Deployment
 
 on:
   push:
     branches:
-      - staging
+      - dev
 permissions:
       id-token: write
       contents: read
@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.13.2]
+        node-version: [18.16.0]
 
     steps:
       - uses: actions/checkout@v2
@@ -35,12 +35,12 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-to-assume: ${{ secrets.AWS_DEV_ROLE_ARN }}
           role-session-name: dev-deploy
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
 
-      # publish to staging environment
+      # publish to dev environment
       - name: Deploy to S3
         run: |
-          aws s3 sync build s3://${{ secrets.STAGING_S3_BUCKET_NAME }}
-          aws cloudfront create-invalidation --distribution-id ${{ secrets.STAGING_CF_ID }} --paths /
+          aws s3 sync build s3://${{ secrets.DEV_S3_BUCKET_NAME }}
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.DEV_CF_ID }} --paths /
