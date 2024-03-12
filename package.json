@@ -22,7 +22,7 @@
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
     "react-toastify": "^9.0.8",
-    "typescript": "5.2.0",
+    "typescript": "^5",
     "viem": "^2.7.3",
     "wagmi": "^2.5.5",
     "web-vitals": "^2.1.0"
