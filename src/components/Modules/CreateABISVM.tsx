@@ -93,7 +93,7 @@ const CreateABISVM: React.FC<props> = () => {
               {
                 offset: 0, // offset 0 means we are checking first parameter of safeMint (recipient address)
                 condition: 0, // 0 = Condition.EQUAL
-                referenceValue: ethers.utils.hexZeroPad("0xd3C85Fdd3695Aee3f0A12B3376aCD8DC54020549", 32) // recipient address
+                referenceValue: ethers.utils.hexZeroPad(address!, 32) // recipient address
               },
             ],
           });
