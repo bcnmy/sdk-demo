@@ -2,9 +2,9 @@ import { createRoot } from "react-dom/client";
 import { ThemeProvider } from "@mui/styles";
 import "react-toastify/dist/ReactToastify.css";
 import "@rainbow-me/rainbowkit/styles.css";
-import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { createConfig, http, WagmiProvider } from 'wagmi';
-import { polygonMumbai, polygon } from "wagmi/chains";
+import { polygonAmoy, polygon } from "wagmi/chains";
 import { SmartAccountProvider } from "./contexts/SmartAccountContext";
 import App from "./App";
 import "./index.css";
@@ -15,8 +15,8 @@ const element = document.getElementById("root");
 const root = createRoot(element!);
 
 const wagmiConfig = createConfig({
-  chains: [polygonMumbai, polygon],
-  transports: {[polygonMumbai.id]: http(), [polygon.id]: http()}
+  chains: [polygonAmoy, polygon],
+  transports: {[polygonAmoy.id]: http(), [polygon.id]: http()}
 });
 
 const queryClient = new QueryClient() 
