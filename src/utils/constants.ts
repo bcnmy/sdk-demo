@@ -1,7 +1,7 @@
 import {
 	DEFAULT_BATCHED_SESSION_ROUTER_MODULE,
 	DEFAULT_SESSION_KEY_MANAGER_MODULE,
-} from "@biconomy-devx/account";
+} from "@biconomy/account";
 import { ERC20_SESSION_VALIDATION_MODULE } from "./chainConfig";
 
 export const erc20ModuleAddr = ERC20_SESSION_VALIDATION_MODULE;

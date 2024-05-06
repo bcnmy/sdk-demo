@@ -3,7 +3,7 @@ import { makeStyles } from "@mui/styles";
 import { useAccount } from "wagmi";
 import { Hex, encodeAbiParameters, parseAbiParameters, parseUnits } from "viem";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
-import { createSessionKeyManagerModule } from "@biconomy-devx/account";
+import { createSessionKeyManagerModule } from "@biconomy/account";
 import Button from "../Button";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import { ERC20_SESSION_VALIDATION_MODULE } from "../../utils/chainConfig";
