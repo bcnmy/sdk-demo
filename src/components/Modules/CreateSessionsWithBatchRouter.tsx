@@ -4,7 +4,7 @@ import { makeStyles } from "@mui/styles";
 import {
 	BatchedSessionRouterModule,
 	SessionKeyManagerModule,
-} from "@biconomy-devx/account";
+} from "@biconomy/account";
 import { useAccount } from "wagmi";
 import Button from "../Button";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";

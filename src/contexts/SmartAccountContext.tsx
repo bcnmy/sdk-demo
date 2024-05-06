@@ -2,10 +2,10 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import {
 	BiconomySmartAccountV2,
 	createSmartAccountClient,
-} from "@biconomy-devx/account";
+} from "@biconomy/account";
 import { useAccount, useWalletClient } from "wagmi";
 import { bundlerUrl, paymasterApiKey } from "../utils/chainConfig";
-// import { MultiChainValidationModule } from "@biconomy-devx/account";
+// import { MultiChainValidationModule } from "@biconomy/account";
 
 // Types
 type smartAccountContextType = {

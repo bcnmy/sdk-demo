@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@mui/styles";
 import CircularProgress from "@mui/material/CircularProgress";
-import { PaymasterFeeQuote, PaymasterMode } from "@biconomy-devx/account";
+import { PaymasterFeeQuote, PaymasterMode } from "@biconomy/account";
 
 import Button from "../Button";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";

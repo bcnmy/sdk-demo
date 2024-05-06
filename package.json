@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"private": true,
 	"dependencies": {
-		"@biconomy-devx/account": "^4.2.12",
+		"@biconomy/account": "^4.2.0",
 		"@emotion/react": "^11.10.6",
 		"@emotion/styled": "^11.10.6",
 		"@mui/icons-material": "^5.11.11",

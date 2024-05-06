@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import {
 	BiconomySmartAccountV2,
 	createSessionKeyManagerModule,
-} from "@biconomy-devx/account";
+} from "@biconomy/account";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Hex, encodeFunctionData, parseAbi } from "viem";
