@@ -1,12 +1,9 @@
 import {
 	DEFAULT_BATCHED_SESSION_ROUTER_MODULE,
 	DEFAULT_SESSION_KEY_MANAGER_MODULE,
-} from "@biconomy/account";
-import { ERC20_SESSION_VALIDATION_MODULE } from "./chainConfig";
+	DEFAULT_ERC20_MODULE
+} from "@biconomy-devx/account";
 
-export const erc20ModuleAddr = ERC20_SESSION_VALIDATION_MODULE;
+export const erc20ModuleAddr = DEFAULT_ERC20_MODULE;
 export const managerModuleAddr = DEFAULT_SESSION_KEY_MANAGER_MODULE;
 export const routerModuleAddr = DEFAULT_BATCHED_SESSION_ROUTER_MODULE;
-export const mockSessionModuleAddr =
-	"0x7Ba4a7338D7A90dfA465cF975Cc6691812C3772E";
-export const ABI_SVM = "0x000006bC2eCdAe38113929293d241Cf252D91861";

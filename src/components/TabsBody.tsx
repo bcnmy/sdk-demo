@@ -40,8 +40,8 @@ import MintNftForward from "./Forward/MintNft";
 import BatchLiquidityForward from "./Forward/BatchLiquidity";
 import HyphenLpUsingSession from "./Modules/HyphenLpUsingSession";
 import CreateCustomSession from "./Modules/CreateSessionForCustomSVM";
-import CreateBatchRouter from "./Modules/CreateSessionsWithBatchRouter";
-import ERC20RouterTransfer from "./Modules/UseSessionsBatch";
+import CreateMultiSession from "./Modules/CreateMultiSession";
+import UseMultiSession from "./Modules/UseMultiSession";
 import ABISVM from "./Modules/ABI_SVM";
 
 const drawerWidth = 320;
@@ -392,65 +392,66 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
               ))}
             </List>
           </Collapse>
-            <List sx={{display: "block"}}>
-              <ListItemButton
-                onClick={(e: any) => {
-                  setIsSessionRouterOpen(!isSessionRouterOpen);
-                  handleChange(e, 8);
+          <List sx={{ display: "block" }}>
+            <ListItemButton
+              onClick={(e: any) => {
+                setIsSessionRouterOpen(!isSessionRouterOpen);
+                handleChange(e, 8);
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : "auto",
+                  justifyContent: "center",
+                  color: pageIndex === 12 ? "#FFB999" : "#e6e6e6",
                 }}
               >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : "auto",
-                    justifyContent: "center",
-                    color: pageIndex === 12 ? "#FFB999" : "#e6e6e6",
-                  }}
-                >
-                  <FiberNewIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Batched Session Router Demo"
-                  sx={{ opacity: open ? 1 : 0 }}
-                />
-                {isSessionRouterOpen ? <ExpandLess /> : <ExpandMore />}
-              </ListItemButton>
-              <Collapse in={isSessionRouterOpen} timeout="auto" unmountOnExit>
-                <List component="div" disablePadding>
-                  {SessionRouterList.map((ele, index) => (
-                    <ListItem
-                      key={ele.name}
-                      disablePadding
-                      sx={{ display: "block" }}
+                <FiberNewIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary="Batched Session Router Demo"
+                sx={{ opacity: open ? 1 : 0 }}
+              />
+              {isSessionRouterOpen ? <ExpandLess /> : <ExpandMore />}
+            </ListItemButton>
+            <Collapse in={isSessionRouterOpen} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                {SessionRouterList.map((ele, index) => (
+                  <ListItem
+                    key={ele.name}
+                    disablePadding
+                    sx={{ display: "block" }}
+                  >
+                    <ListItemButton
+                      sx={{
+                        minHeight: 48,
+                        justifyContent: open ? "initial" : "center",
+                        px: 2.5,
+                      }}
+                      onClick={(e: any) => handleChange(e, index + 12)}
                     >
-                      <ListItemButton
+                      <ListItemIcon
                         sx={{
-                          minHeight: 48,
-                          justifyContent: open ? "initial" : "center",
-                          px: 2.5,
+                          minWidth: 0,
+                          mr: open ? 3 : "auto",
+                          justifyContent: "center",
+                          color:
+                            pageIndex === index + 12 ? "#FFB999" : "#e6e6e6",
                         }}
-                        onClick={(e: any) => handleChange(e, index + 12)}
                       >
-                        <ListItemIcon
-                          sx={{
-                            minWidth: 0,
-                            mr: open ? 3 : "auto",
-                            justifyContent: "center",
-                            color: pageIndex === index + 12 ? "#FFB999" : "#e6e6e6",
-                          }}
-                        >
-                          {ele.icon}
-                        </ListItemIcon>
-                        <ListItemText
-                          primary={ele.name}
-                          sx={{ opacity: open ? 1 : 0 }}
-                        />
-                      </ListItemButton>
-                    </ListItem>
-                  ))}
-                </List>
-              </Collapse>
-            </List>
+                        {ele.icon}
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={ele.name}
+                        sx={{ opacity: open ? 1 : 0 }}
+                      />
+                    </ListItemButton>
+                  </ListItem>
+                ))}
+              </List>
+            </Collapse>
+          </List>
         </List>
       </Drawer>
 
@@ -515,10 +516,10 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
         <ABISVM />
       </TabPanel>
       <TabPanel value={pageIndex} index={12}>
-        <CreateBatchRouter />
+        <CreateMultiSession />
       </TabPanel>
       <TabPanel value={pageIndex} index={13}>
-        <ERC20RouterTransfer />
+        <UseMultiSession />
       </TabPanel>
     </Box>
   );

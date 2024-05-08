@@ -1,44 +1,37 @@
-import { createRoot } from "react-dom/client";
 import { ThemeProvider } from "@mui/styles";
 import "react-toastify/dist/ReactToastify.css";
 import "@rainbow-me/rainbowkit/styles.css";
 import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
-import { createConfig, http, WagmiProvider } from 'wagmi';
+import { createConfig, http, WagmiProvider } from "wagmi";
 import { polygonAmoy, polygon } from "wagmi/chains";
 import { SmartAccountProvider } from "./contexts/SmartAccountContext";
 import App from "./App";
 import "./index.css";
 import theme from "./utils/theme";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
-const element = document.getElementById("root");
-const root = createRoot(element!);
+import { StrictMode } from "react";
+import ReactDOM from "react-dom/client";
 
 const wagmiConfig = createConfig({
   chains: [polygonAmoy, polygon],
-  transports: {[polygonAmoy.id]: http(), [polygon.id]: http()}
+  transports: { [polygonAmoy.id]: http(), [polygon.id]: http() },
 });
 
-const queryClient = new QueryClient() 
+const queryClient = new QueryClient();
 
-
-const Index = () => {
-  return (
+// biome-ignore lint/style/noNonNullAssertion: <explanation>
+ReactDOM.createRoot(document?.getElementById("root")!).render(
+  <StrictMode>
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider
-          showRecentTransactions={true}
-          coolMode={true}
-        >
+        <RainbowKitProvider showRecentTransactions={true} coolMode={true}>
           <ThemeProvider theme={theme}>
             <SmartAccountProvider>
               <App />
             </SmartAccountProvider>
           </ThemeProvider>
         </RainbowKitProvider>
-      </QueryClientProvider> 
+      </QueryClientProvider>
     </WagmiProvider>
-  );
-};
-
-root.render(<Index />);
+  </StrictMode>
+);
