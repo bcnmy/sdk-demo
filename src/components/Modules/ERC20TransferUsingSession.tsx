@@ -9,8 +9,10 @@ import {
   showSuccessMessage,
   showErrorMessage,
 } from "../../utils";
-import { createSessionKeyManagerModule } from "@biconomy-devx/account";
-import { ERC20_SESSION_VALIDATION_MODULE } from "../../utils/chainConfig";
+import {
+  DEFAULT_ERC20_MODULE,
+  createSessionKeyManagerModule,
+} from "@biconomy-devx/account";
 import { EthersSigner } from "@biconomy-devx/account";
 import { useAccount } from "wagmi";
 import { managerModuleAddr } from "../../utils/constants";
@@ -30,7 +32,7 @@ const ERC20Transfer: React.FC = () => {
       setLoading(true);
       let biconomySmartAccount = smartAccount;
       const sessionKeyManagerModuleAddr = managerModuleAddr;
-      const erc20SessionValidationModuleAddr = ERC20_SESSION_VALIDATION_MODULE;
+      const erc20SessionValidationModuleAddr = DEFAULT_ERC20_MODULE;
 
       // get session key from local storage
       const sessionKeyPrivKey = window.localStorage.getItem("sessionPKey");
@@ -69,9 +71,10 @@ const ERC20Transfer: React.FC = () => {
         throw new Error("invalid token address supplied");
       }
 
+      // @ts-ignore
       const { data } = await tokenContract.populateTransaction.transfer(
         "0x42138576848E839827585A3539305774D36B9602", // receiver address // Has to be the same receiver for which session permissions are set
-        ethers.utils.parseUnits("5".toString(), decimals)
+        ethers.parseUnits("5".toString(), decimals)
       );
 
       // generate tx data to erc20 transfer

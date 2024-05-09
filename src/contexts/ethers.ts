@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useWalletClient } from 'wagmi'
-import { providers } from 'ethers'
+import { BrowserProvider } from 'ethers'
 
 export function walletClientToSigner(walletClient: any) {
   const { account, chain, transport } = walletClient
@@ -9,7 +9,7 @@ export function walletClientToSigner(walletClient: any) {
     name: chain.name,
     ensAddress: chain.contracts?.ensRegistry?.address,
   }
-  const provider = new providers.Web3Provider(transport, network)
+  const provider = new BrowserProvider(transport, network)
   const signer = provider.getSigner(account.address)
   return signer
 }

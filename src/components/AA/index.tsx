@@ -70,8 +70,8 @@ const cardItems = [
 ];
 
 const AccountAbstraction: React.FC<Props> = ({
-  useCase,
-  setUseCase,
+  useCase: _,
+  setUseCase: __,
   pageIndexChange,
 }) => {
   const classes = useStyles();

@@ -126,7 +126,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
   const [isSessionOpen, setIsSessionOpen] = React.useState(true);
   const [isSessionRouterOpen, setIsSessionRouterOpen] = React.useState(true);
 
-  const handleChange = (event: any, newValue: any) => {
+  const handleChange = (_: any, newValue: any) => {
     if (newValue >= 4 && newValue <= 7) {
       setIsAAOpen(true);
     }

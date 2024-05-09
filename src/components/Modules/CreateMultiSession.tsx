@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { makeStyles } from "@mui/styles";
 import {
   CreateSessionDataParams,
-  PaymasterMode,
   SessionData,
   createABISessionDatum,
   createAndStoreNewSessionKey,
@@ -122,7 +121,6 @@ const CreateMultiSession: React.FC = () => {
           smartAccountAddress={scwAddress}
           address={address!}
           session={activeSession}
-          smartAccount={smartAccount!}
         />
       ) : (
         <Button

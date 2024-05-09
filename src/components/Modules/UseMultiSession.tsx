@@ -5,7 +5,6 @@ import {
   Transaction,
   DEFAULT_ERC20_MODULE,
   DEFAULT_ABI_SVM_MODULE,
-  BiconomySmartAccountV2,
 } from "@biconomy-devx/account";
 import "react-toastify/dist/ReactToastify.css";
 import { Hex, encodeFunctionData, parseAbi } from "viem";
@@ -20,10 +19,9 @@ const receiver = "0x42138576848E839827585A3539305774D36B9602";
 const amount = BigInt(50000000);
 
 interface props {
-  smartAccountAddress: Hex;
-  address: string;
-  session: SessionData;
-  smartAccount: BiconomySmartAccountV2;
+  smartAccountAddress?: Hex;
+  address?: string;
+  session?: SessionData;
 }
 
 const UseMultiSession: React.FC<props> = ({
@@ -32,7 +30,7 @@ const UseMultiSession: React.FC<props> = ({
   session,
 }) => {
   const sendUserOpWithData = async () => {
-    if (!address || !smartAccountAddress) {
+    if (!address || !smartAccountAddress || !session) {
       alert("Connect wallet first");
       return;
     }

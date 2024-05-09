@@ -1,9 +1,7 @@
 import React from "react";
-import { ethers } from "ethers";
 import {
   PaymasterMode,
   SessionData,
-  createSessionKeyManagerModule,
   createSessionSmartAccountClient,
 } from "@biconomy-devx/account";
 import { toast } from "react-toastify";

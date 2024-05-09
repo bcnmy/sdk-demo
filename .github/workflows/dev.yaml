@@ -1,0 +1,46 @@
+name: Sdk Dev Deployment
+
+on:
+  push:
+    branches:
+      - dev
+permissions:
+      id-token: write
+      contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.16.0]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Generate build
+        run: |
+          yarn install
+          yarn run build
+        env:
+          CI: false
+          NODE_OPTIONS: --max_old_space_size=4096
+          REACT_APP_PKEY: ${{ secrets.REACT_APP_PKEY }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.AWS_DEV_ROLE_ARN }}
+          role-session-name: dev-deploy
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+
+      # publish to dev environment
+      - name: Deploy to S3
+        run: |
+          aws s3 sync build s3://${{ secrets.DEV_S3_BUCKET_NAME }}
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.DEV_CF_ID }} --paths /
