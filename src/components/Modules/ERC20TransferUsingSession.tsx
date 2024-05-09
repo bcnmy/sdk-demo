@@ -12,8 +12,8 @@ import {
 import {
   DEFAULT_ERC20_MODULE,
   createSessionKeyManagerModule,
-} from "@biconomy-devx/account";
-import { EthersSigner } from "@biconomy-devx/account";
+} from "@biconomy/account";
+import { EthersSigner } from "@biconomy/account";
 import { useAccount } from "wagmi";
 import { managerModuleAddr } from "../../utils/constants";
 

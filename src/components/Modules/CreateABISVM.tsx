@@ -11,7 +11,7 @@ import {
   createAndStoreNewSessionKey,
   PaymasterMode,
   SessionData,
-} from "@biconomy-devx/account";
+} from "@biconomy/account";
 
 import { pad } from "viem";
 import { polygonAmoy } from "viem/chains";

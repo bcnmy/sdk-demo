@@ -5,7 +5,7 @@ import {
   Transaction,
   DEFAULT_ERC20_MODULE,
   DEFAULT_ABI_SVM_MODULE,
-} from "@biconomy-devx/account";
+} from "@biconomy/account";
 import "react-toastify/dist/ReactToastify.css";
 import { Hex, encodeFunctionData, parseAbi } from "viem";
 import Button from "../Button";

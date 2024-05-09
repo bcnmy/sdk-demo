@@ -9,9 +9,9 @@ import {
   showSuccessMessage,
   showErrorMessage,
 } from "../../utils";
-import { createSessionKeyManagerModule } from "@biconomy-devx/account";
+import { createSessionKeyManagerModule } from "@biconomy/account";
 import { CONTRACT_CALL_SESSION_VALIDATION_MODULE } from "../../utils/chainConfig";
-import { EthersSigner } from "@biconomy-devx/account";
+import { EthersSigner } from "@biconomy/account";
 import { useAccount } from "wagmi";
 import { managerModuleAddr } from "../../utils/constants";
 import { parseUnits } from "viem";
