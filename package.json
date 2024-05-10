@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@biconomy/account": "^4.2.0",
+    "@biconomy-devx/account": "^4.2.19",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@ethersproject/providers": "^5.7.2",

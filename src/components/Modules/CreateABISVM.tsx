@@ -9,9 +9,10 @@ import {
   BiconomySmartAccountV2,
   createSession,
   createAndStoreNewSessionKey,
-  PaymasterMode,
   SessionData,
-} from "@biconomy/account";
+  Policy,
+  PaymasterMode,
+} from "@biconomy-devx/account";
 
 import { pad } from "viem";
 import { polygonAmoy } from "viem/chains";
@@ -50,31 +51,35 @@ const CreateABISVM: React.FC<props> = () => {
         const { sessionKeyAddress, sessionStorageClient } =
           await createAndStoreNewSessionKey(smartAccount, polygonAmoy);
 
+        const policy: Policy[] = [
+          {
+            sessionKeyAddress,
+            contractAddress: nftAddress,
+            functionSelector: "safeMint(address)",
+            rules: [
+              {
+                offset: 0,
+                condition: 0,
+                referenceValue: pad(scwAddress, { size: 32 }),
+              },
+            ],
+            interval: {
+              validUntil: 0,
+              validAfter: 0,
+            },
+            valueLimit: 0n,
+          },
+        ];
+
         const { wait, session } = await createSession(
           smartAccount,
+          policy,
           sessionKeyAddress,
-          [
-            {
-              sessionKeyAddress,
-              contractAddress: nftAddress,
-              functionSelector: "safeMint(address)",
-              rules: [
-                {
-                  offset: 0,
-                  condition: 0,
-                  referenceValue: pad(scwAddress, { size: 32 }),
-                },
-              ],
-              interval: {
-                validUntil: 0,
-                validAfter: 0,
-              },
-              valueLimit: 0n,
-            },
-          ],
           sessionStorageClient,
           {
-            paymasterServiceData: { mode: PaymasterMode.SPONSORED },
+            paymasterServiceData: {
+              mode: PaymasterMode.SPONSORED,
+            },
           }
         );
         const {

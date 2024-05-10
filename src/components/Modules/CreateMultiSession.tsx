@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import { makeStyles } from "@mui/styles";
 import {
   CreateSessionDataParams,
+  PaymasterMode,
   SessionData,
   createABISessionDatum,
   createAndStoreNewSessionKey,
   createERC20SessionDatum,
-  createMultiSession as createMultiSessionFromSDK,
-} from "@biconomy/account";
+  createMultiSession,
+} from "@biconomy-devx/account";
 import { useAccount } from "wagmi";
 import Button from "../Button";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
@@ -78,12 +79,15 @@ const CreateMultiSession: React.FC = () => {
         }),
       ];
 
-      const { wait, session } = await createMultiSessionFromSDK(
+      const { wait, session } = await createMultiSession(
         smartAccount,
         sessionKeyAddress,
+        sessionStorageClient,
+        leaves,
         {
-          sessionStorageClient,
-          leaves,
+          paymasterServiceData: {
+            mode: PaymasterMode.SPONSORED,
+          },
         }
       );
 

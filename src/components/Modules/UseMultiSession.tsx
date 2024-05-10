@@ -3,9 +3,9 @@ import {
   SessionData,
   createSessionSmartAccountClient,
   Transaction,
-  DEFAULT_ERC20_MODULE,
-  DEFAULT_ABI_SVM_MODULE,
-} from "@biconomy/account";
+  getMultiSessionTxParams,
+  PaymasterMode,
+} from "@biconomy-devx/account";
 import "react-toastify/dist/ReactToastify.css";
 import { Hex, encodeFunctionData, parseAbi } from "viem";
 import Button from "../Button";
@@ -29,6 +29,7 @@ const UseMultiSession: React.FC<props> = ({
   address,
   session,
 }) => {
+  console.log({ session });
   const sendUserOpWithData = async () => {
     if (!address || !smartAccountAddress || !session) {
       alert("Connect wallet first");
@@ -75,28 +76,21 @@ const UseMultiSession: React.FC<props> = ({
         }),
       };
 
-      const sessionSigner =
-        await session.sessionStorageClient.getSignerBySession(polygonAmoy, {
-          sessionID: session.sessionID,
-        });
+      const batchSessionParams = await getMultiSessionTxParams(
+        ["ERC20", "ABI"],
+        session.sessionStorageClient,
+        session.sessionID,
+        polygonAmoy
+      );
+
+      console.log("...batchSessionParams", { ...batchSessionParams });
 
       // build user op
       const { wait } = await emulatedSmartAccount.sendTransaction(
         [transferTx, nftMintTx],
         {
-          params: {
-            batchSessionParams: [
-              {
-                sessionSigner,
-                sessionValidationModule: DEFAULT_ERC20_MODULE,
-              },
-              {
-                sessionSigner,
-                sessionValidationModule: DEFAULT_ABI_SVM_MODULE,
-              },
-            ],
-          },
-          simulationType: "validation_and_execution",
+          ...batchSessionParams,
+          paymasterServiceData: { mode: PaymasterMode.SPONSORED },
         }
       );
 

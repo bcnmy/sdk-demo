@@ -3,7 +3,7 @@ import {
   PaymasterMode,
   SessionData,
   createSessionSmartAccountClient,
-} from "@biconomy/account";
+} from "@biconomy-devx/account";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Hex, encodeFunctionData, parseAbi } from "viem";
@@ -23,22 +23,14 @@ const UseABISVM: React.FC<props> = ({
   address,
   session,
 }) => {
-  const sendUserOpWithData = async (
-    to: string,
-    data: string,
-    value: string,
-    sessionId: string,
-    message?: string
-  ) => {
+  const sendUserOpWithData = async () => {
     if (!address || !smartAccountAddress || !address) {
       alert("Connect wallet first");
       return;
     }
 
-    const toastMessage = message;
-    console.log(toastMessage);
     try {
-      toast.info(toastMessage, {
+      toast.info("Firing tx", {
         position: "top-right",
         autoClose: 15000,
         hideProgressBar: false,
@@ -60,9 +52,12 @@ const UseABISVM: React.FC<props> = ({
       );
 
       const tx = {
-        to: to,
-        data: data,
-        value: value,
+        to: configInfo.nft.address,
+        data: encodeFunctionData({
+          abi: parseAbi(["function safeMint(address _to)"]),
+          functionName: "safeMint",
+          args: [smartAccountAddress as Hex],
+        }),
       };
 
       // build user op
@@ -71,27 +66,31 @@ const UseABISVM: React.FC<props> = ({
           mode: PaymasterMode.SPONSORED,
         },
       });
-      console.log("userOpHash %o for Session Id %s", userOpResponse, sessionId);
-
-      const { receipt } = await userOpResponse.wait(1);
-      console.log(message + " => Success");
-      const polygonScanlink = `${polygonAmoy.blockExplorers.default.url}/tx/${receipt.transactionHash}`;
-      console.log("Check tx: ", polygonScanlink);
-      toast.success(
-        <a target="_blank" href={polygonScanlink}>
-          Success Click to view transaction
-        </a>,
-        {
-          position: "top-right",
-          autoClose: 6000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        }
+      console.log(
+        "userOpHash %o for Session Id %s",
+        userOpResponse,
+        session.sessionID
       );
+
+      const { receipt, success } = await userOpResponse.wait(1);
+
+      const scanLink = `${polygonAmoy.blockExplorers.default.url}/tx/${receipt.transactionHash}`;
+      success &&
+        toast.success(
+          <a target="_blank" href={scanLink}>
+            Success Click to view transaction
+          </a>,
+          {
+            position: "top-right",
+            autoClose: 6000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          }
+        );
     } catch (err: any) {
       console.error(err);
       toast.error(err.message, {
@@ -111,17 +110,7 @@ const UseABISVM: React.FC<props> = ({
     <Button
       title="Minft NFT"
       onClickFunc={async () => {
-        await sendUserOpWithData(
-          configInfo.nft.address,
-          encodeFunctionData({
-            abi: parseAbi(["function safeMint(address _to)"]),
-            functionName: "safeMint",
-            args: [address as Hex],
-          }),
-          "0",
-          session.sessionID,
-          "Minting NFT"
-        );
+        await sendUserOpWithData();
       }}
     />
   );

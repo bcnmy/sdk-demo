@@ -10,7 +10,7 @@ import {
   slice,
 } from "viem";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
-import { createSessionKeyManagerModule } from "@biconomy/account";
+import { createSessionKeyManagerModule } from "@biconomy-devx/account";
 import Button from "../Button";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import { CONTRACT_CALL_SESSION_VALIDATION_MODULE } from "../../utils/chainConfig";

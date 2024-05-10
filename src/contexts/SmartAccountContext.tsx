@@ -3,10 +3,10 @@ import {
   BiconomySmartAccountV2,
   Hex,
   createSmartAccountClient,
-} from "@biconomy/account";
+} from "@biconomy-devx/account";
 import { useAccount, useWalletClient } from "wagmi";
 import { bundlerUrl, paymasterApiKey } from "../utils/chainConfig";
-// import { MultiChainValidationModule } from "@biconomy/account";
+// import { MultiChainValidationModule } from "@biconomy-devx/account";
 
 // Types
 type smartAccountContextType = {

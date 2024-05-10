@@ -4,7 +4,7 @@ import abis from "../../utils/configs/contractsInfo.json";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import { useAccount } from "wagmi";
 import CreateABISVM from "./CreateABISVM";
-import { DEFAULT_ABI_SVM_MODULE } from "@biconomy/account";
+import { DEFAULT_ABI_SVM_MODULE } from "@biconomy-devx/account";
 
 export default function ABISVM() {
   const { address } = useAccount();
