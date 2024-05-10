@@ -52,7 +52,6 @@ const CreateABISVM: React.FC<props> = () => {
 
         const { wait, session } = await createSession(
           smartAccount,
-          sessionKeyAddress,
           [
             {
               sessionKeyAddress,
@@ -72,6 +71,7 @@ const CreateABISVM: React.FC<props> = () => {
               valueLimit: 0n,
             },
           ],
+          sessionKeyAddress,
           sessionStorageClient,
           {
             paymasterServiceData: { mode: PaymasterMode.SPONSORED },

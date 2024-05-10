@@ -81,9 +81,10 @@ const CreateMultiSession: React.FC = () => {
       const { wait, session } = await createMultiSessionFromSDK(
         smartAccount,
         sessionKeyAddress,
+        sessionStorageClient,
+        leaves,
         {
-          sessionStorageClient,
-          leaves,
+          simulationType: "validation_and_execution",
         }
       );
 

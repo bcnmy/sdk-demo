@@ -3,8 +3,7 @@ import {
   SessionData,
   createSessionSmartAccountClient,
   Transaction,
-  DEFAULT_ERC20_MODULE,
-  DEFAULT_ABI_SVM_MODULE,
+  getMultiSessionTxParams,
 } from "@biconomy/account";
 import "react-toastify/dist/ReactToastify.css";
 import { Hex, encodeFunctionData, parseAbi } from "viem";
@@ -75,28 +74,18 @@ const UseMultiSession: React.FC<props> = ({
         }),
       };
 
-      const sessionSigner =
-        await session.sessionStorageClient.getSignerBySession(polygonAmoy, {
-          sessionID: session.sessionID,
-        });
+      const batchSessionParams = await getMultiSessionTxParams(
+        ["ERC20", "ABI"],
+        session.sessionStorageClient,
+        session.sessionID,
+        polygonAmoy
+      );
 
       // build user op
       const { wait } = await emulatedSmartAccount.sendTransaction(
         [transferTx, nftMintTx],
         {
-          params: {
-            batchSessionParams: [
-              {
-                sessionSigner,
-                sessionValidationModule: DEFAULT_ERC20_MODULE,
-              },
-              {
-                sessionSigner,
-                sessionValidationModule: DEFAULT_ABI_SVM_MODULE,
-              },
-            ],
-          },
-          simulationType: "validation_and_execution",
+          ...batchSessionParams,
         }
       );
 
