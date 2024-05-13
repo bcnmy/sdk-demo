@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  SessionData,
-  createSessionSmartAccountClient,
-  Transaction,
-  getMultiSessionTxParams,
-  PaymasterMode,
-} from "@biconomy-devx/account";
+import { Transaction, PaymasterMode } from "@biconomy-devx/account";
 import "react-toastify/dist/ReactToastify.css";
 import { Hex, encodeFunctionData, parseAbi } from "viem";
 import Button from "../Button";
@@ -13,6 +7,11 @@ import { configInfo } from "../../utils";
 import { polygonAmoy } from "viem/chains";
 import { bundlerUrl, paymasterApiKey } from "../../utils/chainConfig";
 import { toast } from "react-toastify";
+import {
+  Session,
+  createSessionSmartAccountClient,
+  getMultiSessionTxParams,
+} from "@biconomy-devx/sessions";
 
 const nftAddress = "0x1758f42Af7026fBbB559Dc60EcE0De3ef81f665e";
 const receiver = "0x42138576848E839827585A3539305774D36B9602";
@@ -21,7 +20,7 @@ const amount = BigInt(50000000);
 interface props {
   smartAccountAddress?: Hex;
   address?: string;
-  session?: SessionData;
+  session?: Session;
 }
 
 const UseMultiSession: React.FC<props> = ({
@@ -78,8 +77,8 @@ const UseMultiSession: React.FC<props> = ({
 
       const batchSessionParams = await getMultiSessionTxParams(
         ["ERC20", "ABI"],
-        session.sessionStorageClient,
-        session.sessionID,
+        [transferTx, nftMintTx],
+        session,
         polygonAmoy
       );
 

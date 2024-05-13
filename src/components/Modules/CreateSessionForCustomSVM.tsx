@@ -10,7 +10,7 @@ import {
   slice,
 } from "viem";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
-import { createSessionKeyManagerModule } from "@biconomy-devx/account";
+import { createSessionKeyManagerModule } from "@biconomy-devx/sessions";
 import Button from "../Button";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import { CONTRACT_CALL_SESSION_VALIDATION_MODULE } from "../../utils/chainConfig";
@@ -117,7 +117,7 @@ const CreateCustomSession: React.FC = () => {
 
       // Below helper gives you tx data to be used to make a call from Smart Account to enable session on-chain
       // This transaction needs a user signature and for gas sponsorship or ERC20 paymaster can be used.
-      const sessionTxData = await sessionManagerModule.createSessionData([
+      const sessionTxData = await sessionManagerModule.createSession([
         {
           validUntil: 0, // 0 value means extremes
           validAfter: 0, // 0 value means extremes

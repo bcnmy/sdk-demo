@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { makeStyles } from "@mui/styles";
+import { PaymasterMode } from "@biconomy-devx/account";
 import {
-  CreateSessionDataParams,
-  PaymasterMode,
-  SessionData,
+  Session,
   createABISessionDatum,
-  createAndStoreNewSessionKey,
+  createSessionKeyEOA,
   createERC20SessionDatum,
   createMultiSession,
-} from "@biconomy-devx/account";
+  CreateSessionDataParams,
+} from "@biconomy-devx/sessions";
 import { useAccount } from "wagmi";
 import Button from "../Button";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
@@ -27,7 +27,7 @@ const CreateMultiSession: React.FC = () => {
   const { address } = useAccount();
   const { smartAccount, scwAddress } = useSmartAccountContext();
   const [loading, setLoading] = useState(false);
-  const [activeSession, setActiveSession] = useState<SessionData | undefined>();
+  const [activeSession, setActiveSession] = useState<Session | undefined>();
 
   const createSessionHandler = async () => {
     if (!scwAddress || !smartAccount || !address) {
@@ -36,7 +36,7 @@ const CreateMultiSession: React.FC = () => {
     }
     try {
       const { sessionKeyAddress, sessionStorageClient } =
-        await createAndStoreNewSessionKey(smartAccount, polygonAmoy);
+        await createSessionKeyEOA(smartAccount, polygonAmoy);
 
       const leaves: CreateSessionDataParams[] = [
         createERC20SessionDatum({
@@ -72,7 +72,7 @@ const CreateMultiSession: React.FC = () => {
             {
               offset: 0,
               condition: 0,
-              referenceValue: pad(scwAddress, { size: 32 }),
+              referenceValue: scwAddress,
             },
           ],
           valueLimit: 0n,

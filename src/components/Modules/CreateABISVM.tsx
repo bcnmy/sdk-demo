@@ -5,14 +5,13 @@ import "react-toastify/dist/ReactToastify.css";
 import UseABISVM from "./UseABISVM";
 import { useAccount } from "wagmi";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
+import { BiconomySmartAccountV2, PaymasterMode } from "@biconomy-devx/account";
 import {
-  BiconomySmartAccountV2,
   createSession,
-  createAndStoreNewSessionKey,
-  SessionData,
+  createSessionKeyEOA,
+  Session,
   Policy,
-  PaymasterMode,
-} from "@biconomy-devx/account";
+} from "@biconomy-devx/sessions";
 
 import { pad } from "viem";
 import { polygonAmoy } from "viem/chains";
@@ -28,7 +27,7 @@ interface props {
 
 const CreateABISVM: React.FC<props> = () => {
   const nftAddress = "0x1758f42Af7026fBbB559Dc60EcE0De3ef81f665e";
-  const [activeSession, setActiveSession] = useState<SessionData | undefined>();
+  const [activeSession, setActiveSession] = useState<Session | undefined>();
   const { address } = useAccount();
   const { smartAccount, scwAddress } = useSmartAccountContext();
 
@@ -49,7 +48,7 @@ const CreateABISVM: React.FC<props> = () => {
     } else {
       try {
         const { sessionKeyAddress, sessionStorageClient } =
-          await createAndStoreNewSessionKey(smartAccount, polygonAmoy);
+          await createSessionKeyEOA(smartAccount, polygonAmoy);
 
         const policy: Policy[] = [
           {
@@ -60,7 +59,7 @@ const CreateABISVM: React.FC<props> = () => {
               {
                 offset: 0,
                 condition: 0,
-                referenceValue: pad(scwAddress, { size: 32 }),
+                referenceValue: scwAddress,
               },
             ],
             interval: {

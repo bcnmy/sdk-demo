@@ -9,7 +9,7 @@ import {
   showSuccessMessage,
   showErrorMessage,
 } from "../../utils";
-import { createSessionKeyManagerModule } from "@biconomy-devx/account";
+import { createSessionKeyManagerModule } from "@biconomy-devx/sessions";
 import { CONTRACT_CALL_SESSION_VALIDATION_MODULE } from "../../utils/chainConfig";
 import { EthersSigner } from "@biconomy-devx/account";
 import { useAccount } from "wagmi";
