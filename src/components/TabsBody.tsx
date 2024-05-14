@@ -40,8 +40,8 @@ import MintNftForward from "./Forward/MintNft";
 import BatchLiquidityForward from "./Forward/BatchLiquidity";
 import HyphenLpUsingSession from "./Modules/HyphenLpUsingSession";
 import CreateCustomSession from "./Modules/CreateSessionForCustomSVM";
-import CreateMultiSession from "./Modules/CreateMultiSession";
-import UseMultiSession from "./Modules/UseMultiSession";
+import CreateBatchSession from "./Modules/CreateBatchSession";
+import UseBatchSession from "./Modules/UseBatchSession";
 import ABISVM from "./Modules/ABI_SVM";
 
 const drawerWidth = 320;
@@ -107,7 +107,7 @@ const SessionList = [
 
 const SessionRouterList = [
   {
-    name: "Create Custom Router Session",
+    name: "Create Batch Router Session",
     icon: <GamesIcon />,
   },
   {
@@ -516,10 +516,10 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
         <ABISVM />
       </TabPanel>
       <TabPanel value={pageIndex} index={12}>
-        <CreateMultiSession />
+        <CreateBatchSession />
       </TabPanel>
       <TabPanel value={pageIndex} index={13}>
-        <UseMultiSession />
+        <UseBatchSession />
       </TabPanel>
     </Box>
   );

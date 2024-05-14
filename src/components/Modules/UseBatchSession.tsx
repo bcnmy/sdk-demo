@@ -1,5 +1,11 @@
 import React from "react";
-import { Transaction, PaymasterMode } from "@biconomy-devx/account";
+import {
+  Session,
+  createSessionSmartAccountClient,
+  Transaction,
+  getBatchSessionTxParams,
+  PaymasterMode,
+} from "@biconomy/account";
 import "react-toastify/dist/ReactToastify.css";
 import { Hex, encodeFunctionData, parseAbi } from "viem";
 import Button from "../Button";
@@ -7,11 +13,6 @@ import { configInfo } from "../../utils";
 import { polygonAmoy } from "viem/chains";
 import { bundlerUrl, paymasterApiKey } from "../../utils/chainConfig";
 import { toast } from "react-toastify";
-import {
-  Session,
-  createSessionSmartAccountClient,
-  getMultiSessionTxParams,
-} from "@biconomy-devx/sessions";
 
 const nftAddress = "0x1758f42Af7026fBbB559Dc60EcE0De3ef81f665e";
 const receiver = "0x42138576848E839827585A3539305774D36B9602";
@@ -23,12 +24,11 @@ interface props {
   session?: Session;
 }
 
-const UseMultiSession: React.FC<props> = ({
+const UseBatchSession: React.FC<props> = ({
   smartAccountAddress,
   address,
   session,
 }) => {
-  console.log({ session });
   const sendUserOpWithData = async () => {
     if (!address || !smartAccountAddress || !session) {
       alert("Connect wallet first");
@@ -75,23 +75,22 @@ const UseMultiSession: React.FC<props> = ({
         }),
       };
 
-      const batchSessionParams = await getMultiSessionTxParams(
+      const txs = [transferTx, nftMintTx];
+      const batchSessionParams = await getBatchSessionTxParams(
         ["ERC20", "ABI"],
-        [transferTx, nftMintTx],
+        txs,
         session,
+        // @ts-ignore
         polygonAmoy
       );
 
       console.log("...batchSessionParams", { ...batchSessionParams });
 
       // build user op
-      const { wait } = await emulatedSmartAccount.sendTransaction(
-        [transferTx, nftMintTx],
-        {
-          ...batchSessionParams,
-          paymasterServiceData: { mode: PaymasterMode.SPONSORED },
-        }
-      );
+      const { wait } = await emulatedSmartAccount.sendTransaction(txs, {
+        ...batchSessionParams,
+        paymasterServiceData: { mode: PaymasterMode.SPONSORED },
+      });
 
       const { receipt } = await wait();
       const polygonScanlink = `${polygonAmoy.blockExplorers.default.url}/tx/${receipt.transactionHash}`;
@@ -136,4 +135,4 @@ const UseMultiSession: React.FC<props> = ({
   );
 };
 
-export default UseMultiSession;
+export default UseBatchSession;

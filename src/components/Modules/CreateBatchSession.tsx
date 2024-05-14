@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { makeStyles } from "@mui/styles";
-import { PaymasterMode } from "@biconomy-devx/account";
 import {
+  CreateSessionDataParams,
+  PaymasterMode,
   Session,
   createABISessionDatum,
   createSessionKeyEOA,
   createERC20SessionDatum,
-  createMultiSession,
-  CreateSessionDataParams,
-} from "@biconomy-devx/sessions";
+  createBatchSession,
+} from "@biconomy/account";
 import { useAccount } from "wagmi";
 import Button from "../Button";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
@@ -16,13 +16,13 @@ import { configInfo, showErrorMessage, showSuccessMessage } from "../../utils";
 import { getActionForErrorMessage } from "../../utils/error-utils";
 import { polygonAmoy } from "viem/chains";
 import { Hex, encodeAbiParameters, pad } from "viem";
-import UseMultiSession from "./UseMultiSession";
+import UseBatchSession from "./UseBatchSession";
 
 const nftAddress = "0x1758f42Af7026fBbB559Dc60EcE0De3ef81f665e";
 const receiver = "0x42138576848E839827585A3539305774D36B9602";
 const amount = BigInt(50000000);
 
-const CreateMultiSession: React.FC = () => {
+const CreateBatchSession: React.FC = () => {
   const classes = useStyles();
   const { address } = useAccount();
   const { smartAccount, scwAddress } = useSmartAccountContext();
@@ -36,6 +36,7 @@ const CreateMultiSession: React.FC = () => {
     }
     try {
       const { sessionKeyAddress, sessionStorageClient } =
+        // @ts-ignore
         await createSessionKeyEOA(smartAccount, polygonAmoy);
 
       const leaves: CreateSessionDataParams[] = [
@@ -79,7 +80,7 @@ const CreateMultiSession: React.FC = () => {
         }),
       ];
 
-      const { wait, session } = await createMultiSession(
+      const { wait, session } = await createBatchSession(
         smartAccount,
         sessionKeyAddress,
         sessionStorageClient,
@@ -118,10 +119,10 @@ const CreateMultiSession: React.FC = () => {
         Use Cases {"->"} Session {"->"} Create Session
       </p>
 
-      <h3 className={classes.subTitle}>Create Session Flow</h3>
+      <h3 className={classes.subTitle}>Create Batch Session Flow</h3>
 
       {!!activeSession ? (
-        <UseMultiSession
+        <UseBatchSession
           smartAccountAddress={scwAddress}
           address={address!}
           session={activeSession}
@@ -154,4 +155,4 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default CreateMultiSession;
+export default CreateBatchSession;

@@ -5,15 +5,15 @@ import "react-toastify/dist/ReactToastify.css";
 import UseABISVM from "./UseABISVM";
 import { useAccount } from "wagmi";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
-import { BiconomySmartAccountV2, PaymasterMode } from "@biconomy-devx/account";
 import {
+  BiconomySmartAccountV2,
   createSession,
   createSessionKeyEOA,
   Session,
   Policy,
-} from "@biconomy-devx/sessions";
+  PaymasterMode,
+} from "@biconomy/account";
 
-import { pad } from "viem";
 import { polygonAmoy } from "viem/chains";
 import Button from "../Button";
 
@@ -48,6 +48,7 @@ const CreateABISVM: React.FC<props> = () => {
     } else {
       try {
         const { sessionKeyAddress, sessionStorageClient } =
+          // @ts-ignore
           await createSessionKeyEOA(smartAccount, polygonAmoy);
 
         const policy: Policy[] = [

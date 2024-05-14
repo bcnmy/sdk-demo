@@ -1,5 +1,9 @@
 import React from "react";
-import { PaymasterMode } from "@biconomy-devx/account";
+import {
+  PaymasterMode,
+  Session,
+  createSessionSmartAccountClient,
+} from "@biconomy/account";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Hex, encodeFunctionData, parseAbi } from "viem";
@@ -7,10 +11,6 @@ import Button from "../Button";
 import { configInfo } from "../../utils";
 import { polygonAmoy } from "viem/chains";
 import { bundlerUrl, paymasterApiKey } from "../../utils/chainConfig";
-import {
-  Session,
-  createSessionSmartAccountClient,
-} from "@biconomy-devx/sessions";
 
 interface props {
   smartAccountAddress: Hex;
