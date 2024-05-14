@@ -48,8 +48,9 @@ const MintNft: React.FC = () => {
         value: BigInt(0),
         data: mintData,
       };
-
-      let { waitForTxHash } = await smartAccount.sendTransaction([tx1], { paymasterServiceData: { mode: PaymasterMode.SPONSORED } });
+      let { waitForTxHash } = await smartAccount.sendTransaction(tx1, {
+        paymasterServiceData: { mode: PaymasterMode.SPONSORED },
+      });
       const { transactionHash } = await waitForTxHash();
       console.log("txHash", transactionHash);
       showSuccessMessage(`Minted Nft ${transactionHash}`, transactionHash);
@@ -77,7 +78,7 @@ const MintNft: React.FC = () => {
       <p>
         Nft Contract Address: {config.nft.address}{" "}
         <span style={{ fontSize: 13, color: "#FFB4B4" }}>
-          (same of goerli, mumbai, polygon)
+          (same of goerli, amoy, polygon)
         </span>
       </p>
       <p style={{ marginBottom: 30, marginTop: 30, fontSize: 24 }}>

@@ -9,8 +9,10 @@ import {
   showSuccessMessage,
   showErrorMessage,
 } from "../../utils";
-import { createSessionKeyManagerModule } from "@biconomy/account";
-import { ERC20_SESSION_VALIDATION_MODULE } from "../../utils/chainConfig";
+import {
+  DEFAULT_ERC20_MODULE,
+  createSessionKeyManagerModule,
+} from "@biconomy/account";
 import { EthersSigner } from "@biconomy/account";
 import { useAccount } from "wagmi";
 import { managerModuleAddr } from "../../utils/constants";
@@ -30,7 +32,7 @@ const ERC20Transfer: React.FC = () => {
       setLoading(true);
       let biconomySmartAccount = smartAccount;
       const sessionKeyManagerModuleAddr = managerModuleAddr;
-      const erc20SessionValidationModuleAddr = ERC20_SESSION_VALIDATION_MODULE;
+      const erc20SessionValidationModuleAddr = DEFAULT_ERC20_MODULE;
 
       // get session key from local storage
       const sessionKeyPrivKey = window.localStorage.getItem("sessionPKey");
@@ -42,7 +44,7 @@ const ERC20Transfer: React.FC = () => {
       const sessionSigner = new ethers.Wallet(sessionKeyPrivKey);
       console.log("sessionSigner", sessionSigner);
 
-      const newSigner = new EthersSigner(sessionSigner, 'ethers')
+      const newSigner = new EthersSigner(sessionSigner, "ethers");
 
       // generate sessionManagerModule
       const sessionManagerModule = await createSessionKeyManagerModule({
@@ -69,9 +71,10 @@ const ERC20Transfer: React.FC = () => {
         throw new Error("invalid token address supplied");
       }
 
+      // @ts-ignore
       const { data } = await tokenContract.populateTransaction.transfer(
         "0x42138576848E839827585A3539305774D36B9602", // receiver address // Has to be the same receiver for which session permissions are set
-        ethers.utils.parseUnits("5".toString(), decimals)
+        ethers.parseUnits("5".toString(), decimals)
       );
 
       // generate tx data to erc20 transfer
@@ -84,15 +87,17 @@ const ERC20Transfer: React.FC = () => {
       };
 
       // send user operation
-      const userOpResponse = await biconomySmartAccount.sendTransaction(tx1, 
+      const userOpResponse = await biconomySmartAccount.sendTransaction(
+        tx1,
         // below params are required for passing on this information to session key manager module to create padded signature
         {
-          params:{
+          params: {
             sessionSigner: newSigner,
             sessionValidationModule: erc20SessionValidationModuleAddr,
           },
-          simulationType: 'validation_and_execution'
-      });
+          simulationType: "validation_and_execution",
+        }
+      );
 
       console.log("userOpHash", userOpResponse);
       const { transactionHash } = await userOpResponse.waitForTxHash();
@@ -115,7 +120,8 @@ const ERC20Transfer: React.FC = () => {
       <h3 className={classes.subTitle}>ERC20 Transfer via Session Key</h3>
 
       <p style={{ marginBottom: 20 }}>
-        This is an example to transfer ERC20 tokens makin use of enabled session.
+        This is an example to transfer ERC20 tokens makin use of enabled
+        session.
       </p>
 
       <Button

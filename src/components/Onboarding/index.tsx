@@ -78,7 +78,6 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
     const isDeployed = async () => {
       setLoading(true);
       const dep = await smartAccount?.isAccountDeployed();
-      console.log("isDeployed", dep);
       if (dep) setisScwDeployed(true);
       setLoading(false);
     };

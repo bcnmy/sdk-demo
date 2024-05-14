@@ -44,7 +44,7 @@ const HyphenLpUsingSession: React.FC = () => {
       const sessionSigner = new ethers.Wallet(sessionKeyPrivKey);
       console.log("sessionSigner", sessionSigner);
 
-      const newSigner = new EthersSigner(sessionSigner, 'ethers')
+      const newSigner = new EthersSigner(sessionSigner, "ethers");
 
       // generate sessionManagerModule
       const sessionManagerModule = await createSessionKeyManagerModule({
@@ -67,7 +67,7 @@ const HyphenLpUsingSession: React.FC = () => {
       const addLiquidityData = hyphenContract.interface.encodeFunctionData(
         "addTokenLiquidity",
         [config.usdc.address, parseUnits("0.01", 6)]
-      ); // 1 USDC (mumbai USDC has 6 decimals)
+      ); // 1 USDC (amoy USDC has 6 decimals)
       const tx1 = {
         to: config.hyphenLP.address,
         data: addLiquidityData,

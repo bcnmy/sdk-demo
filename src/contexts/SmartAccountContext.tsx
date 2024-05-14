@@ -1,5 +1,9 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { BiconomySmartAccountV2, createSmartAccountClient } from "@biconomy/account";
+import {
+  BiconomySmartAccountV2,
+  Hex,
+  createSmartAccountClient,
+} from "@biconomy/account";
 import { useAccount, useWalletClient } from "wagmi";
 import { bundlerUrl, paymasterApiKey } from "../utils/chainConfig";
 // import { MultiChainValidationModule } from "@biconomy/account";
@@ -7,7 +11,7 @@ import { bundlerUrl, paymasterApiKey } from "../utils/chainConfig";
 // Types
 type smartAccountContextType = {
   smartAccount: BiconomySmartAccountV2 | null;
-  scwAddress: string;
+  scwAddress: Hex;
   loading: boolean;
   getSmartAccount: () => void;
 };
@@ -16,7 +20,7 @@ type smartAccountContextType = {
 export const SmartAccountContext = React.createContext<smartAccountContextType>(
   {
     smartAccount: null,
-    scwAddress: "",
+    scwAddress: "0x" as Hex,
     loading: false,
     getSmartAccount: () => 0,
   }
@@ -29,7 +33,7 @@ export const SmartAccountProvider = ({ children }: any) => {
   const { data: walletClient } = useWalletClient();
   const [smartAccount, setSmartAccount] =
     useState<BiconomySmartAccountV2 | null>(null);
-  const [scwAddress, setScwAddress] = useState("");
+  const [scwAddress, setScwAddress] = useState<Hex>("0x");
   const [loading, setLoading] = useState(false);
 
   const getSmartAccount = useCallback(async () => {
@@ -42,14 +46,18 @@ export const SmartAccountProvider = ({ children }: any) => {
         signer: walletClient,
         moduleAddress: "0x000000824dc138db84FD9109fc154bdad332Aa8E",
       });*/
+
+      console.log({ paymasterApiKey, bundlerUrl, walletClient });
+
       let wallet = await createSmartAccountClient({
-        biconomyPaymasterApiKey: paymasterApiKey, 
+        biconomyPaymasterApiKey: paymasterApiKey,
         bundlerUrl: bundlerUrl,
-        signer: walletClient as any, // type issue
+        signer: walletClient,
       });
+
       setSmartAccount(wallet);
 
-      const scw = await wallet.getAccountAddress();
+      const scw = (await wallet.getAccountAddress()) as Hex;
       setScwAddress(scw);
 
       setLoading(false);

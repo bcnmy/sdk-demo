@@ -41,7 +41,7 @@ const Button: React.FC<ButtonProp> = ({
   );
 };
 
-const useStyles = makeStyles((theme: any) => ({
+const useStyles = makeStyles((_: any) => ({
   btn: {
     width: "max-content",
     background: "#884c30",

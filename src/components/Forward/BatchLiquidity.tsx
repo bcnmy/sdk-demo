@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@mui/styles";
 import { CircularProgress } from "@mui/material";
-import {
-  PaymasterFeeQuote,
-  PaymasterMode,
-} from "@biconomy/account";
+import { PaymasterFeeQuote, PaymasterMode } from "@biconomy/account";
 
 import Button from "../Button";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
@@ -46,7 +43,7 @@ const BatchLiquidity: React.FC = () => {
       const addLiquidityData = encodeFunctionData({
         abi: config.hyphenLP.abi,
         functionName: "addTokenLiquidity",
-        args: [config.usdc.address, parseUnits("0.001", 6)], 
+        args: [config.usdc.address, parseUnits("0.001", 6)],
       });
       const tx2 = {
         to: config.hyphenLP.address as Hex,
@@ -55,7 +52,9 @@ const BatchLiquidity: React.FC = () => {
 
       console.log("Tx array created", [tx1, tx2]);
       setTx([tx1, tx2]);
-      const feeQuotesResponse = await smartAccount.getTokenFees([tx1, tx2], {paymasterServiceData: {mode: PaymasterMode.ERC20}});
+      const feeQuotesResponse = await smartAccount.getTokenFees([tx1, tx2], {
+        paymasterServiceData: { mode: PaymasterMode.ERC20 },
+      });
       setSpender(feeQuotesResponse.tokenPaymasterAddress || "");
       const feeQuotes = feeQuotesResponse.feeQuotes as PaymasterFeeQuote[];
       setFeeQuotesArr(feeQuotes);
@@ -77,17 +76,14 @@ const BatchLiquidity: React.FC = () => {
       setIsLoading(true);
       console.log("selected quote", selectedQuote);
       // const finalUserOp = { ...estimatedUserOp } as any;
-      const userOpResponse = await smartAccount.sendTransaction(
-        tx,
-        {
-          paymasterServiceData: {
-            feeQuote: selectedQuote,
-            spender: spender as Hex,
-            mode: PaymasterMode.ERC20,
-            maxApproval: false,
-          }
-        }
-      );
+      const userOpResponse = await smartAccount.sendTransaction(tx, {
+        paymasterServiceData: {
+          feeQuote: selectedQuote,
+          spender: spender as Hex,
+          mode: PaymasterMode.ERC20,
+          maxApproval: false,
+        },
+      });
 
       console.log("userOpHash", userOpResponse);
       const { transactionHash } = await userOpResponse.waitForTxHash();

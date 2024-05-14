@@ -1,197 +1,140 @@
-import React, { useEffect, useState } from "react";
-import { ethers } from "ethers";
-import { BiconomySmartAccountV2, createSessionKeyManagerModule } from "@biconomy/account"
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import {getABISVMSessionKeyData} from "../../utils/index";
-import { hexDataSlice, id, parseEther } from "ethers/lib/utils";
-import { Hex } from "viem";
+import React, { useState } from "react";
+import { Provider, ethers } from "ethers";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import UseABISVM from "./UseABISVM";
-import Button from "../Button";
 import { useAccount } from "wagmi";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
-import { ABI_SVM, managerModuleAddr } from "../../utils/constants";
+import {
+  BiconomySmartAccountV2,
+  createSession,
+  createSessionKeyEOA,
+  Session,
+  Policy,
+  PaymasterMode,
+} from "@biconomy/account";
+
+import { polygonAmoy } from "viem/chains";
+import Button from "../Button";
 
 interface props {
   smartAccount: BiconomySmartAccountV2;
   address: string;
-  provider: ethers.providers.Provider;
+  provider: Provider;
   nftContract: ethers.Contract;
   abiSVMAddress: string;
 }
 
 const CreateABISVM: React.FC<props> = () => {
+  const nftAddress = "0x1758f42Af7026fBbB559Dc60EcE0De3ef81f665e";
+  const [activeSession, setActiveSession] = useState<Session | undefined>();
+  const { address } = useAccount();
+  const { smartAccount, scwAddress } = useSmartAccountContext();
 
-    const [isSessionKeyModuleEnabled, setIsSessionKeyModuleEnabled] = useState <boolean>(false);
-    const [isSessionActive, setIsSessionActive] = useState <boolean>(false);
-    const [sessionIDs, setSessionIDs] = useState<string[]>([]);
+  const createSessionHandler = async () => {
+    const toastMessage = "Creating Sessions for " + address;
+    toast.info(toastMessage, {
+      position: "top-right",
+      autoClose: 15000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+    });
+    if (!address || !smartAccount) {
+      alert("Please connect wallet first");
+    } else {
+      try {
+        const { sessionKeyAddress, sessionStorageClient } =
+          // @ts-ignore
+          await createSessionKeyEOA(smartAccount, polygonAmoy);
 
-    const { address } = useAccount();
-    const { smartAccount, scwAddress } = useSmartAccountContext();
-  
-    useEffect(() => {
-        let checkSessionModuleEnabled = async () => {
-          if(!address || !smartAccount) {
-            setIsSessionKeyModuleEnabled(false);
-            return
+        const policy: Policy[] = [
+          {
+            sessionKeyAddress,
+            contractAddress: nftAddress,
+            functionSelector: "safeMint(address)",
+            rules: [
+              {
+                offset: 0,
+                condition: 0,
+                referenceValue: scwAddress,
+              },
+            ],
+            interval: {
+              validUntil: 0,
+              validAfter: 0,
+            },
+            valueLimit: 0n,
+          },
+        ];
+
+        const { wait, session } = await createSession(
+          smartAccount,
+          policy,
+          sessionKeyAddress,
+          sessionStorageClient,
+          {
+            paymasterServiceData: {
+              mode: PaymasterMode.SPONSORED,
+            },
           }
-          try {
-            const isEnabled = await smartAccount.isModuleEnabled(managerModuleAddr)
-            console.log("isSessionKeyModuleEnabled", isEnabled);
-            setIsSessionKeyModuleEnabled(isEnabled);
-            return;
-          } catch(err: any) {
-            console.error(err)
-            setIsSessionKeyModuleEnabled(false);
-            return;
-          }
-        }
-        checkSessionModuleEnabled() 
-      },[isSessionKeyModuleEnabled, address, smartAccount])
+        );
+        const {
+          receipt: { transactionHash },
+          success,
+        } = await wait();
 
-      const createSession = async (enableSessionKeyModule: boolean) => {
-        const toastMessage = 'Creating Sessions for ' + address; 
-        toast.info(toastMessage, {
+        console.log("txHash", transactionHash);
+        console.log("Sessions Enabled");
+        success && setActiveSession(session);
+        toast.success(`Success`, {
           position: "top-right",
-          autoClose: 15000,
+          autoClose: 6000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
           theme: "dark",
-          });
-        if (!address || !smartAccount) {
-          alert("Please connect wallet first")
-        }
-        try {
-          // -----> setMerkle tree tx flow
-          // create dapp side session key
-          const sessionSigner = ethers.Wallet.createRandom();
-          const sessionKeyEOA = await sessionSigner.getAddress();
-          console.log("sessionKeyEOA", sessionKeyEOA);
-          // BREWARE JUST FOR DEMO: update local storage with session key
-          window.localStorage.setItem("sessionPKey", sessionSigner.privateKey);
-    
-          // generate sessionModule
-          const sessionModule = await createSessionKeyManagerModule({
-            moduleAddress: managerModuleAddr,
-            smartAccountAddress: address as Hex,
-          });
-    
-          /**
-           * Create Session Key Datas
-           */
-
-          const functionSelector = hexDataSlice(id("safeMint(address)"), 0, 4);
-    
-          const sessionKeyData = await getABISVMSessionKeyData(sessionKeyEOA, {
-            destContract: "0xdd526eba63ef200ed95f0f0fb8993fe3e20a23d0",
-            functionSelector: functionSelector,
-            valueLimit: parseEther("0"),
-            rules: [
-              {
-                offset: 0, // offset 0 means we are checking first parameter of safeMint (recipient address)
-                condition: 0, // 0 = Condition.EQUAL
-                referenceValue: ethers.utils.hexZeroPad(address!, 32) // recipient address
-              },
-            ],
-          });
-    
-          /**
-           * Create Data for the Session Enabling Transaction
-           * We pass an array of session data objects to the createSessionData method
-           */
-          const sessionTxData = await sessionModule.createSessionData([
-            {
-                validUntil: 0,
-                validAfter: 0,
-                sessionValidationModule: ABI_SVM,
-                sessionPublicKey: sessionKeyEOA as Hex,
-                sessionKeyData: sessionKeyData as Hex,
-            }
-        ]);
-          //console.log("sessionTxData", sessionTxData);
-          setSessionIDs([...sessionTxData.sessionIDInfo]);
-    
-          // tx to set session key
-          const setSessionTrx = {
-            to: managerModuleAddr, // session manager module address
-            data: sessionTxData.data,
-          };
-    
-          const transactionArray = [];
-    
-          if (enableSessionKeyModule) {
-            // -----> enableModule session manager module
-            const enableModuleTrx = await smartAccount!.getEnableModuleData(
-              managerModuleAddr
-            );
-            transactionArray.push(enableModuleTrx);
-          }
-    
-          transactionArray.push(setSessionTrx)
-    
-          let userOpResponse = await smartAccount!.sendTransaction(transactionArray);
-          
-          const transactionDetails = await userOpResponse.wait();
-          console.log("txHash", transactionDetails.receipt.transactionHash);
-          console.log("Sessions Enabled");
-          setIsSessionActive(true)
-          toast.success(`Success! Sessions created succesfully`, {
-            position: "top-right",
-            autoClose: 6000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-            });
-        } catch(err: any) {
-          console.error(err)
-        }
+        });
+      } catch (err: any) {
+        console.error(err);
       }
+    }
+  };
 
-    return (
+  return (
     <div>
-        <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          hideProgressBar={true}
-          newestOnTop={false}
-          closeOnClick={true}
-          rtl={false}
-          pauseOnFocusLoss={false}
-          draggable={false}
-          pauseOnHover={false}
-          theme="dark"
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={true}
+        newestOnTop={false}
+        closeOnClick={true}
+        rtl={false}
+        pauseOnFocusLoss={false}
+        draggable={false}
+        pauseOnHover={false}
+        theme="dark"
+      />
+
+      {!!activeSession ? (
+        <UseABISVM
+          smartAccountAddress={scwAddress}
+          address={address!}
+          session={activeSession}
         />
-        {isSessionKeyModuleEnabled&&!isSessionActive ? (
-             <Button
-             title="Create Session"
-             onClickFunc={() => createSession(false)}
-           />
-        ) : (<div></div>)}
-        {!isSessionKeyModuleEnabled&&!isSessionActive ? (
-          <Button
-          title="Enable Session Key Module and Create Session"
-          onClickFunc={() => createSession(true)}
+      ) : (
+        <Button
+          title="Create Session"
+          onClickFunc={() => createSessionHandler()}
         />
-        ) : (<div></div>)}
-      {
-        isSessionActive && (
-          <UseABISVM
-            smartAccount={smartAccount!}
-            address={address!}
-            abiSVMAddress={ABI_SVM}
-            sessionIDs={sessionIDs}
-          />
-        )
-      }
+      )}
     </div>
-    )
-    
-  }
-  
-  export default CreateABISVM;
+  );
+};
+
+export default CreateABISVM;

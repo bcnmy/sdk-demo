@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@mui/styles";
 import CircularProgress from "@mui/material/CircularProgress";
-import {
-  PaymasterFeeQuote,
-  PaymasterMode,
-} from "@biconomy/account";
+import { PaymasterFeeQuote, PaymasterMode } from "@biconomy/account";
 
 import Button from "../Button";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
@@ -80,17 +77,14 @@ const MintNftForward: React.FC = () => {
       setIsLoading(true);
       console.log("selected quote", selectedQuote);
       // const finalUserOp = { ...estimatedUserOp } as any;
-      const userOpResponse = await smartAccount.sendTransaction(
-        tx!,
-        {
-          paymasterServiceData: {
-            feeQuote: selectedQuote,
-            mode: PaymasterMode.ERC20,
-            spender: spender as Hex,
-            maxApproval: false,
-          }
-        }
-      );
+      const userOpResponse = await smartAccount.sendTransaction(tx!, {
+        paymasterServiceData: {
+          feeQuote: selectedQuote,
+          mode: PaymasterMode.ERC20,
+          spender: spender as Hex,
+          maxApproval: false,
+        },
+      });
 
       console.log("userOpHash", userOpResponse);
       const { transactionHash } = await userOpResponse.waitForTxHash();

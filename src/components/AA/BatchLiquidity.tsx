@@ -42,7 +42,9 @@ const BatchLiquidity: React.FC = () => {
         data: addLiquidityData,
       };
 
-      let { waitForTxHash } = await smartAccount.sendTransaction([tx1, tx2], { paymasterServiceData: { mode: PaymasterMode.SPONSORED } });
+      let { waitForTxHash } = await smartAccount.sendTransaction([tx1, tx2], {
+        paymasterServiceData: { mode: PaymasterMode.SPONSORED },
+      });
       const { transactionHash } = await waitForTxHash();
       console.log("txHash", transactionHash);
       showSuccessMessage(
