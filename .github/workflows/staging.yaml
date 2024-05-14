@@ -5,15 +5,15 @@ on:
     branches:
       - staging
 permissions:
-      id-token: write
-      contents: read
+  id-token: write
+  contents: read
 
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.13.2]
+        node-version: [18.18.0]
 
     steps:
       - uses: actions/checkout@v2
