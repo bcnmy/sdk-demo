@@ -1,8 +1,8 @@
 import React from "react";
-import { ethers } from "ethers";
 import {
-	BiconomySmartAccountV2,
-	createSessionKeyManagerModule,
+  PaymasterMode,
+  Session,
+  createSessionSmartAccountClient,
 } from "@biconomy/account";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -10,147 +10,110 @@ import { Hex, encodeFunctionData, parseAbi } from "viem";
 import Button from "../Button";
 import { configInfo } from "../../utils";
 import { polygonAmoy } from "viem/chains";
-import { managerModuleAddr } from "../../utils/constants";
+import { bundlerUrl, paymasterApiKey } from "../../utils/chainConfig";
 
 interface props {
-	smartAccount: BiconomySmartAccountV2;
-	address: string;
-	abiSVMAddress: string;
-	sessionIDs: string[];
+  smartAccountAddress: Hex;
+  address: string;
+  session: Session;
 }
 
 const UseABISVM: React.FC<props> = ({
-	smartAccount,
-	address,
-	abiSVMAddress,
-	sessionIDs,
+  smartAccountAddress,
+  address,
+  session,
 }) => {
-	const sendUserOpWithData = async (
-		to: string,
-		data: string,
-		value: string,
-		sessionId: string,
-		message?: string,
-	) => {
-		if (!address || !smartAccount || !address) {
-			alert("Connect wallet first");
-			return;
-		}
+  const sendUserOpWithData = async () => {
+    if (!address || !smartAccountAddress || !address) {
+      alert("Connect wallet first");
+      return;
+    }
 
-		const toastMessage = message;
-		console.log(toastMessage);
-		try {
-			toast.info(toastMessage, {
-				position: "top-right",
-				autoClose: 15000,
-				hideProgressBar: false,
-				closeOnClick: true,
-				pauseOnHover: true,
-				draggable: true,
-				progress: undefined,
-				theme: "dark",
-			});
+    try {
+      toast.info("Firing tx", {
+        position: "top-right",
+        autoClose: 15000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
 
-			// get session key from local storage
-			const sessionKeyPrivKey = window.localStorage.getItem("sessionPKey");
-			//console.log("sessionKeyPrivKey", sessionKeyPrivKey);
-			if (!sessionKeyPrivKey) {
-				alert("Session key not found please create session");
-				return;
-			}
+      const emulatedSmartAccount = await createSessionSmartAccountClient(
+        {
+          accountAddress: smartAccountAddress, // Set the account address on behalf of the user
+          bundlerUrl,
+          biconomyPaymasterApiKey: paymasterApiKey,
+          chainId: polygonAmoy.id,
+        },
+        session
+      );
 
-			// USE SESION KEY AS SIGNER
-			const provider = new ethers.providers.JsonRpcProvider(
-				polygonAmoy.rpcUrls.default.http[0],
-			);
-			const sessionSigner = new ethers.Wallet(sessionKeyPrivKey, provider);
+      const tx = {
+        to: configInfo.nft.address,
+        data: encodeFunctionData({
+          abi: parseAbi(["function safeMint(address _to)"]),
+          functionName: "safeMint",
+          args: [smartAccountAddress as Hex],
+        }),
+      };
 
-			// generate sessionModule
-			const sessionModule = await createSessionKeyManagerModule({
-				moduleAddress: managerModuleAddr,
-				smartAccountAddress: address,
-			});
+      // build user op
+      let userOpResponse = await emulatedSmartAccount.sendTransaction(tx, {
+        paymasterServiceData: {
+          mode: PaymasterMode.SPONSORED,
+        },
+      });
+      console.log(
+        "userOpHash %o for Session Id %s",
+        userOpResponse,
+        session.sessionID
+      );
 
-			// set active module to sessionModule
-			smartAccount = smartAccount.setActiveValidationModule(sessionModule);
+      const { receipt, success } = await userOpResponse.wait(1);
 
-			const tx = {
-				to: to,
-				data: data,
-				value: value,
-			};
+      const scanLink = `${polygonAmoy.blockExplorers.default.url}/tx/${receipt.transactionHash}`;
+      success &&
+        toast.success(
+          <a target="_blank" href={scanLink}>
+            Success Click to view transaction
+          </a>,
+          {
+            position: "top-right",
+            autoClose: 6000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          }
+        );
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err.message, {
+        position: "top-right",
+        autoClose: 6000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+    }
+  };
 
-			//console.log("tx", tx);
-
-			// build user op
-			let userOpResponse = await smartAccount.sendTransaction([tx], {
-				params: {
-					sessionSigner: sessionSigner,
-					sessionValidationModule: abiSVMAddress as Hex,
-				},
-			});
-
-			console.log("userOpHash %o for Session Id %s", userOpResponse, sessionId);
-
-			const { receipt } = await userOpResponse.wait(1);
-			console.log(message + " => Success");
-			//console.log("txHash", receipt.transactionHash);
-			const polygonScanlink = `${polygonAmoy.blockExplorers.default.url}/tx/${receipt.transactionHash}`;
-			console.log("Check tx: ", polygonScanlink);
-			toast.success(
-				<a target="_blank" href={polygonScanlink}>
-					Success Click to view transaction
-				</a>,
-				{
-					position: "top-right",
-					autoClose: 6000,
-					hideProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true,
-					draggable: true,
-					progress: undefined,
-					theme: "dark",
-				},
-			);
-		} catch (err: any) {
-			console.error(err);
-			toast.error(err.message, {
-				position: "top-right",
-				autoClose: 6000,
-				hideProgressBar: false,
-				closeOnClick: true,
-				pauseOnHover: true,
-				draggable: true,
-				progress: undefined,
-				theme: "dark",
-			});
-		}
-	};
-
-	return (
-		<div>
-			{
-				<div>
-					<Button
-						title="Minft NFT"
-						onClickFunc={async () => {
-							await sendUserOpWithData(
-								configInfo.nft.address,
-								encodeFunctionData({
-									abi: parseAbi(["function safeMint(address _to)"]),
-									functionName: "safeMint",
-									args: [address as Hex],
-								}),
-								"0",
-								sessionIDs[0],
-								"Minting NFT",
-							);
-						}}
-					/>
-				</div>
-			}
-		</div>
-	);
+  return (
+    <Button
+      title="Minft NFT"
+      onClickFunc={async () => {
+        await sendUserOpWithData();
+      }}
+    />
+  );
 };
 
 export default UseABISVM;

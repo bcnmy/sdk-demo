@@ -1,71 +1,42 @@
 {
-	"name": "biconomy-sdk-demo",
-	"version": "1.0.0",
-	"private": true,
-	"dependencies": {
-		"@biconomy/account": "^4.2.0",
-		"@emotion/react": "^11.10.6",
-		"@emotion/styled": "^11.10.6",
-		"@mui/icons-material": "^5.11.11",
-		"@mui/material": "^5.11.12",
-		"@mui/styles": "^5.11.12",
-		"@rainbow-me/rainbowkit": "^2.0.0",
-		"@tanstack/react-query": "^5.22.2",
-		"@types/node": "^16.7.13",
-		"@types/react": "^18.0.0",
-		"@types/react-dom": "^18.0.0",
-		"buffer": "^6.0.3",
-		"ethers": "^5.6.9",
-		"process": "^0.11.10",
-		"react": "^18.2.0",
-		"react-dom": "^18.2.0",
-		"react-scripts": "5.0.1",
-		"react-toastify": "^9.0.8",
-		"typescript": "^5",
-		"viem": "latest",
-		"wagmi": "latest",
-		"web-vitals": "^2.1.0"
-	},
-	"scripts": {
-		"start": "react-app-rewired start",
-		"build": "react-app-rewired build",
-		"test": "react-app-rewired test",
-		"eject": "react-app-rewired eject"
-	},
-	"eslintConfig": {
-		"extends": [
-			"react-app",
-			"react-app/jest"
-		]
-	},
-	"browserslist": {
-		"production": [
-			"chrome >= 67",
-			"edge >= 79",
-			"firefox >= 68",
-			"opera >= 54",
-			"safari >= 14"
-		],
-		"development": [
-			"last 1 chrome version",
-			"last 1 firefox version",
-			"last 1 safari version"
-		]
-	},
-	"devDependencies": {
-		"@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-		"assert": "^2.0.0",
-		"browserify-zlib": "^0.2.0",
-		"c-kzg": "^1.0.9",
-		"crypto-browserify": "^3.12.0",
-		"https-browserify": "^1.0.0",
-		"net": "^1.0.2",
-		"os-browserify": "^0.3.0",
-		"path-browserify": "^1.0.1",
-		"react-app-rewired": "^2.2.1",
-		"stream-browserify": "^3.0.0",
-		"stream-http": "^3.2.0",
-		"tls": "^0.0.1",
-		"url": "^0.11.0"
-	}
+  "name": "sdk-demo",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "bun link @biconomy/account && vite",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@biconomy/account": "^4.2.0",
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
+    "@ethersproject/providers": "^5.7.2",
+    "@mui/icons-material": "^5.11.11",
+    "@mui/material": "^5.11.12",
+    "@mui/styles": "^5.11.12",
+    "@rainbow-me/rainbowkit": "^2.0.0",
+    "@tanstack/react-query": "^5.22.2",
+    "ethers": "^6.12.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
+    "react-toastify": "^9.0.8",
+    "viem": "^2.10.2",
+    "wagmi": "latest"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.0",
+    "@typescript-eslint/eslint-plugin": "^7.2.0",
+    "@typescript-eslint/parser": "^7.2.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.6",
+    "typescript": "^5.2.2",
+    "vite": "^5.2.0"
+  }
 }

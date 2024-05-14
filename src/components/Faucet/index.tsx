@@ -59,7 +59,7 @@ const Faucet: React.FC = () => {
         type="text"
         placeholder="0x...."
         value={scwAddress}
-        onChange={(e) => setAddress(e.target.value)}
+        onChange={(e) => setAddress(e.target.value as Hex)}
         className={classes.input}
       />
 

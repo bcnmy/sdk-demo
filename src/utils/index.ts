@@ -1,9 +1,8 @@
-import { BigNumber, Wallet as EOAWallet } from "ethers";
-import { JsonRpcProvider } from "@ethersproject/providers";
+import { Wallet as EOAWallet, JsonRpcProvider } from "ethers";
 import configInfo from "./configs/contractsInfo.json";
 import { toast } from "react-toastify";
 import { activeChainId, getExplorer, getRPCProvider } from "./chainConfig";
-import { BytesLike, hexConcat, hexZeroPad, hexlify } from "ethers/lib/utils";
+import { BytesLike } from "ethers/utils";
 
 export { configInfo };
 
@@ -16,32 +15,10 @@ export interface Rule {
 export interface Permission {
   destContract: string;
   functionSelector: string;
-  valueLimit: BigNumber;
+  valueLimit: bigint;
   rules: Rule[];
 }
 
-export async function getABISVMSessionKeyData(
-  sessionKey: string,
-  permission: Permission,
-): Promise<string> {
-  let sessionKeyData = hexConcat([
-    sessionKey,
-    permission.destContract,
-    permission.functionSelector,
-    hexZeroPad(permission.valueLimit.toHexString(), 16),
-    hexZeroPad(hexlify(permission.rules.length), 2), // this can't be more 2**11 (see below), so uint16 (2 bytes) is enough
-  ]);
-
-  for (let i = 0; i < permission.rules.length; i++) {
-    sessionKeyData = hexConcat([
-      sessionKeyData,
-      hexZeroPad(hexlify(permission.rules[i].offset), 2), // offset is uint16, so there can't be more than 2**16/32 args = 2**11
-      hexZeroPad(hexlify(permission.rules[i].condition), 1), // uint8
-      permission.rules[i].referenceValue,
-    ]);
-  }
-  return sessionKeyData;
-}
 
 export function ellipseAddress(address = "", width = 10): string {
   if (!address) {
@@ -118,11 +95,10 @@ export const copyToClipBoard = (copyMe: string) => {
 };
 
 export const formatBalance = (value: string, decimals: number) => {
-  const divideBy = BigNumber.from(10).pow(BigNumber.from(decimals));
+  const divideBy = BigInt(10)** BigInt(decimals);
   const balance = (parseFloat(value) / parseFloat(divideBy.toString())).toFixed(
     4
   );
   console.log(" formatBalance ", balance);
-  // let res = ethers.utils.formatEther(balance);
   return balance.toString();
 };

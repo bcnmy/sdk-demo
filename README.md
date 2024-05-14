@@ -9,6 +9,6 @@ Example codes for integrating biconomy sdk in your repo.
 ```bash
 git clone https://github.com/bcnmy/sdk-demo.git
 cd sdk-demo
-yarn install
-yarn start
+bun i
+bun dev
 ```
