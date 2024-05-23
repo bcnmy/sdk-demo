@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  Session,
   createSessionSmartAccountClient,
   Transaction,
   getBatchSessionTxParams,
