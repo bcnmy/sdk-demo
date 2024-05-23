@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  Session,
   createSessionSmartAccountClient,
   Transaction,
   getBatchSessionTxParams,
@@ -21,16 +20,11 @@ const amount = BigInt(50000000);
 interface props {
   smartAccountAddress?: Hex;
   address?: string;
-  session?: Session;
 }
 
-const UseBatchSession: React.FC<props> = ({
-  smartAccountAddress,
-  address,
-  session,
-}) => {
+const UseBatchSession: React.FC<props> = ({ smartAccountAddress, address }) => {
   const sendUserOpWithData = async () => {
-    if (!address || !smartAccountAddress || !session) {
+    if (!address || !smartAccountAddress) {
       alert("Connect wallet first");
       return;
     }
@@ -54,7 +48,7 @@ const UseBatchSession: React.FC<props> = ({
           biconomyPaymasterApiKey: paymasterApiKey,
           chainId: polygonAmoy.id,
         },
-        session,
+        smartAccountAddress,
         true // if batching
       );
 
@@ -77,9 +71,9 @@ const UseBatchSession: React.FC<props> = ({
 
       const txs = [transferTx, nftMintTx];
       const batchSessionParams = await getBatchSessionTxParams(
-        ["ERC20", "ABI"],
         txs,
-        session,
+        [0, 1],
+        smartAccountAddress,
         // @ts-ignore
         polygonAmoy
       );
@@ -126,12 +120,10 @@ const UseBatchSession: React.FC<props> = ({
   };
 
   return (
-    !!session && (
-      <Button
-        title="Transfer Token and Mint NFT"
-        onClickFunc={sendUserOpWithData}
-      />
-    )
+    <Button
+      title="Transfer Token and Mint NFT"
+      onClickFunc={sendUserOpWithData}
+    />
   );
 };
 

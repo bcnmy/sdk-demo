@@ -15,14 +15,9 @@ import { bundlerUrl, paymasterApiKey } from "../../utils/chainConfig";
 interface props {
   smartAccountAddress: Hex;
   address: string;
-  session: Session;
 }
 
-const UseABISVM: React.FC<props> = ({
-  smartAccountAddress,
-  address,
-  session,
-}) => {
+const UseABISVM: React.FC<props> = ({ smartAccountAddress, address }) => {
   const sendUserOpWithData = async () => {
     if (!address || !smartAccountAddress || !address) {
       alert("Connect wallet first");
@@ -48,7 +43,7 @@ const UseABISVM: React.FC<props> = ({
           biconomyPaymasterApiKey: paymasterApiKey,
           chainId: polygonAmoy.id,
         },
-        session
+        smartAccountAddress
       );
 
       const tx = {
@@ -66,11 +61,7 @@ const UseABISVM: React.FC<props> = ({
           mode: PaymasterMode.SPONSORED,
         },
       });
-      console.log(
-        "userOpHash %o for Session Id %s",
-        userOpResponse,
-        session.sessionID
-      );
+      console.log("userOpHash %o for Session Id %s", userOpResponse);
 
       const { receipt, success } = await userOpResponse.wait(1);
 
