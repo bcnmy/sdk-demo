@@ -27,7 +27,7 @@ interface props {
 
 const CreateABISVM: React.FC<props> = () => {
   const nftAddress = "0x1758f42Af7026fBbB559Dc60EcE0De3ef81f665e";
-  const [activeSession, setActiveSession] = useState<Session | undefined>();
+  const [hasSession, setHasSession] = useState<boolean>(false);
   const { address } = useAccount();
   const { smartAccount, scwAddress } = useSmartAccountContext();
 
@@ -71,10 +71,9 @@ const CreateABISVM: React.FC<props> = () => {
           },
         ];
 
-        const { wait, session } = await createSession(
+        const { wait } = await createSession(
           smartAccount,
           policy,
-          sessionKeyAddress,
           sessionStorageClient,
           {
             paymasterServiceData: {
@@ -89,17 +88,19 @@ const CreateABISVM: React.FC<props> = () => {
 
         console.log("txHash", transactionHash);
         console.log("Sessions Enabled");
-        success && setActiveSession(session);
-        toast.success(`Success`, {
-          position: "top-right",
-          autoClose: 6000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
+        if (success) {
+          setHasSession(true);
+          toast.success(`Success ${success}`, {
+            position: "top-right",
+            autoClose: 6000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          });
+        }
       } catch (err: any) {
         console.error(err);
       }
@@ -121,12 +122,8 @@ const CreateABISVM: React.FC<props> = () => {
         theme="dark"
       />
 
-      {!!activeSession ? (
-        <UseABISVM
-          smartAccountAddress={scwAddress}
-          address={address!}
-          session={activeSession}
-        />
+      {!!hasSession ? (
+        <UseABISVM smartAccountAddress={scwAddress} address={address!} />
       ) : (
         <Button
           title="Create Session"

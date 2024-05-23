@@ -15,7 +15,7 @@ import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import { configInfo, showErrorMessage, showSuccessMessage } from "../../utils";
 import { getActionForErrorMessage } from "../../utils/error-utils";
 import { polygonAmoy } from "viem/chains";
-import { Hex, encodeAbiParameters, pad } from "viem";
+import { Hex, encodeAbiParameters } from "viem";
 import UseBatchSession from "./UseBatchSession";
 
 const nftAddress = "0x1758f42Af7026fBbB559Dc60EcE0De3ef81f665e";
@@ -27,7 +27,7 @@ const CreateBatchSession: React.FC = () => {
   const { address } = useAccount();
   const { smartAccount, scwAddress } = useSmartAccountContext();
   const [loading, setLoading] = useState(false);
-  const [activeSession, setActiveSession] = useState<Session | undefined>();
+  const [hasSession, setHasSession] = useState<boolean>(false);
 
   const createSessionHandler = async () => {
     if (!scwAddress || !smartAccount || !address) {
@@ -80,9 +80,8 @@ const CreateBatchSession: React.FC = () => {
         }),
       ];
 
-      const { wait, session } = await createBatchSession(
+      const { wait } = await createBatchSession(
         smartAccount,
-        sessionKeyAddress,
         sessionStorageClient,
         leaves,
         {
@@ -98,11 +97,13 @@ const CreateBatchSession: React.FC = () => {
       } = await wait();
 
       console.log("txHash", transactionHash);
-      showSuccessMessage(
-        `Session Created: ${transactionHash}`,
-        transactionHash
-      );
-      success && setActiveSession(session);
+      if (success) {
+        setHasSession(true);
+        showSuccessMessage(
+          `Session Created: ${transactionHash}`,
+          transactionHash
+        );
+      }
     } catch (err: any) {
       console.error(err);
       setLoading(false);
@@ -121,12 +122,8 @@ const CreateBatchSession: React.FC = () => {
 
       <h3 className={classes.subTitle}>Create Batch Session Flow</h3>
 
-      {!!activeSession ? (
-        <UseBatchSession
-          smartAccountAddress={scwAddress}
-          address={address!}
-          session={activeSession}
-        />
+      {!!hasSession ? (
+        <UseBatchSession smartAccountAddress={scwAddress} address={address!} />
       ) : (
         <Button
           title="Create Session"
