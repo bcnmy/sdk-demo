@@ -13,36 +13,24 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import HomeIcon from "@mui/icons-material/Home";
 import SavingsIcon from "@mui/icons-material/Savings";
-// import TokenIcon from "@mui/icons-material/Token";
 import EvStationIcon from "@mui/icons-material/EvStation";
 import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
 import CookieIcon from "@mui/icons-material/Cookie";
 import FiberNewIcon from "@mui/icons-material/FiberNew";
-// import BurstModeIcon from "@mui/icons-material/BurstMode";
 import GamesIcon from "@mui/icons-material/Games";
 import ContactlessIcon from "@mui/icons-material/Contactless";
-// import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import Onboarding from "./Onboarding/index";
 import Navbar from "./Navbar";
-// import Assets from "./Balance";
 import Collapse from "@mui/material/Collapse/Collapse";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import Faucet from "./Faucet";
-// Account Abstraction
 import AccountAbstraction from "./AA";
 import MintNft from "./AA/MintNft";
-// import BatchMintNft from "./AA/BatchMintNft";
-// import MintErc20 from "./AA/MintErc20";
-import BatchLiquidity from "./AA/BatchLiquidity";
-// Forward
 import ForwardFlow from "./Forward";
 import MintNftForward from "./Forward/MintNft";
-import BatchLiquidityForward from "./Forward/BatchLiquidity";
-import HyphenLpUsingSession from "./Modules/HyphenLpUsingSession";
-import CreateCustomSession from "./Modules/CreateSessionForCustomSVM";
 import CreateBatchSession from "./Modules/CreateBatchSession";
 import UseBatchSession from "./Modules/UseBatchSession";
-import ABISVM from "./Modules/ABI_SVM";
+import CreateSession from "./Modules/CreateSession";
 
 const drawerWidth = 320;
 const onboardingList = [
@@ -61,22 +49,10 @@ const onboardingList = [
 ];
 
 const AAList = [
-  // {
-  //   name: "Mint ERC20 Token",
-  //   icon: <TokenIcon />,
-  // },
   {
     name: "Mint NFT",
     icon: <InsertPhotoIcon />,
   },
-  {
-    name: "Batch Add Liquidity",
-    icon: <GamesIcon />,
-  },
-  // {
-  //   name: "Batch Mint NFT",
-  //   icon: <BurstModeIcon />,
-  // },
 ];
 
 const ForwardList = [
@@ -84,35 +60,19 @@ const ForwardList = [
     name: "Mint NFT",
     icon: <InsertPhotoIcon />,
   },
-  {
-    name: "Batch Add Liquidity",
-    icon: <GamesIcon />,
-  },
 ];
 
 const SessionList = [
   {
-    name: "Create Custom Destination Session",
+    name: "Single Session",
     icon: <GamesIcon />,
-  },
-  {
-    name: "LP into Pool using Session",
-    icon: <CookieIcon />,
-  },
-  {
-    name: "Mint NFT using ABI SVM",
-    icon: <CookieIcon />,
   },
 ];
 
 const SessionRouterList = [
   {
-    name: "Create Batch Router Session",
+    name: "Batch Session",
     icon: <GamesIcon />,
-  },
-  {
-    name: "ERC20 Transfer & Mint NFT",
-    icon: <CookieIcon />,
   },
 ];
 
@@ -478,9 +438,6 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
       <TabPanel value={pageIndex} index={3}>
         <MintNft />
       </TabPanel>
-      <TabPanel value={pageIndex} index={4}>
-        <BatchLiquidity />
-      </TabPanel>
       {/* <TabPanel value={pageIndex} index={7}>
         <BatchMintNft />
       </TabPanel> */}
@@ -495,9 +452,6 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
       <TabPanel value={pageIndex} index={6}>
         <MintNftForward />
       </TabPanel>
-      <TabPanel value={pageIndex} index={7}>
-        <BatchLiquidityForward />
-      </TabPanel>
 
       <TabPanel value={pageIndex} index={8}>
         {/* <SessionFlow
@@ -507,13 +461,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
         /> */}
       </TabPanel>
       <TabPanel value={pageIndex} index={9}>
-        <CreateCustomSession />
-      </TabPanel>
-      <TabPanel value={pageIndex} index={10}>
-        <HyphenLpUsingSession />
-      </TabPanel>
-      <TabPanel value={pageIndex} index={11}>
-        <ABISVM />
+        <CreateSession />
       </TabPanel>
       <TabPanel value={pageIndex} index={12}>
         <CreateBatchSession />

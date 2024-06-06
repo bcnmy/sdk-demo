@@ -1,27 +1,29 @@
 import React from "react";
 import { makeStyles } from "@mui/styles";
 import { ToastContainer } from "react-toastify";
-import { useAccount } from 'wagmi'
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { useAccount } from "wagmi";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 import TabsBody from "./components/TabsBody";
-import { useSmartAccountContext } from "./contexts/SmartAccountContext";
 
 const App: React.FC = () => {
   const classes = useStyles();
-  const { address } = useAccount()
-  const { loading } = useSmartAccountContext();
+  const { address } = useAccount();
 
   if (!address) {
     return (
       <div className={classes.bgCover}>
         <div className={classes.container}>
           <h1 className={classes.title}>
-          <img width={35} style={
-            {
-              marginRight: 20,
-            }
-          } src="/logo.svg" alt="" />
-            Biconomy SDK</h1>
+            <img
+              width={35}
+              style={{
+                marginRight: 20,
+              }}
+              src="/logo.svg"
+              alt=""
+            />
+            Biconomy SDK
+          </h1>
           <p className={classes.subTitle}>
             Solve complex UX challenges with customisable SDK modules in
             minutes.
@@ -34,7 +36,7 @@ const App: React.FC = () => {
 
   return (
     <div className={classes.bgCover}>
-      <TabsBody loading={loading} />
+      <TabsBody loading={false} />
       <ToastContainer position="bottom-left" newestOnTop theme="dark" />
     </div>
   );

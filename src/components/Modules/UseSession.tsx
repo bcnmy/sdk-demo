@@ -1,25 +1,24 @@
 import React, { useEffect } from "react";
-import { Transaction } from "@biconomy/account";
 import "react-toastify/dist/ReactToastify.css";
 import { Hex, encodeFunctionData, parseAbi } from "viem";
 import Button from "../Button";
 import { configInfo, showSuccessMessage } from "../../utils";
 import { polygonAmoy } from "viem/chains";
-import { useBatchSession, useUserOpWait } from "@biconomy/use-aa";
+import { useSession, useUserOpWait } from "@biconomy/use-aa";
 import { ErrorGuard } from "../../utils/ErrorGuard";
 
 interface props {
-  smartAccountAddress?: Hex;
-  address?: string;
+  smartAccountAddress: Hex;
+  address: string;
 }
 
-const UseBatchSession: React.FC<props> = ({ smartAccountAddress }) => {
+const UseSession: React.FC<props> = ({ smartAccountAddress }) => {
   const {
     mutate,
     data: userOpResponse,
     error,
     isPending: isLoading,
-  } = useBatchSession();
+  } = useSession();
 
   const {
     isLoading: waitIsLoading,
@@ -28,19 +27,16 @@ const UseBatchSession: React.FC<props> = ({ smartAccountAddress }) => {
     data: waitData,
   } = useUserOpWait({ userOpResponse });
 
-  const nftMintTx: Transaction = {
-    to: configInfo.nft.address,
-    data: encodeFunctionData({
-      abi: parseAbi(["function safeMint(address _to)"]),
-      functionName: "safeMint",
-      args: [smartAccountAddress as Hex],
-    }),
-  };
-
-  const txTwice = () =>
+  const mintTx = () =>
     mutate({
-      manyOrOneTx: [nftMintTx, nftMintTx],
-      correspondingIndexes: [0, 1],
+      manyOrOneTx: {
+        to: configInfo.nft.address,
+        data: encodeFunctionData({
+          abi: parseAbi(["function safeMint(address _to)"]),
+          functionName: "safeMint",
+          args: [smartAccountAddress as Hex],
+        }),
+      },
     });
 
   useEffect(() => {
@@ -55,12 +51,12 @@ const UseBatchSession: React.FC<props> = ({ smartAccountAddress }) => {
   return (
     <ErrorGuard errors={[error, waitError]}>
       <Button
-        title="Mint Twice"
-        onClickFunc={txTwice}
+        title="Minft NFT"
+        onClickFunc={mintTx}
         isLoading={isLoading || waitIsLoading}
       />
     </ErrorGuard>
   );
 };
 
-export default UseBatchSession;
+export default UseSession;

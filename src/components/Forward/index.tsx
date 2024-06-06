@@ -1,6 +1,5 @@
 import React from "react";
 import { makeStyles } from "@mui/styles";
-import ControlPointDuplicateIcon from "@mui/icons-material/ControlPointDuplicate";
 import CollectionsIcon from "@mui/icons-material/Collections";
 
 interface Props {
@@ -17,20 +16,6 @@ const cardItems = [
     index: 6,
     icon: (
       <CollectionsIcon
-        style={{
-          color: "#FFB999",
-          fontSize: 72,
-        }}
-      />
-    ),
-  },
-  {
-    title: "Batch Liquidity",
-    description:
-      "This magic bundle will approve USDC then provide the USDC liquidity to Hyphen Pool.",
-    index: 7,
-    icon: (
-      <ControlPointDuplicateIcon
         style={{
           color: "#FFB999",
           fontSize: 72,

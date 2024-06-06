@@ -1,33 +1,34 @@
 import React, { useEffect, useState } from "react";
-import { makeStyles } from "@mui/styles";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import UseSession from "./UseSession";
 import { useAccount } from "wagmi";
-import Button from "../Button";
 import {
   Sponsored,
   bigIntReplacer,
-  useCreateBatchSession,
+  useCreateSession,
   useSmartAccount,
   useUserOpWait,
 } from "@biconomy/use-aa";
-import { configInfo, showSuccessMessage } from "../../utils";
-import { polygonAmoy } from "viem/chains";
+import Button from "../Button";
+import { makeStyles } from "@mui/styles";
 import { Hex } from "viem";
-import UseBatchSession from "./UseBatchSession";
 import { ErrorGuard } from "../../utils/ErrorGuard";
+import { showSuccessMessage } from "../../utils";
+import { polygonAmoy } from "viem/chains";
 
-const CreateBatchSession: React.FC = () => {
+const CreateSession: React.FC = () => {
   const classes = useStyles();
+
+  const nftAddress: Hex = "0x1758f42Af7026fBbB559Dc60EcE0De3ef81f665e";
+
+  const [hasSession, setHasSession] = useState<boolean>(false);
   const { address } = useAccount();
   const { smartAccountAddress: scwAddress } = useSmartAccount();
-  const [hasSession, setHasSession] = useState<boolean>(false);
 
-  const policyLeaves = [
+  const policy = [
     {
-      interval: {
-        validUntil: 0,
-        validAfter: 0,
-      },
-      contractAddress: configInfo.nft.address as Hex,
+      contractAddress: nftAddress,
       functionSelector: "safeMint(address)",
       rules: [
         {
@@ -36,22 +37,10 @@ const CreateBatchSession: React.FC = () => {
           referenceValue: scwAddress,
         },
       ],
-      valueLimit: 0n,
-    },
-    {
       interval: {
         validUntil: 0,
         validAfter: 0,
       },
-      contractAddress: configInfo.nft.address as Hex,
-      functionSelector: "safeMint(address)",
-      rules: [
-        {
-          offset: 0,
-          condition: 0,
-          referenceValue: scwAddress,
-        },
-      ],
       valueLimit: 0n,
     },
   ];
@@ -61,7 +50,7 @@ const CreateBatchSession: React.FC = () => {
     data: userOpResponse,
     error,
     isPending: isLoading,
-  } = useCreateBatchSession();
+  } = useCreateSession();
 
   const {
     isLoading: waitIsLoading,
@@ -82,7 +71,7 @@ const CreateBatchSession: React.FC = () => {
 
   const createSessionHandler = () =>
     mutate({
-      policy: policyLeaves,
+      policy,
       buildUseropDto: Sponsored,
     });
 
@@ -90,23 +79,36 @@ const CreateBatchSession: React.FC = () => {
     <main className={classes.main}>
       <ErrorGuard errors={[error, waitError]}>
         <p style={{ color: "#7E7E7E" }}>
-          Use Cases {"->"} Session {"->"} Create Batch Session
+          Use Cases {"->"} Modules {"->"} {hasSession ? "Use" : "Create"}{" "}
+          Session
         </p>
 
-        <h3 className={classes.subTitle}>Create Batch Session Flow</h3>
+        <h3 className={classes.subTitle}>
+          {hasSession ? "Use" : "Create"} a Session
+        </h3>
 
-        <pre>policy: {JSON.stringify(policyLeaves, bigIntReplacer, 2)}</pre>
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={true}
+          newestOnTop={false}
+          closeOnClick={true}
+          rtl={false}
+          pauseOnFocusLoss={false}
+          draggable={false}
+          pauseOnHover={false}
+          theme="dark"
+        />
+
+        <pre>policy: {JSON.stringify(policy, bigIntReplacer, 2)}</pre>
 
         {!!hasSession ? (
-          <UseBatchSession
-            smartAccountAddress={scwAddress}
-            address={address!}
-          />
+          <UseSession smartAccountAddress={scwAddress} address={address!} />
         ) : (
           <Button
             title="Create Session"
-            isLoading={isLoading || waitIsLoading}
             onClickFunc={createSessionHandler}
+            isLoading={isLoading || waitIsLoading}
           />
         )}
       </ErrorGuard>
@@ -116,6 +118,7 @@ const CreateBatchSession: React.FC = () => {
 
 const useStyles = makeStyles(() => ({
   main: {
+    margin: "auto",
     padding: "10px 40px",
     color: "#EEEEEE",
   },
@@ -127,6 +130,11 @@ const useStyles = makeStyles(() => ({
   h3Title: {
     color: "#e6e6e6",
   },
+  listHover: {
+    "&:hover": {
+      color: "#FF9551",
+    },
+  },
 }));
 
-export default CreateBatchSession;
+export default CreateSession;
