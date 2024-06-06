@@ -4,13 +4,14 @@ import "@rainbow-me/rainbowkit/styles.css";
 import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { createConfig, http, WagmiProvider } from "wagmi";
 import { polygonAmoy, polygon } from "wagmi/chains";
-import { SmartAccountProvider } from "./contexts/SmartAccountContext";
 import App from "./App";
 import "./index.css";
 import theme from "./utils/theme";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
+import { BiconomyProvider } from "@biconomy/use-aa";
+import { bundlerUrl, paymasterApiKey } from "./utils/chainConfig";
 
 const wagmiConfig = createConfig({
   chains: [polygonAmoy, polygon],
@@ -26,9 +27,15 @@ ReactDOM.createRoot(document?.getElementById("root")!).render(
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider showRecentTransactions={true} coolMode={true}>
           <ThemeProvider theme={theme}>
-            <SmartAccountProvider>
+            <BiconomyProvider
+              config={{
+                paymasterApiKey,
+                bundlerUrl,
+              }}
+              queryClient={queryClient}
+            >
               <App />
-            </SmartAccountProvider>
+            </BiconomyProvider>
           </ThemeProvider>
         </RainbowKitProvider>
       </QueryClientProvider>

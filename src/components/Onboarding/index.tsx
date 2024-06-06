@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { makeStyles } from "@mui/styles";
 import Button from "../Button";
 // import { useWeb3Context } from "../../contexts/Web3Context";
-import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
+import { useSmartAccount } from "@biconomy/use-aa";
 // import { showErrorMessage, showInfoMessage } from "../../utils";
 // import { activeChainId } from "../../utils/chainConfig";
 
@@ -12,7 +12,8 @@ type OnboardingProps = {
 
 const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
   const classes = useStyles();
-  const { smartAccount, scwAddress } = useSmartAccountContext();
+  const { smartAccountClient: smartAccount, smartAccountAddress: scwAddress } =
+    useSmartAccount();
 
   const [isScwDeployed, setisScwDeployed] = useState(false);
   const [loading, setLoading] = useState(false);

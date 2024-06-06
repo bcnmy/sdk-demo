@@ -1,69 +1,79 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@mui/styles";
 import { Hex, encodeFunctionData } from "viem";
 
 import Button from "../Button";
-import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import {
-  configInfo as config,
-  showErrorMessage,
-  showInfoMessage,
-  showSuccessMessage,
-} from "../../utils";
+  useSendTransaction,
+  useSmartAccount,
+  useUserOpWait,
+} from "@biconomy/use-aa";
+import { configInfo as config, showSuccessMessage } from "../../utils";
+import { ErrorGuard } from "../../utils/ErrorGuard";
 
 const Faucet: React.FC = () => {
   const classes = useStyles();
-  const { smartAccount, scwAddress } = useSmartAccountContext();
+  const { smartAccountAddress: scwAddress } = useSmartAccount();
   const [address, setAddress] = useState(scwAddress);
 
-  const makeTx = async () => {
-    if (!smartAccount || !scwAddress) {
-      showErrorMessage("Please connect your wallet");
-      return;
-    }
-    showInfoMessage("Initiating Faucet...");
-    try {
-      const faucetTxData = encodeFunctionData({
-        abi: config.faucet.abi,
-        functionName: "drip",
-        args: [address as Hex],
-      });
-      const tx1 = {
+  const {
+    mutate,
+    data: userOpResponse,
+    error,
+    isPending,
+  } = useSendTransaction();
+  const {
+    isSuccess: waitIsSuccess,
+    error: waitError,
+    isLoading: waitIsLoading,
+    data: waitData,
+  } = useUserOpWait({
+    userOpResponse,
+  });
+
+  const drip = () =>
+    mutate({
+      manyOrOneTransactions: {
         to: config.faucet.address as Hex,
-        value: BigInt(0),
-        data: faucetTxData,
-      };
-      let userOpResponse = await smartAccount.sendTransaction(tx1);
-      console.log("userOpHash", userOpResponse);
-      const { transactionHash } = await userOpResponse.waitForTxHash();
-      console.log("txHash", transactionHash);
-      showSuccessMessage(`Tokens sent ${transactionHash}`, transactionHash);
-    } catch (error: any) {
-      console.error(error);
-      showErrorMessage(error.message);
-    }
-  };
+        data: encodeFunctionData({
+          abi: config.faucet.abi,
+          functionName: "drip",
+          args: [address as Hex],
+        }),
+      },
+    });
+
+  useEffect(() => {
+    waitIsSuccess &&
+      showSuccessMessage(
+        "Successful mint: " +
+          `${polygonAmoy.blockExplorers.default.url}/tx/${waitData?.receipt?.transactionHash}`
+      );
+  }, [waitIsSuccess]);
 
   return (
     <main className={classes.main}>
-      <h3 className={classes.subTitle}>Faucet</h3>
+      <ErrorGuard errors={[error, waitError]}>
+        <h3 className={classes.subTitle}>Faucet</h3>
+        <p>
+          Get USDC and USDT test tokens. We will airdrop these tokens to the SCW
+          address so you can test the SDK.
+        </p>
+        <h3 className={classes.h3Title}>You can also change the address</h3>
+        <input
+          type="text"
+          placeholder="0x...."
+          value={scwAddress}
+          onChange={(e) => setAddress(e.target.value as Hex)}
+          className={classes.input}
+        />
 
-      <p>
-        Get USDC and USDT test tokens. We will airdrop these tokens to the SCW
-        address so you can test the SDK.
-      </p>
-
-      <h3 className={classes.h3Title}>You can also change the address</h3>
-
-      <input
-        type="text"
-        placeholder="0x...."
-        value={scwAddress}
-        onChange={(e) => setAddress(e.target.value as Hex)}
-        className={classes.input}
-      />
-
-      <Button title="Get tokens" onClickFunc={makeTx} />
+        <Button
+          title="Get tokens"
+          onClickFunc={drip}
+          isLoading={isPending || waitIsLoading}
+        />
+      </ErrorGuard>
     </main>
   );
 };

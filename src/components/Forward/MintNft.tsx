@@ -1,30 +1,35 @@
-import React, { useEffect, useState } from "react";
 import { makeStyles } from "@mui/styles";
 import CircularProgress from "@mui/material/CircularProgress";
 import { PaymasterFeeQuote, PaymasterMode } from "@biconomy/account";
+import React, { useCallback, useEffect, useState } from "react";
 
 import Button from "../Button";
-import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
+import {
+  useSendTransaction,
+  useSmartAccount,
+  useUserOpWait,
+} from "@biconomy/use-aa";
 import {
   configInfo as config,
   showErrorMessage,
   showSuccessMessage,
 } from "../../utils";
 import { Hex, encodeFunctionData, getContract } from "viem";
-import { usePublicClient } from "wagmi";
+import { useCall, usePublicClient } from "wagmi";
+import { ErrorGuard } from "../../utils/ErrorGuard";
+import { polygonAmoy } from "viem/chains";
 
 const MintNftForward: React.FC = () => {
   const classes = useStyles();
   const publicClient = usePublicClient();
-  const { smartAccount, scwAddress } = useSmartAccountContext();
+  const { smartAccountClient: smartAccount, smartAccountAddress: scwAddress } =
+    useSmartAccount();
   const [nftCount, setNftCount] = useState<number | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [isLoadingFee, setIsLoadingFee] = useState(false);
 
   const [spender, setSpender] = useState("");
   const [feeQuotesArr, setFeeQuotesArr] = useState<PaymasterFeeQuote[]>([]);
   const [selectedQuote, setSelectedQuote] = useState<PaymasterFeeQuote>();
-  const [tx, setTx] = useState();
 
   useEffect(() => {
     const getNftCount = async () => {
@@ -46,18 +51,17 @@ const MintNftForward: React.FC = () => {
   const getFee = async () => {
     if (!smartAccount || !scwAddress || !publicClient) return;
     setIsLoadingFee(true);
-    const mintData = encodeFunctionData({
-      abi: config.nft.abi,
-      functionName: "safeMint",
-      args: [scwAddress as Hex],
-    });
-    const tx1 = {
+
+    const tx = {
       to: config.nft.address,
-      value: 0,
-      data: mintData,
+      data: encodeFunctionData({
+        abi: config.nft.abi,
+        functionName: "safeMint",
+        args: [scwAddress as Hex],
+      }),
     };
-    setTx(tx1 as any);
-    const feeQuotesResponse = await smartAccount.getTokenFees([tx1], {
+
+    const feeQuotesResponse = await smartAccount.getTokenFees([tx], {
       paymasterServiceData: { mode: PaymasterMode.ERC20 },
     });
     setSpender(feeQuotesResponse.tokenPaymasterAddress || "");
@@ -67,110 +71,128 @@ const MintNftForward: React.FC = () => {
     setIsLoadingFee(false);
   };
 
-  const makeTx = async () => {
-    if (!smartAccount || !scwAddress || !publicClient) return;
-    if (!selectedQuote) {
-      showErrorMessage("Please select a fee quote");
-      return;
-    }
-    try {
-      setIsLoading(true);
-      console.log("selected quote", selectedQuote);
-      // const finalUserOp = { ...estimatedUserOp } as any;
-      const userOpResponse = await smartAccount.sendTransaction(tx!, {
+  const {
+    mutate,
+    data: userOpResponse,
+    error,
+    isPending: isLoading,
+  } = useSendTransaction();
+  const {
+    isLoading: waitIsLoading,
+    isSuccess: waitIsSuccess,
+    error: waitError,
+    data: waitData,
+  } = useUserOpWait({ userOpResponse });
+
+  useEffect(() => {
+    waitIsSuccess &&
+      showSuccessMessage(
+        "Successful mint: " +
+          `${polygonAmoy.blockExplorers.default.url}/tx/${waitData?.receipt?.transactionHash}`
+      );
+  }, [waitIsSuccess]);
+
+  const mintNft = () => {
+    const manyOrOneTransactions = {
+      to: config.nft.address,
+      data: encodeFunctionData({
+        abi: config.nft.abi,
+        functionName: "safeMint",
+        args: [scwAddress as Hex],
+      }),
+    };
+
+    mutate({
+      manyOrOneTransactions,
+      buildUseropDto: {
         paymasterServiceData: {
           feeQuote: selectedQuote,
           mode: PaymasterMode.ERC20,
           spender: spender as Hex,
           maxApproval: false,
         },
-      });
-
-      console.log("userOpHash", userOpResponse);
-      const { transactionHash } = await userOpResponse.waitForTxHash();
-      console.log("txHash", transactionHash);
-      showSuccessMessage(`Minted Nft ${transactionHash}`, transactionHash);
-      setIsLoading(false);
-    } catch (err: any) {
-      console.error(err);
-      setIsLoading(false);
-      showErrorMessage(err.message || "Error in sending the transaction");
-    }
+      },
+    });
   };
 
   return (
     <main className={classes.main}>
-      <p style={{ color: "#7E7E7E" }}>
-        Use Cases {"->"} Gasless {"->"} Mint Nft
-      </p>
+      <ErrorGuard errors={[error, waitError]}>
+        <p style={{ color: "#7E7E7E" }}>
+          Use Cases {"->"} Gasless {"->"} Mint Nft
+        </p>
 
-      <h3 className={classes.subTitle}>Mint Nft Flow</h3>
+        <h3 className={classes.subTitle}>Mint Nft Flow</h3>
 
-      <p style={{ marginBottom: 20 }}>
-        This is an example gasless transaction to Mint Nft.
-      </p>
-      <p style={{ marginBottom: 30 }}>
-        Nft Balance in SCW:{" "}
-        {nftCount === null ? (
-          <p style={{ color: "#7E7E7E", display: "contents" }}>fetching...</p>
-        ) : (
-          nftCount
+        <p style={{ marginBottom: 20 }}>
+          This is an example gasless transaction to Mint Nft.
+        </p>
+        <p style={{ marginBottom: 30 }}>
+          Nft Balance in SCW:{" "}
+          {nftCount === null ? (
+            <p style={{ color: "#7E7E7E", display: "contents" }}>fetching...</p>
+          ) : (
+            nftCount
+          )}
+        </p>
+
+        <h3 className={classes.h3Title}>Available Fee options</h3>
+
+        {isLoadingFee && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              margin: "0 0 40px 30px",
+            }}
+          >
+            <CircularProgress
+              color="secondary"
+              style={{
+                width: 25,
+                height: 25,
+                marginRight: 10,
+                color: "#e6e6e6",
+              }}
+            />{" "}
+            {" Loading Fee Options"}
+          </div>
         )}
-      </p>
-
-      <h3 className={classes.h3Title}>Available Fee options</h3>
-
-      {isLoadingFee && (
-        <div
+        <ul
           style={{
             display: "flex",
-            alignItems: "center",
-            margin: "0 0 40px 30px",
+            alignItems: "start",
+            flexDirection: "column",
+            justifyContent: "start",
+            marginLeft: 0,
+            gap: 8,
           }}
         >
-          <CircularProgress
-            color="secondary"
-            style={{ width: 25, height: 25, marginRight: 10, color: "#e6e6e6" }}
-          />{" "}
-          {" Loading Fee Options"}
-        </div>
-      )}
-      <ul
-        style={{
-          display: "flex",
-          alignItems: "start",
-          flexDirection: "column",
-          justifyContent: "start",
-          marginLeft: 0,
-          gap: 8,
-        }}
-      >
-        {feeQuotesArr.map((token, ind) => (
-          // <li className={classes.listHover} key={ind}>
-          //   {parseFloat(
-          //     (token.payment / Math.pow(10, token.decimal)).toString()
-          //   ).toFixed(8)}{" "}
-          //   {token.symbol}
-          // </li>
-          <div key={ind}>
-            <input
-              type="radio"
-              onChange={() => setSelectedQuote(token)}
-              style={{
-                color: "#FFB999",
-              }}
-              name={token.symbol}
-              id={token.symbol}
-              checked={selectedQuote === token}
-            />
-            <label htmlFor={token.symbol}>
-              {token?.maxGasFeeUSD?.toFixed(6)} {token.symbol}
-            </label>
-          </div>
-        ))}
-      </ul>
+          {feeQuotesArr.map((token, ind) => (
+            <div key={ind}>
+              <input
+                type="radio"
+                onChange={() => setSelectedQuote(token)}
+                style={{
+                  color: "#FFB999",
+                }}
+                name={token.symbol}
+                id={token.symbol}
+                checked={selectedQuote === token}
+              />
+              <label htmlFor={token.symbol}>
+                {token?.maxGasFeeUSD?.toFixed(6)} {token.symbol}
+              </label>
+            </div>
+          ))}
+        </ul>
 
-      <Button title="Mint NFT" isLoading={isLoading} onClickFunc={makeTx} />
+        <Button
+          title="Mint NFT"
+          isLoading={isLoading || waitIsLoading}
+          onClickFunc={mintNft}
+        />
+      </ErrorGuard>
     </main>
   );
 };

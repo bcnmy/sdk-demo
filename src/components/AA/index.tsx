@@ -1,9 +1,6 @@
 import React from "react";
 import { makeStyles } from "@mui/styles";
-// import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import ImageIcon from "@mui/icons-material/Image";
-import ControlPointDuplicateIcon from "@mui/icons-material/ControlPointDuplicate";
-// import CollectionsIcon from "@mui/icons-material/Collections";
 
 interface Props {
   useCase: number;
@@ -12,19 +9,6 @@ interface Props {
 }
 
 const cardItems = [
-  // {
-  //   title: "Mint ERC20 Token",
-  //   description: "This is single transaction to give Mint an ERC-20 token",
-  //   index: 4,
-  //   icon: (
-  //     <ControlPointIcon
-  //       style={{
-  //         color: "#FFB999",
-  //         fontSize: 72,
-  //       }}
-  //     />
-  //   ),
-  // },
   {
     title: "Mint NFT",
     description:
@@ -39,34 +23,6 @@ const cardItems = [
       />
     ),
   },
-  {
-    title: "BatchTx - Liquidity",
-    description:
-      "This magic bundle will approve USDC then provide the USDC liquidity to Hyphen Pool.",
-    index: 4,
-    icon: (
-      <ControlPointDuplicateIcon
-        style={{
-          color: "#FFB999",
-          fontSize: 72,
-        }}
-      />
-    ),
-  },
-  // {
-  //   title: "BatchTx - NFT",
-  //   description:
-  //     "This magic bundle will batch two single safeMint into one transaction.",
-  //     index: 7,
-  //   icon: (
-  //     <CollectionsIcon
-  //       style={{
-  //         color: "#FFB999",
-  //         fontSize: 72,
-  //       }}
-  //     />
-  //   ),
-  // },
 ];
 
 const AccountAbstraction: React.FC<Props> = ({

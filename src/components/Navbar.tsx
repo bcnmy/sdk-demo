@@ -5,7 +5,7 @@ import LegendToggleIcon from "@mui/icons-material/LegendToggle";
 import IconButton from "@mui/material/IconButton";
 import { useAccountModal } from "@rainbow-me/rainbowkit";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
-import { useSmartAccountContext } from "../contexts/SmartAccountContext";
+import { useSmartAccount } from "@biconomy/use-aa";
 import Button from "./Button";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { copyToClipBoard, ellipseAddress } from "../utils";
@@ -39,7 +39,7 @@ const AppBar = styled(MuiAppBar, {
 
 const Navbar = ({ open, handleDrawerOpen }: INavBar) => {
   const classes = useStyles();
-  const { loading, scwAddress } = useSmartAccountContext();
+  const { smartAccountAddress: scwAddress } = useSmartAccount();
   const { openAccountModal } = useAccountModal();
 
   const [showModal, setShowModal] = useState(false);
@@ -48,7 +48,7 @@ const Navbar = ({ open, handleDrawerOpen }: INavBar) => {
   };
 
   const disconnectWallet = () => {
-    if(openAccountModal) {
+    if (openAccountModal) {
       openAccountModal();
     }
     setShowModal(false);
@@ -78,7 +78,6 @@ const Navbar = ({ open, handleDrawerOpen }: INavBar) => {
               scwAddress ? ellipseAddress(scwAddress, 6) : "Connect Wallet"
             }
             onClickFunc={toggleLogoutButton}
-            isLoading={loading}
           >
             <p
               onClick={() => copyToClipBoard(scwAddress)}

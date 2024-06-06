@@ -3,20 +3,34 @@ import { makeStyles } from "@mui/styles";
 import { usePublicClient } from "wagmi";
 import { Hex, encodeFunctionData, getContract } from "viem";
 import Button from "../Button";
-import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
+import { configInfo as config, showSuccessMessage } from "../../utils";
 import {
-  configInfo as config,
-  showErrorMessage,
-  showSuccessMessage,
-} from "../../utils";
-import { PaymasterMode } from "@biconomy/account";
+  useSendTransaction,
+  useSmartAccount,
+  useUserOpWait,
+} from "@biconomy/use-aa";
+import { ErrorGuard } from "../../utils/ErrorGuard";
+import { polygonAmoy } from "viem/chains";
 
 const MintNft: React.FC = () => {
   const classes = useStyles();
   const publicClient = usePublicClient();
-  const { smartAccount, scwAddress } = useSmartAccountContext();
   const [nftCount, setNftCount] = useState<number | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loadedCount, setLoadedCount] = useState<boolean>(false);
+
+  const { smartAccountAddress: scwAddress } = useSmartAccount();
+  const {
+    mutate,
+    data: userOpResponse,
+    error,
+    isPending,
+  } = useSendTransaction();
+  const {
+    isLoading: waitIsLoading,
+    isSuccess: waitIsSuccess,
+    error: waitError,
+    data: waitData,
+  } = useUserOpWait({ userOpResponse });
 
   const getNftCount = useCallback(async () => {
     if (!scwAddress || !publicClient) return;
@@ -31,66 +45,56 @@ const MintNft: React.FC = () => {
   }, [publicClient, scwAddress]);
 
   useEffect(() => {
-    getNftCount();
-  }, [getNftCount, publicClient]);
-
-  const mintNft = async () => {
-    if (!scwAddress || !smartAccount || !publicClient) return;
-    try {
-      setLoading(true);
-      const mintData = encodeFunctionData({
-        abi: config.nft.abi,
-        functionName: "safeMint",
-        args: [scwAddress as Hex],
-      });
-      const tx1 = {
-        to: config.nft.address as Hex,
-        value: BigInt(0),
-        data: mintData,
-      };
-      let { waitForTxHash } = await smartAccount.sendTransaction(tx1, {
-        paymasterServiceData: { mode: PaymasterMode.SPONSORED },
-      });
-      const { transactionHash } = await waitForTxHash();
-      console.log("txHash", transactionHash);
-      showSuccessMessage(`Minted Nft ${transactionHash}`, transactionHash);
-      setLoading(false);
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+    if (waitIsSuccess || !loadedCount) {
       getNftCount();
-    } catch (err: any) {
-      console.error(err);
-      setLoading(false);
-      showErrorMessage(err.message || "Error in sending the transaction");
+      setLoadedCount(true);
     }
-  };
+  }, [getNftCount, waitIsSuccess]);
+
+  useEffect(() => {
+    waitIsSuccess &&
+      showSuccessMessage(
+        "Successful mint: " +
+          `${polygonAmoy.blockExplorers.default.url}/tx/${waitData?.receipt?.transactionHash}`
+      );
+  }, [waitIsSuccess]);
+
+  const mintNft = () =>
+    mutate({
+      manyOrOneTransactions: {
+        to: config.nft.address as Hex,
+        data: encodeFunctionData({
+          abi: config.nft.abi,
+          functionName: "safeMint",
+          args: [scwAddress as Hex],
+        }),
+      },
+    });
 
   return (
     <main className={classes.main}>
-      <p style={{ color: "#7E7E7E" }}>
-        Use Cases {"->"} Gasless {"->"} Mint Nft
-      </p>
-
-      <h3 className={classes.subTitle}>Mint Nft Flow</h3>
-
-      <p style={{ marginBottom: 20 }}>
-        This is an example gasless transaction to Mint Nft.
-      </p>
-      <p>
-        Nft Contract Address: {config.nft.address}{" "}
-        <span style={{ fontSize: 13, color: "#FFB4B4" }}>
-          (same of goerli, amoy, polygon)
-        </span>
-      </p>
-      <p style={{ marginBottom: 30, marginTop: 30, fontSize: 24 }}>
-        Nft Balance in SCW:{" "}
-        {nftCount === null ? (
-          <p style={{ color: "#7E7E7E", display: "contents" }}>fetching...</p>
-        ) : (
-          nftCount
-        )}
-      </p>
-
-      <Button title="Mint NFT" isLoading={loading} onClickFunc={mintNft} />
+      <ErrorGuard errors={[error, waitError]}>
+        <p style={{ color: "#7E7E7E" }}>
+          Use Cases {"->"} Gasless {"->"} Mint Nft
+        </p>
+        <h3 className={classes.subTitle}>Mint Nft Flow</h3>
+        <p style={{ marginBottom: 20 }}>
+          This is an example gasless transaction to Mint Nft.
+        </p>
+        <p>
+          Nft Contract Address: {config.nft.address}{" "}
+          <span style={{ fontSize: 13, color: "#FFB4B4" }}>
+            (same of goerli, amoy, polygon)
+          </span>
+        </p>
+        <p style={{ marginBottom: 30, marginTop: 30, fontSize: 24 }}>
+          Nft Balance in SCW:{" "}
+          <p style={{ color: "#7E7E7E", display: "contents" }}>
+            {waitIsLoading ? "fetching..." : nftCount}
+          </p>
+        </p>
+        <Button title="Mint NFT" isLoading={isPending} onClickFunc={mintNft} />
+      </ErrorGuard>
     </main>
   );
 };
