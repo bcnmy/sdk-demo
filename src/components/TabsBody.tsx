@@ -15,7 +15,6 @@ import HomeIcon from "@mui/icons-material/Home";
 import SavingsIcon from "@mui/icons-material/Savings";
 import EvStationIcon from "@mui/icons-material/EvStation";
 import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
-import CookieIcon from "@mui/icons-material/Cookie";
 import FiberNewIcon from "@mui/icons-material/FiberNew";
 import GamesIcon from "@mui/icons-material/Games";
 import ContactlessIcon from "@mui/icons-material/Contactless";

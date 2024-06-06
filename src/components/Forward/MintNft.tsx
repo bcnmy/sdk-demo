@@ -1,7 +1,7 @@
 import { makeStyles } from "@mui/styles";
 import CircularProgress from "@mui/material/CircularProgress";
 import { PaymasterFeeQuote, PaymasterMode } from "@biconomy/account";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import Button from "../Button";
 import {
@@ -9,13 +9,9 @@ import {
   useSmartAccount,
   useUserOpWait,
 } from "@biconomy/use-aa";
-import {
-  configInfo as config,
-  showErrorMessage,
-  showSuccessMessage,
-} from "../../utils";
+import { configInfo as config, showSuccessMessage } from "../../utils";
 import { Hex, encodeFunctionData, getContract } from "viem";
-import { useCall, usePublicClient } from "wagmi";
+import { usePublicClient } from "wagmi";
 import { ErrorGuard } from "../../utils/ErrorGuard";
 import { polygonAmoy } from "viem/chains";
 

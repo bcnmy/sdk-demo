@@ -10,6 +10,7 @@ import {
 } from "@biconomy/use-aa";
 import { configInfo as config, showSuccessMessage } from "../../utils";
 import { ErrorGuard } from "../../utils/ErrorGuard";
+import { polygonAmoy } from "viem/chains";
 
 const Faucet: React.FC = () => {
   const classes = useStyles();
