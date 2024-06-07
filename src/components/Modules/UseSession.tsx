@@ -25,11 +25,11 @@ const UseSession: React.FC<props> = ({ smartAccountAddress }) => {
     isSuccess: waitIsSuccess,
     error: waitError,
     data: waitData,
-  } = useUserOpWait({ userOpResponse });
+  } = useUserOpWait(userOpResponse);
 
   const mintTx = () =>
     mutate({
-      manyOrOneTx: {
+      transactions: {
         to: configInfo.nft.address,
         data: encodeFunctionData({
           abi: parseAbi(["function safeMint(address _to)"]),

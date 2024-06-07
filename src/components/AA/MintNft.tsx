@@ -30,7 +30,7 @@ const MintNft: React.FC = () => {
     isSuccess: waitIsSuccess,
     error: waitError,
     data: waitData,
-  } = useUserOpWait({ userOpResponse });
+  } = useUserOpWait(userOpResponse);
 
   const getNftCount = useCallback(async () => {
     if (!scwAddress || !publicClient) return;
@@ -61,7 +61,7 @@ const MintNft: React.FC = () => {
 
   const mintNft = () =>
     mutate({
-      manyOrOneTransactions: {
+      transactions: {
         to: config.nft.address as Hex,
         data: encodeFunctionData({
           abi: config.nft.abi,

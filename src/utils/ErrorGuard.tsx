@@ -5,10 +5,14 @@ export const ErrorGuard = ({
   errors,
 }: {
   children: ReactNode;
-  errors?: Error[];
+  errors?: (Error | null)[];
 }) => {
   if (errors?.some(Boolean)) {
-    return <div style={{ color: "red" }}>{errors?.[0]?.message ?? "Unknown Error"}</div>;
+    return (
+      <div style={{ color: "red" }}>
+        {errors?.[0]?.message ?? "Unknown Error"}
+      </div>
+    );
   }
   return children;
 };

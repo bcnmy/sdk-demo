@@ -4,7 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 import UseSession from "./UseSession";
 import { useAccount } from "wagmi";
 import {
-  Sponsored,
+  Options,
   bigIntReplacer,
   useCreateSession,
   useSmartAccount,
@@ -57,7 +57,7 @@ const CreateSession: React.FC = () => {
     isSuccess: waitIsSuccess,
     error: waitError,
     data: waitData,
-  } = useUserOpWait({ userOpResponse });
+  } = useUserOpWait(userOpResponse);
 
   useEffect(() => {
     if (waitIsSuccess) {
@@ -72,7 +72,7 @@ const CreateSession: React.FC = () => {
   const createSessionHandler = () =>
     mutate({
       policy,
-      buildUseropDto: Sponsored,
+      options: Options.Sponsored,
     });
 
   return (

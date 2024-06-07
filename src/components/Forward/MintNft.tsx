@@ -1,12 +1,15 @@
 import { makeStyles } from "@mui/styles";
 import CircularProgress from "@mui/material/CircularProgress";
 import { PaymasterFeeQuote, PaymasterMode } from "@biconomy/account";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import Button from "../Button";
 import {
+  Options,
+  mergeOptions,
   useSendTransaction,
   useSmartAccount,
+  useTokenFees,
   useUserOpWait,
 } from "@biconomy/use-aa";
 import { configInfo as config, showSuccessMessage } from "../../utils";
@@ -18,54 +21,41 @@ import { polygonAmoy } from "viem/chains";
 const MintNftForward: React.FC = () => {
   const classes = useStyles();
   const publicClient = usePublicClient();
-  const { smartAccountClient: smartAccount, smartAccountAddress: scwAddress } =
-    useSmartAccount();
+  const { smartAccountAddress } = useSmartAccount();
   const [nftCount, setNftCount] = useState<number | null>(null);
-  const [isLoadingFee, setIsLoadingFee] = useState(false);
-
-  const [spender, setSpender] = useState("");
-  const [feeQuotesArr, setFeeQuotesArr] = useState<PaymasterFeeQuote[]>([]);
   const [selectedQuote, setSelectedQuote] = useState<PaymasterFeeQuote>();
 
   useEffect(() => {
     const getNftCount = async () => {
-      if (!scwAddress || !publicClient) return;
+      if (!smartAccountAddress || !publicClient) return;
       const nftContract = getContract({
         address: config.nft.address as Hex,
         abi: config.nft.abi,
         client: publicClient,
       });
-      const count = await nftContract.read.balanceOf([scwAddress as Hex]);
+      const count = await nftContract.read.balanceOf([
+        smartAccountAddress as Hex,
+      ]);
       console.log("count", Number(count));
       setNftCount(Number(count));
     };
     getNftCount();
-    getFee();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scwAddress, publicClient]);
+  }, [smartAccountAddress, publicClient]);
 
-  const getFee = async () => {
-    if (!smartAccount || !scwAddress || !publicClient) return;
-    setIsLoadingFee(true);
-
-    const tx = {
+  const transactions = useMemo(
+    () => ({
       to: config.nft.address,
       data: encodeFunctionData({
         abi: config.nft.abi,
         functionName: "safeMint",
-        args: [scwAddress as Hex],
+        args: [smartAccountAddress as Hex],
       }),
-    };
+    }),
+    [smartAccountAddress]
+  );
 
-    const feeQuotesResponse = await smartAccount.getTokenFees([tx], {
-      paymasterServiceData: { mode: PaymasterMode.ERC20 },
-    });
-    setSpender(feeQuotesResponse.tokenPaymasterAddress || "");
-    const feeQuotes = feeQuotesResponse.feeQuotes as PaymasterFeeQuote[];
-    setFeeQuotesArr(feeQuotes);
-    console.log("getFeeQuotesForBatch", feeQuotes);
-    setIsLoadingFee(false);
-  };
+  const { data, isLoading: isLoadingFee } = useTokenFees({ transactions });
 
   const {
     mutate,
@@ -78,7 +68,7 @@ const MintNftForward: React.FC = () => {
     isSuccess: waitIsSuccess,
     error: waitError,
     data: waitData,
-  } = useUserOpWait({ userOpResponse });
+  } = useUserOpWait(userOpResponse);
 
   useEffect(() => {
     waitIsSuccess &&
@@ -89,25 +79,19 @@ const MintNftForward: React.FC = () => {
   }, [waitIsSuccess]);
 
   const mintNft = () => {
-    const manyOrOneTransactions = {
-      to: config.nft.address,
-      data: encodeFunctionData({
-        abi: config.nft.abi,
-        functionName: "safeMint",
-        args: [scwAddress as Hex],
-      }),
-    };
-
     mutate({
-      manyOrOneTransactions,
-      buildUseropDto: {
-        paymasterServiceData: {
-          feeQuote: selectedQuote,
-          mode: PaymasterMode.ERC20,
-          spender: spender as Hex,
-          maxApproval: false,
+      transactions,
+      options: mergeOptions([
+        Options.GasTokenPayment,
+        {
+          paymasterServiceData: {
+            mode: PaymasterMode.ERC20,
+            feeQuote: selectedQuote,
+            spender: data?.tokenPaymasterAddress,
+            maxApproval: false,
+          },
         },
-      },
+      ]),
     });
   };
 
@@ -164,7 +148,7 @@ const MintNftForward: React.FC = () => {
             gap: 8,
           }}
         >
-          {feeQuotesArr.map((token, ind) => (
+          {(data?.feeQuotes ?? []).map((token, ind) => (
             <div key={ind}>
               <input
                 type="radio"

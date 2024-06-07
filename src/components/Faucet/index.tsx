@@ -28,13 +28,11 @@ const Faucet: React.FC = () => {
     error: waitError,
     isLoading: waitIsLoading,
     data: waitData,
-  } = useUserOpWait({
-    userOpResponse,
-  });
+  } = useUserOpWait(userOpResponse);
 
   const drip = () =>
     mutate({
-      manyOrOneTransactions: {
+      transactions: {
         to: config.faucet.address as Hex,
         data: encodeFunctionData({
           abi: config.faucet.abi,

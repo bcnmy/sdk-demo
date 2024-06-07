@@ -5,7 +5,7 @@ import { Hex, encodeFunctionData, parseAbi } from "viem";
 import Button from "../Button";
 import { configInfo, showSuccessMessage } from "../../utils";
 import { polygonAmoy } from "viem/chains";
-import { useBatchSession, useUserOpWait } from "@biconomy/use-aa";
+import { useBatchSession, useUserOpWait, Options } from "@biconomy/use-aa";
 import { ErrorGuard } from "../../utils/ErrorGuard";
 
 interface props {
@@ -26,7 +26,7 @@ const UseBatchSession: React.FC<props> = ({ smartAccountAddress }) => {
     isSuccess: waitIsSuccess,
     error: waitError,
     data: waitData,
-  } = useUserOpWait({ userOpResponse });
+  } = useUserOpWait(userOpResponse);
 
   const nftMintTx: Transaction = {
     to: configInfo.nft.address,
@@ -39,8 +39,9 @@ const UseBatchSession: React.FC<props> = ({ smartAccountAddress }) => {
 
   const txTwice = () =>
     mutate({
-      manyOrOneTx: [nftMintTx, nftMintTx],
+      transactions: [nftMintTx, nftMintTx],
       correspondingIndexes: [0, 1],
+      options: Options.getIncreasedVerification(50),
     });
 
   useEffect(() => {

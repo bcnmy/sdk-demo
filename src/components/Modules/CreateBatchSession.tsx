@@ -3,8 +3,9 @@ import { makeStyles } from "@mui/styles";
 import { useAccount } from "wagmi";
 import Button from "../Button";
 import {
-  Sponsored,
+  Options,
   bigIntReplacer,
+  mergeOptions,
   useCreateBatchSession,
   useSmartAccount,
   useUserOpWait,
@@ -14,6 +15,9 @@ import { polygonAmoy } from "viem/chains";
 import { Hex } from "viem";
 import UseBatchSession from "./UseBatchSession";
 import { ErrorGuard } from "../../utils/ErrorGuard";
+import { Policy as PolicyFromSDK } from "@biconomy/account";
+
+export type Policy = Omit<PolicyFromSDK, "sessionKeyAddress">;
 
 const CreateBatchSession: React.FC = () => {
   const classes = useStyles();
@@ -21,7 +25,7 @@ const CreateBatchSession: React.FC = () => {
   const { smartAccountAddress: scwAddress } = useSmartAccount();
   const [hasSession, setHasSession] = useState<boolean>(false);
 
-  const policyLeaves = [
+  const policyLeaves: Policy[] = [
     {
       interval: {
         validUntil: 0,
@@ -68,7 +72,7 @@ const CreateBatchSession: React.FC = () => {
     isSuccess: waitIsSuccess,
     error: waitError,
     data: waitData,
-  } = useUserOpWait({ userOpResponse });
+  } = useUserOpWait(userOpResponse);
 
   useEffect(() => {
     if (waitIsSuccess) {
@@ -83,7 +87,10 @@ const CreateBatchSession: React.FC = () => {
   const createSessionHandler = () =>
     mutate({
       policy: policyLeaves,
-      buildUseropDto: Sponsored,
+      options: mergeOptions([
+        Options.Sponsored,
+        Options.getIncreasedVerification(50),
+      ]),
     });
 
   return (
