@@ -78,19 +78,19 @@ const MintNftForward: React.FC = () => {
       );
   }, [waitIsSuccess]);
 
+  console.log(
+    mergeOptions([
+      Options.GasTokenPayment,
+      Options.getGasTokenFeeQuote(selectedQuote!),
+    ])
+  );
+
   const mintNft = () => {
     mutate({
       transactions,
       options: mergeOptions([
         Options.GasTokenPayment,
-        {
-          paymasterServiceData: {
-            mode: PaymasterMode.ERC20,
-            feeQuote: selectedQuote,
-            spender: data?.tokenPaymasterAddress,
-            maxApproval: false,
-          },
-        },
+        Options.getGasTokenFeeQuote(selectedQuote!),
       ]),
     });
   };
