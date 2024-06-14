@@ -22,7 +22,7 @@ const UseDanSession: React.FC<props> = ({ session }) => {
         args: [smartAccountAddress as Hex],
       }),
     }),
-    []
+    [smartAccountAddress]
   );
 
   const useDanSessionHandler = async () => {
