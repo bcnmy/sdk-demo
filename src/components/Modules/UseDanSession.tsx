@@ -31,6 +31,9 @@ const UseDanSession: React.FC<props> = ({ session }) => {
     if (!smartAccountClient || !smartAccountAddress) {
       throw new Error("Smart Account not found");
     }
+    if (!session) {
+      throw new Error("Session not found");
+    }
 
     // Send the transactions using session params
     const { wait } = await smartAccountClient.sendTransaction(transactions, {
