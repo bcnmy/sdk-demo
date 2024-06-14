@@ -14,7 +14,6 @@ const CreateDanSession: React.FC = () => {
   const classes = useStyles();
   const nftAddress: Hex = "0x1758f42Af7026fBbB559Dc60EcE0De3ef81f665e";
 
-  const [hasSession, setHasSession] = useState<boolean>(false);
   const { address: eoa } = useAccount();
   const { smartAccountAddress, smartAccountClient } = useSmartAccount();
   const [session, setSession] = useState<Session | null>(null);
@@ -44,22 +43,21 @@ const CreateDanSession: React.FC = () => {
         success
     } = await wait()
 
-    // Handle Success....
-    success && setHasSession(true);
-    success && setSession()
+
+    // Handle Success. Keep the "Session" (StorageClient and sessionIDs) and set it to the session
+    success && setSession(session)
     */
-    setHasSession(true);
   };
 
   return (
     <main className={classes.main}>
       <p style={{ color: "#7E7E7E" }}>
-        Use Cases {"->"} Modules {"->"} {hasSession ? "Use" : "Create"} Dan
+        Use Cases {"->"} Modules {"->"} {!!session ? "Use" : "Create"} Dan
         Session
       </p>
 
       <h3 className={classes.subTitle}>
-        {hasSession ? "Use" : "Create"} a Dan Session
+        {!!session ? "Use" : "Create"} a Dan Session
       </h3>
 
       <ToastContainer
@@ -77,12 +75,8 @@ const CreateDanSession: React.FC = () => {
 
       <pre>policy: {JSON.stringify(policy, bigIntReplacer, 2)}</pre>
 
-      {!!hasSession && session ? (
-        <UseDanSession
-          smartAccountAddress={smartAccountAddress}
-          address={eoa!}
-          session={session}
-        />
+      {!!session ? (
+        <UseDanSession session={session} />
       ) : (
         <Button title="Create Session" onClickFunc={createDanSessionHandler} />
       )}

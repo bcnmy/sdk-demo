@@ -7,8 +7,6 @@ import { Session } from "@biconomy/account";
 import { useSmartAccount } from "@biconomy/use-aa";
 
 interface props {
-  smartAccountAddress: Hex;
-  address: string;
   session: Session;
 }
 
