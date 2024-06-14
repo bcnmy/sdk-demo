@@ -1,19 +1,19 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import { Hex, encodeFunctionData, parseAbi } from "viem";
 import Button from "../Button";
-import { configInfo, showSuccessMessage } from "../../utils";
-import { polygonAmoy } from "viem/chains";
-import { useSession, useUserOpWait } from "@biconomy/use-aa";
-import { ErrorGuard } from "../../utils/ErrorGuard";
+import { configInfo } from "../../utils";
+import { Session } from "@biconomy/account";
+import { useSmartAccount } from "@biconomy/use-aa";
 
 interface props {
   smartAccountAddress: Hex;
   address: string;
+  session: Session;
 }
 
-const UseDanSession: React.FC<props> = ({ smartAccountAddress }) => {
-  const useDanSessionHandler = async () => {};
+const UseDanSession: React.FC<props> = ({ session }) => {
+  const { smartAccountAddress, smartAccountClient } = useSmartAccount();
 
   const transactions = useMemo(
     () => ({
@@ -24,8 +24,28 @@ const UseDanSession: React.FC<props> = ({ smartAccountAddress }) => {
         args: [smartAccountAddress as Hex],
       }),
     }),
-    [smartAccountAddress]
+    []
   );
+
+  const useDanSessionHandler = async () => {
+    if (!smartAccountClient || !smartAccountAddress) {
+      throw new Error("Smart Account not found");
+    }
+
+    // Send the transactions using session params
+    const { wait } = await smartAccountClient.sendTransaction(transactions, {
+      params: {
+        // take it from the session
+      },
+    });
+    // Wait for the createSessionTx
+    const {
+      receipt: { transactionHash },
+      success,
+    } = await wait();
+
+    // Handle Success....
+  };
 
   return <Button title="Minft NFT" onClickFunc={useDanSessionHandler} />;
 };

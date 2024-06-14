@@ -7,7 +7,7 @@ import { bigIntReplacer, useSmartAccount } from "@biconomy/use-aa";
 import Button from "../Button";
 import { makeStyles } from "@mui/styles";
 import { Hex } from "viem";
-import { Policy } from "@biconomy/account";
+import { Policy, Session } from "@biconomy/account";
 import UseDanSession from "./UseDanSession";
 
 const CreateDanSession: React.FC = () => {
@@ -17,6 +17,7 @@ const CreateDanSession: React.FC = () => {
   const [hasSession, setHasSession] = useState<boolean>(false);
   const { address: eoa } = useAccount();
   const { smartAccountAddress, smartAccountClient } = useSmartAccount();
+  const [session, setSession] = useState<Session | null>(null);
 
   const policy: Policy[] = [];
 
@@ -45,6 +46,7 @@ const CreateDanSession: React.FC = () => {
 
     // Handle Success....
     success && setHasSession(true);
+    success && setSession()
     */
     setHasSession(true);
   };
@@ -75,10 +77,11 @@ const CreateDanSession: React.FC = () => {
 
       <pre>policy: {JSON.stringify(policy, bigIntReplacer, 2)}</pre>
 
-      {!!hasSession ? (
+      {!!hasSession && session ? (
         <UseDanSession
           smartAccountAddress={smartAccountAddress}
           address={eoa!}
+          session={session}
         />
       ) : (
         <Button title="Create Session" onClickFunc={createDanSessionHandler} />
