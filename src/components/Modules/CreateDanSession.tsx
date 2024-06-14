@@ -7,7 +7,7 @@ import { bigIntReplacer, useSmartAccount } from "@biconomy/use-aa";
 import Button from "../Button";
 import { makeStyles } from "@mui/styles";
 import { Hex } from "viem";
-import { Policy, Session } from "@biconomy/account";
+import { Policy, Session, SessionLocalStorage } from "@biconomy/account";
 import UseDanSession from "./UseDanSession";
 
 const CreateDanSession: React.FC = () => {
@@ -32,6 +32,8 @@ const CreateDanSession: React.FC = () => {
       "to create the session"
     );
 
+    const sessionStorageClient = new SessionLocalStorage(smartAccountAddress);
+
     /*
     
     // New in SDK
@@ -43,9 +45,13 @@ const CreateDanSession: React.FC = () => {
         success
     } = await wait()
 
+    const resultingSession = {
+      sessionStorageClient,
+      sessionIdInfo: [...]
+    }
 
     // Handle Success. Keep the "Session" (StorageClient and sessionIDs) and set it to the session
-    success && setSession(session)
+    success && setSession(resultingSession)
     */
   };
 
