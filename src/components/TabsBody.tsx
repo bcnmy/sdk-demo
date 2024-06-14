@@ -30,6 +30,8 @@ import MintNftForward from "./Forward/MintNft";
 import CreateBatchSession from "./Modules/CreateBatchSession";
 import UseBatchSession from "./Modules/UseBatchSession";
 import CreateSession from "./Modules/CreateSession";
+import CreateDanSession from "./Modules/CreateDanSession";
+import UseDanSession from "./Modules/UseDanSession";
 
 const drawerWidth = 320;
 const onboardingList = [
@@ -75,6 +77,13 @@ const SessionRouterList = [
   },
 ];
 
+const SessionDanList = [
+  {
+    name: "Dan Session",
+    icon: <GamesIcon />,
+  },
+];
+
 const TabsBody = ({ loading }: { loading: boolean }) => {
   const classes = useStyles();
   const [pageIndex, setPageIndex] = React.useState(0);
@@ -84,6 +93,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
   const [isForwardOpen, setIsForwardOpen] = React.useState(true);
   const [isSessionOpen, setIsSessionOpen] = React.useState(true);
   const [isSessionRouterOpen, setIsSessionRouterOpen] = React.useState(true);
+  const [isDanOpen, setIsDanOpen] = React.useState(true);
 
   const handleChange = (_: any, newValue: any) => {
     if (newValue >= 4 && newValue <= 7) {
@@ -411,6 +421,64 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
               </List>
             </Collapse>
           </List>
+
+          <List sx={{ display: "block" }}>
+            <ListItemButton
+              onClick={(e: any) => {
+                setIsSessionRouterOpen(!isDanOpen);
+                handleChange(e, 8);
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : "auto",
+                  justifyContent: "center",
+                  color: pageIndex === 13 ? "#FFB999" : "#e6e6e6",
+                }}
+              >
+                <FiberNewIcon />
+              </ListItemIcon>
+              <ListItemText primary="Dan Demo" sx={{ opacity: open ? 1 : 0 }} />
+              {isDanOpen ? <ExpandLess /> : <ExpandMore />}
+            </ListItemButton>
+            <Collapse in={isDanOpen} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                {SessionDanList.map((ele, index) => (
+                  <ListItem
+                    key={ele.name}
+                    disablePadding
+                    sx={{ display: "block" }}
+                  >
+                    <ListItemButton
+                      sx={{
+                        minHeight: 48,
+                        justifyContent: open ? "initial" : "center",
+                        px: 2.5,
+                      }}
+                      onClick={(e: any) => handleChange(e, index + 13)}
+                    >
+                      <ListItemIcon
+                        sx={{
+                          minWidth: 0,
+                          mr: open ? 3 : "auto",
+                          justifyContent: "center",
+                          color:
+                            pageIndex === index + 1 ? "#FFB999" : "#e6e6e6",
+                        }}
+                      >
+                        {ele.icon}
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={ele.name}
+                        sx={{ opacity: open ? 1 : 0 }}
+                      />
+                    </ListItemButton>
+                  </ListItem>
+                ))}
+              </List>
+            </Collapse>
+          </List>
         </List>
       </Drawer>
 
@@ -466,7 +534,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
         <CreateBatchSession />
       </TabPanel>
       <TabPanel value={pageIndex} index={13}>
-        <UseBatchSession />
+        <CreateDanSession />
       </TabPanel>
     </Box>
   );
