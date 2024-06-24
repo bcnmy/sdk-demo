@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import { Hex, encodeFunctionData, parseAbi } from "viem";
 import Button from "../Button";
+import { ethers } from "ethers";
 import { configInfo } from "../../utils";
 import { Session } from "@biconomy/account";
 import { useSmartAccount } from "@biconomy/use-aa";

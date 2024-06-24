@@ -5,8 +5,9 @@ import { useAccount, useClient } from "wagmi";
 import { bigIntReplacer, useSmartAccount } from "@biconomy/use-aa";
 import Button from "../Button";
 import { makeStyles } from "@mui/styles";
-import { Hex } from "viem";
-import { Policy, Session, SessionLocalStorage } from "@biconomy/account";
+import { Hex, keccak256, parseUnits } from "viem";
+import { ethers } from "ethers";
+import { CreateSessionDataParams, DEFAULT_SESSION_KEY_MANAGER_MODULE, ERROR_MESSAGES, PaymasterMode, Policy, Session, SessionKeyManagerModule, SessionLocalStorage, Transaction, createABISessionDatum, createSessionKeyManagerModule, getDefaultStorageClient } from "@biconomy/account";
 import UseDanSession from "./UseDanSession";
 import * as ed from '@noble/ed25519';
 import {
@@ -75,6 +76,7 @@ export class BrowserWallet implements IBrowserWallet {
 const CreateDanSession: React.FC = () => {
   const classes = useStyles();
   const nftAddress: Hex = "0x1758f42Af7026fBbB559Dc60EcE0De3ef81f665e";
+  const erc20ModuleAddr = "0x3A25b00638fF5bDfD4f300beF39d236041C073c0";
 
   const { address: eoa, connector } = useAccount();
   const client = useClient();
@@ -93,7 +95,7 @@ const CreateDanSession: React.FC = () => {
     fetchProvider();
   }, [connector]);
 
-  const policy: any[] = [
+  const policyDAN: any[] = [
     {
       type: 'erc20',
       method: 'approve',
@@ -105,6 +107,31 @@ const CreateDanSession: React.FC = () => {
       },
     },
   ];
+
+  const policyOnChain = [
+    {
+      contractAddress: nftAddress,
+      functionSelector: "safeMint(address)",
+      rules: [
+        {
+          offset: 0,
+          condition: 0,
+          referenceValue: smartAccountAddress,
+        },
+      ],
+      interval: {
+        validUntil: 0,
+        validAfter: 0,
+      },
+      valueLimit: 0n,
+    },
+  ];
+
+  const policy = policyOnChain;
+
+  const permissions = {
+    permissions: policy
+  }
 
   const createDanSessionHandler = async () => {
     try {
@@ -157,7 +184,91 @@ const CreateDanSession: React.FC = () => {
       // resp.publicKey
       // get EOA from public key which will be session key EOA
 
-      const sessionStorageClient = new SessionLocalStorage(smartAccountAddress);
+      let pubKey = resp.publicKey;
+
+      if (pubKey.startsWith('0x')) {
+        let pubKey = resp.publicKey;
+      }
+
+     // Compute the Keccak-256 hash of the public key
+      const hash = keccak256(('0x' + pubKey) as Hex);
+
+     // The Ethereum address is the last 20 bytes of the hash
+     const sessionKeyEOA = '0x' + hash.slice(-40);
+
+     console.log('sessionKeyEOA', sessionKeyEOA);
+
+    // const sessionStorageClient = getDefaultStorageClient(smartAccountAddress);
+    const sessionStorageClient = new SessionLocalStorage(smartAccountAddress);
+
+    const sessionsModule = await createSessionKeyManagerModule({
+      smartAccountAddress,
+      sessionStorageClient
+    })
+ 
+    console.log('session module')
+    console.log(sessionsModule);
+
+    // cretae session key data
+    const sessionKeyData = ethers.AbiCoder.defaultAbiCoder().encode(
+      ["address", "address", "address", "uint256"],
+      [
+        sessionKeyEOA,
+        "0xdA5289fCAAF71d52a80A254da614a192b693e977",
+        "0x42138576848E839827585A3539305774D36B9602",
+        parseUnits("50".toString(), 6)
+      ]
+    );
+
+    const createSessionDataParams: CreateSessionDataParams = {
+      validAfter: 0,
+      validUntil: 1721757486,
+      sessionValidationModule: erc20ModuleAddr, 
+      sessionPublicKey: sessionKeyEOA as Hex,
+      sessionKeyData: sessionKeyData as Hex
+    }
+
+    // we could use ERC20 SVM as well
+    const { data: policyData, sessionIDInfo } =
+    await sessionsModule.createSessionData([createSessionDataParams])
+
+    console.log('policyData', policyData);
+    console.log('sessionIDInfo', sessionIDInfo);
+
+    const permitTx = {
+      to: DEFAULT_SESSION_KEY_MANAGER_MODULE,
+      data: policyData
+    }
+  
+    const txs: Transaction[] = []
+  
+    const isDeployed = await smartAccountClient.isAccountDeployed()
+    const enableSessionTx = await smartAccountClient.getEnableModuleData(
+      DEFAULT_SESSION_KEY_MANAGER_MODULE
+    )
+  
+    if (isDeployed) {
+      const enabled = await smartAccountClient.isModuleEnabled(
+        DEFAULT_SESSION_KEY_MANAGER_MODULE
+      )
+      if (!enabled) {
+        txs.push(enableSessionTx)
+      }
+    } else {
+      txs.push(enableSessionTx)
+    }
+  
+    txs.push(permitTx)
+  
+    const userOpResponse = await smartAccountClient.sendTransaction(txs, {
+      paymasterServiceData: { mode: PaymasterMode.SPONSORED },
+    })
+
+    console.log('userOpResponse', userOpResponse);
+
+    const { transactionHash } = await userOpResponse.waitForTxHash();
+
+    console.log('transactionHash', transactionHash);
 
       /*
       // New in SDK
