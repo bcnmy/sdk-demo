@@ -4,7 +4,7 @@ import { Hex, encodeFunctionData, parseAbi } from "viem";
 import Button from "../Button";
 import { ethers } from "ethers";
 import { configInfo } from "../../utils";
-import { Session } from "@biconomy/account";
+import { Session, SessionLocalStorage, createDANSessionKeyManagerModule } from "@biconomy/account";
 import { useSmartAccount } from "@biconomy/use-aa";
 
 interface props {
@@ -34,6 +34,16 @@ const UseDanSession: React.FC<props> = ({ session }) => {
       throw new Error("Session not found");
     }
 
+    const sessionStorageClient = new SessionLocalStorage(smartAccountAddress);
+
+    const sessionsModule = await createDANSessionKeyManagerModule({
+      smartAccountAddress,
+      sessionStorageClient
+    })
+
+    // Review if needed. or already baked in
+    smartAccountClient.setActiveValidationModule(sessionsModule as any);
+ 
     // Send the transactions using session params
     const { wait } = await smartAccountClient.sendTransaction(transactions, {
       params: {

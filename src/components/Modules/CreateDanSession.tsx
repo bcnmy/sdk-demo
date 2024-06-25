@@ -7,7 +7,7 @@ import Button from "../Button";
 import { makeStyles } from "@mui/styles";
 import { Hex, keccak256, parseUnits } from "viem";
 import { ethers } from "ethers";
-import { CreateSessionDataParams, DEFAULT_SESSION_KEY_MANAGER_MODULE, ERROR_MESSAGES, PaymasterMode, Policy, Session, SessionKeyManagerModule, SessionLocalStorage, Transaction, createABISessionDatum, createSessionKeyManagerModule, getDefaultStorageClient } from "@biconomy/account";
+import { CreateSessionDataParams, DEFAULT_SESSION_KEY_MANAGER_MODULE, ERROR_MESSAGES, PaymasterMode, Policy, Session, SessionKeyManagerModule, SessionLocalStorage, Transaction, createABISessionDatum, createDANSessionKeyManagerModule, getDefaultStorageClient } from "@biconomy/account";
 import UseDanSession from "./UseDanSession";
 import * as ed from '@noble/ed25519';
 import {
@@ -201,7 +201,7 @@ const CreateDanSession: React.FC = () => {
     // const sessionStorageClient = getDefaultStorageClient(smartAccountAddress);
     const sessionStorageClient = new SessionLocalStorage(smartAccountAddress);
 
-    const sessionsModule = await createSessionKeyManagerModule({
+    const sessionsModule = await createDANSessionKeyManagerModule({
       smartAccountAddress,
       sessionStorageClient
     })
