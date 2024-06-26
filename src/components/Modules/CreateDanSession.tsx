@@ -10,6 +10,8 @@ import { ethers } from "ethers";
 import { CreateSessionDataParams, DEFAULT_SESSION_KEY_MANAGER_MODULE, ERROR_MESSAGES, PaymasterMode, Policy, Session, SessionKeyManagerModule, SessionLocalStorage, Transaction, createABISessionDatum, createDANSessionKeyManagerModule, getDefaultStorageClient } from "@biconomy/account";
 import UseDanSession from "./UseDanSession";
 import * as ed from '@noble/ed25519';
+import * as dotenv from "dotenv";
+
 import {
   NetworkSigner,
   AuthMethod,
@@ -71,6 +73,18 @@ export class BrowserWallet implements IBrowserWallet {
       params: [from, JSON.stringify(request)],
     });
   }
+}
+
+// Function to convert hex string to Uint8Array
+function hexToUint8Array(hex: string) {
+  if (hex.length % 2 !== 0) {
+    throw new Error('Hex string must have an even number of characters');
+  }
+  const array = new Uint8Array(hex.length / 2);
+  for (let i = 0; i < hex.length; i += 2) {
+    array[i / 2] = parseInt(hex.substr(i, 2), 16);
+  }
+  return array;
 }
 
 const CreateDanSession: React.FC = () => {
@@ -146,7 +160,8 @@ const CreateDanSession: React.FC = () => {
         "to create the session"
       );
 
-      const sk = ed.utils.randomPrivateKey();
+      // const sk = ed.utils.randomPrivateKey();
+      const sk = hexToUint8Array(process.env.EPHEMERAL_SECRET_KEY!);
       // Global variable for now
       ephSK = sk;
       ephPK = await ed.getPublicKeyAsync(sk);
@@ -266,28 +281,20 @@ const CreateDanSession: React.FC = () => {
 
     console.log('userOpResponse', userOpResponse);
 
-    const { transactionHash } = await userOpResponse.waitForTxHash();
+    const {
+      receipt: { transactionHash },
+      success
+    }  = await userOpResponse.wait();
 
     console.log('transactionHash', transactionHash);
 
-      /*
-      // New in SDK
-      const { wait } = await createDanSession(policy, ...); 
-
-      // Wait for the createSessionTx
-      const {
-          receipt: { transactionHash },
-          success
-      } = await wait()
-
       const resultingSession = {
         sessionStorageClient,
-        sessionIdInfo: [...]
+        sessionIDInfo
       }
 
       // Handle Success. Keep the "Session" (StorageClient and sessionIDs) and set it to the session
       success && setSession(resultingSession)
-      */
     } catch (error) {
       console.error('Error creating session:', error);
     }
