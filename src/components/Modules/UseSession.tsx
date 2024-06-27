@@ -1,15 +1,16 @@
-import React, { useEffect } from "react";
-import "react-toastify/dist/ReactToastify.css";
-import { Hex, encodeFunctionData, parseAbi } from "viem";
-import Button from "../Button";
-import { configInfo, showSuccessMessage } from "../../utils";
-import { polygonAmoy } from "viem/chains";
-import { useSession, useUserOpWait } from "@biconomy/use-aa";
-import { ErrorGuard } from "../../utils/ErrorGuard";
+import { useSession, useUserOpWait } from "@biconomy/use-aa"
+import type React from "react"
+import { useEffect } from "react"
+import "react-toastify/dist/ReactToastify.css"
+import { type Hex, encodeFunctionData, parseAbi } from "viem"
+import { polygonAmoy } from "viem/chains"
+import { configInfo, showSuccessMessage } from "../../utils"
+import { ErrorGuard } from "../../utils/ErrorGuard"
+import Button from "../Button"
 
 interface props {
-  smartAccountAddress: Hex;
-  address: string;
+  smartAccountAddress: Hex
+  address: string
 }
 
 const UseSession: React.FC<props> = ({ smartAccountAddress }) => {
@@ -17,15 +18,15 @@ const UseSession: React.FC<props> = ({ smartAccountAddress }) => {
     mutate,
     data: userOpResponse,
     error,
-    isPending: isLoading,
-  } = useSession();
+    isPending: isLoading
+  } = useSession()
 
   const {
     isLoading: waitIsLoading,
     isSuccess: waitIsSuccess,
     error: waitError,
-    data: waitData,
-  } = useUserOpWait(userOpResponse);
+    data: waitData
+  } = useUserOpWait(userOpResponse)
 
   const mintTx = () =>
     mutate({
@@ -34,19 +35,18 @@ const UseSession: React.FC<props> = ({ smartAccountAddress }) => {
         data: encodeFunctionData({
           abi: parseAbi(["function safeMint(address _to)"]),
           functionName: "safeMint",
-          args: [smartAccountAddress as Hex],
-        }),
-      },
-    });
+          args: [smartAccountAddress as Hex]
+        })
+      }
+    })
 
   useEffect(() => {
     if (waitIsSuccess) {
       showSuccessMessage(
-        "Successful mint: " +
-          `${polygonAmoy.blockExplorers.default.url}/tx/${waitData?.receipt?.transactionHash}`
-      );
+        `Successful mint: ${polygonAmoy.blockExplorers.default.url}/tx/${waitData?.receipt?.transactionHash}`
+      )
     }
-  }, [waitIsSuccess]);
+  }, [waitIsSuccess, waitData])
 
   return (
     <ErrorGuard errors={[error, waitError]}>
@@ -56,7 +56,7 @@ const UseSession: React.FC<props> = ({ smartAccountAddress }) => {
         isLoading={isLoading || waitIsLoading}
       />
     </ErrorGuard>
-  );
-};
+  )
+}
 
-export default UseSession;
+export default UseSession

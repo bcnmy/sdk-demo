@@ -1,58 +1,60 @@
-import { useState } from "react";
-import { makeStyles } from "@mui/styles";
-import { styled } from "@mui/material/styles";
-import LegendToggleIcon from "@mui/icons-material/LegendToggle";
-import IconButton from "@mui/material/IconButton";
-import { useAccountModal } from "@rainbow-me/rainbowkit";
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
-import { useSmartAccount } from "@biconomy/use-aa";
-import Button from "./Button";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import { copyToClipBoard, ellipseAddress } from "../utils";
+import { useSmartAccount } from "@biconomy/use-aa"
+import ContentCopyIcon from "@mui/icons-material/ContentCopy"
+import LegendToggleIcon from "@mui/icons-material/LegendToggle"
+import MuiAppBar, {
+  type AppBarProps as MuiAppBarProps
+} from "@mui/material/AppBar"
+import IconButton from "@mui/material/IconButton"
+import { styled } from "@mui/material/styles"
+import { makeStyles } from "@mui/styles"
+import { useAccountModal } from "@rainbow-me/rainbowkit"
+import { useState } from "react"
+import { copyToClipBoard, ellipseAddress } from "../utils"
+import Button from "./Button"
 
 type INavBar = {
-  open: boolean;
-  handleDrawerOpen: () => void;
-};
+  open: boolean
+  handleDrawerOpen: () => void
+}
 
-const drawerWidth = 260;
+const drawerWidth = 260
 interface AppBarProps extends MuiAppBarProps {
-  open?: boolean;
+  open?: boolean
 }
 const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open",
+  shouldForwardProp: (prop) => prop !== "open"
 })<AppBarProps>(({ theme, open }) => ({
   zIndex: theme.zIndex.drawer + 1,
   transition: theme.transitions.create(["width", "margin"], {
     easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
+    duration: theme.transitions.duration.leavingScreen
   }),
   ...(open && {
     marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
-}));
+      duration: theme.transitions.duration.enteringScreen
+    })
+  })
+}))
 
 const Navbar = ({ open, handleDrawerOpen }: INavBar) => {
-  const classes = useStyles();
-  const { smartAccountAddress: scwAddress } = useSmartAccount();
-  const { openAccountModal } = useAccountModal();
+  const classes = useStyles()
+  const { smartAccountAddress: scwAddress } = useSmartAccount()
+  const { openAccountModal } = useAccountModal()
 
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(false)
   const toggleLogoutButton = () => {
-    showModal ? setShowModal(false) : setShowModal(true);
-  };
+    showModal ? setShowModal(false) : setShowModal(true)
+  }
 
   const disconnectWallet = () => {
     if (openAccountModal) {
-      openAccountModal();
+      openAccountModal()
     }
-    setShowModal(false);
-  };
+    setShowModal(false)
+  }
 
   return (
     <AppBar position="fixed" open={open} classes={{ root: classes.nav }}>
@@ -64,7 +66,7 @@ const Navbar = ({ open, handleDrawerOpen }: INavBar) => {
           edge="start"
           sx={{
             marginRight: 5,
-            ...(open && { display: "none" }),
+            ...(open && { display: "none" })
           }}
         >
           <LegendToggleIcon />
@@ -86,7 +88,7 @@ const Navbar = ({ open, handleDrawerOpen }: INavBar) => {
               <ContentCopyIcon
                 className={classes.copyIcon}
                 style={{
-                  textAlign: "center",
+                  textAlign: "center"
                 }}
               />
             </p>
@@ -95,8 +97,8 @@ const Navbar = ({ open, handleDrawerOpen }: INavBar) => {
         </div>
       </div>
     </AppBar>
-  );
-};
+  )
+}
 
 const useStyles = makeStyles((theme: any) => ({
   nav: {
@@ -105,8 +107,8 @@ const useStyles = makeStyles((theme: any) => ({
     boxShadow: "none !important",
     background: "rgba(0,0,0,0) !important",
     "@media (max-width:1100px)": {
-      padding: "0 20px",
-    },
+      padding: "0 20px"
+    }
   },
   flexContainer: {
     display: "flex",
@@ -115,19 +117,19 @@ const useStyles = makeStyles((theme: any) => ({
     margin: "auto",
     // maxWidth: 1400,
     padding: "0 10px",
-    width: "100%",
+    width: "100%"
   },
   walletBtnContainer: {
     display: "flex",
     alignItems: "center",
-    gap: 20,
+    gap: 20
   },
   btnTitle: {
     opacity: 0.75,
     fontSize: 10,
     margin: 0,
     position: "absolute",
-    top: 4,
+    top: 4
   },
   modal: {
     position: "absolute",
@@ -145,8 +147,8 @@ const useStyles = makeStyles((theme: any) => ({
     transform: "translate(0%, 35%)",
 
     [theme.breakpoints.down("xs")]: {
-      width: "auto",
-    },
+      width: "auto"
+    }
   },
   element: {
     padding: "0 5px",
@@ -154,12 +156,12 @@ const useStyles = makeStyles((theme: any) => ({
     display: "flex",
     // border: "1px solid #F5E8E4",
     justifyContent: "space-between",
-    borderRadius: 10,
+    borderRadius: 10
   },
   elementText: {
     fontSize: 14,
     marginLeft: 5,
-    marginRight: 5,
+    marginRight: 5
   },
   copyText: {
     margin: "auto",
@@ -167,18 +169,18 @@ const useStyles = makeStyles((theme: any) => ({
     padding: "0 5px",
     display: "flex",
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   formControl: {
     margin: theme.spacing(1),
-    width: 72,
+    width: 72
   },
   copyIcon: {
     color: "#e6e6e6",
     "&:hover": {
-      color: "#ffb999",
-    },
-  },
-}));
+      color: "#ffb999"
+    }
+  }
+}))
 
-export default Navbar;
+export default Navbar

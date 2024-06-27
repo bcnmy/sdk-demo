@@ -1,11 +1,11 @@
-import React from "react";
-import { makeStyles } from "@mui/styles";
-import CollectionsIcon from "@mui/icons-material/Collections";
+import CollectionsIcon from "@mui/icons-material/Collections"
+import { makeStyles } from "@mui/styles"
+import type React from "react"
 
 interface Props {
-  useCase: number;
-  setUseCase: any;
-  pageIndexChange: any;
+  useCase: number
+  setUseCase: any
+  pageIndexChange: any
 }
 
 const cardItems = [
@@ -18,19 +18,19 @@ const cardItems = [
       <CollectionsIcon
         style={{
           color: "#FFB999",
-          fontSize: 72,
+          fontSize: 72
         }}
       />
-    ),
-  },
-];
+    )
+  }
+]
 
 const ForwardFlow: React.FC<Props> = ({
   useCase: _,
   setUseCase: __,
-  pageIndexChange,
+  pageIndexChange
 }) => {
-  const classes = useStyles();
+  const classes = useStyles()
 
   return (
     <main className={classes.main}>
@@ -52,7 +52,7 @@ const ForwardFlow: React.FC<Props> = ({
         {cardItems.map((item, index) => (
           <div
             onClick={(e) => pageIndexChange(e, item.index)}
-            key={index}
+            key={index + 1}
             className={classes.card}
           >
             {item.icon}
@@ -62,7 +62,7 @@ const ForwardFlow: React.FC<Props> = ({
                   color: "#FFB999",
                   textAlign: "start",
                   fontSize: "auto",
-                  margin: 0,
+                  margin: 0
                 }}
               >
                 {item.title}
@@ -71,7 +71,7 @@ const ForwardFlow: React.FC<Props> = ({
                 style={{
                   fontSize: 14,
                   margin: 0,
-                  textAlign: "center",
+                  textAlign: "center"
                 }}
               >
                 {item.description}
@@ -81,7 +81,7 @@ const ForwardFlow: React.FC<Props> = ({
         ))}
       </div>
     </main>
-  );
+  )
   // return (
   //   <main className={classes.main}>
   //     <h3 className={classes.subTitle}>EIP4337: Account Abstraction</h3>
@@ -147,18 +147,18 @@ const ForwardFlow: React.FC<Props> = ({
   //     </Box>
   //   </main>
   // );
-};
+}
 
 const useStyles = makeStyles(() => ({
   main: {
     padding: "10px 40px",
     width: "100%",
-    color: "#e6e6e6",
+    color: "#e6e6e6"
   },
   subTitle: {
     color: "#FFB999",
     fontSize: 36,
-    margin: 0,
+    margin: 0
   },
   textBox: {
     display: "flex",
@@ -167,14 +167,14 @@ const useStyles = makeStyles(() => ({
     alignItems: "center",
     gap: 8,
     "@media (max-width:1640px)": {
-      alignItems: "start",
-    },
+      alignItems: "start"
+    }
   },
   subSubTitle: {
     fontFamily: "Rubik",
     color: "#BDC2FF",
     fontSize: 20,
-    margin: 20,
+    margin: 20
   },
   cardContainer: {
     display: "flex",
@@ -185,8 +185,8 @@ const useStyles = makeStyles(() => ({
     gap: 20,
     cursor: "pointer",
     "@media (max-width:1640px)": {
-      flexDirection: "column",
-    },
+      flexDirection: "column"
+    }
   },
   card: {
     // width: "25%",
@@ -206,9 +206,9 @@ const useStyles = makeStyles(() => ({
       width: "100%",
       maxWidth: "unset",
       aspectRatio: "unset",
-      justifyContent: "space-between",
-    },
-  },
-}));
+      justifyContent: "space-between"
+    }
+  }
+}))
 
-export default ForwardFlow;
+export default ForwardFlow

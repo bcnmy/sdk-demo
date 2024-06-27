@@ -1,5 +1,5 @@
-import { createTheme, adaptV4Theme } from "@mui/material/styles";
+import { adaptV4Theme, createTheme } from "@mui/material/styles"
 
-const theme = createTheme(adaptV4Theme({}));
+const theme = createTheme(adaptV4Theme({}))
 
-export default theme;
+export default theme

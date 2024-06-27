@@ -1,47 +1,48 @@
-import { makeStyles } from "@mui/styles";
-import CircularProgress from "@mui/material/CircularProgress";
-import { PaymasterFeeQuote, PaymasterMode } from "@biconomy/account";
-import React, { useEffect, useMemo, useState } from "react";
+import type { PaymasterFeeQuote } from "@biconomy/account"
+import CircularProgress from "@mui/material/CircularProgress"
+import { makeStyles } from "@mui/styles"
+import type React from "react"
+import { useEffect, useMemo, useState } from "react"
 
-import Button from "../Button";
 import {
   Options,
   mergeOptions,
   useSendTransaction,
   useSmartAccount,
   useTokenFees,
-  useUserOpWait,
-} from "@biconomy/use-aa";
-import { configInfo as config, showSuccessMessage } from "../../utils";
-import { Hex, encodeFunctionData, getContract } from "viem";
-import { usePublicClient } from "wagmi";
-import { ErrorGuard } from "../../utils/ErrorGuard";
-import { polygonAmoy } from "viem/chains";
+  useUserOpWait
+} from "@biconomy/use-aa"
+import { type Hex, encodeFunctionData, getContract } from "viem"
+import { polygonAmoy } from "viem/chains"
+import { usePublicClient } from "wagmi"
+import { configInfo as config, showSuccessMessage } from "../../utils"
+import { ErrorGuard } from "../../utils/ErrorGuard"
+import Button from "../Button"
 
 const MintNftForward: React.FC = () => {
-  const classes = useStyles();
-  const publicClient = usePublicClient();
-  const { smartAccountAddress } = useSmartAccount();
-  const [nftCount, setNftCount] = useState<number | null>(null);
-  const [selectedQuote, setSelectedQuote] = useState<PaymasterFeeQuote>();
+  const classes = useStyles()
+  const publicClient = usePublicClient()
+  const { smartAccountAddress } = useSmartAccount()
+  const [nftCount, setNftCount] = useState<number | null>(null)
+  const [selectedQuote, setSelectedQuote] = useState<PaymasterFeeQuote>()
 
   useEffect(() => {
     const getNftCount = async () => {
-      if (!smartAccountAddress || !publicClient) return;
+      if (!smartAccountAddress || !publicClient) return
       const nftContract = getContract({
         address: config.nft.address as Hex,
         abi: config.nft.abi,
-        client: publicClient,
-      });
+        client: publicClient
+      })
       const count = await nftContract.read.balanceOf([
-        smartAccountAddress as Hex,
-      ]);
-      console.log("count", Number(count));
-      setNftCount(Number(count));
-    };
-    getNftCount();
+        smartAccountAddress as Hex
+      ])
+      console.log("count", Number(count))
+      setNftCount(Number(count))
+    }
+    getNftCount()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [smartAccountAddress, publicClient]);
+  }, [smartAccountAddress, publicClient])
 
   const transactions = useMemo(
     () => ({
@@ -49,51 +50,50 @@ const MintNftForward: React.FC = () => {
       data: encodeFunctionData({
         abi: config.nft.abi,
         functionName: "safeMint",
-        args: [smartAccountAddress as Hex],
-      }),
+        args: [smartAccountAddress as Hex]
+      })
     }),
     [smartAccountAddress]
-  );
+  )
 
-  const { data, isLoading: isLoadingFee } = useTokenFees({ transactions });
+  const { data, isLoading: isLoadingFee } = useTokenFees({ transactions })
 
   const {
     mutate,
     data: userOpResponse,
     error,
-    isPending: isLoading,
-  } = useSendTransaction();
+    isPending: isLoading
+  } = useSendTransaction()
   const {
     isLoading: waitIsLoading,
     isSuccess: waitIsSuccess,
     error: waitError,
-    data: waitData,
-  } = useUserOpWait(userOpResponse);
+    data: waitData
+  } = useUserOpWait(userOpResponse)
 
   useEffect(() => {
     waitIsSuccess &&
       showSuccessMessage(
-        "Successful mint: " +
-          `${polygonAmoy.blockExplorers.default.url}/tx/${waitData?.receipt?.transactionHash}`
-      );
-  }, [waitIsSuccess]);
+        `Successful mint: ${polygonAmoy.blockExplorers.default.url}/tx/${waitData?.receipt?.transactionHash}`
+      )
+  }, [waitIsSuccess, waitData])
 
   console.log(
     mergeOptions([
       Options.GasTokenPayment,
-      Options.getGasTokenFeeQuote(selectedQuote!),
+      Options.getGasTokenFeeQuote(selectedQuote!)
     ])
-  );
+  )
 
   const mintNft = () => {
     mutate({
       transactions,
       options: mergeOptions([
         Options.GasTokenPayment,
-        Options.getGasTokenFeeQuote(selectedQuote!),
-      ]),
-    });
-  };
+        Options.getGasTokenFeeQuote(selectedQuote!)
+      ])
+    })
+  }
 
   return (
     <main className={classes.main}>
@@ -123,7 +123,7 @@ const MintNftForward: React.FC = () => {
             style={{
               display: "flex",
               alignItems: "center",
-              margin: "0 0 40px 30px",
+              margin: "0 0 40px 30px"
             }}
           >
             <CircularProgress
@@ -132,7 +132,7 @@ const MintNftForward: React.FC = () => {
                 width: 25,
                 height: 25,
                 marginRight: 10,
-                color: "#e6e6e6",
+                color: "#e6e6e6"
               }}
             />{" "}
             {" Loading Fee Options"}
@@ -145,7 +145,7 @@ const MintNftForward: React.FC = () => {
             flexDirection: "column",
             justifyContent: "start",
             marginLeft: 0,
-            gap: 8,
+            gap: 8
           }}
         >
           {(data?.feeQuotes ?? []).map((token, ind) => (
@@ -154,7 +154,7 @@ const MintNftForward: React.FC = () => {
                 type="radio"
                 onChange={() => setSelectedQuote(token)}
                 style={{
-                  color: "#FFB999",
+                  color: "#FFB999"
                 }}
                 name={token.symbol}
                 id={token.symbol}
@@ -174,28 +174,28 @@ const MintNftForward: React.FC = () => {
         />
       </ErrorGuard>
     </main>
-  );
-};
+  )
+}
 
 const useStyles = makeStyles(() => ({
   main: {
     margin: "auto",
     padding: "10px 40px",
-    color: "#EEEEEE",
+    color: "#EEEEEE"
   },
   subTitle: {
     color: "#FFB999",
     fontSize: 36,
-    margin: 0,
+    margin: 0
   },
   h3Title: {
-    color: "#e6e6e6",
+    color: "#e6e6e6"
   },
   listHover: {
     "&:hover": {
-      color: "#FF9551",
-    },
-  },
-}));
+      color: "#FF9551"
+    }
+  }
+}))
 
-export default MintNftForward;
+export default MintNftForward

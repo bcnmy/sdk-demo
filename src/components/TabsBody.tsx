@@ -1,111 +1,109 @@
+import { ExpandLess, ExpandMore } from "@mui/icons-material"
+import ContactlessIcon from "@mui/icons-material/Contactless"
+import EvStationIcon from "@mui/icons-material/EvStation"
+import FiberNewIcon from "@mui/icons-material/FiberNew"
+import GamesIcon from "@mui/icons-material/Games"
+import HomeIcon from "@mui/icons-material/Home"
+import InsertPhotoIcon from "@mui/icons-material/InsertPhoto"
+import SavingsIcon from "@mui/icons-material/Savings"
+import Box from "@mui/material/Box"
+import Collapse from "@mui/material/Collapse/Collapse"
+import CssBaseline from "@mui/material/CssBaseline"
+import MuiDrawer from "@mui/material/Drawer"
+import List from "@mui/material/List"
+import ListItem from "@mui/material/ListItem"
+import ListItemButton from "@mui/material/ListItemButton"
+import ListItemIcon from "@mui/material/ListItemIcon"
+import ListItemText from "@mui/material/ListItemText"
+import { type CSSObject, type Theme, styled } from "@mui/material/styles"
+import { makeStyles } from "@mui/styles"
+import PropTypes from "prop-types"
 /* eslint-disable react/jsx-pascal-case */
-import * as React from "react";
-import PropTypes from "prop-types";
-import { makeStyles } from "@mui/styles";
-import { styled, Theme, CSSObject } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import MuiDrawer from "@mui/material/Drawer";
-import List from "@mui/material/List";
-import CssBaseline from "@mui/material/CssBaseline";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import HomeIcon from "@mui/icons-material/Home";
-import SavingsIcon from "@mui/icons-material/Savings";
-import EvStationIcon from "@mui/icons-material/EvStation";
-import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
-import FiberNewIcon from "@mui/icons-material/FiberNew";
-import GamesIcon from "@mui/icons-material/Games";
-import ContactlessIcon from "@mui/icons-material/Contactless";
-import Onboarding from "./Onboarding/index";
-import Navbar from "./Navbar";
-import Collapse from "@mui/material/Collapse/Collapse";
-import { ExpandLess, ExpandMore } from "@mui/icons-material";
-import Faucet from "./Faucet";
-import AccountAbstraction from "./AA";
-import MintNft from "./AA/MintNft";
-import ForwardFlow from "./Forward";
-import MintNftForward from "./Forward/MintNft";
-import CreateBatchSession from "./Modules/CreateBatchSession";
-import UseBatchSession from "./Modules/UseBatchSession";
-import CreateSession from "./Modules/CreateSession";
-import CreateDanSession from "./Modules/CreateDanSession";
-import UseDanSession from "./Modules/UseDanSession";
+import * as React from "react"
+import AccountAbstraction from "./AA"
+import MintNft from "./AA/MintNft"
+import Faucet from "./Faucet"
+import ForwardFlow from "./Forward"
+import MintNftForward from "./Forward/MintNft"
+import CreateBatchSession from "./Modules/CreateBatchSession"
+import CreateDanSession from "./Modules/CreateDanSession"
+import CreateSession from "./Modules/CreateSession"
+import Navbar from "./Navbar"
+import Onboarding from "./Onboarding/index"
 
-const drawerWidth = 320;
+const drawerWidth = 320
 const onboardingList = [
   {
     name: "Home",
-    icon: <HomeIcon />,
+    icon: <HomeIcon />
   },
   {
     name: "Faucet",
-    icon: <SavingsIcon />,
-  },
+    icon: <SavingsIcon />
+  }
   // {
   //   name: "Balance",
   //   icon: <AccountBalanceWalletIcon />,
   // },
-];
+]
 
 const AAList = [
   {
     name: "Mint NFT",
-    icon: <InsertPhotoIcon />,
-  },
-];
+    icon: <InsertPhotoIcon />
+  }
+]
 
 const ForwardList = [
   {
     name: "Mint NFT",
-    icon: <InsertPhotoIcon />,
-  },
-];
+    icon: <InsertPhotoIcon />
+  }
+]
 
 const SessionList = [
   {
     name: "Single Session",
-    icon: <GamesIcon />,
-  },
-];
+    icon: <GamesIcon />
+  }
+]
 
 const SessionRouterList = [
   {
     name: "Batch Session",
-    icon: <GamesIcon />,
-  },
-];
+    icon: <GamesIcon />
+  }
+]
 
 const SessionDanList = [
   {
     name: "Dan Session",
-    icon: <GamesIcon />,
-  },
-];
+    icon: <GamesIcon />
+  }
+]
 
 const TabsBody = ({ loading }: { loading: boolean }) => {
-  const classes = useStyles();
-  const [pageIndex, setPageIndex] = React.useState(0);
-  const [useCase, setUseCase] = React.useState(0);
-  const [open, setOpen] = React.useState(true);
-  const [isAAOpen, setIsAAOpen] = React.useState(true);
-  const [isForwardOpen, setIsForwardOpen] = React.useState(true);
-  const [isSessionOpen, setIsSessionOpen] = React.useState(true);
-  const [isSessionRouterOpen, setIsSessionRouterOpen] = React.useState(true);
-  const [isDanOpen, setIsDanOpen] = React.useState(true);
+  const classes = useStyles()
+  const [pageIndex, setPageIndex] = React.useState(0)
+  const [useCase, setUseCase] = React.useState(0)
+  const [open, setOpen] = React.useState(true)
+  const [isAAOpen, setIsAAOpen] = React.useState(true)
+  const [isForwardOpen, setIsForwardOpen] = React.useState(true)
+  const [isSessionOpen, setIsSessionOpen] = React.useState(true)
+  const [isSessionRouterOpen, setIsSessionRouterOpen] = React.useState(true)
+  const [isDanOpen] = React.useState(true)
 
   const handleChange = (_: any, newValue: any) => {
     if (newValue >= 4 && newValue <= 7) {
-      setIsAAOpen(true);
+      setIsAAOpen(true)
     }
-    setUseCase(0);
-    setPageIndex(newValue);
-  };
+    setUseCase(0)
+    setPageIndex(newValue)
+  }
 
   const handleDrawerOpen = () => {
-    setOpen(true);
-  };
+    setOpen(true)
+  }
 
   return loading ? (
     <div className={classes.container}>
@@ -124,11 +122,11 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
             background: "rgba(0,0,0,0)",
             color: "#e6e6e6",
             border: 0,
-            borderRight: `1.5px solid rgba(255,255,255,0.1)`,
+            borderRight: `1.5px solid rgba(255,255,255,0.1)`
           },
           "& .MuiTypography-root": {
-            fontSize: 14,
-          },
+            fontSize: 14
+          }
         }}
       >
         <DrawerHeader>
@@ -137,7 +135,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
         {/* <Divider style={{ borderColor: "#323a43", borderWidth: 1 }} /> */}
         <List
           sx={{
-            display: "block",
+            display: "block"
           }}
         >
           {onboardingList.map((ele, index) => (
@@ -146,7 +144,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
                 sx={{
                   minHeight: 48,
                   justifyContent: open ? "initial" : "center",
-                  px: 2.5,
+                  px: 2.5
                 }}
                 onClick={(e: any) => handleChange(e, index)}
               >
@@ -155,7 +153,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
                     minWidth: 0,
                     mr: open ? 3 : "auto",
                     justifyContent: "center",
-                    color: pageIndex === index ? "#FFB999" : "#e6e6e6",
+                    color: pageIndex === index ? "#FFB999" : "#e6e6e6"
                   }}
                 >
                   {ele.icon}
@@ -172,13 +170,13 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
         {/* <Divider style={{ borderColor: "#323a43", borderWidth: 1 }} /> */}
         <List
           sx={{
-            display: "block",
+            display: "block"
           }}
         >
           <ListItemButton
             onClick={(e: any) => {
-              setIsAAOpen(!isAAOpen);
-              handleChange(e, 2);
+              setIsAAOpen(!isAAOpen)
+              handleChange(e, 2)
             }}
           >
             <ListItemIcon
@@ -186,7 +184,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
                 minWidth: 0,
                 mr: open ? 3 : "auto",
                 justifyContent: "center",
-                color: pageIndex === 2 ? "#FFB999" : "#e6e6e6",
+                color: pageIndex === 2 ? "#FFB999" : "#e6e6e6"
               }}
             >
               <EvStationIcon />
@@ -209,7 +207,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
                     sx={{
                       minHeight: 48,
                       justifyContent: open ? "initial" : "center",
-                      px: 2.5,
+                      px: 2.5
                     }}
                     onClick={(e: any) => handleChange(e, index + 3)}
                   >
@@ -218,7 +216,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
                         minWidth: 0,
                         mr: open ? 3 : "auto",
                         justifyContent: "center",
-                        color: pageIndex === index + 3 ? "#FFB999" : "#e6e6e6",
+                        color: pageIndex === index + 3 ? "#FFB999" : "#e6e6e6"
                       }}
                     >
                       {ele.icon}
@@ -236,13 +234,13 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
         {/* Forward Left Panel */}
         <List
           sx={{
-            display: "block",
+            display: "block"
           }}
         >
           <ListItemButton
             onClick={(e: any) => {
-              setIsForwardOpen(!isForwardOpen);
-              handleChange(e, 5);
+              setIsForwardOpen(!isForwardOpen)
+              handleChange(e, 5)
             }}
           >
             <ListItemIcon
@@ -250,7 +248,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
                 minWidth: 0,
                 mr: open ? 3 : "auto",
                 justifyContent: "center",
-                color: pageIndex === 5 ? "#FFB999" : "#e6e6e6",
+                color: pageIndex === 5 ? "#FFB999" : "#e6e6e6"
               }}
             >
               <ContactlessIcon />
@@ -273,7 +271,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
                     sx={{
                       minHeight: 48,
                       justifyContent: open ? "initial" : "center",
-                      px: 2.5,
+                      px: 2.5
                     }}
                     onClick={(e: any) => handleChange(e, index + 6)}
                   >
@@ -282,7 +280,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
                         minWidth: 0,
                         mr: open ? 3 : "auto",
                         justifyContent: "center",
-                        color: pageIndex === index + 6 ? "#FFB999" : "#e6e6e6",
+                        color: pageIndex === index + 6 ? "#FFB999" : "#e6e6e6"
                       }}
                     >
                       {ele.icon}
@@ -301,13 +299,13 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
         {/* Session Left Panel */}
         <List
           sx={{
-            display: "block",
+            display: "block"
           }}
         >
           <ListItemButton
             onClick={(e: any) => {
-              setIsSessionOpen(!isSessionOpen);
-              handleChange(e, 8);
+              setIsSessionOpen(!isSessionOpen)
+              handleChange(e, 8)
             }}
           >
             <ListItemIcon
@@ -315,7 +313,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
                 minWidth: 0,
                 mr: open ? 3 : "auto",
                 justifyContent: "center",
-                color: pageIndex === 8 ? "#FFB999" : "#e6e6e6",
+                color: pageIndex === 8 ? "#FFB999" : "#e6e6e6"
               }}
             >
               <FiberNewIcon />
@@ -338,7 +336,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
                     sx={{
                       minHeight: 48,
                       justifyContent: open ? "initial" : "center",
-                      px: 2.5,
+                      px: 2.5
                     }}
                     onClick={(e: any) => handleChange(e, index + 9)}
                   >
@@ -347,7 +345,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
                         minWidth: 0,
                         mr: open ? 3 : "auto",
                         justifyContent: "center",
-                        color: pageIndex === index + 9 ? "#FFB999" : "#e6e6e6",
+                        color: pageIndex === index + 9 ? "#FFB999" : "#e6e6e6"
                       }}
                     >
                       {ele.icon}
@@ -364,8 +362,8 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
           <List sx={{ display: "block" }}>
             <ListItemButton
               onClick={(e: any) => {
-                setIsSessionRouterOpen(!isSessionRouterOpen);
-                handleChange(e, 8);
+                setIsSessionRouterOpen(!isSessionRouterOpen)
+                handleChange(e, 8)
               }}
             >
               <ListItemIcon
@@ -373,7 +371,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
                   minWidth: 0,
                   mr: open ? 3 : "auto",
                   justifyContent: "center",
-                  color: pageIndex === 12 ? "#FFB999" : "#e6e6e6",
+                  color: pageIndex === 12 ? "#FFB999" : "#e6e6e6"
                 }}
               >
                 <FiberNewIcon />
@@ -396,7 +394,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
                       sx={{
                         minHeight: 48,
                         justifyContent: open ? "initial" : "center",
-                        px: 2.5,
+                        px: 2.5
                       }}
                       onClick={(e: any) => handleChange(e, index + 12)}
                     >
@@ -406,7 +404,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
                           mr: open ? 3 : "auto",
                           justifyContent: "center",
                           color:
-                            pageIndex === index + 12 ? "#FFB999" : "#e6e6e6",
+                            pageIndex === index + 12 ? "#FFB999" : "#e6e6e6"
                         }}
                       >
                         {ele.icon}
@@ -425,8 +423,8 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
           <List sx={{ display: "block" }}>
             <ListItemButton
               onClick={(e: any) => {
-                setIsSessionRouterOpen(!isDanOpen);
-                handleChange(e, 8);
+                setIsSessionRouterOpen(!isDanOpen)
+                handleChange(e, 8)
               }}
             >
               <ListItemIcon
@@ -434,7 +432,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
                   minWidth: 0,
                   mr: open ? 3 : "auto",
                   justifyContent: "center",
-                  color: pageIndex === 13 ? "#FFB999" : "#e6e6e6",
+                  color: pageIndex === 13 ? "#FFB999" : "#e6e6e6"
                 }}
               >
                 <FiberNewIcon />
@@ -454,7 +452,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
                       sx={{
                         minHeight: 48,
                         justifyContent: open ? "initial" : "center",
-                        px: 2.5,
+                        px: 2.5
                       }}
                       onClick={(e: any) => handleChange(e, index + 13)}
                     >
@@ -463,8 +461,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
                           minWidth: 0,
                           mr: open ? 3 : "auto",
                           justifyContent: "center",
-                          color:
-                            pageIndex === index + 1 ? "#FFB999" : "#e6e6e6",
+                          color: pageIndex === index + 1 ? "#FFB999" : "#e6e6e6"
                         }}
                       >
                         {ele.icon}
@@ -537,12 +534,12 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
         <CreateDanSession />
       </TabPanel>
     </Box>
-  );
-};
+  )
+}
 
 function TabPanel(props: any) {
-  const classes = useStyles();
-  const { children, value, index, ...other } = props;
+  const classes = useStyles()
+  const { children, value, index, ...other } = props
 
   return (
     <div
@@ -555,34 +552,34 @@ function TabPanel(props: any) {
     >
       {value === index && children}
     </div>
-  );
+  )
 }
 TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired,
-};
+  value: PropTypes.any.isRequired
+}
 
 const openedMixin = (theme: Theme): CSSObject => ({
   width: drawerWidth,
   transition: theme.transitions.create("width", {
     easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.enteringScreen,
+    duration: theme.transitions.duration.enteringScreen
   }),
-  overflowX: "hidden",
-});
+  overflowX: "hidden"
+})
 
 const closedMixin = (theme: Theme): CSSObject => ({
   transition: theme.transitions.create("width", {
     easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
+    duration: theme.transitions.duration.leavingScreen
   }),
   overflowX: "hidden",
   width: `calc(${theme.spacing(7)} + 1px)`,
   [theme.breakpoints.up("sm")]: {
-    width: `calc(${theme.spacing(8)} + 1px)`,
-  },
-});
+    width: `calc(${theme.spacing(8)} + 1px)`
+  }
+})
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
@@ -591,11 +588,11 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "space-between",
   padding: theme.spacing(0, 2),
   // necessary for content to be below app bar
-  ...theme.mixins.toolbar,
-}));
+  ...theme.mixins.toolbar
+}))
 
 const Drawer = styled(MuiDrawer, {
-  shouldForwardProp: (prop) => prop !== "open",
+  shouldForwardProp: (prop) => prop !== "open"
 })(({ theme, open }) => ({
   width: drawerWidth,
   flexShrink: 0,
@@ -603,15 +600,15 @@ const Drawer = styled(MuiDrawer, {
   boxSizing: "border-box",
   ...(open && {
     ...openedMixin(theme),
-    "& .MuiDrawer-paper": openedMixin(theme),
+    "& .MuiDrawer-paper": openedMixin(theme)
   }),
   ...(!open && {
     ...closedMixin(theme),
-    "& .MuiDrawer-paper": closedMixin(theme),
-  }),
-}));
+    "& .MuiDrawer-paper": closedMixin(theme)
+  })
+}))
 
-export default TabsBody;
+export default TabsBody
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -622,15 +619,15 @@ const useStyles = makeStyles(() => ({
     height: "max-content",
     minHeight: "92vh",
     "@media (max-width:699px)": {
-      flexDirection: "column",
-    },
+      flexDirection: "column"
+    }
   },
   container: {
     display: "flex",
     flexDirection: "column",
     width: "100%",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
   tabs: {
     borderRight: `1.5px solid #323a43`,
@@ -638,8 +635,8 @@ const useStyles = makeStyles(() => ({
     width: "15%",
     "@media (max-width:699px)": {
       width: "90%",
-      margin: "auto",
-    },
+      margin: "auto"
+    }
   },
   tabpanel: {
     width: "100%",
@@ -647,27 +644,27 @@ const useStyles = makeStyles(() => ({
     "@media (max-width:699px)": {
       width: "100%",
       margin: "auto",
-      minHeight: "80vh",
-    },
+      minHeight: "80vh"
+    }
   },
   animateBlink: {
-    animation: "$blink 4s linear infinite",
+    animation: "$blink 4s linear infinite"
   },
   "@keyframes blink": {
     "0%": {
-      opacity: "0",
+      opacity: "0"
     },
     "25%": {
-      opacity: "100",
+      opacity: "100"
     },
     "50%": {
-      opacity: "0",
+      opacity: "0"
     },
     "75%": {
-      opacity: "100",
+      opacity: "100"
     },
     "100%": {
-      opacity: "0",
-    },
-  },
-}));
+      opacity: "0"
+    }
+  }
+}))
