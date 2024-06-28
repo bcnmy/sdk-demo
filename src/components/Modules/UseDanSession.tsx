@@ -1,44 +1,44 @@
 import {
+  ERC20_ABI,
   type Session,
   SessionLocalStorage,
   createDANSessionKeyManagerModule,
-  getChain,
-  ERC20_ABI,
-} from "@biconomy/account";
-import { useSmartAccount } from "@biconomy/use-aa";
-import type React from "react";
-import { useMemo } from "react";
-import "react-toastify/dist/ReactToastify.css";
-import { type Hex, encodeFunctionData, parseAbi, parseUnits } from "viem";
-import { useAccount } from "wagmi";
-import { configInfo } from "../../utils";
-import Button from "../Button";
+  getChain
+} from "@biconomy/account"
+import { useSmartAccount } from "@biconomy/use-aa"
+import type React from "react"
+import { useMemo } from "react"
+import "react-toastify/dist/ReactToastify.css"
+import { type Hex, encodeFunctionData, parseAbi, parseUnits } from "viem"
+import { useAccount } from "wagmi"
+import { configInfo } from "../../utils"
+import Button from "../Button"
 
 interface props {
-  session: Session;
+  session: Session
 }
 
 // Function to convert hex string to Uint8Array
 function hexToUint8Array(hex: string) {
   if (hex.length % 2 !== 0) {
-    throw new Error("Hex string must have an even number of characters");
+    throw new Error("Hex string must have an even number of characters")
   }
-  const array = new Uint8Array(hex.length / 2);
+  const array = new Uint8Array(hex.length / 2)
   for (let i = 0; i < hex.length; i += 2) {
-    array[i / 2] = Number.parseInt(hex.substr(i, 2), 16);
+    array[i / 2] = Number.parseInt(hex.substr(i, 2), 16)
   }
-  return array;
+  return array
 }
 
 const UseDanSession: React.FC<props> = ({ session }) => {
-  const token = configInfo.usdc.address as Hex;
-  const amount = parseUnits("50".toString(), 6);
+  const token = configInfo.usdc.address as Hex
+  const amount = parseUnits("50".toString(), 6)
 
-  const { address: eoa } = useAccount();
-  const { smartAccountAddress, smartAccountClient } = useSmartAccount();
+  const { address: eoa } = useAccount()
+  const { smartAccountAddress, smartAccountClient } = useSmartAccount()
 
-  console.log("use dan session: ", smartAccountAddress);
-  console.log(session);
+  console.log("use dan session: ", smartAccountAddress)
+  console.log(session)
 
   const transactions = useMemo(
     () => ({
@@ -46,46 +46,46 @@ const UseDanSession: React.FC<props> = ({ session }) => {
       data: encodeFunctionData({
         abi: parseAbi(["function transfer(address _to, uint256 _value)"]),
         functionName: "transfer",
-        args: [eoa!, amount],
-      }),
+        args: [eoa!, amount]
+      })
     }),
     [token, eoa, amount]
-  );
+  )
 
   const useDanSessionHandler = async () => {
     if (!smartAccountClient || !smartAccountAddress) {
-      throw new Error("Smart Account not found");
+      throw new Error("Smart Account not found")
     }
     if (!session) {
-      throw new Error("Session not found");
+      throw new Error("Session not found")
     }
 
-    const sessionStorageClient = new SessionLocalStorage(smartAccountAddress);
+    const sessionStorageClient = new SessionLocalStorage(smartAccountAddress)
 
     const sessionsModule = await createDANSessionKeyManagerModule({
       smartAccountAddress,
-      sessionStorageClient,
-    });
+      sessionStorageClient
+    })
 
     // Review if needed. or already baked in
-    smartAccountClient.setActiveValidationModule(sessionsModule as any);
+    smartAccountClient.setActiveValidationModule(sessionsModule as any)
 
     console.log(
       "active validation module ",
       smartAccountClient.activeValidationModule
-    );
+    )
 
-    const sk = hexToUint8Array(import.meta.env.VITE_EPHEMERAL_KEY!);
+    const sk = hexToUint8Array(import.meta.env.VITE_EPHEMERAL_KEY!)
 
-    console.log("use DAN session ever here? =============>");
+    console.log("use DAN session ever here? =============>")
 
-    const sessionID = session.sessionIDInfo[0];
+    const sessionID = session.sessionIDInfo[0]
 
     const sessionKeyEOA = (
       await session.sessionStorageClient.getSessionData({ sessionID })
-    ).sessionPublicKey;
+    ).sessionPublicKey
 
-    console.log("sessionKeyEOA b", sessionKeyEOA);
+    console.log("sessionKeyEOA b", sessionKeyEOA)
 
     // Send the transactions using session params
     const { wait } = await smartAccountClient.sendTransaction(transactions, {
@@ -95,21 +95,21 @@ const UseDanSession: React.FC<props> = ({ session }) => {
         ephSK: sk,
         threshold: 10,
         partiesNumber: 21,
-        sessionKeyEOA,
-      },
-    });
+        sessionKeyEOA
+      }
+    })
     // Wait for the createSessionTx
     const {
       receipt: { transactionHash },
-      success,
-    } = await wait();
+      success
+    } = await wait()
 
-    success && console.log({ transactionHash });
+    success && console.log({ transactionHash })
 
     // Handle Success....
-  };
+  }
 
-  return <Button title="Minft NFT" onClickFunc={useDanSessionHandler} />;
-};
+  return <Button title="Minft NFT" onClickFunc={useDanSessionHandler} />
+}
 
-export default UseDanSession;
+export default UseDanSession
