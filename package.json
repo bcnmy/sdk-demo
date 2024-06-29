@@ -13,7 +13,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@biconomy/account": "^4.4.6",
     "@biconomy/use-aa": "1.0.14",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",

@@ -35,6 +35,7 @@ import { configInfo } from "../../utils"
 
 let ephSK: Uint8Array | null = null
 let ephPK: Uint8Array | null = null
+let keyIdToPass: string | null = null
 
 interface EIP6963ProviderInfo {
   uuid: string
@@ -187,6 +188,11 @@ const CreateDanSession: React.FC = () => {
 
       const pubKey = resp.publicKey
 
+      const keyId = resp.keyId
+      console.log("selected keyId", keyId)
+
+      keyIdToPass = keyId
+
       if (pubKey.startsWith("0x")) {
         // const pubKey = resp.publicKey;
       }
@@ -272,7 +278,7 @@ const CreateDanSession: React.FC = () => {
 
       const resultingSession = {
         sessionStorageClient,
-        sessionIDInfo
+        sessionIDInfo,
       }
 
       // Handle Success. Keep the "Session" (StorageClient and sessionIDs) and set it to the session
@@ -309,7 +315,7 @@ const CreateDanSession: React.FC = () => {
       <pre>policy: {JSON.stringify(policy, bigIntReplacer, 2)}</pre>
 
       {!!session ? (
-        <UseDanSession session={session} />
+        <UseDanSession session={session} mpcKeyId={keyIdToPass!} />
       ) : (
         <Button title="Create Session" onClickFunc={createDanSessionHandler} />
       )}

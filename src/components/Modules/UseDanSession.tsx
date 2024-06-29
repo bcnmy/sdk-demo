@@ -15,7 +15,8 @@ import { configInfo } from "../../utils"
 import Button from "../Button"
 
 interface props {
-  session: Session
+  session: Session,
+  mpcKeyId: string
 }
 
 // Function to convert hex string to Uint8Array
@@ -30,9 +31,9 @@ function hexToUint8Array(hex: string) {
   return array
 }
 
-const UseDanSession: React.FC<props> = ({ session }) => {
+const UseDanSession: React.FC<props> = ({ session, mpcKeyId }) => {
   const token = configInfo.usdc.address as Hex
-  const amount = parseUnits("50".toString(), 6)
+  const amount = parseUnits("20".toString(), 6)
 
   const { address: eoa } = useAccount()
   const { smartAccountAddress, smartAccountClient } = useSmartAccount()
@@ -93,9 +94,12 @@ const UseDanSession: React.FC<props> = ({ session }) => {
         scwAddress: smartAccountAddress,
         eoaAddress: eoa,
         ephSK: sk,
-        threshold: 10,
-        partiesNumber: 21,
-        sessionKeyEOA
+        threshold: 11,
+        partiesNumber: 20,
+        sessionID: sessionID,
+        sessionKeyEOA,
+        chainId: 80002,
+        mpcKeyId: mpcKeyId as Hex,
       }
     })
     // Wait for the createSessionTx
