@@ -90,17 +90,18 @@ const UseDanSession: React.FC<props> = ({ session, mpcKeyId }) => {
 
     // Send the transactions using session params
     const { wait } = await smartAccountClient.sendTransaction(transactions, {
-      params: {
-        scwAddress: smartAccountAddress,
-        eoaAddress: eoa,
+      params : {
+      sessionID: sessionID,
+      danModuleInfo:  {
+        eoaAddress: eoa as Hex,
         ephSK: sk,
         threshold: 11,
         partiesNumber: 20,
-        sessionID: sessionID,
-        sessionKeyEOA,
+        // sessionKeyEOA,
         chainId: 80002,
         mpcKeyId: mpcKeyId as Hex,
       }
+    }
     })
     // Wait for the createSessionTx
     const {
