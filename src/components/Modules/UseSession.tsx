@@ -1,3 +1,4 @@
+import { SessionLocalStorage } from "@biconomy/account"
 import { useSession, useUserOpWait } from "@biconomy/use-aa"
 import type React from "react"
 import { useEffect } from "react"
@@ -11,9 +12,10 @@ import Button from "../Button"
 interface props {
   smartAccountAddress: Hex
   address: string
+  sessionID: string
 }
 
-const UseSession: React.FC<props> = ({ smartAccountAddress }) => {
+const UseSession: React.FC<props> = ({ smartAccountAddress, sessionID }) => {
   const {
     mutate,
     data: userOpResponse,
@@ -27,6 +29,8 @@ const UseSession: React.FC<props> = ({ smartAccountAddress }) => {
     error: waitError,
     data: waitData
   } = useUserOpWait(userOpResponse)
+
+  console.log(new SessionLocalStorage(smartAccountAddress))
 
   const mintTx = () =>
     mutate({
@@ -47,6 +51,8 @@ const UseSession: React.FC<props> = ({ smartAccountAddress }) => {
       )
     }
   }, [waitIsSuccess, waitData])
+
+  console.log(error, waitError)
 
   return (
     <ErrorGuard errors={[error, waitError]}>
