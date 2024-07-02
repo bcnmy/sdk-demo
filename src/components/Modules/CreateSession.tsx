@@ -23,7 +23,6 @@ const CreateSession: React.FC = () => {
 
   const nftAddress: Hex = "0x1758f42Af7026fBbB559Dc60EcE0De3ef81f665e"
 
-  const [hasSession, setHasSession] = useState<boolean>(false)
   const { address } = useAccount()
   const { smartAccountAddress: scwAddress } = useSmartAccount()
 
@@ -53,6 +52,10 @@ const CreateSession: React.FC = () => {
     isPending: isLoading
   } = useCreateSession()
 
+  // @ts-ignore
+  const sessionID = userOpResponse?.session?.sessionIDInfo?.[0]
+  console.log(sessionID)
+
   const {
     isLoading: waitIsLoading,
     isSuccess: waitIsSuccess,
@@ -62,7 +65,6 @@ const CreateSession: React.FC = () => {
 
   useEffect(() => {
     if (waitIsSuccess) {
-      setHasSession(true)
       showSuccessMessage(
         `Successful mint: ${polygonAmoy.blockExplorers.default.url}/tx/${waitData?.receipt?.transactionHash}`
       )
@@ -79,12 +81,11 @@ const CreateSession: React.FC = () => {
     <main className={classes.main}>
       <ErrorGuard errors={[error, waitError]}>
         <p style={{ color: "#7E7E7E" }}>
-          Use Cases {"->"} Modules {"->"} {hasSession ? "Use" : "Create"}{" "}
-          Session
+          Use Cases {"->"} Modules {"->"} {sessionID ? "Use" : "Create"} Session
         </p>
 
         <h3 className={classes.subTitle}>
-          {hasSession ? "Use" : "Create"} a Session
+          {sessionID ? "Use" : "Create"} a Session
         </h3>
 
         <ToastContainer
@@ -102,8 +103,12 @@ const CreateSession: React.FC = () => {
 
         <pre>policy: {JSON.stringify(policy, bigIntReplacer, 2)}</pre>
 
-        {!!hasSession ? (
-          <UseSession smartAccountAddress={scwAddress} address={address!} />
+        {!!sessionID ? (
+          <UseSession
+            smartAccountAddress={scwAddress}
+            address={address!}
+            sessionID={sessionID}
+          />
         ) : (
           <Button
             title="Create Session"
