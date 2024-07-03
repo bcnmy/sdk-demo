@@ -4074,7 +4074,7 @@
               "type": "address"
             }
           ],
-          "name": "isModuleEnabled",
+          "name": "",
           "outputs": [
             {
               "internalType": "bool",
@@ -4356,7 +4356,7 @@
     }
   },
   "nft": {
-    "address": "0xdd526eba63ef200ed95f0f0fb8993fe3e20a23d0",
+    "address": "0x1758f42Af7026fBbB559Dc60EcE0De3ef81f665e",
     "abi": [
       {
         "inputs": [],

@@ -9,7 +9,7 @@ import {
   showSuccessMessage,
   showErrorMessage,
 } from "../../utils";
-import { createSessionKeyManagerModule } from "@biconomy/account";
+import {  } from "@biconomy/account";
 import { ERC20_SESSION_VALIDATION_MODULE } from "../../utils/chainConfig";
 import { EthersSigner } from "@biconomy/account";
 import { useAccount } from "wagmi";
@@ -44,61 +44,61 @@ const ERC20Transfer: React.FC = () => {
 
       const newSigner = new EthersSigner(sessionSigner, 'ethers')
 
-      // generate sessionManagerModule
-      const sessionManagerModule = await createSessionKeyManagerModule({
-        moduleAddress: sessionKeyManagerModuleAddr,
-        smartAccountAddress: scwAddress,
-      });
+      // // generate sessionManagerModule
+      // const sessionManagerModule = await ({
+      //   moduleAddress: sessionKeyManagerModuleAddr,
+      //   smartAccountAddress: scwAddress,
+      // });
 
-      // set active module to sessionManagerModule
-      // This time we will make use of enabled session hence transaction needs to via go through session manager module
-      // Hence it is set as runtime active module
-      biconomySmartAccount =
-        biconomySmartAccount.setActiveValidationModule(sessionManagerModule);
+      // // set active module to sessionManagerModule
+      // // This time we will make use of enabled session hence transaction needs to via go through session manager module
+      // // Hence it is set as runtime active module
+      // biconomySmartAccount =
+      //   biconomySmartAccount.setActiveValidationModule(sessionManagerModule);
 
-      const tokenContract = new ethers.Contract(
-        config.usdc.address,
-        config.usdc.abi,
-        sessionSigner
-      );
-      let decimals = 18;
+      // const tokenContract = new ethers.Contract(
+      //   config.usdc.address,
+      //   config.usdc.abi,
+      //   sessionSigner
+      // );
+      // let decimals = 18;
 
-      try {
-        decimals = await tokenContract.decimals();
-      } catch (error) {
-        throw new Error("invalid token address supplied");
-      }
+      // try {
+      //   decimals = await tokenContract.decimals();
+      // } catch (error) {
+      //   throw new Error("invalid token address supplied");
+      // }
 
-      const { data } = await tokenContract.populateTransaction.transfer(
-        "0x42138576848E839827585A3539305774D36B9602", // receiver address // Has to be the same receiver for which session permissions are set
-        ethers.utils.parseUnits("5".toString(), decimals)
-      );
+      // const { data } = await tokenContract.populateTransaction.transfer(
+      //   "0x42138576848E839827585A3539305774D36B9602", // receiver address // Has to be the same receiver for which session permissions are set
+      //   ethers.utils.parseUnits("5".toString(), decimals)
+      // );
 
-      // generate tx data to erc20 transfer
-      // NOTE: It can only be used for single transaction and not part of batch calldata
-      // If you want to make use of batch calldata then you need to use the session router module
-      const tx1 = {
-        to: config.usdc.address, //erc20 token address
-        data: data,
-        value: 0,
-      };
+      // // generate tx data to erc20 transfer
+      // // NOTE: It can only be used for single transaction and not part of batch calldata
+      // // If you want to make use of batch calldata then you need to use the session router module
+      // const tx1 = {
+      //   to: config.usdc.address, //erc20 token address
+      //   data: data,
+      //   value: 0,
+      // };
 
-      // send user operation
-      const userOpResponse = await biconomySmartAccount.sendTransaction(tx1, 
-        // below params are required for passing on this information to session key manager module to create padded signature
-        {
-          params:{
-            sessionSigner: newSigner,
-            sessionValidationModule: erc20SessionValidationModuleAddr,
-          },
-          simulationType: 'validation_and_execution'
-      });
+      // // send user operation
+      // const userOpResponse = await biconomySmartAccount.sendTransaction(tx1, 
+      //   // below params are required for passing on this information to session key manager module to create padded signature
+      //   {
+      //     params:{
+      //       sessionSigner: newSigner,
+      //       sessionValidationModule: erc20SessionValidationModuleAddr,
+      //     },
+      //     simulationType: 'validation_and_execution'
+      // });
 
-      console.log("userOpHash", userOpResponse);
-      const { transactionHash } = await userOpResponse.waitForTxHash();
-      console.log("txHash", transactionHash);
-      showSuccessMessage(`ERC20 Transfer ${transactionHash}`, transactionHash);
-      setLoading(false);
+      // console.log("userOpHash", userOpResponse);
+      // const { transactionHash } = await userOpResponse.waitForTxHash();
+      // console.log("txHash", transactionHash);
+      // showSuccessMessage(`ERC20 Transfer ${transactionHash}`, transactionHash);
+      // setLoading(false);
     } catch (err: any) {
       console.error(err);
       setLoading(false);

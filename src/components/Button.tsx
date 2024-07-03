@@ -5,6 +5,7 @@ import { CircularProgress } from "@mui/material";
 type ButtonProp = {
   title: string;
   isLoading?: boolean;
+  disabled?: boolean;
   onClickFunc: any;
   children?: any;
   style?: any;
@@ -14,16 +15,19 @@ const Button: React.FC<ButtonProp> = ({
   title,
   onClickFunc,
   isLoading = false,
+  disabled = false,
   children,
   style,
 }) => {
   const classes = useStyles();
 
+  console.log(disabled, "disabled");
+
   return (
     <button
       onClick={onClickFunc}
       className={classes.btn}
-      disabled={isLoading}
+      disabled={isLoading || disabled}
       style={style}
     >
       {isLoading ? (

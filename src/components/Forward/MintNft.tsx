@@ -93,9 +93,9 @@ const MintNftForward: React.FC = () => {
       );
 
       console.log("userOpHash", userOpResponse);
-      const { transactionHash } = await userOpResponse.waitForTxHash();
-      console.log("txHash", transactionHash);
-      showSuccessMessage(`Minted Nft ${transactionHash}`, transactionHash);
+      const { userOpHash } = await userOpResponse.wait();
+      console.log("txHash", userOpHash);
+      showSuccessMessage(`Minted Nft ${userOpHash}`, userOpHash);
       setIsLoading(false);
     } catch (err: any) {
       console.error(err);

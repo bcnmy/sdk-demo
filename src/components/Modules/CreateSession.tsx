@@ -3,7 +3,7 @@ import { makeStyles } from "@mui/styles";
 import { useAccount } from "wagmi";
 import { Hex, encodeAbiParameters, parseAbiParameters, parseUnits } from "viem";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
-import { createSessionKeyManagerModule } from "@biconomy/account";
+import {  } from "@biconomy/account";
 import Button from "../Button";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import { ERC20_SESSION_VALIDATION_MODULE } from "../../utils/chainConfig";
@@ -35,11 +35,11 @@ const CreateSession: React.FC = () => {
         // Checks if Session Key Manager module is enabled on the smart account.
         // Before using session keys this module must be enabled.
         // If not, createSession transaction will also enable this module along with storing session info on-chain.
-        const isEnabled = await biconomySmartAccount.isModuleEnabled(
-          sessionKeyManagerModuleAddr
-        );
-        console.log("isSessionKeyModuleEnabled", isEnabled);
-        setIsSessionKeyModuleEnabled(isEnabled);
+        // const isEnabled = await biconomySmartAccount.(
+        //   sessionKeyManagerModuleAddr
+        // );
+        // console.log("isSessionKeyModuleEnabled", isEnabled);
+        // setIsSessionKeyModuleEnabled(isEnabled);
         return;
       } catch (err: any) {
         console.error(err);
@@ -77,10 +77,10 @@ const CreateSession: React.FC = () => {
       // a. Maintain session leaf storage in defined storage client (Biconomy by default using browser local storage which works for front-end apps)
       // b. Generate dummy signature for userOp estimations
       // c. Provides helpers to sign userOpHash with session key in the right format and generate proof for particular leaf
-      const sessionManagerModule = await createSessionKeyManagerModule({
-        moduleAddress: sessionKeyManagerModuleAddr,
-        smartAccountAddress: scwAddress,
-      });
+      // const sessionManagerModule = await ({
+      //   moduleAddress: sessionKeyManagerModuleAddr,
+      //   smartAccountAddress: scwAddress,
+      // });
 
       // Cretae session key data
       // Session key data is always corrsponding to the Session Validation Module being used
@@ -88,62 +88,62 @@ const CreateSession: React.FC = () => {
       // Rest of the details depends on the actual permissions
       // Here, our ERC20 Session Validation Module verifies ERC20 address, receiver and max amount
       //
-      const sessionKeyData = encodeAbiParameters(
-        parseAbiParameters("address, address, address, uint256"),
-        [
-          sessionKeyEOA,
-          config.usdc.address as Hex, // erc20 token address
-          "0x42138576848E839827585A3539305774D36B9602", // receiver address // You must send to same receiver when making use of the session
-          parseUnits("50", 6), // 50 usdc amount
-        ]
-      );
+      // const sessionKeyData = encodeAbiParameters(
+      //   parseAbiParameters("address, address, address, uint256"),
+      //   [
+      //     sessionKeyEOA,
+      //     config.usdc.address as Hex, // erc20 token address
+      //     "0x42138576848E839827585A3539305774D36B9602", // receiver address // You must send to same receiver when making use of the session
+      //     parseUnits("50", 6), // 50 usdc amount
+      //   ]
+      // );
 
-      // Below helper gives you tx data to be used to make a call from Smart Account to enable session on-chain
-      // This transaction needs a user signature and for gas sponsorship or ERC20 paymaster can be used.
-      const sessionTxData = await sessionManagerModule.createSessionData([
-        {
-          validUntil: 0, // 0 value means extremes
-          validAfter: 0, // 0 value means extremes
-          sessionValidationModule: erc20SessionValidationModuleAddr,
-          sessionPublicKey: sessionKeyEOA as Hex,
-          sessionKeyData: sessionKeyData as Hex,
-        },
-        // can optionally enable multiple leaves(sessions) altogether
-      ]);
-      console.log("sessionTxData", sessionTxData);
+      // // Below helper gives you tx data to be used to make a call from Smart Account to enable session on-chain
+      // // This transaction needs a user signature and for gas sponsorship or ERC20 paymaster can be used.
+      // const sessionTxData = await sessionManagerModule.createSessionData([
+      //   {
+      //     validUntil: 0, // 0 value means extremes
+      //     validAfter: 0, // 0 value means extremes
+      //     sessionValidationModule: erc20SessionValidationModuleAddr,
+      //     sessionPublicKey: sessionKeyEOA as Hex,
+      //     sessionKeyData: sessionKeyData as Hex,
+      //   },
+      //   // can optionally enable multiple leaves(sessions) altogether
+      // ]);
+      // console.log("sessionTxData", sessionTxData);
 
-      // tx to set session key
-      const tx2 = {
-        to: sessionKeyManagerModuleAddr as Hex, // session manager module address
-        value: BigInt(0),
-        data: sessionTxData.data as Hex,
-      };
+      // // tx to set session key
+      // const tx2 = {
+      //   to: sessionKeyManagerModuleAddr as Hex, // session manager module address
+      //   value: BigInt(0),
+      //   data: sessionTxData.data as Hex,
+      // };
 
-      let transactionArray = [];
-      if (enableSessionKeyModule) {
-        // -----> enableModule session manager module
-        const tx1 = await biconomySmartAccount.getEnableModuleData(
-          sessionKeyManagerModuleAddr
-        );
-        transactionArray.push({
-          to: tx1.to as Hex,
-          value: BigInt(0),
-          data: tx1.data as Hex,
-        });
-      }
-      transactionArray.push(tx2);
+      // let transactionArray = [];
+      // if (enableSessionKeyModule) {
+      //   // -----> enableModule session manager module
+      //   const tx1 = await biconomySmartAccount.getEnableModuleData(
+      //     sessionKeyManagerModuleAddr
+      //   );
+      //   transactionArray.push({
+      //     to: tx1.to as Hex,
+      //     value: BigInt(0),
+      //     data: tx1.data as Hex,
+      //   });
+      // }
+      // transactionArray.push(tx2);
 
-      let userOpResponse = await smartAccount.sendTransaction(
-        transactionArray
-      );
-      console.log("userOpHash", userOpResponse);
-      const { transactionHash } = await userOpResponse.waitForTxHash();
-      console.log("txHash", transactionHash);
+      // let userOpResponse = await smartAccount.sendTransaction(
+      //   transactionArray
+      // );
+      // console.log("userOpHash", userOpResponse);
+      // const { transactionHash } = await userOpResponse.waitForTxHash();
+      // console.log("txHash", transactionHash);
 
-      console.log(`userOp Hash: ${userOpResponse.userOpHash}`);
-      const transactionDetails = await userOpResponse.wait();
-      console.log("txHash", transactionDetails.receipt.transactionHash);
-      showInfoMessage("Session Created Successfully");
+      // console.log(`userOp Hash: ${userOpResponse.userOpHash}`);
+      // const transactionDetails = await userOpResponse.wait();
+      // console.log("txHash", transactionDetails.receipt.transactionHash);
+      // showInfoMessage("Session Created Successfully");
     } catch (err: any) {
       console.error(err);
       setLoading(false);

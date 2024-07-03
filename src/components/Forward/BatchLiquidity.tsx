@@ -89,13 +89,13 @@ const BatchLiquidity: React.FC = () => {
         }
       );
 
-      console.log("userOpHash", userOpResponse);
-      const { transactionHash } = await userOpResponse.waitForTxHash();
-      console.log("txHash", transactionHash);
-      showSuccessMessage(
-        `Batch Add Hyphen Liq ${transactionHash}`,
-        transactionHash
-      );
+      // console.log("userOpHash", userOpResponse);
+      // const { transactionHash } = await userOpResponse.waitForTxHash();
+      // console.log("txHash", transactionHash);
+      // showSuccessMessage(
+      //   `Batch Add Hyphen Liq ${transactionHash}`,
+      //   transactionHash
+      // );
       setIsLoading(false);
     } catch (err: any) {
       console.error(err);

@@ -3,6 +3,10 @@ import { makeStyles } from "@mui/styles";
 import Button from "../Button";
 // import { useWeb3Context } from "../../contexts/Web3Context";
 import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
+import { showErrorMessage, showInfoMessage } from "../../utils";
+import { PaymasterMode, createPaymaster } from "@biconomy/account";
+import { useAccount, useWalletClient, useWriteContract } from "wagmi";
+import { Hex, formatEther, parseEther } from "viem";
 // import { showErrorMessage, showInfoMessage } from "../../utils";
 // import { activeChainId } from "../../utils/chainConfig";
 
@@ -13,72 +17,97 @@ type OnboardingProps = {
 const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
   const classes = useStyles();
   const { smartAccount, scwAddress } = useSmartAccountContext();
+  const { data: walletClient } = useWalletClient();
 
+  const [smartAccountNativeBalance, setSmartAccountNativeBalance] = useState(BigInt(0));
   const [isScwDeployed, setisScwDeployed] = useState(false);
+  const [requirePrefund, setRequirePrefund] = useState(false);
+  const [requirePrefundAmount, setRequirePrefundAmount] = useState(BigInt(0));
   const [loading, setLoading] = useState(false);
-  // const [deployLoading1, setDeployLoading1] = useState(false);
-  // const [deployLoading2, setDeployLoading2] = useState(false);
+  const [deployLoading1, setDeployLoading1] = useState(false);
+  const [deployLoading2, setDeployLoading2] = useState(false);
+  const [prefundLoading, setPrefundLoading] = useState(false);
 
-  // const deploySmartAccount1 = async () => {
+  // const deploySmartAccountSponsored = async () => {
   //   try {
   //     if (!smartAccount) {
   //       showErrorMessage("Init Smart Account First");
   //       return;
   //     }
   //     setDeployLoading1(true);
-  //     // you can create instance of local relayer with current signer or any other private key signer
-  //     // const relayer = new LocalRelayer(
-  //     //   getEOAWallet(process.env.REACT_APP_PKEY || "", null)
-  //     // );
+      
+  //     const tx = await smartAccount.deploy({paymasterServiceData: {mode: PaymasterMode.SPONSORED}});
+  //     await tx.wait();
 
-  //     // console.log("relayer", relayer);
-  //     // const context = smartAccount.getSmartAccountContext();
-
-  //     // const deployment = await relayer.deployWallet({
-  //     //   config: state,
-  //     //   context,
-  //     //   index: 0,
-  //     // }); // index 0
-
-  //     // const res = await deployment.wait(1);
-  //     // console.log(res);
-  //     getSmartAccount();
-  //     showInfoMessage("Smart Account deployed");
+  //     showInfoMessage(`Smart Account deployed at address : ${scwAddress}`);
   //     setDeployLoading1(false);
   //   } catch (err: any) {
   //     setDeployLoading1(false);
-  //     showErrorMessage(err.message.slice(0, 60));
-  //     console.error("deploySmartAccount", err);
-  //   }
-  // };
-
-  // const deploySmartAccount2 = async () => {
-  //   try {
-  //     if (!smartAccount) {
-  //       showErrorMessage("Init Smart Account First");
-  //       return;
-  //     }
-  //     setDeployLoading1(true);
-
-  //     // const tx = await smartAccount.deployWalletUsingPaymaster();
-  //     // console.log(tx);
-  //     // const res = await tx.wait(1);
-  //     // console.log(res);
-  //     getSmartAccount();
-  //     showInfoMessage("Smart Account deployed");
-  //     setDeployLoading1(false);
-  //   } catch (err: any) {
-  //     setDeployLoading2(false);
   //     showErrorMessage(err.message.slice(0, 60));
   //     console.error("deploySmartAccount", err);
   //   }
   // };
 
   useEffect(() => {
+    const setBalance = async () => {
+      const balances = await smartAccount?.getBalances();
+      setSmartAccountNativeBalance(balances ? balances[0]?.amount : BigInt(0));
+    }
+    setBalance();
+  })
+
+  const deploySmartAccount = async () => {
+    try {
+      if (!smartAccount) {
+        showErrorMessage("Init Smart Account First");
+        return;
+      }
+      setDeployLoading1(true);
+
+      const deployTx = {
+        to: scwAddress,
+        data: "0x"
+      }
+      const requiredBalanceForDeploy = await smartAccount.getGasEstimate([deployTx])
+      const [saNativeBalance] = await smartAccount.getBalances();
+
+      if (saNativeBalance.amount < requiredBalanceForDeploy) {
+        showErrorMessage("Insufficient balance in Smart Account for deployment");
+        setRequirePrefund(true);
+        setRequirePrefundAmount(requiredBalanceForDeploy);
+      }
+
+      const tx = await smartAccount.deploy();
+      await tx.wait();
+
+      showInfoMessage(`Smart Account deployed at address : ${scwAddress}`);
+      setDeployLoading1(false);
+    } catch (err: any) {
+      setDeployLoading2(false);
+      showErrorMessage(err.message.slice(0, 60));
+      console.error("deploySmartAccount", err);
+    }
+  };
+
+  const prefundSA = async () => {
+    setPrefundLoading(true);
+    try {
+      await walletClient?.sendTransaction({
+        to: scwAddress as Hex,
+        value: requirePrefundAmount
+      })
+      setRequirePrefund(false);
+      setPrefundLoading(false);
+    } catch (error) {
+      showErrorMessage("Error in prefunding Smart Account");
+      setPrefundLoading(false);
+    }
+  }
+
+  useEffect(() => {
     const isDeployed = async () => {
       setLoading(true);
       const dep = await smartAccount?.isAccountDeployed();
-      console.log("isDeployed", dep);
       if (dep) setisScwDeployed(true);
       setLoading(false);
     };
@@ -89,7 +118,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
     <main className={classes.main}>
       <h3 className={classes.subTitle}>{"Deploy Smart Account"}</h3>
       <p>
-        Welcome onboard! This is the demo of the new Biconomy SDK. You need to
+        Welcome onboard! This is the demo of the new Biconomy Nexus SDK. You need to
         deploy your smart account wallet to get started.
       </p>
       {/* <p>Wallet Deployment → </p> */}
@@ -103,8 +132,9 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
             className={classes.text}
             style={{ color: "#47EB78", marginBottom: 30 }}
           >
-            Your Smart Account is already created.
+            Your Smart Account is already created at address {scwAddress}
           </p>
+          <small>Smart Account Balance: {formatEther(smartAccountNativeBalance)}</small>
           <Button
             title="Go to Use Cases"
             // isLoading={deployLoading1}
@@ -135,9 +165,9 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
               <Button
                 title="Deploy Smart Account"
                 isLoading={deployLoading1}
-                onClickFunc={deploySmartAccount1}
+                onClickFunc={deploySmartAccountSponsored}
               />
-            </div>
+            </div> */}
 
             <div className={classes.element}>
               <p className={classes.text}>
@@ -154,12 +184,25 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
                   Get USDC funds from our testnet faucet and deploy.
                 </li>
               </ul>
-              <Button
-                title="Deploy Smart Account"
-                isLoading={deployLoading2}
-                onClickFunc={deploySmartAccount2}
-              />
-            </div> */}
+              {
+                requirePrefund ? 
+                <>
+                  <Button
+                    title="Prefund your Smart Account"
+                    isLoading={prefundLoading}
+                    onClickFunc={prefundSA}
+                  />
+                  <small style={{color: "red"}}>Required amount for deploy {formatEther(requirePrefundAmount)}</small>
+                  <small>Recommended: Send at least <b>0.05 ETH</b> to {scwAddress} for future transactions.</small>
+                </>
+                :
+                <Button
+                  title="Deploy Smart Account"
+                  isLoading={deployLoading1}
+                  onClickFunc={deploySmartAccount}
+                />
+              }
+            </div>
 
             <div
               className={classes.element}

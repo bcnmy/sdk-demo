@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
-import { BiconomySmartAccountV2, createSessionKeyManagerModule } from "@biconomy/account"
+import { NexusSmartAccount } from "@biconomy/account"
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {getABISVMSessionKeyData} from "../../utils/index";
@@ -13,7 +13,7 @@ import { useSmartAccountContext } from "../../contexts/SmartAccountContext";
 import { ABI_SVM, managerModuleAddr } from "../../utils/constants";
 
 interface props {
-  smartAccount: BiconomySmartAccountV2;
+  smartAccount: NexusSmartAccount;
   address: string;
   provider: ethers.providers.Provider;
   nftContract: ethers.Contract;
@@ -36,10 +36,10 @@ const CreateABISVM: React.FC<props> = () => {
             return
           }
           try {
-            const isEnabled = await smartAccount.isModuleEnabled(managerModuleAddr)
-            console.log("isSessionKeyModuleEnabled", isEnabled);
-            setIsSessionKeyModuleEnabled(isEnabled);
-            return;
+            // const isEnabled = await smartAccount.(managerModuleAddr)
+            // console.log("isSessionKeyModuleEnabled", isEnabled);
+            // setIsSessionKeyModuleEnabled(isEnabled);
+            // return;
           } catch(err: any) {
             console.error(err)
             setIsSessionKeyModuleEnabled(false);
@@ -74,80 +74,80 @@ const CreateABISVM: React.FC<props> = () => {
           window.localStorage.setItem("sessionPKey", sessionSigner.privateKey);
     
           // generate sessionModule
-          const sessionModule = await createSessionKeyManagerModule({
-            moduleAddress: managerModuleAddr,
-            smartAccountAddress: address as Hex,
-          });
+        //   const sessionModule = await ({
+        //     moduleAddress: managerModuleAddr,
+        //     smartAccountAddress: address as Hex,
+        //   });
     
-          /**
-           * Create Session Key Datas
-           */
+        //   /**
+        //    * Create Session Key Datas
+        //    */
 
-          const functionSelector = hexDataSlice(id("safeMint(address)"), 0, 4);
+        //   const functionSelector = hexDataSlice(id("safeMint(address)"), 0, 4);
     
-          const sessionKeyData = await getABISVMSessionKeyData(sessionKeyEOA, {
-            destContract: "0xdd526eba63ef200ed95f0f0fb8993fe3e20a23d0",
-            functionSelector: functionSelector,
-            valueLimit: parseEther("0"),
-            rules: [
-              {
-                offset: 0, // offset 0 means we are checking first parameter of safeMint (recipient address)
-                condition: 0, // 0 = Condition.EQUAL
-                referenceValue: ethers.utils.hexZeroPad("0xd3C85Fdd3695Aee3f0A12B3376aCD8DC54020549", 32) // recipient address
-              },
-            ],
-          });
+        //   const sessionKeyData = await getABISVMSessionKeyData(sessionKeyEOA, {
+        //     destContract: "0xdd526eba63ef200ed95f0f0fb8993fe3e20a23d0",
+        //     functionSelector: functionSelector,
+        //     valueLimit: parseEther("0"),
+        //     rules: [
+        //       {
+        //         offset: 0, // offset 0 means we are checking first parameter of safeMint (recipient address)
+        //         condition: 0, // 0 = Condition.EQUAL
+        //         referenceValue: ethers.utils.hexZeroPad("0xd3C85Fdd3695Aee3f0A12B3376aCD8DC54020549", 32) // recipient address
+        //       },
+        //     ],
+        //   });
     
-          /**
-           * Create Data for the Session Enabling Transaction
-           * We pass an array of session data objects to the createSessionData method
-           */
-          const sessionTxData = await sessionModule.createSessionData([
-            {
-                validUntil: 0,
-                validAfter: 0,
-                sessionValidationModule: ABI_SVM,
-                sessionPublicKey: sessionKeyEOA as Hex,
-                sessionKeyData: sessionKeyData as Hex,
-            }
-        ]);
-          //console.log("sessionTxData", sessionTxData);
-          setSessionIDs([...sessionTxData.sessionIDInfo]);
+        //   /**
+        //    * Create Data for the Session Enabling Transaction
+        //    * We pass an array of session data objects to the createSessionData method
+        //    */
+        //   const sessionTxData = await sessionModule.createSessionData([
+        //     {
+        //         validUntil: 0,
+        //         validAfter: 0,
+        //         sessionValidationModule: ABI_SVM,
+        //         sessionPublicKey: sessionKeyEOA as Hex,
+        //         sessionKeyData: sessionKeyData as Hex,
+        //     }
+        // ]);
+        //   //console.log("sessionTxData", sessionTxData);
+        //   setSessionIDs([...sessionTxData.sessionIDInfo]);
     
-          // tx to set session key
-          const setSessionTrx = {
-            to: managerModuleAddr, // session manager module address
-            data: sessionTxData.data,
-          };
+        //   // tx to set session key
+        //   const setSessionTrx = {
+        //     to: managerModuleAddr, // session manager module address
+        //     data: sessionTxData.data,
+        //   };
     
-          const transactionArray = [];
+        //   const transactionArray = [];
     
-          if (enableSessionKeyModule) {
-            // -----> enableModule session manager module
-            const enableModuleTrx = await smartAccount!.getEnableModuleData(
-              managerModuleAddr
-            );
-            transactionArray.push(enableModuleTrx);
-          }
+        //   if (enableSessionKeyModule) {
+        //     // -----> enableModule session manager module
+        //     const enableModuleTrx = await smartAccount!.getEnableModuleData(
+        //       managerModuleAddr
+        //     );
+        //     transactionArray.push(enableModuleTrx);
+        //   }
     
-          transactionArray.push(setSessionTrx)
+        //   transactionArray.push(setSessionTrx)
     
-          let userOpResponse = await smartAccount!.sendTransaction(transactionArray);
+        //   let userOpResponse = await smartAccount!.sendTransaction(transactionArray);
           
-          const transactionDetails = await userOpResponse.wait();
-          console.log("txHash", transactionDetails.receipt.transactionHash);
-          console.log("Sessions Enabled");
-          setIsSessionActive(true)
-          toast.success(`Success! Sessions created succesfully`, {
-            position: "top-right",
-            autoClose: 6000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-            });
+        //   const transactionDetails = await userOpResponse.wait();
+        //   console.log("txHash", transactionDetails.receipt.transactionHash);
+        //   console.log("Sessions Enabled");
+        //   setIsSessionActive(true)
+        //   toast.success(`Success! Sessions created succesfully`, {
+        //     position: "top-right",
+        //     autoClose: 6000,
+        //     hideProgressBar: false,
+        //     closeOnClick: true,
+        //     pauseOnHover: true,
+        //     draggable: true,
+        //     progress: undefined,
+        //     theme: "dark",
+        //     });
         } catch(err: any) {
           console.error(err)
         }

@@ -27,7 +27,7 @@ const cardItems = [
   {
     title: "Batch Liquidity",
     description:
-      "This magic bundle will approve USDC then provide the USDC liquidity to Hyphen Pool.",
+      "This magic bundle will approve USDC then provide the USDC liquidity to Hyphen Pool using a batch call of Nexus SA.",
     index: 7,
     icon: (
       <ControlPointDuplicateIcon

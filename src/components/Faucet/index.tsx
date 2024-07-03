@@ -35,9 +35,9 @@ const Faucet: React.FC = () => {
       };
       let userOpResponse = await smartAccount.sendTransaction(tx1);
       console.log("userOpHash", userOpResponse);
-      const { transactionHash } = await userOpResponse.waitForTxHash();
-      console.log("txHash", transactionHash);
-      showSuccessMessage(`Tokens sent ${transactionHash}`, transactionHash);
+      const { userOpHash } = await userOpResponse.wait();
+      console.log("txHash", userOpHash);
+      showSuccessMessage(`Tokens sent ${userOpHash}`, userOpHash);
     } catch (error: any) {
       console.error(error);
       showErrorMessage(error.message);

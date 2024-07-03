@@ -13,36 +13,18 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import HomeIcon from "@mui/icons-material/Home";
 import SavingsIcon from "@mui/icons-material/Savings";
-// import TokenIcon from "@mui/icons-material/Token";
 import EvStationIcon from "@mui/icons-material/EvStation";
 import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
-import CookieIcon from "@mui/icons-material/Cookie";
-import FiberNewIcon from "@mui/icons-material/FiberNew";
-// import BurstModeIcon from "@mui/icons-material/BurstMode";
 import GamesIcon from "@mui/icons-material/Games";
-import ContactlessIcon from "@mui/icons-material/Contactless";
-// import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import Onboarding from "./Onboarding/index";
 import Navbar from "./Navbar";
-// import Assets from "./Balance";
 import Collapse from "@mui/material/Collapse/Collapse";
-import { ExpandLess, ExpandMore } from "@mui/icons-material";
+import { ExpandLess, ExpandMore, PieChart } from "@mui/icons-material";
 import Faucet from "./Faucet";
-// Account Abstraction
 import AccountAbstraction from "./AA";
 import MintNft from "./AA/MintNft";
-// import BatchMintNft from "./AA/BatchMintNft";
-// import MintErc20 from "./AA/MintErc20";
-import BatchLiquidity from "./AA/BatchLiquidity";
-// Forward
-import ForwardFlow from "./Forward";
-import MintNftForward from "./Forward/MintNft";
-import BatchLiquidityForward from "./Forward/BatchLiquidity";
-import HyphenLpUsingSession from "./Modules/HyphenLpUsingSession";
-import CreateCustomSession from "./Modules/CreateSessionForCustomSVM";
-import CreateBatchRouter from "./Modules/CreateSessionsWithBatchRouter";
-import ERC20RouterTransfer from "./Modules/UseSessionsBatch";
-import ABISVM from "./Modules/ABI_SVM";
+import MintNftBatch from "./AA/MintNftBatch";
+import NexusModulesPlayground from "./AA/NexusModules/ModulePlayground";
 
 const drawerWidth = 320;
 const onboardingList = [
@@ -54,66 +36,17 @@ const onboardingList = [
     name: "Faucet",
     icon: <SavingsIcon />,
   },
-  // {
-  //   name: "Balance",
-  //   icon: <AccountBalanceWalletIcon />,
-  // },
 ];
 
 const AAList = [
-  // {
-  //   name: "Mint ERC20 Token",
-  //   icon: <TokenIcon />,
-  // },
   {
     name: "Mint NFT",
     icon: <InsertPhotoIcon />,
   },
   {
-    name: "Batch Add Liquidity",
+    name: "Mint NFT Batch",
     icon: <GamesIcon />,
-  },
-  // {
-  //   name: "Batch Mint NFT",
-  //   icon: <BurstModeIcon />,
-  // },
-];
-
-const ForwardList = [
-  {
-    name: "Mint NFT",
-    icon: <InsertPhotoIcon />,
-  },
-  {
-    name: "Batch Add Liquidity",
-    icon: <GamesIcon />,
-  },
-];
-
-const SessionList = [
-  {
-    name: "Create Custom Destination Session",
-    icon: <GamesIcon />,
-  },
-  {
-    name: "LP into Pool using Session",
-    icon: <CookieIcon />,
-  },
-  {
-    name: "Mint NFT using ABI SVM",
-    icon: <CookieIcon />,
-  },
-];
-
-const SessionRouterList = [
-  {
-    name: "Create Custom Router Session",
-    icon: <GamesIcon />,
-  },
-  {
-    name: "ERC20 Transfer & Mint NFT",
-    icon: <CookieIcon />,
-  },
+  }
 ];
 
 const TabsBody = ({ loading }: { loading: boolean }) => {
@@ -122,6 +55,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
   const [useCase, setUseCase] = React.useState(0);
   const [open, setOpen] = React.useState(true);
   const [isAAOpen, setIsAAOpen] = React.useState(true);
+  const [isModulesOpen, setIsModulesOpen] = React.useState(true);
   const [isForwardOpen, setIsForwardOpen] = React.useState(true);
   const [isSessionOpen, setIsSessionOpen] = React.useState(true);
   const [isSessionRouterOpen, setIsSessionRouterOpen] = React.useState(true);
@@ -262,17 +196,14 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
                 </ListItem>
               ))}
             </List>
-          </Collapse>
-        </List>
-        {/* Forward Left Panel */}
-        <List
+            <List
           sx={{
             display: "block",
           }}
         >
           <ListItemButton
             onClick={(e: any) => {
-              setIsForwardOpen(!isForwardOpen);
+              setIsModulesOpen(!isModulesOpen);
               handleChange(e, 5);
             }}
           >
@@ -281,176 +212,18 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
                 minWidth: 0,
                 mr: open ? 3 : "auto",
                 justifyContent: "center",
-                color: pageIndex === 5 ? "#FFB999" : "#e6e6e6",
+                color: pageIndex === 2 ? "#FFB999" : "#e6e6e6",
               }}
             >
-              <ContactlessIcon />
+              <EvStationIcon />
             </ListItemIcon>
             <ListItemText
-              primary="Pay gas in ERC20"
+              primary="Nexus Modules"
               sx={{ opacity: open ? 1 : 0 }}
             />
-            {isForwardOpen ? <ExpandLess /> : <ExpandMore />}
           </ListItemButton>
-          <Collapse in={isForwardOpen} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              {ForwardList.map((ele, index) => (
-                <ListItem
-                  key={ele.name}
-                  disablePadding
-                  sx={{ display: "block" }}
-                >
-                  <ListItemButton
-                    sx={{
-                      minHeight: 48,
-                      justifyContent: open ? "initial" : "center",
-                      px: 2.5,
-                    }}
-                    onClick={(e: any) => handleChange(e, index + 6)}
-                  >
-                    <ListItemIcon
-                      sx={{
-                        minWidth: 0,
-                        mr: open ? 3 : "auto",
-                        justifyContent: "center",
-                        color: pageIndex === index + 6 ? "#FFB999" : "#e6e6e6",
-                      }}
-                    >
-                      {ele.icon}
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={ele.name}
-                      sx={{ opacity: open ? 1 : 0 }}
-                    />
-                  </ListItemButton>
-                </ListItem>
-              ))}
-            </List>
-          </Collapse>
         </List>
-
-        {/* Session Left Panel */}
-        <List
-          sx={{
-            display: "block",
-          }}
-        >
-          <ListItemButton
-            onClick={(e: any) => {
-              setIsSessionOpen(!isSessionOpen);
-              handleChange(e, 8);
-            }}
-          >
-            <ListItemIcon
-              sx={{
-                minWidth: 0,
-                mr: open ? 3 : "auto",
-                justifyContent: "center",
-                color: pageIndex === 8 ? "#FFB999" : "#e6e6e6",
-              }}
-            >
-              <FiberNewIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary="Session Keys Demo"
-              sx={{ opacity: open ? 1 : 0 }}
-            />
-            {isSessionOpen ? <ExpandLess /> : <ExpandMore />}
-          </ListItemButton>
-          <Collapse in={isSessionOpen} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              {SessionList.map((ele, index) => (
-                <ListItem
-                  key={ele.name}
-                  disablePadding
-                  sx={{ display: "block" }}
-                >
-                  <ListItemButton
-                    sx={{
-                      minHeight: 48,
-                      justifyContent: open ? "initial" : "center",
-                      px: 2.5,
-                    }}
-                    onClick={(e: any) => handleChange(e, index + 9)}
-                  >
-                    <ListItemIcon
-                      sx={{
-                        minWidth: 0,
-                        mr: open ? 3 : "auto",
-                        justifyContent: "center",
-                        color: pageIndex === index + 9 ? "#FFB999" : "#e6e6e6",
-                      }}
-                    >
-                      {ele.icon}
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={ele.name}
-                      sx={{ opacity: open ? 1 : 0 }}
-                    />
-                  </ListItemButton>
-                </ListItem>
-              ))}
-            </List>
           </Collapse>
-            <List sx={{display: "block"}}>
-              <ListItemButton
-                onClick={(e: any) => {
-                  setIsSessionRouterOpen(!isSessionRouterOpen);
-                  handleChange(e, 8);
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : "auto",
-                    justifyContent: "center",
-                    color: pageIndex === 12 ? "#FFB999" : "#e6e6e6",
-                  }}
-                >
-                  <FiberNewIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Batched Session Router Demo"
-                  sx={{ opacity: open ? 1 : 0 }}
-                />
-                {isSessionRouterOpen ? <ExpandLess /> : <ExpandMore />}
-              </ListItemButton>
-              <Collapse in={isSessionRouterOpen} timeout="auto" unmountOnExit>
-                <List component="div" disablePadding>
-                  {SessionRouterList.map((ele, index) => (
-                    <ListItem
-                      key={ele.name}
-                      disablePadding
-                      sx={{ display: "block" }}
-                    >
-                      <ListItemButton
-                        sx={{
-                          minHeight: 48,
-                          justifyContent: open ? "initial" : "center",
-                          px: 2.5,
-                        }}
-                        onClick={(e: any) => handleChange(e, index + 12)}
-                      >
-                        <ListItemIcon
-                          sx={{
-                            minWidth: 0,
-                            mr: open ? 3 : "auto",
-                            justifyContent: "center",
-                            color: pageIndex === index + 12 ? "#FFB999" : "#e6e6e6",
-                          }}
-                        >
-                          {ele.icon}
-                        </ListItemIcon>
-                        <ListItemText
-                          primary={ele.name}
-                          sx={{ opacity: open ? 1 : 0 }}
-                        />
-                      </ListItemButton>
-                    </ListItem>
-                  ))}
-                </List>
-              </Collapse>
-            </List>
         </List>
       </Drawer>
 
@@ -478,47 +251,10 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
         <MintNft />
       </TabPanel>
       <TabPanel value={pageIndex} index={4}>
-        <BatchLiquidity />
+        <MintNftBatch />
       </TabPanel>
-      {/* <TabPanel value={pageIndex} index={7}>
-        <BatchMintNft />
-      </TabPanel> */}
-
       <TabPanel value={pageIndex} index={5}>
-        <ForwardFlow
-          pageIndexChange={handleChange}
-          setUseCase={setUseCase}
-          useCase={useCase}
-        />
-      </TabPanel>
-      <TabPanel value={pageIndex} index={6}>
-        <MintNftForward />
-      </TabPanel>
-      <TabPanel value={pageIndex} index={7}>
-        <BatchLiquidityForward />
-      </TabPanel>
-
-      <TabPanel value={pageIndex} index={8}>
-        {/* <SessionFlow
-          pageIndexChange={handleChange}
-          setUseCase={setUseCase}
-          useCase={useCase}
-        /> */}
-      </TabPanel>
-      <TabPanel value={pageIndex} index={9}>
-        <CreateCustomSession />
-      </TabPanel>
-      <TabPanel value={pageIndex} index={10}>
-        <HyphenLpUsingSession />
-      </TabPanel>
-      <TabPanel value={pageIndex} index={11}>
-        <ABISVM />
-      </TabPanel>
-      <TabPanel value={pageIndex} index={12}>
-        <CreateBatchRouter />
-      </TabPanel>
-      <TabPanel value={pageIndex} index={13}>
-        <ERC20RouterTransfer />
+        <NexusModulesPlayground/>
       </TabPanel>
     </Box>
   );

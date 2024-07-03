@@ -9,9 +9,8 @@ import {
   showErrorMessage,
   showSuccessMessage,
 } from "../../utils";
-import { PaymasterMode } from "@biconomy/account";
 
-const MintNft: React.FC = () => {
+const MintNftBatch: React.FC = () => {
   const classes = useStyles();
   const publicClient = usePublicClient();
   const { smartAccount, scwAddress } = useSmartAccountContext();
@@ -26,7 +25,6 @@ const MintNft: React.FC = () => {
       client: publicClient,
     });
     const count = await nftContract.read.balanceOf([scwAddress]);
-    console.log("count", count);
     setNftCount(Number(count));
   }, [publicClient, scwAddress]);
 
@@ -34,7 +32,7 @@ const MintNft: React.FC = () => {
     getNftCount();
   }, [getNftCount, publicClient]);
 
-  const mintNft = async () => {
+  const mintNfts = async () => {
     if (!scwAddress || !smartAccount || !publicClient) return;
     try {
       setLoading(true);
@@ -49,7 +47,7 @@ const MintNft: React.FC = () => {
         data: mintData,
       };
 
-      let { wait } = await smartAccount.sendTransaction([tx1]);
+      let { wait } = await smartAccount.sendTransaction([tx1, tx1]);
       const { userOpHash } = await wait();
       console.log("txHash", userOpHash);
       showSuccessMessage(`Minted Nft ${userOpHash}`, userOpHash);
@@ -66,13 +64,13 @@ const MintNft: React.FC = () => {
   return (
     <main className={classes.main}>
       <p style={{ color: "#7E7E7E" }}>
-        Use Cases {"->"} Gasless {"->"} Mint Nft
+        Use Cases {"->"} Gasless {"->"} Mint Nft Batch
       </p>
 
-      <h3 className={classes.subTitle}>Mint Nft Flow</h3>
+      <h3 className={classes.subTitle}>Mint Nft Batch Flow</h3>
 
       <p style={{ marginBottom: 20 }}>
-        This is an example of minting an NFT using Nexus SA with EP V7.
+        This is an example of minting 2 NFT's using Nexus SA with EP V7.
       </p>
       <p>
         Nft Contract Address: {config.nft.address}{" "}
@@ -89,7 +87,7 @@ const MintNft: React.FC = () => {
         )}
       </p>
 
-      <Button title="Mint NFT" isLoading={loading} onClickFunc={mintNft} />
+      <Button title="Mint NFT's" isLoading={loading} onClickFunc={mintNfts} />
     </main>
   );
 };
@@ -109,4 +107,4 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default MintNft;
+export default MintNftBatch;

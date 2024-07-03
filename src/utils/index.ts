@@ -4,6 +4,8 @@ import configInfo from "./configs/contractsInfo.json";
 import { toast } from "react-toastify";
 import { activeChainId, getExplorer, getRPCProvider } from "./chainConfig";
 import { BytesLike, hexConcat, hexZeroPad, hexlify } from "ethers/lib/utils";
+import { Address } from "viem";
+import { K1_VALIDATOR, MOCK_EXECUTOR, OWNABLE_EXECUTOR, OWNABLE_VALIDATOR } from "@biconomy/account";
 
 export { configInfo };
 
@@ -126,3 +128,36 @@ export const formatBalance = (value: string, decimals: number) => {
   // let res = ethers.utils.formatEther(balance);
   return balance.toString();
 };
+
+export const detectModulByAddress = (address: Address): {name: string, type: string} | null => {
+  console.log(address, "address");
+  switch (address) {
+    case OWNABLE_EXECUTOR:
+      return {
+        name: "Ownable Executor",
+        type: "Execution Module"
+      }
+    case MOCK_EXECUTOR:
+      return {
+        name: "Mock Executor",
+        type: "Execution Module"
+      }
+    case OWNABLE_VALIDATOR:
+      return {
+        name: "Ownable Validator",
+        type: "Validation Module"
+      }
+    case K1_VALIDATOR:
+      return {
+        name: "K1 Validator",
+        type: "Validation Module"
+      }
+    case "0x26d3E02a086D5182F4921CF1917fe9E6462E0495":
+      return {
+        name: "K1 Validator",
+        type: "Validation Module"
+      }
+    default:
+      return null;
+  }
+}

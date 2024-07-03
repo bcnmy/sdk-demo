@@ -4,17 +4,19 @@ export const ChainId = {
   POLYGON_MUMBAI: 80001,
   POLYGON_MAINNET: 137,
   ARBITRUM_GOERLI: 421613,
+  BASE_SEPOLIA: 84532
 };
 
-export let activeChainId = ChainId.POLYGON_MUMBAI;
+export let activeChainId = ChainId.BASE_SEPOLIA;
 export const paymasterApiKey = "WEX9LXdFW.13107308-4631-4ba5-9e23-2a8bf8270948";
-export const bundlerUrl = "https://bundler.biconomy.io/api/v2/80001/WEX9LXdFW.13107308-4631-4ba5-9e23-2a8bf8270948";
+export const bundlerUrl = "https://api.pimlico.io/v2/84532/rpc?apikey=22c48af7-4886-4c7d-8d4c-5d50262a23f3";
 
 export const supportedChains = [
   ChainId.GOERLI,
   ChainId.POLYGON_MAINNET,
   ChainId.POLYGON_MUMBAI,
-  ChainId.ARBITRUM_GOERLI
+  ChainId.ARBITRUM_GOERLI,
+  ChainId.BASE_SEPOLIA
 ];
 
 export const ERC20_SESSION_VALIDATION_MODULE = "0x000000D50C68705bd6897B2d17c7de32FB519fDA"
@@ -32,6 +34,8 @@ export const getRPCProvider = (chainId: number) => {
       return "https://polygon-mumbai.g.alchemy.com/v2/Q4WqQVxhEEmBYREX22xfsS2-s5EXWD31";
     case 137:
       return "https://polygon.llamarpc.com";
+    case 84532:
+      return "https://sepolia.base.org";
     default:
       return "https://eth-mainnet.g.alchemy.com/v2/YMRFBPG1iyBwiRQIHThSWZanZj0NXUjv";
   }
@@ -49,6 +53,8 @@ export const getExplorer = (chainId: number) => {
       return "https://polygonscan.com";
     case 421613:
       return "https://goerli.arbiscan.io/";  
+    case 84532:
+      return "https://sepolia.basescan.org/";
     default:
       return "https://mumbai.polygonscan.com";
   }
