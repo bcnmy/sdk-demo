@@ -19,7 +19,7 @@ interface props {
 const UseDanSession: React.FC<props> = ({
   session,
   danModuleInfo: {
-    ephSK,
+    hexEphSKWithout0x: ephSK,
     mpcKeyId,
     threshold,
     partiesNumber,
@@ -79,7 +79,7 @@ const UseDanSession: React.FC<props> = ({
         sessionID,
         danModuleInfo: {
           eoaAddress,
-          ephSK,
+          hexEphSKWithout0x:ephSK,
           threshold,
           partiesNumber,
           chainId,

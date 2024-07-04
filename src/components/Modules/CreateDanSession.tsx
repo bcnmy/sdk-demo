@@ -36,10 +36,9 @@ const CreateDanSession: React.FC = () => {
 
   const policy: any[] = [
     { interval: { validAfter: 0, validUntil: 0 } },
-    "{SESSION_KEY}",
-    token,
-    eoa!,
-    parseUnits("50".toString(), 6)
+    'token address '+token,
+    'receiver '+eoa!,
+    'amount up to '+parseUnits("50".toString(), 6)
   ]
 
   const createDanSessionHandler = async () => {
@@ -58,7 +57,7 @@ const CreateDanSession: React.FC = () => {
       const {
         sessionKeyEOA,
         mpcKeyId,
-        ephSK,
+        hexEphSKWithout0x: ephSK,
         partiesNumber,
         threshold,
         eoaAddress
@@ -66,7 +65,7 @@ const CreateDanSession: React.FC = () => {
 
       setDanModuleInfo({
         mpcKeyId,
-        ephSK,
+        hexEphSKWithout0x: ephSK,
         partiesNumber,
         threshold,
         eoaAddress,
