@@ -1,13 +1,7 @@
 import {
-  DEFAULT_SESSION_KEY_MANAGER_MODULE,
-  type DanModuleInfo,
-  PaymasterMode,
+  type PolicyWithoutSessionKey,
   type Session,
-  SessionLocalStorage,
-  type Transaction,
-  createDANSessionKeyManagerModule,
-  createERC20SessionDatum,
-  getDANSessionKey
+  createDistributedSession
 } from "@biconomy/account"
 import { bigIntReplacer, useSmartAccount } from "@biconomy/use-aa"
 import { makeStyles } from "@mui/styles"
@@ -15,31 +9,33 @@ import type React from "react"
 import { useState } from "react"
 import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
-import { type Hex, encodeAbiParameters, parseUnits } from "viem"
-import { useAccount } from "wagmi"
+import type { Hex } from "viem"
 import Button from "../Button"
 import UseDanSession from "./UseDanSession"
 
-import { configInfo } from "../../utils"
-
 const CreateDanSession: React.FC = () => {
   const classes = useStyles()
-  const token = configInfo.usdc.address as Hex
-  const amount = parseUnits("50".toString(), 6)
-
-  const { address: eoa } = useAccount()
+  const nftAddress: Hex = "0x1758f42Af7026fBbB559Dc60EcE0De3ef81f665e"
   const { smartAccountAddress, smartAccountClient } = useSmartAccount()
   const [session, setSession] = useState<Session | null>(null)
-  const [danModuleInfo, setDanModuleInfo] = useState<
-    undefined | DanModuleInfo
-  >()
 
-  const policy: any[] = [
-    { interval: { validAfter: 0, validUntil: 0 } },
-    "{SESSION_KEY}",
-    token,
-    eoa!,
-    parseUnits("50".toString(), 6)
+  const policy: PolicyWithoutSessionKey[] = [
+    {
+      contractAddress: nftAddress,
+      functionSelector: "safeMint(address)",
+      rules: [
+        {
+          offset: 0,
+          condition: 0,
+          referenceValue: smartAccountAddress
+        }
+      ],
+      interval: {
+        validUntil: 0,
+        validAfter: 0
+      },
+      valueLimit: 0n
+    }
   ]
 
   const createDanSessionHandler = async () => {
@@ -47,113 +43,34 @@ const CreateDanSession: React.FC = () => {
       if (!smartAccountClient || !smartAccountAddress) {
         throw new Error("Smart Account not found")
       }
-      console.log(
-        "use",
-        smartAccountClient,
-        "address: ",
-        smartAccountAddress,
-        "to create the session"
-      )
 
-      const {
-        sessionKeyEOA,
-        mpcKeyId,
-        ephSK,
-        partiesNumber,
-        threshold,
-        eoaAddress
-      } = await getDANSessionKey(smartAccountClient)
-
-      setDanModuleInfo({
-        mpcKeyId,
-        ephSK,
-        partiesNumber,
-        threshold,
-        eoaAddress,
-        chainId: 80002
-      })
-
-      const sessionStorageClient = new SessionLocalStorage(smartAccountAddress)
-
-      const sessionsModule = await createDANSessionKeyManagerModule({
-        smartAccountAddress,
-        sessionStorageClient
-      })
-
-      console.log("session module")
-      console.log(sessionsModule)
-
-      const createSessionDataParams = createERC20SessionDatum({
-        interval: { validAfter: 0, validUntil: 0 },
-        sessionKeyAddress: sessionKeyEOA,
-        sessionKeyData: encodeAbiParameters(
-          [
-            { type: "address" },
-            { type: "address" },
-            { type: "address" },
-            { type: "uint256" }
+      const policy: PolicyWithoutSessionKey[] = [
+        {
+          contractAddress: nftAddress,
+          functionSelector: "safeMint(address)",
+          rules: [
+            {
+              offset: 0,
+              condition: 0,
+              referenceValue: smartAccountAddress
+            }
           ],
-          [sessionKeyEOA, token, eoa!, amount]
-        )
-      })
+          interval: {
+            validUntil: 0,
+            validAfter: 0
+          },
+          valueLimit: 0n
+        }
+      ]
 
-      const { data: policyData, sessionIDInfo } =
-        await sessionsModule.createSessionData([createSessionDataParams])
-
-      console.log("sessionKeyEOA a", sessionKeyEOA, {
-        matchedLeaf: await sessionStorageClient.getSessionData({
-          sessionID: sessionIDInfo[0]
-        })
-      })
-
-      const permitTx = {
-        to: DEFAULT_SESSION_KEY_MANAGER_MODULE,
-        data: policyData
-      }
-
-      const txs: Transaction[] = []
-
-      const isDeployed = await smartAccountClient.isAccountDeployed()
-      const enableSessionTx = await smartAccountClient.getEnableModuleData(
-        DEFAULT_SESSION_KEY_MANAGER_MODULE
+      const { wait, session } = await createDistributedSession(
+        smartAccountClient,
+        policy
       )
 
-      if (isDeployed) {
-        const enabled = await smartAccountClient.isModuleEnabled(
-          DEFAULT_SESSION_KEY_MANAGER_MODULE
-        )
-        if (!enabled) {
-          txs.push(enableSessionTx)
-        }
-      } else {
-        txs.push(enableSessionTx)
-      }
+      const { success } = await wait()
 
-      txs.push(permitTx)
-
-      const userOpResponse = await smartAccountClient.sendTransaction(txs, {
-        paymasterServiceData: { mode: PaymasterMode.SPONSORED },
-        nonceOptions: {
-          nonceKey: Date.now()
-        }
-      })
-
-      console.log("userOpResponse", userOpResponse)
-
-      const {
-        receipt: { transactionHash },
-        success
-      } = await userOpResponse.wait()
-
-      console.log("transactionHash", transactionHash)
-
-      const resultingSession = {
-        sessionStorageClient,
-        sessionIDInfo
-      }
-
-      // Handle Success. Keep the "Session" (StorageClient and sessionIDs) and set it to the session
-      success && setSession(resultingSession)
+      success && setSession(session)
     } catch (error) {
       console.error("Error creating session:", error)
     }
@@ -185,8 +102,8 @@ const CreateDanSession: React.FC = () => {
 
       <pre>policy: {JSON.stringify(policy, bigIntReplacer, 2)}</pre>
 
-      {!!session && danModuleInfo ? (
-        <UseDanSession session={session} danModuleInfo={danModuleInfo!} />
+      {!!session ? (
+        <UseDanSession session={session} />
       ) : (
         <Button title="Create Session" onClickFunc={createDanSessionHandler} />
       )}

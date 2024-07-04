@@ -15,7 +15,7 @@ interface props {
   sessionID: string
 }
 
-const UseSession: React.FC<props> = ({ smartAccountAddress, sessionID }) => {
+const UseSession: React.FC<props> = ({ smartAccountAddress }) => {
   const {
     mutate,
     data: userOpResponse,
