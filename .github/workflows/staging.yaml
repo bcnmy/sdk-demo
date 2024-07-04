@@ -31,6 +31,7 @@ jobs:
           CI: false
           NODE_OPTIONS: --max_old_space_size=4096
           REACT_APP_PKEY: ${{ secrets.REACT_APP_PKEY }}
+          VITE_SILENCE_LABS_NPM_TOKEN: ${{ secrets.VITE_SILENCE_LABS_NPM_TOKEN }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1

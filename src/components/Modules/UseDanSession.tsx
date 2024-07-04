@@ -1,93 +1,65 @@
 import {
-  type DanModuleInfo,
   PaymasterMode,
   type Session,
-  createDANSessionKeyManagerModule
+  type Transaction,
+  createSessionSmartAccountClient,
+  getChain
 } from "@biconomy/account"
 import { useSmartAccount } from "@biconomy/use-aa"
 import type React from "react"
 import "react-toastify/dist/ReactToastify.css"
-import { type Hex, encodeFunctionData, parseAbi, parseUnits } from "viem"
-import { configInfo } from "../../utils"
+import { type Hex, encodeFunctionData, parseAbi } from "viem"
+import { biconomyPaymasterApiKey, bundlerUrl } from "../../utils/chainConfig"
 import Button from "../Button"
 
+const withSponsorship = {
+  paymasterServiceData: { mode: PaymasterMode.SPONSORED }
+}
 interface props {
   session: Session
-  danModuleInfo: DanModuleInfo
 }
 
-const UseDanSession: React.FC<props> = ({
-  session,
-  danModuleInfo: {
-    hexEphSKWithout0x: ephSK,
-    mpcKeyId,
-    threshold,
-    partiesNumber,
-    chainId,
-    eoaAddress
-  }
-}) => {
-  const token = configInfo.usdc.address as Hex
-  const amount = parseUnits("1".toString(), 6)
+const UseDanSession: React.FC<props> = ({ session }) => {
+  const nftAddress: Hex = "0x1758f42Af7026fBbB559Dc60EcE0De3ef81f665e"
+  const chain = getChain(80002)
 
-  const sessionID = session.sessionIDInfo[0]
-  console.log({ session, sessionID, eoaAddress })
+  const { smartAccountAddress } = useSmartAccount()
 
-  const { smartAccountAddress, smartAccountClient } = useSmartAccount()
-
-  const transactions = {
-    to: token,
+  const nftMintTx: Transaction = {
+    to: nftAddress,
     data: encodeFunctionData({
-      abi: parseAbi(["function transfer(address _to, uint256 _value)"]),
-      functionName: "transfer",
-      args: [eoaAddress as Hex, amount]
+      abi: parseAbi(["function safeMint(address _to)"]),
+      functionName: "safeMint",
+      args: [smartAccountAddress]
     })
   }
 
   const useDanSessionHandler = async () => {
-    if (!smartAccountClient || !smartAccountAddress) {
+    if (!smartAccountAddress) {
       throw new Error("Smart Account not found")
     }
     if (!session) {
       throw new Error("Session not found")
     }
 
-    const sessionStorageClient = session.sessionStorageClient
-
-    const matchedLeaf = await session.sessionStorageClient.getSessionData({
-      sessionID
-    })
-
-    console.log("sessionKeyEoa b", matchedLeaf.sessionPublicKey, {
-      matchedLeaf
-    })
-
-    smartAccountClient.setActiveValidationModule(
-      await createDANSessionKeyManagerModule({
-        smartAccountAddress,
-        sessionStorageClient
-      })
+    const smartAccountWithSession = await createSessionSmartAccountClient(
+      {
+        accountAddress: smartAccountAddress, // Set the account address on behalf of the user
+        biconomyPaymasterApiKey,
+        bundlerUrl,
+        chainId: chain.id
+      },
+      session,
+      "DAN"
     )
 
     // Send the transactions using session params
-    const { wait } = await smartAccountClient.sendTransaction(transactions, {
-      paymasterServiceData: { mode: PaymasterMode.SPONSORED },
-      nonceOptions: {
-        nonceKey: Date.now()
-      },
-      params: {
-        sessionID,
-        danModuleInfo: {
-          eoaAddress,
-          hexEphSKWithout0x:ephSK,
-          threshold,
-          partiesNumber,
-          chainId,
-          mpcKeyId
-        }
-      }
-    })
-    // Wait for the createSessionTx
+    const { wait } = await smartAccountWithSession.sendSessionTransaction(
+      [session, chain, null],
+      nftMintTx,
+      withSponsorship
+    )
+
     const {
       receipt: { transactionHash },
       success

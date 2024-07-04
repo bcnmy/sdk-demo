@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "bun i && bun link @biconomy/account @silencelaboratories/walletprovider-sdk && vite",
+    "dev": "bun i && bun link @biconomy/account && vite",
     "start": "vite",
     "build": "tsc && vite build",
     "format": "biome format . --write",
@@ -22,6 +22,7 @@
     "@mui/styles": "^5.11.12",
     "@noble/ed25519": "^2.1.0",
     "@rainbow-me/rainbowkit": "^2.0.0",
+    "@silencelaboratories/walletprovider-sdk": "^0.0.8",
     "@tanstack/react-query": "^5.22.2",
     "ethers": "^6.12.1",
     "react": "^18.2.0",
