@@ -7,7 +7,7 @@ import { Address, Hex, encodeAbiParameters, encodePacked, stringToBytes, toHex }
 import Button from '../../Button';
 import { showSuccessMessage } from '../../../utils';
 import { toast } from 'react-toastify';
-import { Input, TextField } from '@mui/material';
+import { useAccount } from 'wagmi';
 
 const OwnableExecutor = () => {
 
@@ -17,6 +17,7 @@ const OwnableExecutor = () => {
     const [isOwnerExecutor, setIsOwnerExecutor] = useState<boolean | null>(null);
     
     const { smartAccount, scwAddress } = useSmartAccountContext();
+    const { address: eoaAddress } = useAccount();
 
     const classes = useStyles();
 
@@ -40,7 +41,7 @@ const OwnableExecutor = () => {
         setLoading(true);
         const activeModule = smartAccount?.activeValidationModule;
         console.log(activeModule, "activeModule");
-        const receipt = await smartAccount!.installModule({moduleAddress: OWNABLE_EXECUTOR, moduleType: ModuleType.Execution, data: encodePacked(['address'], [scwAddress as Hex])});
+        const receipt = await smartAccount!.installModule({moduleAddress: OWNABLE_EXECUTOR, moduleType: ModuleType.Execution, data: encodePacked(['address'], [eoaAddress as Hex])});
         showSuccessMessage(`Installed Ownable Executor Module ${receipt.userOpHash}`, receipt.userOpHash);
         setLoading(false);
     }
@@ -139,18 +140,7 @@ const OwnableExecutor = () => {
                 <Button title="Remove Owner" isLoading={loading} onClickFunc={() => removeOwner()} />
               </div>
               <div>
-                <p>Check if your SA is an executor owner of another Smart Account.</p>
-               <input onChange={e => isOwner(e.target.value as Hex)} style={{width: '100%'}} placeholder='Enter owned SA address'/>
-               {
-                isOwnerExecutor !== null 
-                  ? isOwnerExecutor ?
-                    <p>You are an owner</p> 
-                  : <p>You are not an owner</p>
-                : ""
-               }
-              </div>
-              <div>
-                <p>Check if your EOA is an executor owner of another Smart Account.</p>
+                <p>Check if you are an executor owner of another Smart Account.</p>
                <input onChange={e => isOwner(e.target.value as Hex, true)} style={{width: '100%'}} placeholder='Enter owned SA address'/>
                {
                 isOwnerExecutor !== null 
