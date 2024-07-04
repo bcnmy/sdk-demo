@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "bun i && bun link @biconomy/account @silencelaboratories/walletprovider-sdk && vite",
+    "dev": "bun i && bun link @biconomy/account && vite",
     "start": "vite",
     "build": "tsc && vite build",
     "format": "biome format . --write",
