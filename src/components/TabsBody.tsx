@@ -138,33 +138,6 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
             display: "block"
           }}
         >
-          {onboardingList.map((ele, index) => (
-            <ListItem key={ele.name} disablePadding sx={{ display: "block" }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? "initial" : "center",
-                  px: 2.5
-                }}
-                onClick={(e: any) => handleChange(e, index)}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : "auto",
-                    justifyContent: "center",
-                    color: pageIndex === index ? "#FFB999" : "#e6e6e6"
-                  }}
-                >
-                  {ele.icon}
-                </ListItemIcon>
-                <ListItemText
-                  primary={ele.name}
-                  sx={{ opacity: open ? 1 : 0 }}
-                />
-              </ListItemButton>
-            </ListItem>
-          ))}
         </List>
         {/* AA Left Panel */}
         {/* <Divider style={{ borderColor: "#323a43", borderWidth: 1 }} /> */}
@@ -173,128 +146,10 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
             display: "block"
           }}
         >
-          <ListItemButton
-            onClick={(e: any) => {
-              setIsAAOpen(!isAAOpen)
-              handleChange(e, 2)
-            }}
-          >
-            <ListItemIcon
-              sx={{
-                minWidth: 0,
-                mr: open ? 3 : "auto",
-                justifyContent: "center",
-                color: pageIndex === 2 ? "#FFB999" : "#e6e6e6"
-              }}
-            >
-              <EvStationIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary="Account Abstraction"
-              sx={{ opacity: open ? 1 : 0 }}
-            />
-            {isAAOpen ? <ExpandLess /> : <ExpandMore />}
-          </ListItemButton>
           <Collapse in={isAAOpen} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              {AAList.map((ele, index) => (
-                <ListItem
-                  key={ele.name}
-                  disablePadding
-                  sx={{ display: "block" }}
-                >
-                  <ListItemButton
-                    sx={{
-                      minHeight: 48,
-                      justifyContent: open ? "initial" : "center",
-                      px: 2.5
-                    }}
-                    onClick={(e: any) => handleChange(e, index + 3)}
-                  >
-                    <ListItemIcon
-                      sx={{
-                        minWidth: 0,
-                        mr: open ? 3 : "auto",
-                        justifyContent: "center",
-                        color: pageIndex === index + 3 ? "#FFB999" : "#e6e6e6"
-                      }}
-                    >
-                      {ele.icon}
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={ele.name}
-                      sx={{ opacity: open ? 1 : 0 }}
-                    />
-                  </ListItemButton>
-                </ListItem>
-              ))}
-            </List>
           </Collapse>
         </List>
         {/* Forward Left Panel */}
-        <List
-          sx={{
-            display: "block"
-          }}
-        >
-          <ListItemButton
-            onClick={(e: any) => {
-              setIsForwardOpen(!isForwardOpen)
-              handleChange(e, 5)
-            }}
-          >
-            <ListItemIcon
-              sx={{
-                minWidth: 0,
-                mr: open ? 3 : "auto",
-                justifyContent: "center",
-                color: pageIndex === 5 ? "#FFB999" : "#e6e6e6"
-              }}
-            >
-              <ContactlessIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary="Pay gas in ERC20"
-              sx={{ opacity: open ? 1 : 0 }}
-            />
-            {isForwardOpen ? <ExpandLess /> : <ExpandMore />}
-          </ListItemButton>
-          <Collapse in={isForwardOpen} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              {ForwardList.map((ele, index) => (
-                <ListItem
-                  key={ele.name}
-                  disablePadding
-                  sx={{ display: "block" }}
-                >
-                  <ListItemButton
-                    sx={{
-                      minHeight: 48,
-                      justifyContent: open ? "initial" : "center",
-                      px: 2.5
-                    }}
-                    onClick={(e: any) => handleChange(e, index + 6)}
-                  >
-                    <ListItemIcon
-                      sx={{
-                        minWidth: 0,
-                        mr: open ? 3 : "auto",
-                        justifyContent: "center",
-                        color: pageIndex === index + 6 ? "#FFB999" : "#e6e6e6"
-                      }}
-                    >
-                      {ele.icon}
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={ele.name}
-                      sx={{ opacity: open ? 1 : 0 }}
-                    />
-                  </ListItemButton>
-                </ListItem>
-              ))}
-            </List>
-          </Collapse>
-        </List>
 
         {/* Session Left Panel */}
         <List
@@ -302,144 +157,9 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
             display: "block"
           }}
         >
-          <ListItemButton
-            onClick={(e: any) => {
-              setIsSessionOpen(!isSessionOpen)
-              handleChange(e, 8)
-            }}
-          >
-            <ListItemIcon
-              sx={{
-                minWidth: 0,
-                mr: open ? 3 : "auto",
-                justifyContent: "center",
-                color: pageIndex === 8 ? "#FFB999" : "#e6e6e6"
-              }}
-            >
-              <FiberNewIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary="Session Keys Demo"
-              sx={{ opacity: open ? 1 : 0 }}
-            />
-            {isSessionOpen ? <ExpandLess /> : <ExpandMore />}
-          </ListItemButton>
-          <Collapse in={isSessionOpen} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              {SessionList.map((ele, index) => (
-                <ListItem
-                  key={ele.name}
-                  disablePadding
-                  sx={{ display: "block" }}
-                >
-                  <ListItemButton
-                    sx={{
-                      minHeight: 48,
-                      justifyContent: open ? "initial" : "center",
-                      px: 2.5
-                    }}
-                    onClick={(e: any) => handleChange(e, index + 9)}
-                  >
-                    <ListItemIcon
-                      sx={{
-                        minWidth: 0,
-                        mr: open ? 3 : "auto",
-                        justifyContent: "center",
-                        color: pageIndex === index + 9 ? "#FFB999" : "#e6e6e6"
-                      }}
-                    >
-                      {ele.icon}
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={ele.name}
-                      sx={{ opacity: open ? 1 : 0 }}
-                    />
-                  </ListItemButton>
-                </ListItem>
-              ))}
-            </List>
-          </Collapse>
-          <List sx={{ display: "block" }}>
-            <ListItemButton
-              onClick={(e: any) => {
-                setIsSessionRouterOpen(!isSessionRouterOpen)
-                handleChange(e, 8)
-              }}
-            >
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : "auto",
-                  justifyContent: "center",
-                  color: pageIndex === 12 ? "#FFB999" : "#e6e6e6"
-                }}
-              >
-                <FiberNewIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary="Batched Session Router Demo"
-                sx={{ opacity: open ? 1 : 0 }}
-              />
-              {isSessionRouterOpen ? <ExpandLess /> : <ExpandMore />}
-            </ListItemButton>
-            <Collapse in={isSessionRouterOpen} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding>
-                {SessionRouterList.map((ele, index) => (
-                  <ListItem
-                    key={ele.name}
-                    disablePadding
-                    sx={{ display: "block" }}
-                  >
-                    <ListItemButton
-                      sx={{
-                        minHeight: 48,
-                        justifyContent: open ? "initial" : "center",
-                        px: 2.5
-                      }}
-                      onClick={(e: any) => handleChange(e, index + 12)}
-                    >
-                      <ListItemIcon
-                        sx={{
-                          minWidth: 0,
-                          mr: open ? 3 : "auto",
-                          justifyContent: "center",
-                          color:
-                            pageIndex === index + 12 ? "#FFB999" : "#e6e6e6"
-                        }}
-                      >
-                        {ele.icon}
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={ele.name}
-                        sx={{ opacity: open ? 1 : 0 }}
-                      />
-                    </ListItemButton>
-                  </ListItem>
-                ))}
-              </List>
-            </Collapse>
-          </List>
+          
 
           <List sx={{ display: "block" }}>
-            <ListItemButton
-              onClick={(e: any) => {
-                setIsSessionRouterOpen(!isDanOpen)
-                handleChange(e, 8)
-              }}
-            >
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : "auto",
-                  justifyContent: "center",
-                  color: pageIndex === 13 ? "#FFB999" : "#e6e6e6"
-                }}
-              >
-                <FiberNewIcon />
-              </ListItemIcon>
-              <ListItemText primary="Dan Demo" sx={{ opacity: open ? 1 : 0 }} />
-              {isDanOpen ? <ExpandLess /> : <ExpandMore />}
-            </ListItemButton>
             <Collapse in={isDanOpen} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
                 {SessionDanList.map((ele, index) => (
@@ -480,56 +200,15 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
       </Drawer>
 
       {/* content menu */}
-      <TabPanel value={pageIndex} index={0}>
-        <Onboarding setValue={setPageIndex} />
-      </TabPanel>
-      <TabPanel value={pageIndex} index={1}>
-        <Faucet />
-      </TabPanel>
       {/* <TabPanel value={pageIndex} index={2}>
         <Assets />
       </TabPanel> */}
-      <TabPanel value={pageIndex} index={2}>
-        <AccountAbstraction
-          pageIndexChange={handleChange}
-          setUseCase={setUseCase}
-          useCase={useCase}
-        />
-      </TabPanel>
       {/* <TabPanel value={pageIndex} index={4}>
         <MintErc20 />
       </TabPanel> */}
-      <TabPanel value={pageIndex} index={3}>
-        <MintNft />
-      </TabPanel>
       {/* <TabPanel value={pageIndex} index={7}>
         <BatchMintNft />
       </TabPanel> */}
-
-      <TabPanel value={pageIndex} index={5}>
-        <ForwardFlow
-          pageIndexChange={handleChange}
-          setUseCase={setUseCase}
-          useCase={useCase}
-        />
-      </TabPanel>
-      <TabPanel value={pageIndex} index={6}>
-        <MintNftForward />
-      </TabPanel>
-
-      <TabPanel value={pageIndex} index={8}>
-        {/* <SessionFlow
-          pageIndexChange={handleChange}
-          setUseCase={setUseCase}
-          useCase={useCase}
-        /> */}
-      </TabPanel>
-      <TabPanel value={pageIndex} index={9}>
-        <CreateSession />
-      </TabPanel>
-      <TabPanel value={pageIndex} index={12}>
-        <CreateBatchSession />
-      </TabPanel>
       <TabPanel value={pageIndex} index={13}>
         <CreateDanSession />
       </TabPanel>

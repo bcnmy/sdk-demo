@@ -14,6 +14,7 @@ import type { EIP1193Provider, Hex } from "viem"
 import { useAccount } from "wagmi"
 import Button from "../Button"
 import UseDanSession from "./UseDanSession"
+import { showSuccessMessage } from "../../utils"
 
 const CreateDanSession: React.FC = () => {
   const classes = useStyles()
@@ -52,9 +53,11 @@ const CreateDanSession: React.FC = () => {
         policy
       )
 
-      const { success } = await wait()
+      const { success, receipt: { transactionHash } } = await wait()
 
-      success && setSession(session)
+      showSuccessMessage("Session key stored in DAN and the session is now active on-chain",transactionHash)
+
+      success && setSession(session) 
     } catch (error) {
       console.error("Error creating session:", error)
     }

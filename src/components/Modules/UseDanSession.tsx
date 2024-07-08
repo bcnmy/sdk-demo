@@ -11,6 +11,7 @@ import "react-toastify/dist/ReactToastify.css"
 import { type Hex, encodeFunctionData, parseAbi } from "viem"
 import { biconomyPaymasterApiKey, bundlerUrl } from "../../utils/chainConfig"
 import Button from "../Button"
+import { showSuccessMessage } from "../../utils"
 
 const withSponsorship = {
   paymasterServiceData: { mode: PaymasterMode.SPONSORED }
@@ -54,16 +55,18 @@ const UseDanSession: React.FC<props> = ({ session }) => {
     )
 
     // Send the transactions using session params
-    const { wait } = await smartAccountWithSession.sendSessionTransaction(
-      [session, chain, null],
+    const { wait } = await smartAccountWithSession.sendTransaction(
       nftMintTx,
-      withSponsorship
+      withSponsorship,
+      [null] // Uses the last session leaf and the default storage client
     )
 
     const {
       receipt: { transactionHash },
       success
     } = await wait()
+
+    showSuccessMessage("Smart Agent successfully bid and minted NFT on your behalf", transactionHash);
 
     success && console.log({ transactionHash })
   }
