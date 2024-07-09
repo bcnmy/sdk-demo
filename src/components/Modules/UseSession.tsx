@@ -29,6 +29,7 @@ const UseSession: React.FC<props> = ({ smartAccountAddress }: props) => {
 
   const mintTx = () =>
     mutate({
+      smartAccountAddress,
       transactions: {
         to: configInfo.nft.address,
         data: encodeFunctionData({
@@ -46,8 +47,6 @@ const UseSession: React.FC<props> = ({ smartAccountAddress }: props) => {
       )
     }
   }, [waitIsSuccess, waitData])
-
-  console.log(error, waitError)
 
   return (
     <ErrorGuard errors={[error, waitError]}>

@@ -42,7 +42,8 @@ const UseBatchSession: React.FC<props> = ({ smartAccountAddress }) => {
     mutate({
       transactions: [nftMintTx, nftMintTx],
       correspondingIndexes: [0, 1],
-      options: Options.getIncreasedVerification(50)
+      options: Options.getIncreasedVerification(50),
+      smartAccountAddress
     })
 
   useEffect(() => {

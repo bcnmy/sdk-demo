@@ -13,8 +13,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@biconomy/account": "^4.5.2",
-    "@biconomy/use-aa": "^1.0.14",
+    "@biconomy/account": "^4.6.0",
+    "@biconomy/use-aa": "^1.1.0",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@ethersproject/providers": "^5.7.2",

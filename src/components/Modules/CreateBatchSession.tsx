@@ -23,7 +23,7 @@ export type Policy = Omit<PolicyFromSDK, "sessionKeyAddress">
 const CreateBatchSession: React.FC = () => {
   const classes = useStyles()
   const { address } = useAccount()
-  const { smartAccountAddress: scwAddress } = useSmartAccount()
+  const { smartAccountAddress } = useSmartAccount()
   const [hasSession, setHasSession] = useState<boolean>(false)
 
   const policyLeaves: Policy[] = [
@@ -38,7 +38,7 @@ const CreateBatchSession: React.FC = () => {
         {
           offset: 0,
           condition: 0,
-          referenceValue: scwAddress
+          referenceValue: smartAccountAddress
         }
       ],
       valueLimit: 0n
@@ -54,7 +54,7 @@ const CreateBatchSession: React.FC = () => {
         {
           offset: 0,
           condition: 0,
-          referenceValue: scwAddress
+          referenceValue: smartAccountAddress
         }
       ],
       valueLimit: 0n
@@ -106,7 +106,7 @@ const CreateBatchSession: React.FC = () => {
 
         {!!hasSession ? (
           <UseBatchSession
-            smartAccountAddress={scwAddress}
+            smartAccountAddress={smartAccountAddress}
             address={address!}
           />
         ) : (
