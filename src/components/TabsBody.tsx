@@ -26,7 +26,7 @@ import Faucet from "./Faucet"
 import ForwardFlow from "./Forward"
 import MintNftForward from "./Forward/MintNft"
 import CreateBatchSession from "./Modules/CreateBatchSession"
-import CreateDanSession from "./Modules/CreateDanSession"
+import CreateDistributedSession from "./Modules/CreateDistributedSession"
 import CreateSession from "./Modules/CreateSession"
 import Navbar from "./Navbar"
 import Onboarding from "./Onboarding/index"
@@ -531,7 +531,7 @@ const TabsBody = ({ loading }: { loading: boolean }) => {
         <CreateBatchSession />
       </TabPanel>
       <TabPanel value={pageIndex} index={13}>
-        <CreateDanSession />
+        <CreateDistributedSession />
       </TabPanel>
     </Box>
   )

@@ -1,24 +1,24 @@
-import { useSession, useUserOpWait } from "@biconomy/use-aa"
+import { Options, useDistributedSession, useUserOpWait } from "@biconomy/use-aa"
 import type React from "react"
 import { useEffect } from "react"
 import "react-toastify/dist/ReactToastify.css"
-import { type Hex, encodeFunctionData, parseAbi } from "viem"
+import { type Address, type Hex, encodeFunctionData, parseAbi } from "viem"
 import { polygonAmoy } from "viem/chains"
 import { configInfo, showSuccessMessage } from "../../utils"
 import { ErrorGuard } from "../../utils/ErrorGuard"
 import Button from "../Button"
 
 interface props {
-  smartAccountAddress: Hex
+  smartAccountAddress: Address
 }
 
-const UseSession: React.FC<props> = ({ smartAccountAddress }: props) => {
+const UseDistributedSession: React.FC<props> = ({ smartAccountAddress }) => {
   const {
     mutate,
     data: userOpResponse,
     error,
     isPending: isLoading
-  } = useSession()
+  } = useDistributedSession()
 
   const {
     isLoading: waitIsLoading,
@@ -36,7 +36,9 @@ const UseSession: React.FC<props> = ({ smartAccountAddress }: props) => {
           functionName: "safeMint",
           args: [smartAccountAddress as Hex]
         })
-      }
+      },
+      options: Options.Sponsored,
+      smartAccountAddress
     })
 
   useEffect(() => {
@@ -46,8 +48,6 @@ const UseSession: React.FC<props> = ({ smartAccountAddress }: props) => {
       )
     }
   }, [waitIsSuccess, waitData])
-
-  console.log(error, waitError)
 
   return (
     <ErrorGuard errors={[error, waitError]}>
@@ -60,4 +60,4 @@ const UseSession: React.FC<props> = ({ smartAccountAddress }: props) => {
   )
 }
 
-export default UseSession
+export default UseDistributedSession
