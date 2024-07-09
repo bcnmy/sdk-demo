@@ -1,4 +1,4 @@
-import type { PolicyWithoutSessionKey } from "@biconomy/account"
+import type { PolicyLeaf } from "@biconomy/account"
 import {
   Options,
   bigIntReplacer,
@@ -24,7 +24,7 @@ const CreateDistributedSession: React.FC = () => {
   const { smartAccountAddress } = useSmartAccount()
   const [success, setSuccess] = useState<boolean>(false)
 
-  const policy: PolicyWithoutSessionKey[] = [
+  const policy: PolicyLeaf[] = [
     {
       contractAddress: nftAddress,
       functionSelector: "safeMint(address)",
