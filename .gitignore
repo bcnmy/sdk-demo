@@ -13,8 +13,6 @@ build
 dist-ssr
 *.local
 
-bunfig.toml
-
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
