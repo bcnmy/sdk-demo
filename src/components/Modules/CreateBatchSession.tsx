@@ -78,9 +78,7 @@ const CreateBatchSession: React.FC = () => {
   useEffect(() => {
     if (waitIsSuccess) {
       setHasSession(true)
-      showSuccessMessage(
-        `Successful mint: ${polygonAmoy.blockExplorers.default.url}/tx/${waitData?.receipt?.transactionHash}`
-      )
+      showSuccessMessage(`Successful mint`, waitData?.receipt?.transactionHash)
     }
   }, [waitIsSuccess, waitData])
 
