@@ -9,13 +9,5 @@ export default defineConfig({
   },
   build: {
     outDir: "./build"
-  },
-  server: {
-    watch: {
-      ignored: ["!**/node_modules/@biconomy-devx/**"]
-    }
-  },
-  optimizeDeps: {
-    exclude: ["@biconomy-devx/account"]
   }
 })
