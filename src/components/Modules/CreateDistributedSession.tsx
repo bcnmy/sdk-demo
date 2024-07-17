@@ -1,11 +1,11 @@
-import type { PolicyLeaf } from "@biconomy/account"
+import type { PolicyLeaf } from "@biconomy-devx/account"
 import {
   Options,
   bigIntReplacer,
-  useCreateDistributedSession,
+  useCreateSessionWithDistributedKey,
   useSmartAccount,
   useUserOpWait
-} from "@biconomy/use-aa"
+} from "@biconomy-devx/use-aa"
 import { makeStyles } from "@mui/styles"
 import type React from "react"
 import { useEffect, useState } from "react"
@@ -48,7 +48,7 @@ const CreateDistributedSession: React.FC = () => {
     data: userOpResponse,
     error,
     isPending
-  } = useCreateDistributedSession()
+  } = useCreateSessionWithDistributedKey()
 
   const {
     isLoading: waitIsLoading,

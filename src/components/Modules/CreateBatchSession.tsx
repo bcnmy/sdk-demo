@@ -1,4 +1,4 @@
-import type { Policy as PolicyFromSDK } from "@biconomy/account"
+import type { Policy as PolicyFromSDK } from "@biconomy-devx/account"
 import {
   Options,
   bigIntReplacer,
@@ -6,7 +6,7 @@ import {
   useCreateBatchSession,
   useSmartAccount,
   useUserOpWait
-} from "@biconomy/use-aa"
+} from "@biconomy-devx/use-aa"
 import { makeStyles } from "@mui/styles"
 import type React from "react"
 import { useEffect, useState } from "react"

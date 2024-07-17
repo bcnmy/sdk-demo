@@ -1,4 +1,8 @@
-import { Options, useDistributedSession, useUserOpWait } from "@biconomy/use-aa"
+import {
+  Options,
+  useSessionWithDistributedKey,
+  useUserOpWait
+} from "@biconomy-devx/use-aa"
 import type React from "react"
 import { useEffect } from "react"
 import "react-toastify/dist/ReactToastify.css"
@@ -18,7 +22,7 @@ const UseDistributedSession: React.FC<props> = ({ smartAccountAddress }) => {
     data: userOpResponse,
     error,
     isPending: isLoading
-  } = useDistributedSession()
+  } = useSessionWithDistributedKey()
 
   const {
     isLoading: waitIsLoading,

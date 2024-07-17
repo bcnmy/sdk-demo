@@ -1,5 +1,5 @@
-import type { Transaction } from "@biconomy/account"
-import { Options, useBatchSession, useUserOpWait } from "@biconomy/use-aa"
+import type { Transaction } from "@biconomy-devx/account"
+import { Options, useBatchSession, useUserOpWait } from "@biconomy-devx/use-aa"
 import type React from "react"
 import { useEffect } from "react"
 import "react-toastify/dist/ReactToastify.css"

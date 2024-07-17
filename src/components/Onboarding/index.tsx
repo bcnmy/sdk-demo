@@ -1,5 +1,5 @@
 // import { useWeb3Context } from "../../contexts/Web3Context";
-import { useSmartAccount } from "@biconomy/use-aa"
+import { useSmartAccount } from "@biconomy-devx/use-aa"
 import { makeStyles } from "@mui/styles"
 import type React from "react"
 import { type Dispatch, type SetStateAction, useEffect, useState } from "react"

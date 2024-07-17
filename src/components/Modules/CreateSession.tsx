@@ -4,7 +4,7 @@ import {
   useCreateSession,
   useSmartAccount,
   useUserOpWait
-} from "@biconomy/use-aa"
+} from "@biconomy-devx/use-aa"
 import { makeStyles } from "@mui/styles"
 import type React from "react"
 import { useEffect } from "react"
@@ -12,7 +12,6 @@ import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import type { Hex } from "viem"
 import { polygonAmoy } from "viem/chains"
-import { useAccount } from "wagmi"
 import { showSuccessMessage } from "../../utils"
 import { ErrorGuard } from "../../utils/ErrorGuard"
 import Button from "../Button"
@@ -23,7 +22,6 @@ const CreateSession: React.FC = () => {
 
   const nftAddress: Hex = "0x1758f42Af7026fBbB559Dc60EcE0De3ef81f665e"
 
-  const { address } = useAccount()
   const { smartAccountAddress: scwAddress } = useSmartAccount()
 
   const policy = [
@@ -104,11 +102,7 @@ const CreateSession: React.FC = () => {
         <pre>policy: {JSON.stringify(policy, bigIntReplacer, 2)}</pre>
 
         {!!sessionID ? (
-          <UseSession
-            smartAccountAddress={scwAddress}
-            address={address!}
-            sessionID={sessionID}
-          />
+          <UseSession smartAccountAddress={scwAddress} />
         ) : (
           <Button
             title="Create Session"

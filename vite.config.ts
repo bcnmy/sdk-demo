@@ -12,10 +12,10 @@ export default defineConfig({
   },
   server: {
     watch: {
-      ignored: ["!**/node_modules/@biconomy/**"]
+      ignored: ["!**/node_modules/@biconomy-devx/**"]
     }
   },
   optimizeDeps: {
-    exclude: ["@biconomy/account"]
+    exclude: ["@biconomy-devx/account"]
   }
 })

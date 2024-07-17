@@ -7,7 +7,7 @@ import {
   useSendTransaction,
   useSmartAccount,
   useUserOpWait
-} from "@biconomy/use-aa"
+} from "@biconomy-devx/use-aa"
 import { polygonAmoy } from "viem/chains"
 import { configInfo as config, showSuccessMessage } from "../../utils"
 import { ErrorGuard } from "../../utils/ErrorGuard"

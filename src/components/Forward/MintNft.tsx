@@ -1,4 +1,4 @@
-import type { PaymasterFeeQuote } from "@biconomy/account"
+import type { PaymasterFeeQuote } from "@biconomy-devx/account"
 import CircularProgress from "@mui/material/CircularProgress"
 import { makeStyles } from "@mui/styles"
 import type React from "react"
@@ -11,7 +11,7 @@ import {
   useSmartAccount,
   useTokenFees,
   useUserOpWait
-} from "@biconomy/use-aa"
+} from "@biconomy-devx/use-aa"
 import { type Hex, encodeFunctionData, getContract } from "viem"
 import { polygonAmoy } from "viem/chains"
 import { usePublicClient } from "wagmi"
