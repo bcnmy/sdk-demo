@@ -9,12 +9,12 @@ import {
 } from "@biconomy-devx/use-aa"
 import { makeStyles } from "@mui/styles"
 import type React from "react"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import type { Hex } from "viem"
-import { polygonAmoy } from "viem/chains"
 import { useAccount } from "wagmi"
 import { configInfo, showSuccessMessage } from "../../utils"
 import { ErrorGuard } from "../../utils/ErrorGuard"
+import { useHasSession } from "../../utils/useHasSession"
 import Button from "../Button"
 import UseBatchSession from "./UseBatchSession"
 
@@ -24,7 +24,7 @@ const CreateBatchSession: React.FC = () => {
   const classes = useStyles()
   const { address } = useAccount()
   const { smartAccountAddress } = useSmartAccount()
-  const [hasSession, setHasSession] = useState<boolean>(false)
+  const canResumeSession = useHasSession(smartAccountAddress, "BATCHED")
 
   const policyLeaves: Policy[] = [
     {
@@ -77,7 +77,6 @@ const CreateBatchSession: React.FC = () => {
 
   useEffect(() => {
     if (waitIsSuccess) {
-      setHasSession(true)
       showSuccessMessage(`Successful mint`, waitData?.receipt?.transactionHash)
     }
   }, [waitIsSuccess, waitData])
@@ -102,7 +101,7 @@ const CreateBatchSession: React.FC = () => {
 
         <pre>policy: {JSON.stringify(policyLeaves, bigIntReplacer, 2)}</pre>
 
-        {!!hasSession ? (
+        {!!canResumeSession ? (
           <UseBatchSession
             smartAccountAddress={smartAccountAddress}
             address={address!}

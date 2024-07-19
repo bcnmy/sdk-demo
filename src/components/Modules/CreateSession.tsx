@@ -11,9 +11,9 @@ import { useEffect } from "react"
 import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import type { Hex } from "viem"
-import { polygonAmoy } from "viem/chains"
 import { showSuccessMessage } from "../../utils"
 import { ErrorGuard } from "../../utils/ErrorGuard"
+import { useHasSession } from "../../utils/useHasSession"
 import Button from "../Button"
 import UseSession from "./UseSession"
 
@@ -21,8 +21,8 @@ const CreateSession: React.FC = () => {
   const classes = useStyles()
 
   const nftAddress: Hex = "0x1758f42Af7026fBbB559Dc60EcE0De3ef81f665e"
-
   const { smartAccountAddress: scwAddress } = useSmartAccount()
+  const canResumeSession = useHasSession(scwAddress, "STANDARD")
 
   const policy = [
     {
@@ -50,10 +50,6 @@ const CreateSession: React.FC = () => {
     isPending: isLoading
   } = useCreateSession()
 
-  // @ts-ignore
-  const sessionID = userOpResponse?.session?.sessionIDInfo?.[0]
-  console.log(sessionID)
-
   const {
     isLoading: waitIsLoading,
     isSuccess: waitIsSuccess,
@@ -77,11 +73,12 @@ const CreateSession: React.FC = () => {
     <main className={classes.main}>
       <ErrorGuard errors={[error, waitError]}>
         <p style={{ color: "#7E7E7E" }}>
-          Use Cases {"->"} Modules {"->"} {sessionID ? "Use" : "Create"} Session
+          Use Cases {"->"} Modules {"->"} {canResumeSession ? "Use" : "Create"}{" "}
+          Session
         </p>
 
         <h3 className={classes.subTitle}>
-          {sessionID ? "Use" : "Create"} a Session
+          {canResumeSession ? "Use" : "Create"} a Session
         </h3>
 
         <ToastContainer
@@ -99,7 +96,7 @@ const CreateSession: React.FC = () => {
 
         <pre>policy: {JSON.stringify(policy, bigIntReplacer, 2)}</pre>
 
-        {!!sessionID ? (
+        {canResumeSession ? (
           <UseSession smartAccountAddress={scwAddress} />
         ) : (
           <Button

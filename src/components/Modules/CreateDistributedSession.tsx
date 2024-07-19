@@ -8,13 +8,13 @@ import {
 } from "@biconomy-devx/use-aa"
 import { makeStyles } from "@mui/styles"
 import type React from "react"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import type { Hex } from "viem"
-import { polygonAmoy } from "viem/chains"
 import { showSuccessMessage } from "../../utils"
 import { ErrorGuard } from "../../utils/ErrorGuard"
+import { useHasSession } from "../../utils/useHasSession"
 import Button from "../Button"
 import UseDistributedSession from "./UseDistributedSession"
 
@@ -22,7 +22,7 @@ const CreateDistributedSession: React.FC = () => {
   const classes = useStyles()
   const nftAddress: Hex = "0x1758f42Af7026fBbB559Dc60EcE0De3ef81f665e"
   const { smartAccountAddress } = useSmartAccount()
-  const [success, setSuccess] = useState<boolean>(false)
+  const canResumeSession = useHasSession(smartAccountAddress, "DISTRIBUTED_KEY")
 
   const policy: PolicyLeaf[] = [
     {
@@ -61,7 +61,6 @@ const CreateDistributedSession: React.FC = () => {
 
   useEffect(() => {
     if (waitIsSuccess) {
-      setSuccess(true)
       showSuccessMessage(`Successful mint`, waitData?.receipt?.transactionHash)
     }
   }, [waitIsSuccess, waitData])
@@ -76,12 +75,12 @@ const CreateDistributedSession: React.FC = () => {
     <main className={classes.main}>
       <ErrorGuard errors={[error, waitError]}>
         <p style={{ color: "#7E7E7E" }}>
-          Use Cases {"->"} Modules {"->"} {!!success ? "Use" : "Create"} Dan
-          Session
+          Use Cases {"->"} Modules {"->"}{" "}
+          {!!canResumeSession ? "Use" : "Create"} Dan Session
         </p>
 
         <h3 className={classes.subTitle}>
-          {!!success ? "Use" : "Create"} a Dan Session
+          {!!canResumeSession ? "Use" : "Create"} a Dan Session
         </h3>
 
         <ToastContainer
@@ -99,7 +98,7 @@ const CreateDistributedSession: React.FC = () => {
 
         <pre>policy: {JSON.stringify(policy, bigIntReplacer, 2)}</pre>
 
-        {!!success ? (
+        {!!canResumeSession ? (
           <UseDistributedSession smartAccountAddress={smartAccountAddress} />
         ) : (
           <Button
