@@ -1,4 +1,4 @@
-import { BiconomyProvider } from "@biconomy-devx/use-aa"
+import { BiconomyProvider } from "@biconomy/use-aa"
 import { ThemeProvider } from "@mui/styles"
 import { RainbowKitProvider } from "@rainbow-me/rainbowkit"
 import "@rainbow-me/rainbowkit/styles.css"

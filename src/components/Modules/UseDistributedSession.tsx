@@ -2,12 +2,11 @@ import {
   Options,
   useSessionWithDistributedKey,
   useUserOpWait
-} from "@biconomy-devx/use-aa"
+} from "@biconomy/use-aa"
 import type React from "react"
 import { useEffect } from "react"
 import "react-toastify/dist/ReactToastify.css"
 import { type Address, type Hex, encodeFunctionData, parseAbi } from "viem"
-import { polygonAmoy } from "viem/chains"
 import { configInfo, showSuccessMessage } from "../../utils"
 import { ErrorGuard } from "../../utils/ErrorGuard"
 import Button from "../Button"

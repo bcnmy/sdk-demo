@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "bun i && bun link @biconomy-devx/account @biconomy-devx/use-aa && vite",
+    "dev": "bun i && bun link @biconomy/account @biconomy/use-aa && vite",
     "start": "vite",
     "build": "tsc && vite build",
     "format": "biome format . --write",
@@ -13,8 +13,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@biconomy-devx/account": "^4.6.18",
-    "@biconomy-devx/use-aa": "^1.1.12",
+    "@biconomy/account": "^4.5.4",
+    "@biconomy/use-aa": "^1.1.0",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@ethersproject/providers": "^5.7.2",

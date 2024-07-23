@@ -1,4 +1,4 @@
-import { useSmartAccount } from "@biconomy-devx/use-aa"
+import { useSmartAccount } from "@biconomy/use-aa"
 import ContentCopyIcon from "@mui/icons-material/ContentCopy"
 import LegendToggleIcon from "@mui/icons-material/LegendToggle"
 import MuiAppBar, {

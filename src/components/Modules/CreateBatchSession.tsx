@@ -1,4 +1,4 @@
-import type { Policy as PolicyFromSDK } from "@biconomy-devx/account"
+import type { Policy as PolicyFromSDK } from "@biconomy/account"
 import {
   Options,
   bigIntReplacer,
@@ -6,7 +6,7 @@ import {
   useCreateBatchSession,
   useSmartAccount,
   useUserOpWait
-} from "@biconomy-devx/use-aa"
+} from "@biconomy/use-aa"
 import { makeStyles } from "@mui/styles"
 import type React from "react"
 import { useEffect } from "react"
@@ -24,7 +24,10 @@ const CreateBatchSession: React.FC = () => {
   const classes = useStyles()
   const { address } = useAccount()
   const { smartAccountAddress } = useSmartAccount()
+  const [hasSession, setHasSession] = useState<boolean>(false)
   const canResumeSession = useHasSession(smartAccountAddress, "BATCHED")
+
+  const showUseSession = hasSession || canResumeSession
 
   const policyLeaves: Policy[] = [
     {
@@ -77,9 +80,10 @@ const CreateBatchSession: React.FC = () => {
 
   useEffect(() => {
     if (waitIsSuccess) {
+      setHasSession(true)
       showSuccessMessage(`Successful mint`, waitData?.receipt?.transactionHash)
     }
-  }, [waitIsSuccess, waitData])
+  }, [waitIsSuccess, waitData, setHasSession])
 
   const createSessionHandler = () =>
     mutate({
@@ -101,7 +105,7 @@ const CreateBatchSession: React.FC = () => {
 
         <pre>policy: {JSON.stringify(policyLeaves, bigIntReplacer, 2)}</pre>
 
-        {!!canResumeSession ? (
+        {!!showUseSession ? (
           <UseBatchSession
             smartAccountAddress={smartAccountAddress}
             address={address!}
@@ -134,3 +138,6 @@ const useStyles = makeStyles(() => ({
 }))
 
 export default CreateBatchSession
+function useState<T>(arg0: boolean): [any, any] {
+  throw new Error("Function not implemented.")
+}

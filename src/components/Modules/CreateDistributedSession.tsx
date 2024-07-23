@@ -1,14 +1,14 @@
-import type { PolicyLeaf } from "@biconomy-devx/account"
+import type { PolicyLeaf } from "@biconomy/account"
 import {
   Options,
   bigIntReplacer,
   useCreateSessionWithDistributedKey,
   useSmartAccount,
   useUserOpWait
-} from "@biconomy-devx/use-aa"
+} from "@biconomy/use-aa"
 import { makeStyles } from "@mui/styles"
 import type React from "react"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import type { Hex } from "viem"
@@ -23,6 +23,9 @@ const CreateDistributedSession: React.FC = () => {
   const nftAddress: Hex = "0x1758f42Af7026fBbB559Dc60EcE0De3ef81f665e"
   const { smartAccountAddress } = useSmartAccount()
   const canResumeSession = useHasSession(smartAccountAddress, "DISTRIBUTED_KEY")
+  const [hasSession, setHasSession] = useState<boolean>(false)
+
+  const showUseSession = hasSession || canResumeSession
 
   const policy: PolicyLeaf[] = [
     {
@@ -61,6 +64,7 @@ const CreateDistributedSession: React.FC = () => {
 
   useEffect(() => {
     if (waitIsSuccess) {
+      setHasSession(true)
       showSuccessMessage(`Successful mint`, waitData?.receipt?.transactionHash)
     }
   }, [waitIsSuccess, waitData])
@@ -75,12 +79,12 @@ const CreateDistributedSession: React.FC = () => {
     <main className={classes.main}>
       <ErrorGuard errors={[error, waitError]}>
         <p style={{ color: "#7E7E7E" }}>
-          Use Cases {"->"} Modules {"->"}{" "}
-          {!!canResumeSession ? "Use" : "Create"} Dan Session
+          Use Cases {"->"} Modules {"->"} {!!showUseSession ? "Use" : "Create"}{" "}
+          Dan Session
         </p>
 
         <h3 className={classes.subTitle}>
-          {!!canResumeSession ? "Use" : "Create"} a Dan Session
+          {!!showUseSession ? "Use" : "Create"} a Dan Session
         </h3>
 
         <ToastContainer
@@ -98,7 +102,7 @@ const CreateDistributedSession: React.FC = () => {
 
         <pre>policy: {JSON.stringify(policy, bigIntReplacer, 2)}</pre>
 
-        {!!canResumeSession ? (
+        {!!showUseSession ? (
           <UseDistributedSession smartAccountAddress={smartAccountAddress} />
         ) : (
           <Button

@@ -2,7 +2,7 @@ import {
   useSendTransaction,
   useSmartAccount,
   useUserOpWait
-} from "@biconomy-devx/use-aa"
+} from "@biconomy/use-aa"
 import { makeStyles } from "@mui/styles"
 import type React from "react"
 import { useCallback, useEffect, useState } from "react"

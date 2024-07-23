@@ -4,10 +4,10 @@ import {
   useCreateSession,
   useSmartAccount,
   useUserOpWait
-} from "@biconomy-devx/use-aa"
+} from "@biconomy/use-aa"
 import { makeStyles } from "@mui/styles"
 import type React from "react"
-import { useEffect } from "react"
+import { useEffect, useReducer, useState } from "react"
 import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import type { Hex } from "viem"
@@ -23,6 +23,9 @@ const CreateSession: React.FC = () => {
   const nftAddress: Hex = "0x1758f42Af7026fBbB559Dc60EcE0De3ef81f665e"
   const { smartAccountAddress: scwAddress } = useSmartAccount()
   const canResumeSession = useHasSession(scwAddress, "STANDARD")
+  const [hasSession, setHasSession] = useState<boolean>(false)
+
+  const showUseSession = hasSession || canResumeSession
 
   const policy = [
     {
@@ -59,6 +62,7 @@ const CreateSession: React.FC = () => {
 
   useEffect(() => {
     if (waitIsSuccess) {
+      setHasSession(true)
       showSuccessMessage(`Successful mint`, waitData?.receipt?.transactionHash)
     }
   }, [waitIsSuccess, waitData])
@@ -73,12 +77,12 @@ const CreateSession: React.FC = () => {
     <main className={classes.main}>
       <ErrorGuard errors={[error, waitError]}>
         <p style={{ color: "#7E7E7E" }}>
-          Use Cases {"->"} Modules {"->"} {canResumeSession ? "Use" : "Create"}{" "}
+          Use Cases {"->"} Modules {"->"} {showUseSession ? "Use" : "Create"}{" "}
           Session
         </p>
 
         <h3 className={classes.subTitle}>
-          {canResumeSession ? "Use" : "Create"} a Session
+          {showUseSession ? "Use" : "Create"} a Session
         </h3>
 
         <ToastContainer
@@ -96,7 +100,7 @@ const CreateSession: React.FC = () => {
 
         <pre>policy: {JSON.stringify(policy, bigIntReplacer, 2)}</pre>
 
-        {canResumeSession ? (
+        {showUseSession ? (
           <UseSession smartAccountAddress={scwAddress} />
         ) : (
           <Button

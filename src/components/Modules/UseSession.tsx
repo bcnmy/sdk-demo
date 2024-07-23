@@ -1,4 +1,4 @@
-import { useSession, useUserOpWait } from "@biconomy-devx/use-aa"
+import { useSession, useUserOpWait } from "@biconomy/use-aa"
 import type React from "react"
 import { useEffect } from "react"
 import "react-toastify/dist/ReactToastify.css"
