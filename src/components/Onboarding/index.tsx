@@ -1,22 +1,23 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { makeStyles } from "@mui/styles";
-import Button from "../Button";
 // import { useWeb3Context } from "../../contexts/Web3Context";
-import { useSmartAccount } from "@biconomy/use-aa";
+import { useSmartAccount } from "@biconomy/use-aa"
+import { makeStyles } from "@mui/styles"
+import type React from "react"
+import { type Dispatch, type SetStateAction, useEffect, useState } from "react"
+import Button from "../Button"
 // import { showErrorMessage, showInfoMessage } from "../../utils";
 // import { activeChainId } from "../../utils/chainConfig";
 
 type OnboardingProps = {
-  setValue: Dispatch<SetStateAction<number>>;
-};
+  setValue: Dispatch<SetStateAction<number>>
+}
 
 const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
-  const classes = useStyles();
+  const classes = useStyles()
   const { smartAccountClient: smartAccount, smartAccountAddress: scwAddress } =
-    useSmartAccount();
+    useSmartAccount()
 
-  const [isScwDeployed, setisScwDeployed] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [isScwDeployed, setisScwDeployed] = useState(false)
+  const [loading, setLoading] = useState(false)
   // const [deployLoading1, setDeployLoading1] = useState(false);
   // const [deployLoading2, setDeployLoading2] = useState(false);
 
@@ -77,13 +78,13 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
 
   useEffect(() => {
     const isDeployed = async () => {
-      setLoading(true);
-      const dep = await smartAccount?.isAccountDeployed();
-      if (dep) setisScwDeployed(true);
-      setLoading(false);
-    };
-    if (smartAccount && scwAddress) isDeployed();
-  }, [scwAddress, smartAccount]);
+      setLoading(true)
+      const dep = await smartAccount?.isAccountDeployed()
+      if (dep) setisScwDeployed(true)
+      setLoading(false)
+    }
+    if (smartAccount && scwAddress) isDeployed()
+  }, [scwAddress, smartAccount])
 
   return (
     <main className={classes.main}>
@@ -119,7 +120,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
               justifyContent: "stretch",
               gap: 20,
               width: "100%",
-              height: "100%",
+              height: "100%"
             }}
           >
             {/* <div className={classes.element}>
@@ -183,8 +184,8 @@ const Onboarding: React.FC<OnboardingProps> = ({ setValue }) => {
         </div>
       )}
     </main>
-  );
-};
+  )
+}
 
 const useStyles = makeStyles(() => ({
   main: {
@@ -196,13 +197,13 @@ const useStyles = makeStyles(() => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "start",
-    marginTop: 20,
+    marginTop: 20
     // justifyContent: "center",
   },
   subTitle: {
     color: "#FFB999",
     fontSize: 36,
-    margin: 0,
+    margin: 0
   },
   container: {
     width: "100%",
@@ -211,8 +212,8 @@ const useStyles = makeStyles(() => ({
     justifyContent: "space-between",
     "@media (max-width: 899px)": {
       width: "90%",
-      flexDirection: "column",
-    },
+      flexDirection: "column"
+    }
   },
   element: {
     width: "100%",
@@ -230,25 +231,25 @@ const useStyles = makeStyles(() => ({
     "@media (max-width: 899px)": {
       width: "100%",
       marginBottom: 20,
-      height: "max-content",
-    },
+      height: "max-content"
+    }
   },
   text: {
     fontSize: 20,
-    color: "#e6e6e6",
+    color: "#e6e6e6"
     // wordBreak: "break-all",
   },
   subText: {
     fontSize: 14,
     padding: 10,
-    backgroundColor: "#FF996647",
+    backgroundColor: "#FF996647"
   },
   container2: {
     textAlign: "center",
     display: "flex",
     flexDirection: "column",
-    alignItems: "start",
-  },
-}));
+    alignItems: "start"
+  }
+}))
 
-export default Onboarding;
+export default Onboarding

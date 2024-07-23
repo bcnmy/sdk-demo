@@ -1,34 +1,35 @@
-import React, { useEffect, useState } from "react";
-import { makeStyles } from "@mui/styles";
-import { Hex, encodeFunctionData } from "viem";
+import { makeStyles } from "@mui/styles"
+import type React from "react"
+import { useEffect, useState } from "react"
+import { type Hex, encodeFunctionData } from "viem"
 
-import Button from "../Button";
 import {
   useSendTransaction,
   useSmartAccount,
-  useUserOpWait,
-} from "@biconomy/use-aa";
-import { configInfo as config, showSuccessMessage } from "../../utils";
-import { ErrorGuard } from "../../utils/ErrorGuard";
-import { polygonAmoy } from "viem/chains";
+  useUserOpWait
+} from "@biconomy/use-aa"
+import { polygonAmoy } from "viem/chains"
+import { configInfo as config, showSuccessMessage } from "../../utils"
+import { ErrorGuard } from "../../utils/ErrorGuard"
+import Button from "../Button"
 
 const Faucet: React.FC = () => {
-  const classes = useStyles();
-  const { smartAccountAddress: scwAddress } = useSmartAccount();
-  const [address, setAddress] = useState(scwAddress);
+  const classes = useStyles()
+  const { smartAccountAddress: scwAddress } = useSmartAccount()
+  const [address, setAddress] = useState(scwAddress)
 
   const {
     mutate,
     data: userOpResponse,
     error,
-    isPending,
-  } = useSendTransaction();
+    isPending
+  } = useSendTransaction()
   const {
     isSuccess: waitIsSuccess,
     error: waitError,
     isLoading: waitIsLoading,
-    data: waitData,
-  } = useUserOpWait(userOpResponse);
+    data: waitData
+  } = useUserOpWait(userOpResponse)
 
   const drip = () =>
     mutate({
@@ -37,18 +38,15 @@ const Faucet: React.FC = () => {
         data: encodeFunctionData({
           abi: config.faucet.abi,
           functionName: "drip",
-          args: [address as Hex],
-        }),
-      },
-    });
+          args: [address as Hex]
+        })
+      }
+    })
 
   useEffect(() => {
     waitIsSuccess &&
-      showSuccessMessage(
-        "Successful mint: " +
-          `${polygonAmoy.blockExplorers.default.url}/tx/${waitData?.receipt?.transactionHash}`
-      );
-  }, [waitIsSuccess]);
+      showSuccessMessage(`Successful mint`, waitData?.receipt?.transactionHash)
+  }, [waitIsSuccess, waitData])
 
   return (
     <main className={classes.main}>
@@ -74,8 +72,8 @@ const Faucet: React.FC = () => {
         />
       </ErrorGuard>
     </main>
-  );
-};
+  )
+}
 
 const useStyles = makeStyles(() => ({
   main: {
@@ -86,35 +84,35 @@ const useStyles = makeStyles(() => ({
     color: "#e6e6e6",
     display: "flex",
     flexDirection: "column",
-    alignItems: "start",
+    alignItems: "start"
     // justifyContent: "center",
   },
   subTitle: {
     color: "#FFB999",
     fontSize: 36,
-    margin: 0,
+    margin: 0
   },
   h3Title: {
     color: "#FFB999",
-    margin: 0,
+    margin: 0
   },
   container: {
     // backgroundColor: "rgb(29, 31, 33)",
   },
   containerBtn: {
     display: "flex",
-    gap: 15,
+    gap: 15
     // justifyContent: "space-between",
   },
   tab: {
     padding: "5px 15px",
     backgroundColor: "#FCF8E8",
-    marginBottom: 10,
+    marginBottom: 10
   },
   listHover: {
     "&:hover": {
-      color: "#FF9551",
-    },
+      color: "#FF9551"
+    }
   },
   input: {
     maxWidth: 350,
@@ -124,8 +122,8 @@ const useStyles = makeStyles(() => ({
     outline: "1px solid #5B3320",
     backgroundColor: "#151520",
     borderRadius: 6,
-    border: "none",
-  },
-}));
+    border: "none"
+  }
+}))
 
-export default Faucet;
+export default Faucet

@@ -1,23 +1,23 @@
-import React from "react";
-import { makeStyles } from "@mui/styles";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress } from "@mui/material"
+import { makeStyles } from "@mui/styles"
+import type React from "react"
 
 type ButtonProp = {
-  title: string;
-  isLoading?: boolean;
-  onClickFunc: any;
-  children?: any;
-  style?: any;
-};
+  title: string
+  isLoading?: boolean
+  onClickFunc: any
+  children?: any
+  style?: any
+}
 
 const Button: React.FC<ButtonProp> = ({
   title,
   onClickFunc,
   isLoading = false,
   children,
-  style,
+  style
 }) => {
-  const classes = useStyles();
+  const classes = useStyles()
 
   return (
     <button
@@ -38,8 +38,8 @@ const Button: React.FC<ButtonProp> = ({
       )}
       {children}
     </button>
-  );
-};
+  )
+}
 
 const useStyles = makeStyles((_: any) => ({
   btn: {
@@ -60,26 +60,26 @@ const useStyles = makeStyles((_: any) => ({
     fontSize: 15,
 
     "@media (max-width:599px)": {
-      padding: "0 5px",
+      padding: "0 5px"
     },
 
     "&:hover": {
-      backgroundColor: "#5B3320",
+      backgroundColor: "#5B3320"
     },
 
     // disable button
     "&:disabled": {
       cursor: "not-allowed",
-      opacity: 0.5,
+      opacity: 0.5
     },
 
     "& div": {
       "@media (max-width:599px)": {
         margin: 0,
-        display: "none",
-      },
-    },
-  },
-}));
+        display: "none"
+      }
+    }
+  }
+}))
 
-export default Button;
+export default Button

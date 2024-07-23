@@ -1,13 +1,13 @@
-import React from "react";
-import { makeStyles } from "@mui/styles";
-import { ToastContainer } from "react-toastify";
-import { useAccount } from "wagmi";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-import TabsBody from "./components/TabsBody";
+import { makeStyles } from "@mui/styles"
+import { ConnectButton } from "@rainbow-me/rainbowkit"
+import type React from "react"
+import { ToastContainer } from "react-toastify"
+import { useAccount } from "wagmi"
+import TabsBody from "./components/TabsBody"
 
 const App: React.FC = () => {
-  const classes = useStyles();
-  const { address } = useAccount();
+  const classes = useStyles()
+  const { address } = useAccount()
 
   if (!address) {
     return (
@@ -17,7 +17,7 @@ const App: React.FC = () => {
             <img
               width={35}
               style={{
-                marginRight: 20,
+                marginRight: 20
               }}
               src="/logo.svg"
               alt=""
@@ -31,7 +31,7 @@ const App: React.FC = () => {
           <ConnectButton />
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -39,8 +39,8 @@ const App: React.FC = () => {
       <TabsBody loading={false} />
       <ToastContainer position="bottom-left" newestOnTop theme="dark" />
     </div>
-  );
-};
+  )
+}
 
 const useStyles = makeStyles(() => ({
   bgCover: {
@@ -51,7 +51,7 @@ const useStyles = makeStyles(() => ({
     color: "#e6e6e6",
     justifyContent: "start",
     alignItems: "center",
-    padding: "0px 20px",
+    padding: "0px 20px"
   },
   container: {
     width: "60vw",
@@ -64,17 +64,17 @@ const useStyles = makeStyles(() => ({
     flexDirection: "column",
     alignItems: "start",
     justifyContent: "center",
-    gap: 20,
+    gap: 20
   },
   title: {
     margin: 0,
     fontSize: 50,
-    color: "#ffb999",
+    color: "#ffb999"
   },
   subTitle: {
     fontSize: 22,
-    margin: 0,
-  },
-}));
+    margin: 0
+  }
+}))
 
-export default App;
+export default App

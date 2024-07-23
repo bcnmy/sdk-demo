@@ -1,12 +1,12 @@
-import React from "react";
-import { makeStyles } from "@mui/styles";
-import ControlPointIcon from "@mui/icons-material/ControlPoint";
+import ControlPointIcon from "@mui/icons-material/ControlPoint"
+import { makeStyles } from "@mui/styles"
+import type React from "react"
 // import ImageIcon from "@mui/icons-material/Image";
 
 interface Props {
-  useCase: number;
-  setUseCase: any;
-  pageIndexChange: any;
+  useCase: number
+  setUseCase: any
+  pageIndexChange: any
 }
 
 const cardItems = [
@@ -19,10 +19,10 @@ const cardItems = [
       <ControlPointIcon
         style={{
           color: "#FFB999",
-          fontSize: 72,
+          fontSize: 72
         }}
       />
-    ),
+    )
   },
   {
     title: "LP into Pool using Session",
@@ -33,30 +33,29 @@ const cardItems = [
       <ControlPointIcon
         style={{
           color: "#FFB999",
-          fontSize: 72,
+          fontSize: 72
         }}
       />
-    ),
-  },
-];
+    )
+  }
+]
 
 const SessionFlow: React.FC<Props> = ({
   useCase: _,
   setUseCase: __,
-  pageIndexChange,
+  pageIndexChange
 }) => {
-  const classes = useStyles();
+  const classes = useStyles()
 
   return (
     <main className={classes.main}>
       <h3 className={classes.subTitle}>Create Session</h3>
-      <p></p>
 
       <div className={classes.cardContainer}>
         {cardItems.map((item, index) => (
           <div
             onClick={(e) => pageIndexChange(e, item.index)}
-            key={index}
+            key={index + 1}
             className={classes.card}
           >
             {item.icon}
@@ -66,7 +65,7 @@ const SessionFlow: React.FC<Props> = ({
                   color: "#FFB999",
                   textAlign: "start",
                   fontSize: "auto",
-                  margin: 0,
+                  margin: 0
                 }}
               >
                 {item.title}
@@ -75,7 +74,7 @@ const SessionFlow: React.FC<Props> = ({
                 style={{
                   fontSize: 14,
                   margin: 0,
-                  textAlign: "center",
+                  textAlign: "center"
                 }}
               >
                 {item.description}
@@ -85,19 +84,19 @@ const SessionFlow: React.FC<Props> = ({
         ))}
       </div>
     </main>
-  );
-};
+  )
+}
 
 const useStyles = makeStyles(() => ({
   main: {
     padding: "10px 40px",
     width: "100%",
-    color: "#e6e6e6",
+    color: "#e6e6e6"
   },
   subTitle: {
     color: "#FFB999",
     fontSize: 36,
-    margin: 0,
+    margin: 0
   },
   textBox: {
     display: "flex",
@@ -106,14 +105,14 @@ const useStyles = makeStyles(() => ({
     alignItems: "center",
     gap: 8,
     "@media (max-width:1640px)": {
-      alignItems: "start",
-    },
+      alignItems: "start"
+    }
   },
   subSubTitle: {
     fontFamily: "Rubik",
     color: "#BDC2FF",
     fontSize: 20,
-    margin: 20,
+    margin: 20
   },
   cardContainer: {
     display: "flex",
@@ -124,8 +123,8 @@ const useStyles = makeStyles(() => ({
     gap: 20,
     cursor: "pointer",
     "@media (max-width:1640px)": {
-      flexDirection: "column",
-    },
+      flexDirection: "column"
+    }
   },
   card: {
     // width: "25%",
@@ -145,9 +144,9 @@ const useStyles = makeStyles(() => ({
       width: "100%",
       maxWidth: "unset",
       aspectRatio: "unset",
-      justifyContent: "space-between",
-    },
-  },
-}));
+      justifyContent: "space-between"
+    }
+  }
+}))
 
-export default SessionFlow;
+export default SessionFlow

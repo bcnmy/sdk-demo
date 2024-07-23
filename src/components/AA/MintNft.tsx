@@ -1,63 +1,61 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { makeStyles } from "@mui/styles";
-import { usePublicClient } from "wagmi";
-import { Hex, encodeFunctionData, getContract } from "viem";
-import Button from "../Button";
-import { configInfo as config, showSuccessMessage } from "../../utils";
 import {
   useSendTransaction,
   useSmartAccount,
-  useUserOpWait,
-} from "@biconomy/use-aa";
-import { ErrorGuard } from "../../utils/ErrorGuard";
-import { polygonAmoy } from "viem/chains";
+  useUserOpWait
+} from "@biconomy/use-aa"
+import { makeStyles } from "@mui/styles"
+import type React from "react"
+import { useCallback, useEffect, useState } from "react"
+import { type Hex, encodeFunctionData, getContract } from "viem"
+import { polygonAmoy } from "viem/chains"
+import { usePublicClient } from "wagmi"
+import { configInfo as config, showSuccessMessage } from "../../utils"
+import { ErrorGuard } from "../../utils/ErrorGuard"
+import Button from "../Button"
 
 const MintNft: React.FC = () => {
-  const classes = useStyles();
-  const publicClient = usePublicClient();
-  const [nftCount, setNftCount] = useState<number | null>(null);
-  const [loadedCount, setLoadedCount] = useState<boolean>(false);
+  const classes = useStyles()
+  const publicClient = usePublicClient()
+  const [nftCount, setNftCount] = useState<number | null>(null)
+  const [loadedCount, setLoadedCount] = useState<boolean>(false)
 
-  const { smartAccountAddress: scwAddress } = useSmartAccount();
+  const { smartAccountAddress: scwAddress } = useSmartAccount()
   const {
     mutate,
     data: userOpResponse,
     error,
-    isPending,
-  } = useSendTransaction();
+    isPending
+  } = useSendTransaction()
   const {
     isLoading: waitIsLoading,
     isSuccess: waitIsSuccess,
     error: waitError,
-    data: waitData,
-  } = useUserOpWait(userOpResponse);
+    data: waitData
+  } = useUserOpWait(userOpResponse)
 
   const getNftCount = useCallback(async () => {
-    if (!scwAddress || !publicClient) return;
+    if (!scwAddress || !publicClient) return
     const nftContract = getContract({
       address: config.nft.address as Hex,
       abi: config.nft.abi,
-      client: publicClient,
-    });
-    const count = await nftContract.read.balanceOf([scwAddress]);
-    console.log("count", count);
-    setNftCount(Number(count));
-  }, [publicClient, scwAddress]);
+      client: publicClient
+    })
+    const count = await nftContract.read.balanceOf([scwAddress])
+    console.log("count", count)
+    setNftCount(Number(count))
+  }, [publicClient, scwAddress])
 
   useEffect(() => {
     if (waitIsSuccess || !loadedCount) {
-      getNftCount();
-      setLoadedCount(true);
+      getNftCount()
+      setLoadedCount(true)
     }
-  }, [getNftCount, waitIsSuccess]);
+  }, [getNftCount, waitIsSuccess, loadedCount])
 
   useEffect(() => {
     waitIsSuccess &&
-      showSuccessMessage(
-        "Successful mint: " +
-          `${polygonAmoy.blockExplorers.default.url}/tx/${waitData?.receipt?.transactionHash}`
-      );
-  }, [waitIsSuccess]);
+      showSuccessMessage(`Successful mint`, waitData?.receipt?.transactionHash)
+  }, [waitIsSuccess, waitData])
 
   const mintNft = () =>
     mutate({
@@ -66,10 +64,10 @@ const MintNft: React.FC = () => {
         data: encodeFunctionData({
           abi: config.nft.abi,
           functionName: "safeMint",
-          args: [scwAddress as Hex],
-        }),
-      },
-    });
+          args: [scwAddress as Hex]
+        })
+      }
+    })
 
   return (
     <main className={classes.main}>
@@ -96,22 +94,22 @@ const MintNft: React.FC = () => {
         <Button title="Mint NFT" isLoading={isPending} onClickFunc={mintNft} />
       </ErrorGuard>
     </main>
-  );
-};
+  )
+}
 
 const useStyles = makeStyles(() => ({
   main: {
     padding: "10px 40px",
-    color: "#EEEEEE",
+    color: "#EEEEEE"
   },
   subTitle: {
     color: "#FFB999",
     fontSize: 36,
-    margin: 0,
+    margin: 0
   },
   h3Title: {
-    color: "#e6e6e6",
-  },
-}));
+    color: "#e6e6e6"
+  }
+}))
 
-export default MintNft;
+export default MintNft

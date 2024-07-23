@@ -1,13 +1,14 @@
+import type { PolicyLeaf } from "@biconomy/account"
 import {
   Options,
   bigIntReplacer,
-  useCreateSession,
+  useCreateSessionWithDistributedKey,
   useSmartAccount,
   useUserOpWait
 } from "@biconomy/use-aa"
 import { makeStyles } from "@mui/styles"
 import type React from "react"
-import { useEffect, useReducer, useState } from "react"
+import { useEffect, useState } from "react"
 import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import type { Hex } from "viem"
@@ -15,19 +16,18 @@ import { showSuccessMessage } from "../../utils"
 import { ErrorGuard } from "../../utils/ErrorGuard"
 import { useHasSession } from "../../utils/useHasSession"
 import Button from "../Button"
-import UseSession from "./UseSession"
+import UseDistributedSession from "./UseDistributedSession"
 
-const CreateSession: React.FC = () => {
+const CreateDistributedSession: React.FC = () => {
   const classes = useStyles()
-
   const nftAddress: Hex = "0x1758f42Af7026fBbB559Dc60EcE0De3ef81f665e"
-  const { smartAccountAddress: scwAddress } = useSmartAccount()
-  const canResumeSession = useHasSession(scwAddress, "STANDARD")
+  const { smartAccountAddress } = useSmartAccount()
+  const canResumeSession = useHasSession(smartAccountAddress, "DISTRIBUTED_KEY")
   const [hasSession, setHasSession] = useState<boolean>(false)
 
   const showUseSession = hasSession || canResumeSession
 
-  const policy = [
+  const policy: PolicyLeaf[] = [
     {
       contractAddress: nftAddress,
       functionSelector: "safeMint(address)",
@@ -35,7 +35,7 @@ const CreateSession: React.FC = () => {
         {
           offset: 0,
           condition: 0,
-          referenceValue: scwAddress
+          referenceValue: smartAccountAddress
         }
       ],
       interval: {
@@ -50,8 +50,8 @@ const CreateSession: React.FC = () => {
     mutate,
     data: userOpResponse,
     error,
-    isPending: isLoading
-  } = useCreateSession()
+    isPending
+  } = useCreateSessionWithDistributedKey()
 
   const {
     isLoading: waitIsLoading,
@@ -60,6 +60,8 @@ const CreateSession: React.FC = () => {
     data: waitData
   } = useUserOpWait(userOpResponse)
 
+  const isLoading = waitIsLoading || isPending
+
   useEffect(() => {
     if (waitIsSuccess) {
       setHasSession(true)
@@ -67,7 +69,7 @@ const CreateSession: React.FC = () => {
     }
   }, [waitIsSuccess, waitData])
 
-  const createSessionHandler = () =>
+  const createDistributedSessionHandler = () =>
     mutate({
       policy,
       options: Options.Sponsored
@@ -77,12 +79,12 @@ const CreateSession: React.FC = () => {
     <main className={classes.main}>
       <ErrorGuard errors={[error, waitError]}>
         <p style={{ color: "#7E7E7E" }}>
-          Use Cases {"->"} Modules {"->"} {showUseSession ? "Use" : "Create"}{" "}
-          Session
+          Use Cases {"->"} Modules {"->"} {!!showUseSession ? "Use" : "Create"}{" "}
+          Dan Session
         </p>
 
         <h3 className={classes.subTitle}>
-          {showUseSession ? "Use" : "Create"} a Session
+          {!!showUseSession ? "Use" : "Create"} a Dan Session
         </h3>
 
         <ToastContainer
@@ -100,13 +102,13 @@ const CreateSession: React.FC = () => {
 
         <pre>policy: {JSON.stringify(policy, bigIntReplacer, 2)}</pre>
 
-        {showUseSession ? (
-          <UseSession smartAccountAddress={scwAddress} />
+        {!!showUseSession ? (
+          <UseDistributedSession smartAccountAddress={smartAccountAddress} />
         ) : (
           <Button
+            isLoading={isLoading}
             title="Create Session"
-            onClickFunc={createSessionHandler}
-            isLoading={isLoading || waitIsLoading}
+            onClickFunc={createDistributedSessionHandler}
           />
         )}
       </ErrorGuard>
@@ -135,4 +137,4 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-export default CreateSession
+export default CreateDistributedSession

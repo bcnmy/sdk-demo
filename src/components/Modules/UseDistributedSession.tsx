@@ -1,24 +1,27 @@
-import { useSession, useUserOpWait } from "@biconomy/use-aa"
+import {
+  Options,
+  useSessionWithDistributedKey,
+  useUserOpWait
+} from "@biconomy/use-aa"
 import type React from "react"
 import { useEffect } from "react"
 import "react-toastify/dist/ReactToastify.css"
-import { type Hex, encodeFunctionData, parseAbi } from "viem"
-import { polygonAmoy } from "viem/chains"
+import { type Address, type Hex, encodeFunctionData, parseAbi } from "viem"
 import { configInfo, showSuccessMessage } from "../../utils"
 import { ErrorGuard } from "../../utils/ErrorGuard"
 import Button from "../Button"
 
 interface props {
-  smartAccountAddress: Hex
+  smartAccountAddress: Address
 }
 
-const UseSession: React.FC<props> = ({ smartAccountAddress }: props) => {
+const UseDistributedSession: React.FC<props> = ({ smartAccountAddress }) => {
   const {
     mutate,
     data: userOpResponse,
     error,
     isPending: isLoading
-  } = useSession()
+  } = useSessionWithDistributedKey()
 
   const {
     isLoading: waitIsLoading,
@@ -29,7 +32,6 @@ const UseSession: React.FC<props> = ({ smartAccountAddress }: props) => {
 
   const mintTx = () =>
     mutate({
-      smartAccountAddress,
       transactions: {
         to: configInfo.nft.address,
         data: encodeFunctionData({
@@ -37,7 +39,9 @@ const UseSession: React.FC<props> = ({ smartAccountAddress }: props) => {
           functionName: "safeMint",
           args: [smartAccountAddress as Hex]
         })
-      }
+      },
+      options: Options.Sponsored,
+      smartAccountAddress
     })
 
   useEffect(() => {
@@ -57,4 +61,4 @@ const UseSession: React.FC<props> = ({ smartAccountAddress }: props) => {
   )
 }
 
-export default UseSession
+export default UseDistributedSession
