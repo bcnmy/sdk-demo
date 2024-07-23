@@ -8,10 +8,8 @@ export const ChainId = {
 }
 
 export const activeChainId = ChainId.POLYGON_AMOY
-export const biconomyPaymasterApiKey =
-  import.meta.env.VITE_PAYMASTER_KEY || process.env.VITE_PAYMASTER_KEY
-export const bundlerUrl =
-  import.meta.env.VITE_BUNDLER_URL || process.env.VITE_BUNDLER_URL
+export const biconomyPaymasterApiKey = "_sTfkyAEp.552504b5-9093-4d4b-94dd-701f85a267ea"
+export const bundlerUrl = "https://bundler.biconomy.io/api/v2/80002/cJPK7B3ru.dd7f7861-190d-45ic-af80-6877f74b8f44"
 
 export const supportedChains = [
   ChainId.GOERLI,
