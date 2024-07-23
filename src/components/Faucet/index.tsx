@@ -8,7 +8,6 @@ import {
   useSmartAccount,
   useUserOpWait
 } from "@biconomy/use-aa"
-import { polygonAmoy } from "viem/chains"
 import { configInfo as config, showSuccessMessage } from "../../utils"
 import { ErrorGuard } from "../../utils/ErrorGuard"
 import Button from "../Button"

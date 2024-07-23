@@ -1,8 +1,4 @@
-import {
-  DEFAULT_ERC20_MODULE,
-  SessionLocalStorage,
-  type SessionType
-} from "@biconomy/account"
+import { SessionLocalStorage, type SessionType } from "@biconomy/account"
 import { useMemo, useState } from "react"
 import type { Hex } from "viem"
 

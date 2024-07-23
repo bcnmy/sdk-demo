@@ -9,7 +9,7 @@ import {
 } from "@biconomy/use-aa"
 import { makeStyles } from "@mui/styles"
 import type React from "react"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import type { Hex } from "viem"
 import { useAccount } from "wagmi"
 import { configInfo, showSuccessMessage } from "../../utils"
@@ -83,7 +83,7 @@ const CreateBatchSession: React.FC = () => {
       setHasSession(true)
       showSuccessMessage(`Successful mint`, waitData?.receipt?.transactionHash)
     }
-  }, [waitIsSuccess, waitData, setHasSession])
+  }, [waitIsSuccess, waitData])
 
   const createSessionHandler = () =>
     mutate({
@@ -138,6 +138,3 @@ const useStyles = makeStyles(() => ({
 }))
 
 export default CreateBatchSession
-function useState<T>(arg0: boolean): [any, any] {
-  throw new Error("Function not implemented.")
-}

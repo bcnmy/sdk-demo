@@ -13,7 +13,6 @@ import {
   useUserOpWait
 } from "@biconomy/use-aa"
 import { type Hex, encodeFunctionData, getContract } from "viem"
-import { polygonAmoy } from "viem/chains"
 import { usePublicClient } from "wagmi"
 import { configInfo as config, showSuccessMessage } from "../../utils"
 import { ErrorGuard } from "../../utils/ErrorGuard"
