@@ -28,6 +28,9 @@ const App: React.FC = () => {
             Solve complex UX challenges with customisable SDK modules in
             minutes.
           </p>
+          <p className={classes.note}>
+            This demo only works for testnet networks.
+          </p>
           <ConnectButton />
         </div>
       </div>
@@ -74,6 +77,11 @@ const useStyles = makeStyles(() => ({
   subTitle: {
     fontSize: 22,
     margin: 0
+  },
+  note: {
+    fontSize: 18,
+    marginBottom: 10,
+    fontWeight: "bold",
   }
 }))
 
